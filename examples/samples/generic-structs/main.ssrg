@@ -14,5 +14,9 @@ fn transform box: Box<Int> -> Int = (box.map double).get
 
 fn render value: Int -> String = `Box result: ${value}`
 
-// valueからBox<Int>を推論し、methodを通してgenericな型を保ちます。
-pub effect fn main = Box { value: 21 } |> transform |> render |> println
+// フィールドからBox<Int>を推論し、メソッドを通してジェネリックな型を保ちます。
+pub effect fn main -> Unit with Console fails ConsoleError =
+  Box { value: 21 }
+  |> transform
+  |> render
+  |> println

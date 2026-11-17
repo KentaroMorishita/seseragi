@@ -1,3 +1,3 @@
-`alias`は既存の型へ読みやすい名前を付ける透明な仕組みです。`UserId`は`Int`と、`Pair<Int>`は対応するrecordと同じ型として扱われ、runtimeの包みは増えません。
+まずRunを押して更新前後のパスを確認したら、`signals.make 41`の初期値を変えてもう一度実行してみてください。
 
-`Task<Unit>`も標準の透明aliasで、正規型は`Effect<{}, Never, Unit>`です。`signals.update`のように環境も回復可能failureも不要なEffectを短く表します。
+`alias`は既存の型へ読みやすい別名を付ける仕組みです。`UserId`は`Int`と、`Pair<String>`は対応するレコードと同じ型として扱われ、実行時の包みは増えません。`Task<Unit>`も標準の型エイリアスで、環境も回復可能な失敗も持たない`Effect<{}, Never, Unit>`を短く表します。

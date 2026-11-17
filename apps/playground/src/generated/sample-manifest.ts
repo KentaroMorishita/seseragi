@@ -215,8 +215,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collections/main.ssrg",
       "guidePath": "examples/samples/collections/guide.md",
       "expectedOutputPath": "examples/samples/collections/stdout.txt",
-      "sourceHash": "sha256:70a1557f6f25037cb34a9fd3389eeb707a8be3878ec37b37a99734c7c80e9cb6",
-      "workspaceHash": "sha256:6a4d71565dcc32399af67e0d3f05c1606fdf31f101e392e234e14e443a7eb439"
+      "sourceHash": "sha256:67d9be9718a070d3d8e8e253acdabbb68deb89a9eb03752ffd271b4285ded211",
+      "workspaceHash": "sha256:22c8747bfb07dca9ed7a141843b6b158059bb0400eed94e3d4d2d76a46fa5c2d"
     },
     source: sample1Source,
     manifest: "",
@@ -252,8 +252,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/data-and-patterns/main.ssrg",
       "guidePath": "examples/samples/data-and-patterns/guide.md",
       "expectedOutputPath": "examples/samples/data-and-patterns/stdout.txt",
-      "sourceHash": "sha256:4c6bed844bd49f3f2e5bf9cba602f5eec0eed883b2dd02220435a59eaed8d499",
-      "workspaceHash": "sha256:8cffb8274ffde7e5e4353b99473a126c10feadd24b842fa0a48b6c39885a8ce4"
+      "sourceHash": "sha256:b6d8db52a58a1d53e5c46da2a78aa0aa022f4bfc8ce70bb63ad2f8888addf9fc",
+      "workspaceHash": "sha256:1f2ae8ec9012b503fb380264dd1788b890ffbba2eb3e197f6ef8d924c4fcd597"
     },
     source: sample2Source,
     manifest: "",
@@ -305,7 +305,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "either-and-monad",
       "title": "EitherとMonad",
-      "summary": "PreludeのEither Monadを、doと明示的な>>=の両方で利用します。",
+      "summary": "段階的な入力検証をEitherとdoで組み立て、成功時と失敗時の分岐を確認します。",
       "kind": "recipe",
       "difficulty": "advanced",
       "topics": [
@@ -328,8 +328,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/either-and-monad/main.ssrg",
       "guidePath": "examples/samples/either-and-monad/guide.md",
       "expectedOutputPath": "examples/samples/either-and-monad/stdout.txt",
-      "sourceHash": "sha256:840a3ab3feca1f9319926c703738d48f5e29f621f6132d2f24f6293d336d8b12",
-      "workspaceHash": "sha256:ecd80dfb3c9422873a94bfd2c4d3e7f107079324ddfab87ddcedec65d8cc3d19"
+      "sourceHash": "sha256:52f6f3be54b5364df66965194c7ed1c2c80f4e0ac91dcd2665a0441eebea2f1c",
+      "workspaceHash": "sha256:6d609d7d0746fe55aa0946cabfe507f9f5bbcf5fdf686bdc15a85aa3d4dee079"
     },
     source: sample4Source,
     manifest: "",
@@ -408,8 +408,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/fibonacci-sequence/main.ssrg",
       "guidePath": "examples/samples/fibonacci-sequence/guide.md",
       "expectedOutputPath": "examples/samples/fibonacci-sequence/stdout.txt",
-      "sourceHash": "sha256:a7bb19642e0d640155037308505b46fecd8033f0f7212c172905b88c0ccee655",
-      "workspaceHash": "sha256:1690911d158ed9aea3dbce00c9e52f460a1cae5d71ff7fd2c73302365ae7a5ea"
+      "sourceHash": "sha256:6e6ebff183abf43123b78a164f9e55e81887a81770edaf078d92fa8b13040db0",
+      "workspaceHash": "sha256:94d5643382bb664831f7f158842761dda682f4374fba111ff1416e5c99d6d2db"
     },
     source: sample6Source,
     manifest: "",
@@ -446,8 +446,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/fizzbuzz/main.ssrg",
       "guidePath": "examples/samples/fizzbuzz/guide.md",
       "expectedOutputPath": "examples/samples/fizzbuzz/stdout.txt",
-      "sourceHash": "sha256:3d1d3581c832fdd104b71d4d6ca77a49fb9c46a64e6398a556cb30f6a0c81781",
-      "workspaceHash": "sha256:37b14f56683a17e712b72c7de3d8e6ac325396a77a4081afd2129972d9d4240a"
+      "sourceHash": "sha256:2735ef3a66a0591005e71e7ebc28dd8d77ea5aab73f7352fbfc5dc155f1b37c2",
+      "workspaceHash": "sha256:0bdbd092c38a4da29993f10365ced63c73aa6d66ab670fd96d4d4ac54dcd9424"
     },
     source: sample7Source,
     manifest: "",
@@ -495,8 +495,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:8610a37c1731f1b158625824230039da1aed6c00b70984dc25d68debc2ec9c75",
-      "workspaceHash": "sha256:56ef239598c528cd836a597450d8e57416bf578b54e6eb1921a77aeb015baaa9"
+      "sourceHash": "sha256:279a6c5fde288ce855cff63b789482e7120609eb0d37eea48430034edca79712",
+      "workspaceHash": "sha256:4768e03902abc8cd8f9601bd6c9c8de9518b6fa0a9b3db68d379aceb9832db61"
     },
     source: sample8Source,
     manifest: "",
@@ -532,8 +532,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/functions-and-pipelines/main.ssrg",
       "guidePath": "examples/samples/functions-and-pipelines/guide.md",
       "expectedOutputPath": "examples/samples/functions-and-pipelines/stdout.txt",
-      "sourceHash": "sha256:fbd41488b3f6111578a9f08f675228c85656d178e938686d3b8799d928a413a9",
-      "workspaceHash": "sha256:279dc92792a4f850cbe9ddcc24f68f923268f589f0762b0bef8e625dc8dcd28a"
+      "sourceHash": "sha256:97d5a8ad45974f7cd877687c3a90ffb179d408889062c524ec24ee052fc37c02",
+      "workspaceHash": "sha256:e28479b4448dc334c91ed278c4d7ab9d983681daa897f5231f4987df42050540"
     },
     source: sample9Source,
     manifest: "",
@@ -569,8 +569,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/generic-structs/main.ssrg",
       "guidePath": "examples/samples/generic-structs/guide.md",
       "expectedOutputPath": "examples/samples/generic-structs/stdout.txt",
-      "sourceHash": "sha256:1eec2562cdbc12ab2144d8cbc8b9cd018db19101b5bc8a49677b6d61dd586f4e",
-      "workspaceHash": "sha256:b62bca035e2cceb103ac426030bf2e946fe9e4e4d99692ec98d6c67ce7e6943b"
+      "sourceHash": "sha256:48cf8fa66a38b657e4fb916d9e853c48683e1eac73c66adca642639c27022732",
+      "workspaceHash": "sha256:9aef047c2dc8cffd4e59077d17d2f26ff44c5be284e97e12c212fa3de1f09611"
     },
     source: sample10Source,
     manifest: "",
@@ -585,12 +585,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "hello-world",
       "title": "Hello world",
-      "summary": "最小の公開mainから文字列を出力し、まず実行の手触りをつかみます。",
+      "summary": "データ型とパターンマッチ、パイプラインで挨拶を組み立てる最初のサンプルです。",
       "kind": "lesson",
       "difficulty": "beginner",
       "topics": [
-        "effect fn",
-        "main",
+        "type",
+        "match",
+        "pipeline",
         "println"
       ],
       "capabilities": [
@@ -604,8 +605,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/hello-world/main.ssrg",
       "guidePath": "examples/samples/hello-world/guide.md",
       "expectedOutputPath": "examples/samples/hello-world/stdout.txt",
-      "sourceHash": "sha256:d7360be0b54120636ec9da3fd33a6887c8db4a569fb67aaf4828196a18188684",
-      "workspaceHash": "sha256:fc7a36aa9691bfb525972875e6066580b028ab9db338b82faece103d489d1d98"
+      "sourceHash": "sha256:0fe8937712e696ed914ed89019f570c24bced9c1e7e3578fe18d239402eddf3d",
+      "workspaceHash": "sha256:49924ca6588e2d7415efa94a42cd070201b35c85decdeafbd4c4e71782692583"
     },
     source: sample11Source,
     manifest: "",
@@ -688,8 +689,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/impl-and-operators/main.ssrg",
       "guidePath": "examples/samples/impl-and-operators/guide.md",
       "expectedOutputPath": "examples/samples/impl-and-operators/stdout.txt",
-      "sourceHash": "sha256:67bd4ca4396b7d6e4da77ec9627664c4acabe37facfb0594249f243961be68bb",
-      "workspaceHash": "sha256:f3b7919714b09fd4f75b0a6aeaadcbfa4d25a6712e7e9a173d6f9f94084204fb"
+      "sourceHash": "sha256:c88337e4c713a861bdad89303d6be1e91212c76e60ffb3a90f938e11eee1996a",
+      "workspaceHash": "sha256:2f04246291b9024a89449a0da8e6fc655f762b6a445c69f85b6f18e7026dea2b"
     },
     source: sample13Source,
     manifest: "",
@@ -730,8 +731,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/interactive-app/main.ssrg",
       "guidePath": "examples/samples/interactive-app/guide.md",
-      "sourceHash": "sha256:5141597c2b2c11866a6363f4b99c7d52b68877a95654647a6eef9fd41f79a87f",
-      "workspaceHash": "sha256:ed7d453e5e8deedcdd427bb505e5661e8150a00000e68794a821ce94f4279444"
+      "sourceHash": "sha256:bd260247692d5452ce94d10ea7f3eb0b8dccefa1131bf2695d716bc0b280fd16",
+      "workspaceHash": "sha256:fba79375b63eed9bde223ac21e1994a97967f8a986c349b7a6b9d4732f931b3f"
     },
     source: sample14Source,
     manifest: "",
@@ -769,8 +770,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/local-functions/main.ssrg",
       "guidePath": "examples/samples/local-functions/guide.md",
       "expectedOutputPath": "examples/samples/local-functions/stdout.txt",
-      "sourceHash": "sha256:eb2442b951f599814d860af2ae4b75c50115ae6f5be2784ab378ae51e7e3803c",
-      "workspaceHash": "sha256:8649edfbcc24d1453cfc99bdfb8ada3fe1b9e6465acc9e383f8db5388e8e5b35"
+      "sourceHash": "sha256:dfa83bfe8cc623bd7bf37fb03c375a22d9dc813f12567808b2803f1596f9c8ea",
+      "workspaceHash": "sha256:e28f2898b1bc24aea37b48c497b57cfb226e554b2d3deb46b449430a59333646"
     },
     source: sample15Source,
     manifest: "",
@@ -806,8 +807,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/newtypes/main.ssrg",
       "guidePath": "examples/samples/newtypes/guide.md",
       "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
-      "sourceHash": "sha256:0326df93f9fb4dca03b598395be5df4ffea4750a436ca340280eee719963c950",
-      "workspaceHash": "sha256:1691365692c01aebcaf7d6a4383be8c7b336b8cbb608c00c12c4733ab993f822"
+      "sourceHash": "sha256:b3c4693ad5fa119b312c2bafa4635573a882f0ad5728d916fe4404afb3db0c0a",
+      "workspaceHash": "sha256:7145483a01035009c91898c420b7086dc967cdfbb1a511253c4282e8aba279c4"
     },
     source: sample16Source,
     manifest: "",
@@ -966,8 +967,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "guidePath": "examples/samples/project-greeting/guide.md",
       "stdinPath": "examples/samples/project-greeting/stdin.txt",
       "expectedOutputPath": "examples/samples/project-greeting/stdout.txt",
-      "sourceHash": "sha256:21cdc8ffcbbfe377de655344ee4794f7f0934925b14b3016e89c3e687863d257",
-      "workspaceHash": "sha256:e003a89d001ed95813ca13bb9e88458881074c8c499a989de669e83164d09c83",
+      "sourceHash": "sha256:ca91d9b02a4f64525e5ec755f12e78b95bb840092fc5531a41415a98c0af9e6f",
+      "workspaceHash": "sha256:32943f1a2202b2af1aa3292aaed367d055f3237f0be8320ef52bc1516abfd358",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "main.ssrg",
@@ -982,7 +983,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/project-greeting/src/main.ssrg",
-            "sourceHash": "sha256:21cdc8ffcbbfe377de655344ee4794f7f0934925b14b3016e89c3e687863d257"
+            "sourceHash": "sha256:ca91d9b02a4f64525e5ec755f12e78b95bb840092fc5531a41415a98c0af9e6f"
           },
           {
             "path": "feature/greeting.ssrg",
@@ -1027,8 +1028,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/records/main.ssrg",
       "guidePath": "examples/samples/records/guide.md",
       "expectedOutputPath": "examples/samples/records/stdout.txt",
-      "sourceHash": "sha256:7e69d206b68634cc64731f93ee05ea1cb90cbcb5c51dff2017fc5cca9e9b7530",
-      "workspaceHash": "sha256:aa4d5f0fcf4b0fe4976bf03a70427357851077b3baab518ae5e4fbf29cc3c049"
+      "sourceHash": "sha256:83c2ba746060a0e815b5e34dd3a2db09a8a29b38cadfaf2d797d322fc75b72c0",
+      "workspaceHash": "sha256:d6c3566df89c577d5105e7c882158a6129b8b6eb01af2fd444ae98749f4a4b52"
     },
     source: sample19Source,
     manifest: "",
@@ -1209,8 +1210,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/signal-composition/main.ssrg",
       "guidePath": "examples/samples/signal-composition/guide.md",
       "expectedOutputPath": "examples/samples/signal-composition/stdout.txt",
-      "sourceHash": "sha256:dda25c581d27880d09e35ac49a2514bfa6b33bf306d3dcf4489074f6af2773cf",
-      "workspaceHash": "sha256:ea7351e2991d7cbe188d185fa148bb13661392a0a680467fedfb630e9053d032"
+      "sourceHash": "sha256:b8467b68b5eda6cdaf00948906a578eca29c67c8bb927c614f94dd87587d9337",
+      "workspaceHash": "sha256:1c88c677c2e0815ce0a918aa604eddc471c100d8ac9c797ed491003f75fce9ae"
     },
     source: sample21Source,
     manifest: "",
@@ -1251,8 +1252,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/signal-run-route/main.ssrg",
       "guidePath": "examples/samples/signal-run-route/guide.md",
-      "sourceHash": "sha256:6605866ca52994e3524ca4ada108595baea88ceed0b49e3104b969069182a400",
-      "workspaceHash": "sha256:cbeb2916110ca9a0bb0c213951ff6d7ab31ac56ab7adc8fbbdd0d02bf4034109"
+      "sourceHash": "sha256:2875af5b16f648d9b047164ac3beae1ed1b831594916c6f67404b4e47da532d4",
+      "workspaceHash": "sha256:18e5ca22243ea5903623cb635bcc7f663d2dd436aa1775c1aa92ae400bb17ac2"
     },
     source: sample22Source,
     manifest: "",
@@ -1329,8 +1330,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "guidePath": "examples/samples/stdin-greeting/guide.md",
       "stdinPath": "examples/samples/stdin-greeting/stdin.txt",
       "expectedOutputPath": "examples/samples/stdin-greeting/stdout.txt",
-      "sourceHash": "sha256:4deb8ef3d125e036d507bc0e5214752c0585a412b7bd472905e7b990a26aa47e",
-      "workspaceHash": "sha256:065cdf7acb1e801be19e6f8d8a3e4d01696a598c02804f7d19017084d728f9f7"
+      "sourceHash": "sha256:7079c9993feaf754ce2e0ea2f4cee620f10ecdf0e2b375be74c5aaacaa2a30aa",
+      "workspaceHash": "sha256:7919f17c7a3165621e7f70703e07bec3a0f1b9e19a7b5b3a137cc5f9588ebb98"
     },
     source: sample24Source,
     manifest: "",
@@ -1366,8 +1367,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/strings-and-templates/main.ssrg",
       "guidePath": "examples/samples/strings-and-templates/guide.md",
       "expectedOutputPath": "examples/samples/strings-and-templates/stdout.txt",
-      "sourceHash": "sha256:d302ab4839a8f9efb37b32005da57c80807e36ba0db6b89b99c4f81728a2ab2b",
-      "workspaceHash": "sha256:9fcf4d51c68241c01c5c4abb76ba36751d0f539bb82c56aebfb38af6733fc1c9"
+      "sourceHash": "sha256:66322b640b2d97a25b89ee39ab49217b96fdef4886bb9e7d9a281c7135654832",
+      "workspaceHash": "sha256:8646ea40d3735e41c2e678b6f95317c2fb08e646e1a75ac46fcf7ddf3532e1d1"
     },
     source: sample25Source,
     manifest: "",
@@ -1403,8 +1404,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/traits-and-instances/main.ssrg",
       "guidePath": "examples/samples/traits-and-instances/guide.md",
       "expectedOutputPath": "examples/samples/traits-and-instances/stdout.txt",
-      "sourceHash": "sha256:afe0462323cce25bbc2b88f1e2bdf11dbdfe4d4d04552d703b02105fea397e23",
-      "workspaceHash": "sha256:eacf1c983417cfc8743d42ef14ef8a2c8bd44ad786d9952c99498d8a86fedd1f"
+      "sourceHash": "sha256:22a18037500a75dea8e3089568afe3f9d192b212f0bd3f313379f26930c984bd",
+      "workspaceHash": "sha256:bd22c78371ab622b09e7d3f22891f66c9e48a9bd831c0f9ee1aa47ea55622c63"
     },
     source: sample26Source,
     manifest: "",
@@ -1419,7 +1420,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "type-aliases",
       "title": "型aliasとTask",
-      "summary": "透明なgeneric aliasと標準Taskを、Signal更新まで実行して確認します。",
+      "summary": "透明なgeneric aliasと標準Taskを、Signal更新前後のパス比較で確認します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -1442,8 +1443,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/type-aliases/main.ssrg",
       "guidePath": "examples/samples/type-aliases/guide.md",
       "expectedOutputPath": "examples/samples/type-aliases/stdout.txt",
-      "sourceHash": "sha256:6fd6dab488c0798633011857926b16e574fb46d361345e33859685413d743299",
-      "workspaceHash": "sha256:26917c7149d8111431da2ac665641811788c81b2dbac588301594ccf3dc0ccbf"
+      "sourceHash": "sha256:e1bf42638d6c27a338a0bc286fbf6cb84269413e18a2b07a94f3495e46699c92",
+      "workspaceHash": "sha256:f8ee134cc1c0cbf02037e4c0e76087720bb29a486068b37aa9eac1163eabee69"
     },
     source: sample27Source,
     manifest: "",
@@ -1526,8 +1527,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/unary-operators/main.ssrg",
       "guidePath": "examples/samples/unary-operators/guide.md",
       "expectedOutputPath": "examples/samples/unary-operators/stdout.txt",
-      "sourceHash": "sha256:d49348d73478e96e7f6952c42f2f7dd625e1e75be641615df7bc847017a99277",
-      "workspaceHash": "sha256:ab5f1ad2d082a0d727f6cdfd1208ef76b41d8c7cac7b4e6ba3af4e408362e860"
+      "sourceHash": "sha256:c7be45a13bb915e1c6f4ddfa8714a3470168034964ce61f08b2ff1195a88b82c",
+      "workspaceHash": "sha256:855506460d718f8e20efe30c22305dd7de47c5cbe030df6e72f9c12b32bb4fa8"
     },
     source: sample29Source,
     manifest: "",
@@ -1608,46 +1609,46 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
 [
     {
       "id": "functions-and-collections",
-      "title": "関数・Collection・定番問題",
-      "summary": "再帰、Range、pattern、集計を目的のある小さなprogramへ組み合わせます。",
+      "title": "まずはここから（関数・集計・定番問題）",
+      "summary": "条件分岐、末尾再帰、配列の絞り込みと集計を小さなプログラムで試します。",
       "kind": "recipe",
       "samples": [
-        "local-functions",
-        "fibonacci-sequence",
         "fizzbuzz",
+        "fibonacci-sequence",
         "collections",
-        "collection-patterns"
+        "collection-patterns",
+        "local-functions"
       ]
     },
     {
       "id": "domain-recipes",
-      "title": "値・domain・表示",
-      "summary": "Record、newtype、alias、operatorで値の境界と表示を確かめます。",
+      "title": "データの形を設計する（型・不変更新・演算子）",
+      "summary": "レコード更新、取り違えを防ぐID型、型エイリアス、独自演算子を設計します。",
       "kind": "recipe",
       "samples": [
         "records",
         "newtypes",
         "type-aliases",
+        "impl-and-operators",
         "unary-operators"
       ]
     },
     {
       "id": "effects-and-abstraction",
-      "title": "入力・失敗・抽象化",
-      "summary": "標準入力、Either、Monad、implを既習概念から一段深く試します。",
+      "title": "入力・エラー・複数ファイルを扱う",
+      "summary": "標準入力、Eitherによる段階的な入力検証、複数モジュールの分割を試します。",
       "kind": "recipe",
       "samples": [
         "stdin-greeting",
-        "project-greeting",
         "either-and-monad",
-        "impl-and-operators",
+        "project-greeting",
         "typeclass-operator-parity"
       ]
     },
     {
       "id": "web-ui-recipes",
-      "title": "Web UIの最小構成",
-      "summary": "静的componentから、同じappのdom.app版と明示的dom.run版を比較します。",
+      "title": "ブラウザの画面を作る（HTML・状態更新）",
+      "summary": "静的なHTMLコンポーネントから、状態を持つ対話UIとWebパッケージの基本へ進みます。",
       "kind": "recipe",
       "samples": [
         "html-components",
@@ -1658,8 +1659,8 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
     },
     {
       "id": "signal-showcases",
-      "title": "Signalと明示的な実行境界",
-      "summary": "transactionからfeature-owned Signalとdom.runの合成へ進みます。",
+      "title": "Signalによる状態管理と機能合成",
+      "summary": "複数のSignalの一括更新から、機能単位で状態を所有する設計へ進みます。",
       "kind": "showcase",
       "samples": [
         "signal-state",
@@ -1668,8 +1669,8 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
     },
     {
       "id": "web-ui-showcases",
-      "title": "ComponentとWeb UI",
-      "summary": "single-fileの完成UIからmulti-module applicationへ進みます。",
+      "title": "本格的なWebアプリケーション構成",
+      "summary": "フォーム検証・フィルターから、複数モジュールのWebアプリとLP構成までを体験します。",
       "kind": "showcase",
       "samples": [
         "seseragi-landing-page",

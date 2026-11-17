@@ -26,20 +26,20 @@ fn update action: Action -> state: TrailState -> TrailState = match action {
 
 fn title state: TrailState -> String = match state {
   Riverside -> "川辺をゆっくり歩く"
-  Woodland -> "木陰のloopを巡る"
+  Woodland -> "木陰の周回コースを歩く"
   Ridge -> "尾根の展望へ登る"
 }
 
 fn guidance state: TrailState -> String = match state {
-  Riverside -> "短い平坦路で、水辺の音を楽しむrouteです。"
-  Woodland -> "木陰と小さな坂を組み合わせたbalanced routeです。"
-  Ridge -> "長い登りの先で、広い景色に出会うrouteです。"
+  Riverside -> "短い平坦路で、水辺の音を楽しむコースです。"
+  Woodland -> "木陰と小さな坂を組み合わせた歩きやすいコースです。"
+  Ridge -> "長い登りの先で、広い景色に出会うコースです。"
 }
 
 fn distance state: TrailState -> String = match state {
-  Riverside -> "20 min · Easy"
-  Woodland -> "45 min · Balanced"
-  Ridge -> "75 min · Challenge"
+  Riverside -> "20分・初級"
+  Woodland -> "45分・中級"
+  Ridge -> "75分・上級"
 }
 
 fn accent state: TrailState -> String = match state {

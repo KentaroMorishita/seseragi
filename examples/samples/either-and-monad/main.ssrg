@@ -1,24 +1,22 @@
-fn add left: Either<String, Int> -> right: Either<String, Int> -> Either<String, Int> =
-  do {
-    first <- left
-    second <- right
-    pure $ first + second
-  }
+fn validateQuantity count: Int -> Either<String, Int> =
+  if count > 0 then Right count else Left "quantity must be positive"
 
-fn addExplicit left: Either<String, Int>
-  -> right: Either<String, Int>
-  -> Either<String, Int> =
-  left
-  >>= (\first -> right >>= (\second -> pure $ first + second))
+fn validateUnitPrice price: Int -> Either<String, Int> =
+  if price >= 100 then Right price else Left "unit price is too low"
 
-fn render label: String -> result: Either<String, Int> -> String = match result {
-  Left error -> `${label}: ${error}`
-  Right value -> `${label}: ${value}`
+fn orderTotal count: Int -> price: Int -> Either<String, Int> = do {
+  validCount <- validateQuantity count
+  validPrice <- validateUnitPrice price
+  pure (validCount * validPrice)
 }
 
-// doと>>=は同じPreludeのMonad<Either<String, _>> instanceを使います。
-pub effect fn main = do {
-  add (Right 20) (Right 22) |> render "do" |> println
+fn renderOrder label: String -> result: Either<String, Int> -> String = match result {
+  Left reason -> `${label}: rejected (${reason})`
+  Right total -> `${label}: ${total} yen`
+}
 
-  addExplicit (Right 20) (Right 22) |> render ">>=" |> println
+// 途中でLeftになると後続の計算はスキップされ、最初の失敗理由がそのまま返ります。
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  println (renderOrder "valid" (orderTotal 3 1200))
+  println (renderOrder "invalid" (orderTotal 0 1200))
 }

@@ -1,3 +1,3 @@
-一つの`completedSales`を`map`による表示行と、genericな`sum`による合計の両方へ使うrecipeです。`join`は行内の区切りと改行を組み立て、0円のキャンセル行は`filter`で一度だけ除外します。
+まずRunを押して集計結果を確認したら、`sales`の金額や件数を変えてもう一度実行してみてください。
 
-`filter`と`map`は`std/array`の型を保つ変換です。一方、`sum`と`join`は`Reducible`を通るgeneric APIなので、同じ考え方をListやRangeにも使えます。
+`arrays.filter`で0円のキャンセル分を除外し、同じ配列から`map`で表示用の行を、`sum`で合計金額を組み立てています。
