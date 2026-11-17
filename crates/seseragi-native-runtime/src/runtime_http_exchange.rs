@@ -591,75 +591,120 @@ fn native_http_exchange_close(c: &[V]) -> V {
     )
 }
 
+// The body cursor as the body Fiber and the scope share it: `closed` makes
+// whichever closes it first the only one that does.
+fn native_http_body_cursor(cursor: V, closed: V) -> V {
+    V::Record(Shared::new(BTreeMap::from([
+        (
+            "pull".into(),
+            V::fun(vec![cursor.clone()], |c, _| stream_pull(&c[0])),
+        ),
+        (
+            "close".into(),
+            V::fun(vec![cursor, closed], |c, _| {
+                native_stream_defer(c.to_vec(), |c, _| {
+                    if c[1].read_reference().boolean() {
+                        return stream_pure(V::Unit);
+                    }
+                    c[1].write_reference(V::Bool(true));
+                    stream_close(&c[0])
+                })
+            }),
+        ),
+    ])))
+}
+
+// Each resource is owned by the scope as soon as it is acquired, before a
+// cancellation can stop the exchange from being built: the body cursor,
+// then the exchange handle, then the body Fiber (which a fork places in the
+// scope) and last the events cursor. Scope cleanup runs in reverse order.
 fn native_http_exchange_stream(body: V, request: V) -> V {
     V::fun(vec![body, request], |captures, _| {
         let body = native_http_inner(&captures[0], "std/http::Body");
+        let closed = stream_cell(V::Bool(false));
         V::bind(
             V::effect(
                 Instruction::Attempt,
-                vec![stream_open(&body.field("stream"))],
+                vec![V::effect(
+                    Instruction::AcquireRelease,
+                    vec![
+                        stream_open(&body.field("stream")),
+                        V::fun(vec![closed.clone()], |c, cursor| {
+                            stream_close(&native_http_body_cursor(cursor, c[0].clone()))
+                        }),
+                    ],
+                )],
             ),
             V::fun(
-                vec![captures[1].clone(), body.field("length")],
+                vec![captures[1].clone(), body.field("length"), closed],
                 |captures, opened| {
                     if opened.tagged("std/prelude::Left") {
                         return native_http_fail(native_left(opened.payload()));
                     }
-                    let cursor = opened.payload();
-                    let id = match native_http_stream_open(
-                        &captures[0],
-                        native_http_int(&captures[1]),
-                    ) {
-                        Ok(id) => V::Int(id),
-                        Err(exit) => {
-                            let failed = match exit {
-                                NativeExit::Failure(error) => native_http_fail(error.value),
-                                NativeExit::Defect(errors) => native_effect_die(V::text(
-                                    &errors
-                                        .iter()
-                                        .map(|error| error.value.as_str())
-                                        .collect::<Vec<_>>()
-                                        .join("; "),
-                                )),
-                                NativeExit::Cancelled => {
-                                    V::leaf(vec![], |_, _| Err(NativeExit::Cancelled))
-                                }
-                            };
-                            return V::bind(
-                                stream_close(&cursor),
-                                V::fun(vec![failed], |c, _| c[0].clone()),
-                            );
-                        }
-                    };
-                    let outcome = stream_cell(V::Unit);
+                    let cursor = native_http_body_cursor(opened.payload(), captures[2].clone());
                     V::bind(
-                        native_operation(
-                            "std/effect::fork",
-                            vec![native_http_body_fiber(id.clone(), cursor, outcome.clone())],
-                        ),
-                        V::fun(vec![id, outcome], |c, fiber| {
-                            native_http_stream_attach_body(native_http_int(&c[0]), &fiber);
-                            let captures = vec![c[0].clone(), c[1].clone(), fiber];
-                            let cursor = stream_cursor(
-                                V::fun(captures.clone(), |c, _| native_http_exchange_pull(c)),
-                                V::fun(captures, |c, _| native_http_exchange_close(c)),
-                            );
-                            // The scope also closes the exchange, since a
-                            // terminal operation does not close a cursor
-                            // whose pull failed.
-                            V::effect(
+                        V::effect(
+                            Instruction::Attempt,
+                            vec![V::effect(
                                 Instruction::AcquireRelease,
                                 vec![
-                                    stream_pure(cursor),
-                                    V::fun(vec![], |_, cursor| stream_close(&cursor)),
+                                    V::leaf(captures[..2].to_vec(), |c, _| {
+                                        native_http_stream_open(&c[0], native_http_int(&c[1]))
+                                            .map(V::Int)
+                                    }),
+                                    V::fun(vec![], |_, id| {
+                                        V::leaf(vec![id], |c, _| {
+                                            native_http_stream_close(native_http_int(&c[0]));
+                                            Ok(V::Unit)
+                                        })
+                                    }),
                                 ],
-                            )
+                            )],
+                        ),
+                        V::fun(vec![cursor], |c, started| {
+                            if started.tagged("std/prelude::Left") {
+                                return V::bind(
+                                    stream_close(&c[0]),
+                                    V::fun(vec![started.payload()], |c, _| {
+                                        native_http_fail(c[0].clone())
+                                    }),
+                                );
+                            }
+                            native_http_exchange_events(started.payload(), c[0].clone())
                         }),
                     )
                 },
             ),
         )
     })
+}
+
+fn native_http_exchange_events(id: V, cursor: V) -> V {
+    let outcome = stream_cell(V::Unit);
+    V::bind(
+        native_operation(
+            "std/effect::fork",
+            vec![native_http_body_fiber(id.clone(), cursor, outcome.clone())],
+        ),
+        V::fun(vec![id, outcome], |c, fiber| {
+            native_http_stream_attach_body(native_http_int(&c[0]), &fiber);
+            let captures = vec![c[0].clone(), c[1].clone(), fiber];
+            let cursor = stream_cursor(
+                V::fun(captures.clone(), |c, _| native_http_exchange_pull(c)),
+                V::fun(captures, |c, _| native_http_exchange_close(c)),
+            );
+            // The scope also closes the events cursor, which stops the body
+            // Fiber the way the consumer would, since a terminal operation
+            // does not close a cursor whose pull failed.
+            V::effect(
+                Instruction::AcquireRelease,
+                vec![
+                    stream_pure(cursor),
+                    V::fun(vec![], |_, cursor| stream_close(&cursor)),
+                ],
+            )
+        }),
+    )
 }
 
 #[cfg(test)]
@@ -840,9 +885,29 @@ mod http_exchange_tests {
         });
     }
 
-    // A server that sends `response` as soon as it has read the request
-    // head, without reading the body, and keeps the connection open.
-    fn answering(response: &'static [u8]) -> String {
+    // Opened by a body once it holds its resource, so that the server's
+    // response cannot stop the body before it has one to release.
+    struct Gate(std::sync::Mutex<bool>, std::sync::Condvar);
+    impl Gate {
+        const fn new() -> Self {
+            Self(std::sync::Mutex::new(false), std::sync::Condvar::new())
+        }
+        fn open(&self) {
+            *self.0.lock().unwrap() = true;
+            self.1.notify_all();
+        }
+        fn wait(&self) {
+            let mut open = self.0.lock().unwrap();
+            while !*open {
+                open = self.1.wait(open).unwrap();
+            }
+        }
+    }
+
+    // A server that sends `response` once it has read the request head and
+    // `gate` is open, without reading the body, and keeps the connection
+    // open.
+    fn answering(response: &'static [u8], gate: &'static Gate) -> String {
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let base = format!("http://{}", listener.local_addr().unwrap());
         std::thread::spawn(move || {
@@ -858,6 +923,7 @@ mod http_exchange_tests {
                         }
                         head.push(byte[0]);
                     }
+                    gate.wait();
                     let _ = stream.write_all(response);
                     let mut rest = [0u8; 4096];
                     while matches!(stream.read(&mut rest), Ok(read) if read > 0) {}
@@ -869,8 +935,10 @@ mod http_exchange_tests {
 
     #[test]
     fn a_final_response_stops_the_body_while_the_consumer_waits() {
+        static HELD: Gate = Gate::new();
         let base = answering(
             b"HTTP/1.1 103 Early Hints\r\n\r\nHTTP/1.1 103 Early Hints\r\n\r\nHTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok",
+            &HELD,
         );
         bounded(move || {
             // The body holds a resource and never produces a chunk. The
@@ -886,7 +954,10 @@ mod http_exchange_tests {
                         V::effect(
                             Instruction::AcquireRelease,
                             vec![
-                                stream_pure(V::Unit),
+                                V::leaf(vec![], |_, _| {
+                                    HELD.open();
+                                    Ok(V::Unit)
+                                }),
                                 V::fun(vec![released.clone()], |c, _| {
                                     native_operation(
                                         "std/deferred::succeed",
@@ -935,13 +1006,17 @@ mod http_exchange_tests {
     fn a_defect_stopping_the_body_ends_an_unfinished_response() {
         // The response body runs until the connection closes, which it
         // never does.
-        let base = answering(b"HTTP/1.1 200 OK\r\n\r\npartial");
+        static HELD: Gate = Gate::new();
+        let base = answering(b"HTTP/1.1 200 OK\r\n\r\npartial", &HELD);
         bounded(move || {
             let hold = V::bind(
                 V::effect(
                     Instruction::AcquireRelease,
                     vec![
-                        stream_pure(V::Unit),
+                        V::leaf(vec![], |_, _| {
+                            HELD.open();
+                            Ok(V::Unit)
+                        }),
                         V::fun(vec![], |_, _| native_effect_die(V::text("release failed"))),
                     ],
                 ),
