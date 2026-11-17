@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>UI kit · Seseragi</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+      }
+      .kit {
+        display: grid;
+        gap: var(--space-6);
+        max-width: 960px;
+        margin: 0 auto;
+        padding: var(--space-6) var(--space-4) var(--space-7);
+      }
+      .kit-head,
+      .kit-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-3);
+      }
+      .kit-section {
+        display: grid;
+        gap: var(--space-3);
+      }
+      .kit-section > .ui-segmented {
+        justify-self: start;
+      }
+      .kit-note {
+        margin: 0;
+        color: var(--fg-2);
+      }
+      .kit-swatch {
+        display: grid;
+        gap: var(--space-1);
+        width: 100px;
+        font-size: var(--text-xs);
+        color: var(--fg-3);
+      }
+      .kit-swatch > span {
+        height: 40px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+      }
+      .kit-coach {
+        padding-top: var(--space-2);
+      }
+    </style>
+  </head>
+  <body class="ui-app">
+    <!--
+      開発サーバーだけで開く部品の見本です（/ui-kit.html）。ビルドには含めません。
+      src/ui/design/ の部品を、ライトとダークの両方で目で確かめるために使います。
+    -->
+    <main class="kit">
+      <header class="kit-head">
+        <h1 class="ui-heading">UI kit</h1>
+        <span class="ui-spacer"></span>
+        <div class="ui-segmented" role="group" aria-label="Theme" id="theme">
+          <button type="button" data-theme-option="system">System</button>
+          <button type="button" data-theme-option="light">Light</button>
+          <button type="button" data-theme-option="dark">Dark</button>
+        </div>
+      </header>
+      <p class="kit-note">
+        Playground と Tour で使う共通部品の見本です。値はすべて tokens.css
+        のトークンから来ます。
+      </p>
+
+      <section class="kit-section">
+        <h2 class="ui-eyebrow">Colors</h2>
+        <div class="kit-row" id="swatches"></div>
+      </section>
+
+      <section class="kit-section">
+        <h2 class="ui-eyebrow">Navigation</h2>
+        <div class="kit-row">
+          <nav class="ui-view-switch" aria-label="Views">
+            <a href="#" aria-current="page">
+              <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M5 4 2 8l3 4M11 4l3 4-3 4" />
+              </svg>
+              Playground
+            </a>
+            <a href="#">
+              <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M3 3h4a2 2 0 0 1 2 2v8a2 2 0 0 0-2-2H3zM13 3H9" />
+              </svg>
+              Tour
+            </a>
+          </nav>
+          <button class="ui-search-trigger" type="button">
+            <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <circle cx="7" cy="7" r="4.5" />
+              <path d="m10.5 10.5 3 3" />
+            </svg>
+            <span class="ui-search-trigger-text">Examples, lessons, API…</span>
+            <kbd class="ui-kbd">⌘K</kbd>
+          </button>
+          <button
+            class="ui-search-trigger ui-search-trigger--compact"
+            type="button"
+            aria-label="Search"
+          >
+            <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <circle cx="7" cy="7" r="4.5" />
+              <path d="m10.5 10.5 3 3" />
+            </svg>
+            <span>Search</span>
+          </button>
+          <nav class="ui-lang-switch" aria-label="Language">
+            <a href="#" aria-current="true" aria-label="日本語">JA</a>
+            <a href="#" aria-label="English">EN</a>
+          </nav>
+        </div>
+      </section>
+
+      <section class="kit-section">
+        <h2 class="ui-eyebrow">Buttons</h2>
+        <div class="kit-row">
+          <button class="ui-button ui-button--primary" type="button">Next</button>
+          <button class="ui-button" type="button">Show answer</button>
+          <button class="ui-button ui-button--ghost" type="button">Format</button>
+          <button class="ui-button ui-button--ghost ui-button--sm" type="button">
+            Hide
+          </button>
+          <button class="ui-button ui-button--icon" type="button" aria-label="More">
+            <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <circle cx="3.5" cy="8" r="0.6" />
+              <circle cx="8" cy="8" r="0.6" />
+              <circle cx="12.5" cy="8" r="0.6" />
+            </svg>
+          </button>
+          <button class="ui-button" type="button" disabled>Reset</button>
+          <div class="ui-run">
+            <button class="ui-run-button" type="button" aria-label="Run">
+              <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M4 2.5v11l9-5.5z" />
+              </svg>
+            </button>
+            <span class="ui-run-label">Run <kbd class="ui-kbd">⌘↵</kbd></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="kit-section">
+        <h2 class="ui-eyebrow">Chips, status, badges</h2>
+        <div class="kit-row">
+          <button class="ui-chip" type="button">
+            <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" />
+            </svg>
+            雨量を 12mm にする
+          </button>
+          <a class="ui-chip ui-chip--link" href="#">Tour で続きを学ぶ</a>
+        </div>
+        <div class="kit-row" aria-live="polite">
+          <span class="ui-status ui-status--ok">✓ 18 ms</span>
+          <span class="ui-status ui-status--error">1 error</span>
+          <span class="ui-status ui-status--warn">1 warning</span>
+          <span class="ui-status">Running…</span>
+          <span class="ui-badge">4</span>
+          <span class="ui-badge ui-badge--error">1</span>
+          <span class="ui-badge ui-badge--brand">
+            <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M2 10c2-3 4-3 6 0s4 3 6 0" />
+            </svg>
+          </span>
+          <span class="ui-tag">Pipelines</span>
+          <span class="ui-tag ui-tag--accent">Current</span>
+          <span class="ui-tag ui-tag--warn">Japanese only</span>
+        </div>
+        <div class="ui-segmented" role="tablist" aria-label="Output">
+          <button type="button" role="tab" aria-selected="true">Console</button>
+          <button type="button" role="tab" aria-selected="false">Preview</button>
+          <button type="button" role="tab" aria-selected="false">
+            Problems <span class="ui-badge ui-badge--error">1</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="kit-section">
+        <h2 class="ui-eyebrow">Card</h2>
+        <article class="ui-card">
+          <header class="ui-card-head">
+            <span class="ui-badge ui-badge--brand">
+              <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M2 10c2-3 4-3 6 0s4 3 6 0" />
+              </svg>
+            </span>
+            <h3 class="ui-card-title">天気のアドバイス</h3>
+            <span class="ui-spacer"></span>
+            <button class="ui-button ui-button--ghost" type="button">Format</button>
+            <button class="ui-button ui-button--ghost" type="button">Reset</button>
+          </header>
+          <div class="ui-card-body" style="padding: var(--space-4)">
+            <code>let rain = 3 |&gt; advice |&gt; println</code>
+          </div>
+        </article>
+      </section>
+
+      <section class="kit-section">
+        <h2 class="ui-eyebrow">Popovers</h2>
+        <div class="kit-row" style="align-items: start">
+          <div class="ui-popover">
+            <div class="ui-popover-signature">fn discount rate: Int -&gt; price: Int -&gt; Int</div>
+            <div class="ui-popover-row"><b>Inferred</b><code>Int -&gt; Int</code></div>
+            <div class="ui-popover-row"><b>Remaining</b><code>price: Int</code></div>
+          </div>
+          <div class="ui-popover ui-popover--error" role="tooltip">
+            <div class="ui-popover-row ui-popover-row--head">
+              <span class="ui-code-id">SES-T0101</span>
+              Argument type does not match the parameter type
+            </div>
+            <div class="ui-popover-row">
+              <b>Expected</b><code>Int</code><b>Actual</b><code>String</code>
+            </div>
+          </div>
+        </div>
+        <div class="kit-coach">
+          <div class="ui-coach" role="note">
+            <strong class="ui-coach-title">ここを書き換えてみましょう</strong>
+            3 を 12 に変えて、Run を押してみましょう。
+            <div class="ui-coach-actions">
+              <a href="#">Tour</a>
+              <button type="button">Close</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="kit-section">
+        <h2 class="ui-eyebrow">Progress</h2>
+        <div class="ui-progress" role="img" aria-label="3 / 6">
+          <span data-state="done"></span>
+          <span data-state="done"></span>
+          <span data-state="current"></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/src/ui/design/ui-kit.ts"></script>
+  </body>
+</html>

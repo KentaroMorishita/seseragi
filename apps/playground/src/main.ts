@@ -53,6 +53,7 @@ import {
   publishWorkspaceBindings,
   workspaceBindingRequest,
 } from "./workspace/bindings"
+import "./ui/design/index.css"
 import "./styles.css"
 import { connectEditorSettings } from "./ui/editor-settings"
 import { requiredElement } from "./ui/elements"

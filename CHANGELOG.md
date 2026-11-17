@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.183] - 2026-11-18
+
+### Added
+
+- The Playground, the Tour and the Deep Dive pages ship the foundation of the v2 design (#1350): design tokens for color, type, spacing, shape, shadow and motion in light and dark, the shared components that the new screens are built from, and a theme that follows the operating system unless a saved choice says otherwise. The saved choice is applied before the page is drawn, so it does not flash. The current screens look and work the same until they are rebuilt on these parts.
+- Geist, Geist Mono and Noto Sans JP are served with the Playground instead of from a font service. Each font is split by character range, and a page loads only the ranges it uses. Their SIL Open Font License 1.1 texts are published under `fonts/`.
+
 ## [0.61.182] - 2026-11-18
 
 ### Changed

@@ -1,13 +1,12 @@
-# Playground / Tour デザインの決めごと（v2 ドラフト）
+# Playground / Tour デザインの決めごと（v2）
 
 Playground と Tour の画面を作り直す人のための文書です。見た目、言葉、操作の感触をそろえるための決めごとをまとめます。
 
-- 何をどこに置くか（画面の役割と導線）は [`apps/playground/INFORMATION_ARCHITECTURE.md`](../../../apps/playground/INFORMATION_ARCHITECTURE.md) が決めます。この案を採用するときは、そちらも合わせて直します。
-- 画面案の静的モックは [`mock/`](./mock/index.html) にあります。自由に書く状態とエディターの支援は `write.html`、案内を畳んだ通常状態は `playground.html#quiet` です。
-- 旧案（現行レイアウトを整理した案）は [`archive/v1/`](./archive/v1/) に残しています。この文書は旧案を前提にしません。
-- この文書とモックは、案を決めるための資料です。Playground の一部としては配信しないので、`apps/playground/` ではなく `docs/` に置いています。案が決まったら、決まった内容を `apps/playground/` の文書に移します。
-
-> この版はドラフトです。数値や言い回しは、モックを見ながら決め直してかまいません。
+- 何をどこに置くか（画面の役割と導線）は [`INFORMATION_ARCHITECTURE.md`](./INFORMATION_ARCHITECTURE.md) が決めます。この文書の形に合わせて、画面を作り直すときに直します（#1358、#1359）。
+- この文書は #1350 で決まりました。画面の作り直しは、共通部品とデザイントークン（#1357）、Playground（#1358）、Tour（#1359）、日本語と英語の切り替え（#1360）の順に進めます。
+- トークンと共通部品の実装は [`src/ui/design/`](./src/ui/design/) にあります。部品の見本は、開発サーバーの `/ui-kit.html` で、ライトとダークを切り替えて見られます。
+- 画面案の静的モックは [`docs/design/playground/mock/`](../../docs/design/playground/mock/index.html) にあります。自由に書く状態とエディターの支援は `write.html`、案内を畳んだ通常状態は `playground.html#quiet` です。モックは決める前の資料なので、数値や言い回しがこの文書と違うときは、この文書に従います。
+- 旧案（現行レイアウトを整理した案）は [`docs/design/playground/archive/v1/`](../../docs/design/playground/archive/v1/) に残しています。この文書は旧案を前提にしません。
 
 ## 1. アートディレクション「澄んだ流れ」
 
@@ -203,7 +202,7 @@ Playground と Tour の画面を作り直す人のための文書です。見た
 | エディターの設定 | 空白の表示（Show indentation whitespace）、フォーマッターの行幅 | Search の Settings | 同じ |
 
 - エラーやホバーの中の文（コンパイラのメッセージ、型）は、英語の原文のまま出します（「6. 日本語と英語」の 5 段目）。
-- 補完は今の機能ではありません。入れるかどうかと時期は、この案とは別に決めます。置き場所だけ先に決めておき、入れるときに見た目がぶれないようにします。
+- 補完は今の機能ではありません。入れるかどうかと時期は、この文書とは別に決めます。置き場所だけ先に決めておき、入れるときに見た目がぶれないようにします。
 
 ### Search（`⌘K`）
 
@@ -214,7 +213,11 @@ Playground と Tour の画面を作り直す人のための文書です。見た
 
 ## 4. デザイントークン
 
-トークンは CSS のカスタムプロパティとして `:root` に一か所で定義し、ダークはその上書きだけで作ります。値はモックの `mock/mock.css` と同じです。
+トークンは CSS のカスタムプロパティとして `:root` に一か所で定義し、ダークはその上書きだけで作ります。実装は [`src/ui/design/tokens.css`](./src/ui/design/tokens.css) です。
+
+- テーマの既定は OS の設定（`prefers-color-scheme`）に合わせます。
+- 選んだテーマ（System / Light / Dark）はこのブラウザに保存し、`<html data-theme>` として OS の設定より優先します。保存した選択は、ページを描く前に当てて、開いた瞬間に色がちらつかないようにします（[`src/ui/theme.ts`](./src/ui/theme.ts)）。
+- 部品の CSS には色や影の値を直接書かず、トークンだけを使います。
 
 ### 色
 
@@ -275,7 +278,7 @@ Playground と Tour の画面を作り直す人のための文書です。見た
 | `--text-display` | 34px | レッスンの題名（モバイルは 26px） |
 | `--code-size` | 14px / 行の高さ 24px | エディター（モバイルは 13px / 22px） |
 
-- フォントは本番では自前で配信します。外部のフォント配信には頼りません。
+- フォントは自前で配信します。外部のフォント配信には頼りません。Fontsource のパッケージ（`@fontsource-variable/geist`、`geist-mono`、`noto-sans-jp`）をビルドに含め、文字の範囲ごとに分かれたファイルのうち、ページで使った範囲だけを読み込みます。ライセンス（SIL Open Font License 1.1）は、ビルドで `dist/fonts/` に出します（[`src/ui/design/fonts.css`](./src/ui/design/fonts.css)）。
 - 見出しは字間を詰め（-0.02em）、太さは 700 にします。本文は 400、ボタンは 550〜600 です。
 - 数字は等幅の数字（`tabular-nums`）にして、所要時間や進み具合が揺れないようにします。
 - コードでは合字を使いません。
