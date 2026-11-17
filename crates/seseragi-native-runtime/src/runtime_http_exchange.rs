@@ -16,8 +16,13 @@ struct NativeHttpStream {
     // body Fiber when the body fails. Whichever sets it first decides the
     // failure of the exchange, as TS returns the failure observed first.
     body_stopped: std::sync::Arc<std::sync::atomic::AtomicBool>,
-    // The body failed first; the next pull reports it.
+    // The body failed first, or its Fiber ended with a Defect; the next pull
+    // reports it.
     body_failed: bool,
+    // The task of the body Fiber while it runs, and whether the scheduler
+    // has cancelled it because the exchange stopped the body.
+    body_task: Option<usize>,
+    body_cancelled: bool,
     parts: Option<std::sync::mpsc::SyncSender<NativeHttpPart>>,
     declared: Option<i64>,
     sent: i64,
@@ -183,6 +188,8 @@ fn native_http_stream_open(request: &V, length: i64) -> Result<i64, NativeExit> 
                 connection,
                 body_stopped,
                 body_failed: false,
+                body_task: None,
+                body_cancelled: false,
                 parts: Some(parts),
                 declared,
                 sent: 0,
@@ -205,16 +212,89 @@ fn native_http_stream_fail_body(id: i64) -> bool {
         {
             return false;
         }
-        stream.body_failed = true;
-        stream.parts = None;
-        stream
-            .cancelled
-            .store(true, std::sync::atomic::Ordering::Release);
-        if let Some(connection) = stream.connection.lock().unwrap().as_ref() {
-            let _ = connection.shutdown(std::net::Shutdown::Both);
-        }
+        stream.abort();
         true
     })
+}
+
+impl NativeHttpStream {
+    // Stops the exchange for a failure of its body.
+    fn abort(&mut self) {
+        self.body_stopped
+            .store(true, std::sync::atomic::Ordering::Release);
+        self.body_failed = true;
+        self.parts = None;
+        self.cancelled
+            .store(true, std::sync::atomic::Ordering::Release);
+        if let Some(connection) = self.connection.lock().unwrap().as_ref() {
+            let _ = connection.shutdown(std::net::Shutdown::Both);
+        }
+    }
+}
+
+// Lets the scheduler follow the body Fiber of an exchange. A body Fiber that
+// already ended with a Defect stops the exchange at once.
+fn native_http_stream_attach_body(id: i64, fiber: &V) {
+    let fiber = fiber.fiber();
+    let defect = match fiber.outcome.borrow().as_ref() {
+        None => false,
+        Some(outcome) => matches!(outcome, Err(NativeExit::Defect(_))),
+    };
+    let running = fiber.outcome.borrow().is_none();
+    native_http_with_stream(id, |stream| {
+        let Some(stream) = stream else { return };
+        if defect {
+            stream.abort();
+        } else if running {
+            stream.body_task = Some(fiber.task);
+        }
+    });
+}
+
+// The body Fibers to cancel because their exchange stopped the body: at the
+// final response, at its end or at an HTTP failure. TS cancels the body then
+// too, even while the consumer has not taken the response yet.
+fn native_http_body_tasks_to_stop() -> Vec<usize> {
+    NATIVE_HTTP_STREAMS.with(|streams| {
+        let mut streams = streams.borrow_mut();
+        streams
+            .1
+            .values_mut()
+            .filter_map(|stream| {
+                let task = stream.body_task?;
+                let stopped = stream
+                    .body_stopped
+                    .load(std::sync::atomic::Ordering::Acquire);
+                if !stopped || stream.body_failed || stream.body_cancelled {
+                    return None;
+                }
+                stream.body_cancelled = true;
+                Some(task)
+            })
+            .collect()
+    })
+}
+
+// A body Fiber ended. A Defect, even one raised while the body was being
+// stopped, stops the exchange and wakes its pull, as TS reports a Defect
+// from cancelling the body.
+fn native_http_body_task_ended(task: usize, outcome: &NativeOutcome) {
+    NATIVE_HTTP_STREAMS.with(|streams| {
+        let mut streams = streams.borrow_mut();
+        if streams.1.is_empty() {
+            return;
+        }
+        if let Some(stream) = streams
+            .1
+            .values_mut()
+            .find(|stream| stream.body_task == Some(task))
+        {
+            stream.body_task = None;
+            if matches!(outcome, Err(NativeExit::Defect(_))) {
+                stream.abort();
+            }
+        }
+    });
 }
 
 // The length mismatch at the end of a body, if its declared length differs.
@@ -366,8 +446,8 @@ fn native_http_body(stream: V, length: i64) -> V {
 }
 
 // What the body Fiber leaves for the exchange: Unit while nothing failed,
-// `Left` with the body's failure, `Right` with a length mismatch, or this
-// marker when the body Fiber ended with a Defect.
+// `Left` with the body's failure or `Right` with a length mismatch. The pull
+// sets this marker once it has reported a Defect of the body Fiber.
 const NATIVE_HTTP_BODY_DEFECT: &str = "\0http.body.defect";
 
 fn native_http_fail(error: V) -> V {
@@ -424,11 +504,10 @@ fn native_http_body_loop(c: &[V]) -> V {
 
 // The body Fiber. Its pulls, the close of the body cursor and the resources
 // the body acquired all end inside its own scope. A failure while closing is
-// a failure of the body. A Defect anywhere, even after the body has ended,
-// stops the exchange like a failure, and the exchange reports the Defect. An
-// interrupted body Fiber was stopped by the exchange or its consumer.
+// a failure of the body. The scheduler watches how the Fiber ends, so a
+// Defect anywhere, even after the body has ended or while the exchange stops
+// it, stops the exchange and is reported by the next pull.
 fn native_http_body_fiber(id: V, cursor: V, outcome: V) -> V {
-    let finished = stream_cell(V::Bool(false));
     let body = V::effect(
         Instruction::Scoped,
         vec![V::effect(
@@ -442,57 +521,14 @@ fn native_http_body_fiber(id: V, cursor: V, outcome: V) -> V {
             ],
         )],
     );
-    V::effect(
-        Instruction::Bracket,
-        vec![
-            stream_pure(V::Unit),
-            V::fun(
-                vec![body, id.clone(), outcome.clone(), finished.clone()],
-                |c, _| {
-                    V::bind(
-                        V::effect(Instruction::Attempt, vec![c[0].clone()]),
-                        V::fun(c[1..].to_vec(), |c, result| {
-                            if result.tagged("std/prelude::Left") {
-                                native_http_body_failure(
-                                    &c[0],
-                                    &c[1],
-                                    native_left(result.payload()),
-                                );
-                            }
-                            c[2].write_reference(V::Bool(true));
-                            stream_pure(V::Unit)
-                        }),
-                    )
-                },
-            ),
-            V::fun(vec![id, outcome, finished], |c, _| {
-                V::leaf(c.to_vec(), |c, context| {
-                    if !c[2].read_reference().boolean() && !context.cancelled {
-                        native_http_body_failure(
-                            &c[0],
-                            &c[1],
-                            V::adt(NATIVE_HTTP_BODY_DEFECT, V::Unit),
-                        );
-                    }
-                    Ok(V::Unit)
-                })
-            }),
-        ],
-    )
-}
-
-// Stops the body Fiber without waiting for it, as TS cancels the body when
-// the final response arrives.
-fn native_http_stop_body(fiber: &V) -> V {
-    if fiber.fiber().outcome.borrow().is_some() {
-        return stream_pure(V::Unit);
-    }
-    native_operation(
-        "std/effect::fork",
-        vec![native_operation(
-            "std/effect::interrupt",
-            vec![fiber.clone()],
-        )],
+    V::bind(
+        V::effect(Instruction::Attempt, vec![body]),
+        V::fun(vec![id, outcome], |c, result| {
+            if result.tagged("std/prelude::Left") {
+                native_http_body_failure(&c[0], &c[1], native_left(result.payload()));
+            }
+            stream_pure(V::Unit)
+        }),
     )
 }
 
@@ -503,10 +539,12 @@ fn native_http_exchange_pull(c: &[V]) -> V {
         V::fun(c.to_vec(), |c, next| {
             if matches!(next, V::Unit) {
                 let failure = c[1].read_reference();
-                if !failure.tagged(NATIVE_HTTP_BODY_DEFECT) {
+                if !matches!(failure, V::Unit) {
                     return native_http_fail(failure);
                 }
-                // Interrupting the finished body Fiber reports its Defect.
+                // The body Fiber ended with a Defect; interrupting it reports
+                // the Defect, and closing the exchange does not again.
+                c[1].write_reference(V::adt(NATIVE_HTTP_BODY_DEFECT, V::Unit));
                 return V::bind(
                     native_operation("std/effect::interrupt", vec![c[2].clone()]),
                     V::fun(vec![], |_, _| {
@@ -515,14 +553,6 @@ fn native_http_exchange_pull(c: &[V]) -> V {
                             V::text("request body stopped"),
                         )))
                     }),
-                );
-            }
-            if next.tagged("std/prelude::Just")
-                && next.payload().tagged("std/http::ResponseStarted")
-            {
-                return V::bind(
-                    native_http_stop_body(&c[2]),
-                    V::fun(vec![next], |c, _| stream_pure(c[0].clone())),
                 );
             }
             stream_pure(next)
@@ -597,6 +627,7 @@ fn native_http_exchange_stream(body: V, request: V) -> V {
                             vec![native_http_body_fiber(id.clone(), cursor, outcome.clone())],
                         ),
                         V::fun(vec![id, outcome], |c, fiber| {
+                            native_http_stream_attach_body(native_http_int(&c[0]), &fiber);
                             let captures = vec![c[0].clone(), c[1].clone(), fiber];
                             let cursor = stream_cursor(
                                 V::fun(captures.clone(), |c, _| native_http_exchange_pull(c)),
@@ -794,6 +825,141 @@ mod http_exchange_tests {
                 Err(NativeExit::Cancelled) => panic!("cancelled"),
                 Ok(value) => panic!("success {}", value.render()),
             }
+            assert_eq!(open_exchanges(), 0);
+        });
+    }
+
+    // A server that sends `response` as soon as it has read the request
+    // head, without reading the body, and keeps the connection open.
+    fn answering(response: &'static [u8]) -> String {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        let base = format!("http://{}", listener.local_addr().unwrap());
+        std::thread::spawn(move || {
+            for stream in listener.incoming() {
+                let Ok(mut stream) = stream else { continue };
+                std::thread::spawn(move || {
+                    use std::io::{Read, Write};
+                    let mut head = Vec::new();
+                    let mut byte = [0u8; 1];
+                    while !head.ends_with(b"\r\n\r\n") {
+                        if !matches!(stream.read(&mut byte), Ok(1)) {
+                            return;
+                        }
+                        head.push(byte[0]);
+                    }
+                    let _ = stream.write_all(response);
+                    let mut rest = [0u8; 4096];
+                    while matches!(stream.read(&mut rest), Ok(read) if read > 0) {}
+                });
+            }
+        });
+        base
+    }
+
+    #[test]
+    fn a_final_response_stops_the_body_while_the_consumer_waits() {
+        let base = answering(
+            b"HTTP/1.1 103 Early Hints\r\n\r\nHTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok",
+        );
+        bounded(move || {
+            // The body holds a resource and never produces a chunk. The
+            // consumer, still handling the 103, waits until the body has
+            // released that resource, so only stopping the body at the final
+            // response, before the consumer takes it, lets both go on.
+            let plan = V::bind(
+                native_operation("std/deferred::make", vec![V::Unit]),
+                V::fun(vec![V::text(&base)], |c, released| {
+                    let hold = V::bind(
+                        V::effect(
+                            Instruction::AcquireRelease,
+                            vec![
+                                stream_pure(V::Unit),
+                                V::fun(vec![released.clone()], |c, _| {
+                                    native_operation(
+                                        "std/deferred::succeed",
+                                        vec![V::Unit, c[0].clone()],
+                                    )
+                                }),
+                            ],
+                        ),
+                        V::fun(vec![], |_, _| {
+                            V::bind(
+                                native_operation("std/deferred::make", vec![V::Unit]),
+                                V::fun(vec![], |_, never| {
+                                    native_operation("std/deferred::await", vec![never])
+                                }),
+                            )
+                        }),
+                    );
+                    let body = native_http_operation(
+                        "std/http::streamBody",
+                        vec![native_stream_operation(
+                            "std/stream::fromEffect",
+                            vec![hold],
+                        )],
+                    );
+                    let events = native_http_operation(
+                        "std/http::exchange",
+                        vec![body, post(&format!("{}/", native_text(&c[0])), &[])],
+                    );
+                    let handle = V::fun(vec![released], |c, event| {
+                        if event.tagged("std/http::InformationalResponse") {
+                            native_operation("std/deferred::await", vec![c[0].clone()])
+                        } else {
+                            stream_pure(V::Unit)
+                        }
+                    });
+                    native_stream_operation("std/stream::runForEach", vec![handle, events])
+                }),
+            );
+            let result = NativeContext::default().root(plan);
+            assert!(result.is_ok(), "the exchange did not succeed");
+            assert_eq!(open_exchanges(), 0);
+        });
+    }
+
+    #[test]
+    fn a_defect_stopping_the_body_ends_an_unfinished_response() {
+        // The response body runs until the connection closes, which it
+        // never does.
+        let base = answering(b"HTTP/1.1 200 OK\r\n\r\npartial");
+        bounded(move || {
+            let hold = V::bind(
+                V::effect(
+                    Instruction::AcquireRelease,
+                    vec![
+                        stream_pure(V::Unit),
+                        V::fun(vec![], |_, _| native_effect_die(V::text("release failed"))),
+                    ],
+                ),
+                V::fun(vec![], |_, _| {
+                    V::bind(
+                        native_operation("std/deferred::make", vec![V::Unit]),
+                        V::fun(vec![], |_, never| {
+                            native_operation("std/deferred::await", vec![never])
+                        }),
+                    )
+                }),
+            );
+            let body = native_http_operation(
+                "std/http::streamBody",
+                vec![native_stream_operation(
+                    "std/stream::fromEffect",
+                    vec![hold],
+                )],
+            );
+            let events = native_http_operation(
+                "std/http::exchange",
+                vec![body, post(&format!("{base}/"), &[])],
+            );
+            let result = NativeContext::default().root(native_stream_operation(
+                "std/stream::runCollect",
+                vec![events],
+            ));
+            assert!(
+                matches!(&result, Err(NativeExit::Defect(errors)) if errors.iter().any(|error| error.value == "release failed")),
+                "the exchange did not report the Defect"
+            );
             assert_eq!(open_exchanges(), 0);
         });
     }

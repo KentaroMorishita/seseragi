@@ -372,6 +372,9 @@ impl NativeScheduler {
         self.poll_http();
         self.poll_http_next();
         self.poll_http_write();
+        for body in native_http_body_tasks_to_stop() {
+            self.cancel(body);
+        }
         self.poll_stdin();
         self.poll_children();
         self.poll_timers();
@@ -534,6 +537,7 @@ impl NativeScheduler {
                 self.ready.push_back(id);
             }
             NativeTurn::Complete(outcome) => {
+                native_http_body_task_ended(id, &outcome);
                 task.handle.fiber().outcome.replace(Some(outcome.clone()));
                 self.wake(WaitKey::Fiber(id));
                 self.roots.remove(&id);
