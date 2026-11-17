@@ -2,9 +2,10 @@
 
 Playground と Tour の画面を作り直す人のための文書です。見た目、言葉、操作の感触をそろえるための決めごとをまとめます。
 
-- 何をどこに置くか（画面の役割と導線）は [`INFORMATION_ARCHITECTURE.md`](./INFORMATION_ARCHITECTURE.md) が決めます。この案を採用するときは、そちらも合わせて直します。
-- 画面案の静的モックは [`design/mock/`](./design/mock/index.html) にあります。自由に書く状態とエディターの支援は `write.html`、案内を畳んだ通常状態は `playground.html#quiet` です。
-- 旧案（現行レイアウトを整理した案）は [`design/archive/v1/`](./design/archive/v1/) に残しています。この文書は旧案を前提にしません。
+- 何をどこに置くか（画面の役割と導線）は [`apps/playground/INFORMATION_ARCHITECTURE.md`](../../../apps/playground/INFORMATION_ARCHITECTURE.md) が決めます。この案を採用するときは、そちらも合わせて直します。
+- 画面案の静的モックは [`mock/`](./mock/index.html) にあります。自由に書く状態とエディターの支援は `write.html`、案内を畳んだ通常状態は `playground.html#quiet` です。
+- 旧案（現行レイアウトを整理した案）は [`archive/v1/`](./archive/v1/) に残しています。この文書は旧案を前提にしません。
+- この文書とモックは、案を決めるための資料です。Playground の一部としては配信しないので、`apps/playground/` ではなく `docs/` に置いています。案が決まったら、決まった内容を `apps/playground/` の文書に移します。
 
 > この版はドラフトです。数値や言い回しは、モックを見ながら決め直してかまいません。
 
@@ -213,7 +214,7 @@ Playground と Tour の画面を作り直す人のための文書です。見た
 
 ## 4. デザイントークン
 
-トークンは CSS のカスタムプロパティとして `:root` に一か所で定義し、ダークはその上書きだけで作ります。値はモックの `design/mock/mock.css` と同じです。
+トークンは CSS のカスタムプロパティとして `:root` に一か所で定義し、ダークはその上書きだけで作ります。値はモックの `mock/mock.css` と同じです。
 
 ### 色
 
