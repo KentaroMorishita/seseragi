@@ -1062,6 +1062,23 @@
                     "arguments": []
                   }
                 ]
+              },
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "F",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
               }
             ],
             "parameters": [
@@ -1290,6 +1307,29 @@
                 ]
               },
               "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "traitIdentity": "std/prelude::Show",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "F",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "parameter",
+                    "index": 0
+                  }
+                },
                 {
                   "constraint": {
                     "name": "Show",
