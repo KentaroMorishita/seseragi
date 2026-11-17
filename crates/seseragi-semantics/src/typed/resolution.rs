@@ -1418,21 +1418,57 @@ fn explicit_requirement_field(
     semantic_types: &SemanticTypeCatalog,
 ) -> crate::TypedRecordField {
     let (name, type_ref) = match requirement {
-        SurfaceRequirement::Field { name, type_ref, .. } => (name.clone(), type_ref.clone()),
-        SurfaceRequirement::Shorthand { name, span } => (
-            lower_first(name),
-            TypeRef::Named {
+        SurfaceRequirement::Field { name, type_ref, .. } => (
+            name.clone(),
+            semantic_typed_type_from_type_ref(type_ref, resolved, semantic_types),
+        ),
+        SurfaceRequirement::Shorthand { name, span } => {
+            let type_ref = TypeRef::Named {
                 name: name.clone(),
                 arguments: Vec::new(),
                 span: *span,
-            },
-        ),
+            };
+            let typed = semantic_typed_type_from_type_ref(&type_ref, resolved, semantic_types);
+            (
+                lower_first(name),
+                unresolved_clock_service(resolved, *span, &typed),
+            )
+        }
     };
     crate::TypedRecordField {
         name,
         optional: false,
-        type_ref: semantic_typed_type_from_type_ref(&type_ref, resolved, semantic_types),
+        type_ref,
     }
+}
+
+/// `with Clock` has no lexical type of its own. That shorthand is the
+/// standard service. A resolved parameter or local type spelled `Clock`
+/// keeps the type this function already produced.
+fn unresolved_clock_service(
+    resolved: &ResolvedModule,
+    span: ByteSpan,
+    type_ref: &TypedType,
+) -> TypedType {
+    let unresolved = resolved
+        .references
+        .iter()
+        .find(|reference| reference.namespace == SymbolNamespace::Type && reference.origin == span)
+        .and_then(|reference| reference.target)
+        .is_none();
+    if unresolved
+        && matches!(
+            type_ref,
+            TypedType::Named { name, arguments } if name == "Clock" && arguments.is_empty()
+        )
+    {
+        return TypedType::ExternalNamed {
+            name: "Clock".to_owned(),
+            canonical: "std/clock::Clock".to_owned(),
+            arguments: Vec::new(),
+        };
+    }
+    type_ref.clone()
 }
 
 fn lower_first(value: &str) -> String {

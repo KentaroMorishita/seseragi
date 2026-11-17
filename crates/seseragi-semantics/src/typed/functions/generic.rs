@@ -962,59 +962,39 @@ mod tests {
     }
 
     #[test]
-    fn requirement_merge_collapses_a_clock_shorthand_with_its_provider() {
-        let field = |name: &str, type_name: &str| TypedRecordField {
-            name: name.to_owned(),
-            optional: false,
-            type_ref: named(type_name, Vec::new()),
-        };
-        let record = |fields| TypedType::Record {
-            closed: true,
-            fields,
-        };
-        let shorthand = TypedType::Record {
+    fn requirement_merge_keeps_a_named_clock_apart_from_its_provider() {
+        let record = |type_ref| TypedType::Record {
             closed: true,
             fields: vec![TypedRecordField {
                 name: "clock".to_owned(),
                 optional: false,
-                type_ref: named("Clock", Vec::new()),
+                type_ref,
             }],
         };
-        let provider = TypedType::Record {
-            closed: true,
-            fields: vec![TypedRecordField {
-                name: "clock".to_owned(),
-                optional: false,
-                type_ref: external("Clock", "std/clock::Clock", Vec::new()),
-            }],
-        };
-        let kept = TypedType::Record {
-            closed: true,
-            fields: vec![TypedRecordField {
-                name: "clock".to_owned(),
-                optional: false,
-                type_ref: external("Clock", "std/clock::Clock", Vec::new()),
-            }],
-        };
+        let parameter = record(named("Clock", Vec::new()));
+        let provider = record(external("Clock", "std/clock::Clock", Vec::new()));
+        let alias = record(external("RealClock", "std/clock::Clock", Vec::new()));
         assert_eq!(
-            crate::typed::type_ref::normalize_requirement_merge(vec![
-                shorthand.clone(),
-                provider.clone()
-            ]),
-            kept
+            crate::typed::type_ref::normalize_requirement_merge(vec![parameter, provider.clone()]),
+            TypedType::Record {
+                closed: true,
+                fields: vec![
+                    TypedRecordField {
+                        name: "clock".to_owned(),
+                        optional: false,
+                        type_ref: named("Clock", Vec::new()),
+                    },
+                    TypedRecordField {
+                        name: "clock".to_owned(),
+                        optional: false,
+                        type_ref: external("Clock", "std/clock::Clock", Vec::new()),
+                    },
+                ],
+            }
         );
         assert_eq!(
-            crate::typed::type_ref::normalize_requirement_merge(vec![provider, shorthand]),
-            kept
-        );
-
-        let conflict = crate::typed::type_ref::normalize_requirement_merge(vec![
-            record(vec![field("service", "Int")]),
-            record(vec![field("service", "String")]),
-        ]);
-        assert_eq!(
-            conflict,
-            record(vec![field("service", "Int"), field("service", "String")])
+            crate::typed::type_ref::normalize_requirement_merge(vec![provider.clone(), alias]),
+            provider
         );
     }
 

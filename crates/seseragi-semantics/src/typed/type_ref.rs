@@ -213,21 +213,18 @@ pub(crate) fn typed_type_contains_hole(type_ref: &TypedType) -> bool {
 }
 
 /// A requirement row keeps one field per name when the types are the same
-/// service. An unresolved shorthand such as `with Clock` and the standard
-/// provider `std/clock::Clock` name the same service, so they collapse.
-/// Different types stay side by side and remain a requirement conflict.
+/// service. Two spellings of one canonical service collapse. A `Named` type
+/// is not compared by spelling: it may be a type parameter or a local type.
+/// An unresolved `with Clock` is hydrated to `std/clock::Clock` before this
+/// merge, so that shorthand still meets the standard provider. Different
+/// types stay side by side and remain a requirement conflict.
 fn absorb_requirement_field(
     fields: &mut Vec<crate::TypedRecordField>,
     field: crate::TypedRecordField,
 ) {
-    if let Some(existing) = fields.iter_mut().find(|existing| {
+    if fields.iter().any(|existing| {
         existing.name == field.name && requirement_types_match(&existing.type_ref, &field.type_ref)
     }) {
-        if matches!(field.type_ref, TypedType::ExternalNamed { .. })
-            && !matches!(existing.type_ref, TypedType::ExternalNamed { .. })
-        {
-            existing.type_ref = field.type_ref;
-        }
         return;
     }
     fields.push(field);
@@ -238,34 +235,6 @@ fn requirement_types_match(left: &TypedType, right: &TypedType) -> bool {
         return true;
     }
     match (left, right) {
-        (
-            TypedType::Named {
-                name: shorthand,
-                arguments: shorthand_arguments,
-            },
-            TypedType::ExternalNamed {
-                name: provider,
-                canonical,
-                arguments: provider_arguments,
-            },
-        )
-        | (
-            TypedType::ExternalNamed {
-                name: provider,
-                canonical,
-                arguments: provider_arguments,
-            },
-            TypedType::Named {
-                name: shorthand,
-                arguments: shorthand_arguments,
-            },
-        ) if shorthand_arguments.is_empty()
-            && provider_arguments.is_empty()
-            && shorthand == provider
-            && canonical.ends_with(&format!("::{shorthand}")) =>
-        {
-            true
-        }
         (
             TypedType::ExternalNamed {
                 canonical: left_canonical,

@@ -58,3 +58,33 @@ pub fn probe duration: time.Duration -> Effect<{ clock: Clock }, Never, Either<S
     ))
     .unwrap_or_else(|error| panic!("{error:#?}"));
 }
+
+#[test]
+fn a_clock_parameter_stays_distinct_from_the_standard_service() {
+    let source = r#"import { Clock } from "std/clock"
+alias RealClock = Clock
+pub alias Probe<Clock> = Effect<{ clock: Clock } & { clock: RealClock }, Never, Int>
+"#;
+    expect_requirement_conflict("fixture/requirement-clock-parameter", source);
+}
+
+#[test]
+fn a_local_clock_stays_distinct_from_the_standard_service() {
+    let source = r#"import { Clock as StdClock } from "std/clock"
+pub type Clock = | Clock
+pub alias Probe = Effect<{ clock: Clock } & { clock: StdClock }, Never, Int>
+"#;
+    expect_requirement_conflict("fixture/requirement-clock-local", source);
+}
+
+fn expect_requirement_conflict(module: &str, source: &str) {
+    let errors = compile_module(CompileInput::new("main.ssrg", module, source))
+        .expect_err("different clock types are a requirement conflict");
+    assert!(
+        errors.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "SES-E0001"
+                && diagnostic.message_key == "effect.requirement-merge-field-conflict"
+        }),
+        "{errors:#?}"
+    );
+}
