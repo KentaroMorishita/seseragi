@@ -171,9 +171,10 @@ fn native_url_opaque(rest: &str) -> bool {
     if host.starts_with('[') {
         return native_url_ipv6(&host[1..host.len() - 1]).is_some();
     }
+    // Only the forbidden host code points refuse an opaque host; other
+    // controls and DEL are allowed there, unlike in a domain.
     !host.bytes().any(|b| {
-        b < 0x20
-            || b == 0x7f
+        b == 0
             || matches!(
                 b,
                 b' ' | b'#'
@@ -578,6 +579,11 @@ mod http_url_tests {
             ("foo://:1/", None),
             ("foo://a:1/", Some("other foo")),
             ("foo:///x", Some("other foo")),
+            ("foo://a\u{7f}b/", Some("other foo")),
+            ("foo://a\u{1}b/", Some("other foo")),
+            ("foo://a%zzb/", Some("other foo")),
+            ("foo://a\0b/", None),
+            ("foo://a^b/", None),
             ("http://a/{x}|`y`", Some("http://a/%7Bx%7D|%60y%60")),
             ("http://a?b#c d", Some("http://a/?b#c%20d")),
             ("http://09/", None),

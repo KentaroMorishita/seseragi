@@ -16,6 +16,7 @@ url ok http://127.0.0.1/
 url ok http://a/%5E%7B%7D%60|
 url error InvalidHttpUrl { offset: 0 }
 url error InvalidHttpUrl { offset: 0 }
+url error UnsupportedHttpScheme "foo"
 url error InvalidHttpUrl { offset: 9 }
 url error InvalidHttpUrl { offset: 9 }
 url error InvalidHttpUrl { offset: 0 }

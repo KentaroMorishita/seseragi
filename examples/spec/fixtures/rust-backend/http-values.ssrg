@@ -78,6 +78,7 @@ pub effect fn main -> Unit with Console = do {
   say (built "url" urlText (http.parseUrl "http://a/^{}`|"))
   say (built "url" urlText (http.parseUrl "file://a:80/"))
   say (built "url" urlText (http.parseUrl "foo://:1/"))
+  say (built "url" urlText (http.parseUrl "foo://a\u{7f}b/"))
   say (built "url" urlText (http.parseUrl "http://a/é"))
   say (built "url" urlText (http.parseUrl "http://a/%zz"))
   say (built "url" urlText (http.parseUrl "nothing"))
