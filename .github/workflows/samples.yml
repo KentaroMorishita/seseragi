@@ -1,0 +1,169 @@
+name: Samples and Tour
+
+# A pull request runs only the samples it changed, plus the sample catalog
+# check. Tour lessons run when the Tour or the spec examples change. Pushes to
+# main and manual runs check every sample. The repository-wide gate and the
+# release gate always check everything.
+
+on:
+  pull_request:
+    paths:
+      - ".bun-version"
+      - ".github/workflows/samples.yml"
+      - "examples/samples/**"
+      - "examples/tour/**"
+      - "examples/spec/lessons/**"
+      - "examples/spec/playground/**"
+      - "apps/playground/src/sample-catalog.ts"
+      - "apps/playground/src/preview-utility-contract.ts"
+      - "apps/playground/src/generated/sample-manifest.ts"
+      - "apps/playground/src/generated/tour-manifest.ts"
+      - "apps/playground/tests/sample-catalog.test.ts"
+      - "apps/playground/tests/sample-compilation.test.ts"
+      - "apps/playground/tests/tour-compilation.test.ts"
+      - "apps/playground/tests/wasm-compiler-support.ts"
+      - "scripts/check-samples-cli.ts"
+      - "scripts/check-tour-cli.ts"
+      - "scripts/sample-cli-process.ts"
+      - "scripts/sample-cli-process.test.ts"
+      - "scripts/sample-selection.ts"
+      - "scripts/sample-selection.test.ts"
+      - "scripts/generate-playground-samples.ts"
+      - "scripts/generate-playground-tour.ts"
+      - "scripts/tour-curriculum.ts"
+      - "scripts/tour-lessons.ts"
+      - "scripts/check-scoped.sh"
+  push:
+    branches: [main]
+    paths:
+      - ".bun-version"
+      - ".github/workflows/samples.yml"
+      - "examples/samples/**"
+      - "examples/tour/**"
+      - "examples/spec/lessons/**"
+      - "examples/spec/playground/**"
+      - "apps/playground/src/sample-catalog.ts"
+      - "apps/playground/src/preview-utility-contract.ts"
+      - "apps/playground/src/generated/sample-manifest.ts"
+      - "apps/playground/src/generated/tour-manifest.ts"
+      - "apps/playground/tests/sample-catalog.test.ts"
+      - "apps/playground/tests/sample-compilation.test.ts"
+      - "apps/playground/tests/tour-compilation.test.ts"
+      - "apps/playground/tests/wasm-compiler-support.ts"
+      - "scripts/check-samples-cli.ts"
+      - "scripts/check-tour-cli.ts"
+      - "scripts/sample-cli-process.ts"
+      - "scripts/sample-cli-process.test.ts"
+      - "scripts/sample-selection.ts"
+      - "scripts/sample-selection.test.ts"
+      - "scripts/generate-playground-samples.ts"
+      - "scripts/generate-playground-tour.ts"
+      - "scripts/tour-curriculum.ts"
+      - "scripts/tour-lessons.ts"
+      - "scripts/check-scoped.sh"
+  workflow_dispatch:
+
+# Manual canonical runs have unique groups; only superseded PR runs cancel.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      samples: ${{ steps.pick.outputs.samples }}
+      tour: ${{ steps.pick.outputs.tour }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: pick
+        name: Pick the checks the change needs
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [[ "$EVENT" != "pull_request" ]]; then
+            echo "samples=true" >>"$GITHUB_OUTPUT"
+            echo "tour=true" >>"$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files="$(git diff --name-only "origin/$BASE_REF...HEAD")"
+          shared='^(\.bun-version|\.github/workflows/samples\.yml|scripts/check-scoped\.sh|scripts/sample-cli-process\.ts|apps/playground/tests/wasm-compiler-support\.ts)$'
+          samples='^(examples/samples/|apps/playground/src/(sample-catalog|preview-utility-contract)\.ts|apps/playground/src/generated/sample-manifest\.ts|apps/playground/tests/sample-(catalog|compilation)\.test\.ts|scripts/(check-samples-cli|sample-selection|sample-selection\.test|generate-playground-samples)\.ts)'
+          tour='^(examples/tour/|examples/spec/(lessons|playground)/|apps/playground/src/generated/tour-manifest\.ts|apps/playground/tests/tour-compilation\.test\.ts|scripts/(check-tour-cli|sample-cli-process\.test|tour-curriculum|tour-lessons|generate-playground-tour)\.ts)'
+          pick() { grep -qE "$1|$shared" <<<"$files" && echo true || echo false; }
+          echo "samples=$(pick "$samples")" >>"$GITHUB_OUTPUT"
+          echo "tour=$(pick "$tour")" >>"$GITHUB_OUTPUT"
+
+  samples:
+    needs: changes
+    if: needs.changes.outputs.samples == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+      # Restore on every event; save only from main so PRs cannot evict it.
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: samples-cli
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.22.1"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install dependencies
+        run: |
+          bun install --frozen-lockfile
+          cd apps/playground
+          bun install --frozen-lockfile
+      - name: Run the changed samples
+        if: github.event_name == 'pull_request'
+        env:
+          SESERAGI_SAMPLE_BASE: origin/${{ github.base_ref }}
+        run: bun run check:sample
+      - name: Run every sample
+        if: github.event_name != 'pull_request'
+        run: bun run check:sample -- --all
+      - name: Check sample metadata, the catalog and the Playground manifest
+        run: bun run check:sample-catalog
+
+  tour:
+    needs: changes
+    if: needs.changes.outputs.tour == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: tour-cli
+          save-if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.22.1"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install dependencies
+        run: |
+          bun install --frozen-lockfile
+          cd apps/playground
+          bun install --frozen-lockfile
+      - name: Check the Tour and the spec examples
+        run: bun run check:tour

@@ -28,6 +28,9 @@ bunx biome format --write \
   extensions/seseragi/tests \
   extensions/seseragi-legacy/extension.js \
   scripts/check-samples-cli.ts \
+  scripts/check-tour-cli.ts \
+  scripts/sample-selection.ts \
+  scripts/sample-selection.test.ts \
   scripts/generate-playground-samples.ts \
   scripts/generate-playground-tour.ts \
   scripts/tour-curriculum.ts \

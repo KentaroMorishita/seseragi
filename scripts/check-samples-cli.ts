@@ -1,292 +1,217 @@
-import { readdir, readFile, writeFile } from "node:fs/promises"
+// Runs the samples under examples/samples with the native CLI.
+//
+//   bun scripts/check-samples-cli.ts          # samples changed from the base
+//   bun scripts/check-samples-cli.ts --all    # every sample
+//
+// A sample passes when it exits with 0. When it has an expected output file,
+// its stdout must also match that file. Interactive samples cannot run in the
+// CLI, so they are only compiled (or built, for a package).
+//
+// The base defaults to origin/main; set SESERAGI_SAMPLE_BASE to change it.
+// When the changed files cannot be found, every sample runs.
+//
+// The metadata and catalog checks live in `check:sample-catalog`, and the Tour
+// checks live in `check:tour`.
+
+import { readdir, readFile } from "node:fs/promises"
 import { resolve } from "node:path"
-import {
-  parseDiscoverGroups,
-  parseSampleMetadata,
-  validateSampleCatalog,
-} from "../apps/playground/src/sample-catalog"
 import { runSampleCommand, withTemporaryDirectory } from "./sample-cli-process"
-import { loadValidatedTourCurriculum } from "./tour-curriculum"
-import { repositoryPath } from "./tour-lessons"
+import {
+  readSampleRunPlan,
+  type SampleRunPlan,
+  selectChangedSamples,
+} from "./sample-selection"
 
 const repositoryRoot = resolve(import.meta.dir, "..")
-const updateTourDiagnostics = process.argv.includes("--update-tour-diagnostics")
 const samplesRoot = resolve(repositoryRoot, "examples/samples")
+const checkAll = process.argv.includes("--all")
+
 const entries = await readdir(samplesRoot, { withFileTypes: true })
-const directories = entries
+const sampleIds = entries
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort()
 
+const selectedIds = checkAll
+  ? sampleIds
+  : await changedSampleIds(sampleIds).catch((error: unknown) => {
+      console.log(
+        `Could not list changed files, so every sample runs: ${String(error)}`
+      )
+      return sampleIds
+    })
+
+if (selectedIds.length === 0) {
+  console.log("No sample changed; nothing to run.")
+  process.exit(0)
+}
+console.log(
+  checkAll || selectedIds.length === sampleIds.length
+    ? `Running all ${selectedIds.length} samples.`
+    : `Running ${selectedIds.length} changed sample(s): ${selectedIds.join(", ")}`
+)
+
 const samples = await Promise.all(
-  directories.map(async (id) => {
+  selectedIds.map(async (id) => {
     const directory = resolve(samplesRoot, id)
-    const metadata = parseSampleMetadata(
-      JSON.parse(await readFile(resolve(directory, "sample.json"), "utf8")),
-      id
-    )
-    return { directory, metadata }
+    const metadataPath = resolve(directory, "sample.json")
+    const text = await readFile(metadataPath, "utf8").catch(() => {
+      throw new Error(`sample ${id} has no sample.json`)
+    })
+    let value: unknown
+    try {
+      value = JSON.parse(text)
+    } catch (error) {
+      throw new Error(`sample ${id}/sample.json is not valid JSON: ${error}`)
+    }
+    const plan = readSampleRunPlan(value, id)
+    for (const file of [plan.source, plan.manifest, plan.stdin]) {
+      if (file === undefined) continue
+      await readFile(resolve(directory, file)).catch(() => {
+        throw new Error(`sample ${id} names a missing file: ${file}`)
+      })
+    }
+    return { directory, plan }
   })
 )
-const discoverGroups = parseDiscoverGroups(
-  JSON.parse(
-    await readFile(resolve(samplesRoot, "discover-groups.json"), "utf8")
-  )
-)
-validateSampleCatalog(
-  samples.map(({ metadata }) => metadata),
-  discoverGroups
-)
-const { lessons: tourLessons } =
-  await loadValidatedTourCurriculum(repositoryRoot)
+
 const cargoTargetDirectory = resolve(
   repositoryRoot,
   process.env.CARGO_TARGET_DIR ?? "target"
 )
-
 const build = await runSampleCommand(
   ["cargo", "build", "-q", "-p", "seseragi-cli"],
-  {
-    cwd: repositoryRoot,
-    label: "native CLI build",
-    timeoutMs: 600_000,
-  }
+  { cwd: repositoryRoot, label: "native CLI build", timeoutMs: 600_000 }
 )
 if (build.status !== 0) {
   throw new Error(`failed to build seseragi CLI:\n${build.stderr}`)
 }
-
 const executable = resolve(cargoTargetDirectory, "debug/seseragi")
-let checked = 0
-let checkedWebPackages = 0
-for (const { directory, metadata } of samples) {
-  if (metadata.interactive) {
-    if (metadata.files.manifest !== undefined) {
-      await validateWebPackageBuild(executable, directory, metadata.id)
-      checkedWebPackages += 1
+
+let ran = 0
+let compared = 0
+let compiled = 0
+let builtPackages = 0
+for (const { directory, plan } of samples) {
+  if (plan.interactive) {
+    if (plan.manifest !== undefined) {
+      await validateWebPackageBuild(directory, plan.id)
+      builtPackages += 1
+    } else {
+      await validateInteractiveCompile(directory, plan)
+      compiled += 1
     }
     continue
   }
+  const outcome = await runSample(directory, plan)
+  ran += 1
+  if (outcome === "compared") compared += 1
+}
+
+console.log(
+  `Checked ${samples.length} sample(s) with the native Seseragi CLI: ${ran} ran (${compared} compared with their expected output), ${compiled} interactive compiled, ${builtPackages} Web package(s) built.`
+)
+
+async function changedSampleIds(
+  ids: readonly string[]
+): Promise<readonly string[]> {
+  const base = process.env.SESERAGI_SAMPLE_BASE ?? "origin/main"
+  const mergeBase = (await git(["merge-base", base, "HEAD"])).trim()
+  // Committed, staged and unstaged changes since the base, plus new files.
+  const changed = await git(["diff", "--name-only", mergeBase])
+  const untracked = await git([
+    "ls-files",
+    "--others",
+    "--exclude-standard",
+    "--",
+    "examples/samples",
+  ])
+  const paths = `${changed}\n${untracked}`
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line !== "")
+  return selectChangedSamples(paths, ids)
+}
+
+async function git(args: readonly string[]): Promise<string> {
+  const result = await runSampleCommand(["git", ...args], {
+    cwd: repositoryRoot,
+    label: `git ${args[0]}`,
+  })
+  if (result.status !== 0) {
+    throw new Error(`git ${args.join(" ")} failed: ${result.stderr.trim()}`)
+  }
+  return result.stdout
+}
+
+async function runSample(
+  directory: string,
+  plan: SampleRunPlan
+): Promise<"ran" | "compared"> {
   const runTarget =
-    metadata.files.manifest === undefined
-      ? resolve(
-          directory,
-          metadata.files.source ?? missingSampleSource(metadata.id)
-        )
+    plan.manifest === undefined
+      ? resolve(directory, plan.source ?? "")
       : directory
-  const stdin = metadata.files.stdin
-    ? await readFile(resolve(directory, metadata.files.stdin), "utf8")
-    : ""
-  const expected = metadata.files.expectedOutput
-    ? await readFile(resolve(directory, metadata.files.expectedOutput), "utf8")
+  const stdin = plan.stdin
+    ? await readFile(resolve(directory, plan.stdin), "utf8")
     : ""
   const { status, stdout, stderr } = await runSampleCommand(
     [executable, "run", runTarget],
-    { cwd: repositoryRoot, label: `sample ${metadata.id} run`, stdin }
+    { cwd: repositoryRoot, label: `sample ${plan.id} run`, stdin }
   )
   if (status !== 0) {
-    throw new Error(`sample ${metadata.id} failed in CLI:\n${stderr}`)
+    throw new Error(
+      `sample ${plan.id} exited with ${status} in the CLI:\n${stderr}`
+    )
   }
+  if (plan.expectedOutput === undefined) return "ran"
+  const expected = await readFile(
+    resolve(directory, plan.expectedOutput),
+    "utf8"
+  ).catch(() => {
+    throw new Error(
+      `sample ${plan.id} names a missing file: ${plan.expectedOutput}`
+    )
+  })
   const normalizedExpected = expected.replace(/\r?\n$/u, "")
   const normalizedStdout = stdout.replace(/\r?\n$/u, "")
   if (normalizedStdout !== normalizedExpected) {
     throw new Error(
-      `sample ${metadata.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
+      `sample ${plan.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
     )
   }
-  checked += 1
+  return "compared"
 }
 
-let checkedTourLessons = 0
-let checkedTourExercises = 0
-let checkedTourDiagnostics = 0
-for (const lesson of tourLessons) {
-  if (!lesson.metadata.interactive) {
-    if (
-      lesson.expectedOutputPath === undefined &&
-      lesson.expectedFailurePath === undefined
-    ) {
-      throw new Error(
-        `Tour lesson ${lesson.metadata.id} has no expected result`
-      )
-    }
-    const formatCheck = await runSampleCommand(
-      [executable, "format", "--check", lesson.sourcePath],
-      { cwd: repositoryRoot, label: `Tour ${lesson.metadata.id} format` }
-    )
-    if (formatCheck.status !== 0) {
-      throw new Error(
-        `Tour lesson ${lesson.metadata.id} is not formatted:\n${formatCheck.stdout}${formatCheck.stderr}`
-      )
-    }
-    const stdin = lesson.stdinPath
-      ? await readFile(lesson.stdinPath, "utf8")
-      : ""
-    const expected = lesson.expectedOutputPath
-      ? await readFile(lesson.expectedOutputPath, "utf8")
-      : ""
-    const { status, stdout, stderr } = await runSampleCommand(
-      [executable, "run", lesson.sourcePath],
-      {
-        cwd: repositoryRoot,
-        label: `Tour ${lesson.metadata.id} run`,
-        stdin,
-      }
-    )
-    const expectedFailure = lesson.expectedFailurePath
-      ? await readFile(lesson.expectedFailurePath, "utf8")
-      : undefined
-    const normalizedExpected = expected.replace(/\r?\n$/u, "")
-    const normalizedStdout = stdout.replace(/\r?\n$/u, "")
-    const normalizedStderr = stderr.replace(/\r?\n$/u, "")
-    if (expectedFailure === undefined && status !== 0) {
-      throw new Error(
-        `Tour lesson ${lesson.metadata.id} failed in CLI:\n${stderr}`
-      )
-    }
-    if (expectedFailure !== undefined && status === 0) {
-      throw new Error(
-        `Tour lesson ${lesson.metadata.id} succeeded instead of failing`
-      )
-    }
-    if (normalizedStdout !== normalizedExpected) {
-      throw new Error(
-        `Tour lesson ${lesson.metadata.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
-      )
-    }
-    if (
-      expectedFailure !== undefined &&
-      normalizedStderr !== expectedFailure.replace(/\r?\n$/u, "")
-    ) {
-      throw new Error(
-        `Tour lesson ${lesson.metadata.id} failure mismatch\nexpected: ${JSON.stringify(expectedFailure.replace(/\r?\n$/u, ""))}\nactual: ${JSON.stringify(normalizedStderr)}`
-      )
-    }
-    checkedTourLessons += 1
-  }
-
-  if (lesson.metadata.format === undefined) continue
-  if (
-    lesson.exercisePath === undefined ||
-    lesson.exerciseExpectedOutputPath === undefined ||
-    lesson.diagnosticExamplePath === undefined ||
-    lesson.diagnosticOutputPath === undefined
-  ) {
+async function validateInteractiveCompile(
+  directory: string,
+  plan: SampleRunPlan
+): Promise<void> {
+  const source = resolve(directory, plan.source ?? "")
+  const check = await runSampleCommand([executable, "lint", source], {
+    cwd: repositoryRoot,
+    label: `interactive sample ${plan.id} compile`,
+  })
+  if (check.status !== 0) {
     throw new Error(
-      `Structured Tour lesson ${lesson.metadata.id} is missing exercise or diagnostic files`
+      `interactive sample ${plan.id} failed to compile:\n${check.stdout}${check.stderr}`
     )
   }
-  const exerciseFormat = await runSampleCommand(
-    [executable, "format", "--check", lesson.exercisePath],
-    { cwd: repositoryRoot, label: `Tour ${lesson.metadata.id} exercise format` }
-  )
-  if (exerciseFormat.status !== 0) {
-    throw new Error(
-      `Tour lesson ${lesson.metadata.id} exercise is not formatted:\n${exerciseFormat.stdout}${exerciseFormat.stderr}`
-    )
-  }
-  const exerciseRun = await runSampleCommand(
-    [executable, "run", lesson.exercisePath],
-    { cwd: repositoryRoot, label: `Tour ${lesson.metadata.id} exercise run` }
-  )
-  if (exerciseRun.status !== 0) {
-    throw new Error(
-      `Tour lesson ${lesson.metadata.id} exercise failed in CLI:\n${exerciseRun.stderr}`
-    )
-  }
-  const expectedExercise = (
-    await readFile(lesson.exerciseExpectedOutputPath, "utf8")
-  ).replace(/\r?\n$/u, "")
-  if (exerciseRun.stdout.replace(/\r?\n$/u, "") !== expectedExercise) {
-    throw new Error(
-      `Tour lesson ${lesson.metadata.id} exercise output mismatch\nexpected: ${JSON.stringify(expectedExercise)}\nactual: ${JSON.stringify(exerciseRun.stdout.replace(/\r?\n$/u, ""))}`
-    )
-  }
-  checkedTourExercises += 1
-
-  const diagnosticRun = await runSampleCommand(
-    [
-      executable,
-      "run",
-      repositoryPath(repositoryRoot, lesson.diagnosticExamplePath),
-    ],
-    { cwd: repositoryRoot, label: `Tour ${lesson.metadata.id} diagnostic run` }
-  )
-  if (diagnosticRun.status === 0 || diagnosticRun.stderr.trim() === "") {
-    throw new Error(
-      `Tour lesson ${lesson.metadata.id} diagnostic example did not fail`
-    )
-  }
-  if (diagnosticRun.stdout !== "") {
-    throw new Error(
-      `Tour lesson ${lesson.metadata.id} diagnostic example wrote stdout`
-    )
-  }
-  if (updateTourDiagnostics) {
-    await writeFile(lesson.diagnosticOutputPath, diagnosticRun.stderr)
-  } else {
-    const expectedDiagnostic = await readFile(
-      lesson.diagnosticOutputPath,
-      "utf8"
-    )
-    if (diagnosticRun.stderr !== expectedDiagnostic) {
-      throw new Error(
-        `Tour lesson ${lesson.metadata.id} diagnostic snapshot is stale; run \`bun run tour:diagnostics:update\``
-      )
-    }
-  }
-  checkedTourDiagnostics += 1
-}
-
-// The spec lessons and Playground examples are read as model code, so they
-// stay in the current formatter's layout. Diagnostic fixtures under
-// examples/spec/fixtures are written broken on purpose and are not checked.
-const formattedSpecDirectories = [
-  "examples/spec/lessons",
-  "examples/spec/playground",
-]
-let checkedSpecFormatting = 0
-for (const directory of formattedSpecDirectories) {
-  const sources = (await readdir(resolve(repositoryRoot, directory)))
-    .filter((name) => name.endsWith(".ssrg"))
-    .sort()
-  for (const name of sources) {
-    const sourcePath = resolve(repositoryRoot, directory, name)
-    const formatCheck = await runSampleCommand(
-      [executable, "format", "--check", sourcePath],
-      { cwd: repositoryRoot, label: `${directory}/${name} format` }
-    )
-    if (formatCheck.status !== 0) {
-      throw new Error(
-        `${directory}/${name} is not formatted; run \`seseragi format\` on it:\n${formatCheck.stdout}${formatCheck.stderr}`
-      )
-    }
-    checkedSpecFormatting += 1
-  }
-}
-
-console.log(
-  `Validated ${checked} executable samples, ${checkedWebPackages} Web sample packages, ${checkedTourLessons} Tour lessons, ${checkedTourExercises} exercises, ${checkedTourDiagnostics} Tour diagnostics and the formatting of ${checkedSpecFormatting} spec sources with the native Seseragi CLI (${samples.length - checked - checkedWebPackages + tourLessons.length - checkedTourLessons} browser-interactive skipped).`
-)
-
-function missingSampleSource(id: string): never {
-  throw new Error(`sample ${id} has neither a source nor a manifest`)
 }
 
 async function validateWebPackageBuild(
-  executable: string,
   packageDirectory: string,
   id: string
 ): Promise<void> {
   await withTemporaryDirectory(`seseragi-web-${id}-`, async (outputRoot) => {
     const outputDirectory = resolve(outputRoot, "dist")
-    const build = await runSampleCommand(
+    const result = await runSampleCommand(
       [executable, "build", packageDirectory, "--out-dir", outputDirectory],
       { cwd: repositoryRoot, label: `Web sample ${id} build` }
     )
-    if (build.status !== 0) {
+    if (result.status !== 0) {
       throw new Error(
-        `Web sample ${id} failed to build:\n${build.stdout}${build.stderr}`
+        `Web sample ${id} failed to build:\n${result.stdout}${result.stderr}`
       )
     }
     await Promise.all([
