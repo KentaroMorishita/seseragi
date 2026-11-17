@@ -261,8 +261,8 @@ fn native_url_host(text: &str) -> Option<String> {
 }
 
 // Decodes a Punycode label (RFC 3492). As in the Bun URL parser, a label that
-// fails to decode, decodes to nothing but ASCII, or decodes to a character
-// IDNA refuses or maps, is not a valid host. Full IDNA validation (such as
+// fails to decode, decodes to nothing but ASCII, or decodes to a control or
+// space, is not a valid host. Full IDNA validation (mapping and
 // normalization) is not done natively.
 fn native_url_punycode(input: &str) -> Option<String> {
     let (base, tmin, tmax, skew, damp) = (36u32, 1u32, 26u32, 38u32, 700u32);
@@ -309,11 +309,10 @@ fn native_url_punycode(input: &str) -> Option<String> {
         bias = adapt(i - previous, points, previous == 0);
         n = n.checked_add(i / points)?;
         i %= points;
-        // A decoded label holds only characters IDNA keeps as they are:
-        // no ASCII, controls, spaces or characters it would lowercase.
-        let c = char::from_u32(n).filter(|c| {
-            !c.is_ascii() && !c.is_control() && !c.is_whitespace() && !c.is_uppercase()
-        })?;
+        // A decoded label holds no ASCII, controls or spaces. Other IDNA
+        // mappings are not checked, so a valid host is never refused.
+        let c =
+            char::from_u32(n).filter(|c| !c.is_ascii() && !c.is_control() && !c.is_whitespace())?;
         output.insert(i as usize, c);
         i += 1;
     }
@@ -636,6 +635,7 @@ mod http_url_tests {
                 Some("http://xn--mnchen-3ya.de/"),
             ),
             ("http://xn--ls8h.la/", Some("http://xn--ls8h.la/")),
+            ("http://xn--58d.com/", Some("http://xn--58d.com/")),
             ("http://xn--a.com/", None),
             ("http://xn--.com/", None),
             ("http://xn--abc-.com/", None),
