@@ -58,6 +58,36 @@ fn aliased<A> items: Items<A> -> String where Show<Items<A>> = {
   used 1 + quiet True
 }
 
+fn prefix<A> value: A -> label: String -> String where Show<A> = label + show value
+
+fn viaCall<A> seed: A -> String where Show<A> = {
+  fn inner<B> value: B -> String where Show<B> = show value + prefix seed ":"
+  inner 1
+}
+
+fn viaOperator<A> seed: A -> String where Eq<A> = {
+  fn inner<B> value: B -> String where Show<B> =
+    show value + (if seed == seed then "=" else "!")
+  inner 2
+}
+
+fn viaLambda<A> seed: A -> String where Show<A> = {
+  let shown = \_: Unit -> show seed
+  fn inner<B> value: B -> String where Show<B> = show value + shown ()
+  inner 3
+}
+
+type Labelled<A> = | Labelled A
+
+instance<A> Show<Labelled<A>> where Show<A> {
+  fn show value: Labelled<A> -> String = match value {
+    Labelled item -> {
+      fn pair<B> other: B -> String where Show<B> = show item + "/" + show other
+      pair 4
+    }
+  }
+}
+
 pub fn probe -> Array<String> = [
   both "s",
   monomorphic 1.5,
@@ -67,5 +97,9 @@ pub fn probe -> Array<String> = [
   unused 0,
   supertrait 1 1,
   supertrait "a" "b",
-  aliased [1, 2]
+  aliased [1, 2],
+  viaCall "c",
+  viaOperator 'o',
+  viaLambda True,
+  show (Labelled "q")
 ]
