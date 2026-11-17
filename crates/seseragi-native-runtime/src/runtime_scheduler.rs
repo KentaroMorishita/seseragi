@@ -226,6 +226,9 @@ struct NativeScheduler {
     // A program WASM run has no host: no clock, file, process, stdin or
     // signal. Those turns end as Defects instead of starting a host task.
     hostless: bool,
+    // Test roots that have not had a turn yet. On the TS target a test body
+    // starts as soon as its case starts, before any timer can fire.
+    unstarted: std::collections::BTreeSet<usize>,
 }
 // The Defect for a turn a hostless run cannot perform, or the turn itself.
 fn native_hostless_turn(machine: &mut NativeMachine, turn: NativeTurn) -> NativeTurn {
@@ -366,6 +369,9 @@ impl NativeScheduler {
             return None;
         };
         let mut task = self.tasks.remove(&id).expect("runnable native task");
+        if !self.unstarted.is_empty() {
+            self.unstarted.remove(&id);
+        }
         let process = task.machine.context.process.clone();
         let turn = task.machine.turn();
         let turn = if self.hostless {
@@ -506,6 +512,14 @@ impl NativeScheduler {
     // The next turn is one the TS target runs as a microtask, so no timer
     // can fire before it. A Fiber resuming from `yieldNow` is a macrotask
     // there, and a due timer may fire before it.
+    fn spawn_test(&mut self, context: NativeContext, plan: V) -> usize {
+        let root = self.spawn(context, plan).fiber().task;
+        self.unstarted.insert(root);
+        root
+    }
+    fn started(&self, root: usize) -> bool {
+        !self.unstarted.contains(&root)
+    }
     fn microtask_pending(&self) -> bool {
         !self.ready.is_empty() && (self.yielded.is_empty() || self.yield_wait < NATIVE_YIELD_BUDGET)
     }
@@ -821,6 +835,23 @@ impl NativeScheduler {
 #[cfg(test)]
 mod scheduler_tests {
     use super::*;
+    #[test]
+    fn a_test_root_counts_as_started_only_after_its_first_turn() {
+        enable_cycle_collection();
+        let mut scheduler = NativeScheduler::default();
+        let root = scheduler.spawn_test(
+            NativeContext::default(),
+            native_operation("effect.succeed", vec![V::Unit]),
+        );
+        assert!(!scheduler.started(root));
+        let finished = scheduler.tick(0);
+        assert!(scheduler.started(root));
+        let finished = finished
+            .or_else(|| (0..8).find_map(|_| scheduler.tick(0)))
+            .expect("finished test root");
+        assert_eq!(finished.0, root);
+        assert!(finished.2.is_ok());
+    }
     #[test]
     fn a_timer_may_fire_only_when_no_microtask_is_pending() {
         let mut scheduler = NativeScheduler::default();
