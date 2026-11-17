@@ -221,20 +221,22 @@ fn native_http_target(url: &str) -> Result<NativeHttpTarget, NativeHttpReply> {
     })
 }
 
-fn native_http_exchange(
+// Connects and starts writing one request. The returned flag turns true once
+// the whole request has been written.
+type NativeHttpOpened = (
+    std::io::BufReader<std::net::TcpStream>,
+    std::sync::Arc<std::sync::atomic::AtomicBool>,
+);
+fn native_http_open(
     method: &str,
     url: &str,
     headers: &[(String, String)],
     body: Vec<u8>,
-    limit: u64,
     cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
     connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
-) -> NativeHttpReply {
+) -> Result<NativeHttpOpened, NativeHttpReply> {
     use std::io::Write;
-    let target = match native_http_target(url) {
-        Ok(target) => target,
-        Err(reply) => return reply,
-    };
+    let target = native_http_target(url)?;
     let is_cancelled = || cancelled.load(std::sync::atomic::Ordering::Acquire);
     let (connected, connecting) = std::sync::mpsc::channel();
     let (host, port) = (target.host.clone(), target.port);
@@ -283,17 +285,17 @@ fn native_http_exchange(
     });
     let stream = loop {
         if is_cancelled() {
-            return NativeHttpReply::Cancelled;
+            return Err(NativeHttpReply::Cancelled);
         }
         match connecting.recv_timeout(std::time::Duration::from_millis(20)) {
             Ok(Ok(stream)) => break stream,
-            Ok(Err((tag, message))) => return NativeHttpReply::Failure(tag, message),
+            Ok(Err((tag, message))) => return Err(NativeHttpReply::Failure(tag, message)),
             Err(std::sync::mpsc::RecvTimeoutError::Timeout) => continue,
             Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
-                return NativeHttpReply::Failure(
+                return Err(NativeHttpReply::Failure(
                     "std/http::HttpConnectionFailure",
                     "connection attempt ended without a result".into(),
-                )
+                ))
             }
         }
     };
@@ -301,7 +303,7 @@ fn native_http_exchange(
         *connection.lock().unwrap() = Some(clone);
     }
     if is_cancelled() {
-        return NativeHttpReply::Cancelled;
+        return Err(NativeHttpReply::Cancelled);
     }
     // Header values are Latin-1, as the TS hosts write them.
     let mut head = format!(
@@ -320,21 +322,14 @@ fn native_http_exchange(
         head.extend(format!("content-length: {}\r\n", body.len()).bytes());
     }
     head.extend(b"connection: close\r\n\r\n");
-    let failure = |error: std::io::Error, tag: &'static str| {
-        if is_cancelled() {
-            NativeHttpReply::Cancelled
-        } else {
-            NativeHttpReply::Failure(tag, error.to_string())
-        }
-    };
     // The request is written on its own thread, so a final response that
     // arrives before the body is fully sent (such as 413) is still read.
     // Closing the connection after the response stops the writer.
     let Ok(mut writer) = stream.try_clone() else {
-        return NativeHttpReply::Failure(
+        return Err(NativeHttpReply::Failure(
             "std/http::HttpConnectionFailure",
             "cannot share the connection".into(),
-        );
+        ));
     };
     let written = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
     let writer_done = written.clone();
@@ -344,7 +339,35 @@ fn native_http_exchange(
             .and_then(|_| writer.write_all(&body));
         writer_done.store(true, std::sync::atomic::Ordering::Release);
     });
-    let mut reader = std::io::BufReader::with_capacity(NATIVE_HTTP_CHUNK_BYTES, stream);
+    Ok((
+        std::io::BufReader::with_capacity(NATIVE_HTTP_CHUNK_BYTES, stream),
+        written,
+    ))
+}
+
+// `sendBytes` and `sendEmpty`: one request and its whole response.
+fn native_http_exchange(
+    method: &str,
+    url: &str,
+    headers: &[(String, String)],
+    body: Vec<u8>,
+    limit: u64,
+    cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
+    connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
+) -> NativeHttpReply {
+    let (mut reader, written) =
+        match native_http_open(method, url, headers, body, cancelled, connection) {
+            Ok(opened) => opened,
+            Err(reply) => return reply,
+        };
+    let is_cancelled = || cancelled.load(std::sync::atomic::Ordering::Acquire);
+    let failure = |error: std::io::Error, tag: &'static str| {
+        if is_cancelled() {
+            NativeHttpReply::Cancelled
+        } else {
+            NativeHttpReply::Failure(tag, error.to_string())
+        }
+    };
     // A final response head stops a request body still being sent, as the TS
     // HTTP/1 writer does; the response is still read to its end. A finished
     // request is left alone, since some servers close on a half-closed
