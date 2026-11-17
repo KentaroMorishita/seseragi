@@ -962,6 +962,63 @@ mod tests {
     }
 
     #[test]
+    fn requirement_merge_collapses_a_clock_shorthand_with_its_provider() {
+        let field = |name: &str, type_name: &str| TypedRecordField {
+            name: name.to_owned(),
+            optional: false,
+            type_ref: named(type_name, Vec::new()),
+        };
+        let record = |fields| TypedType::Record {
+            closed: true,
+            fields,
+        };
+        let shorthand = TypedType::Record {
+            closed: true,
+            fields: vec![TypedRecordField {
+                name: "clock".to_owned(),
+                optional: false,
+                type_ref: named("Clock", Vec::new()),
+            }],
+        };
+        let provider = TypedType::Record {
+            closed: true,
+            fields: vec![TypedRecordField {
+                name: "clock".to_owned(),
+                optional: false,
+                type_ref: external("Clock", "std/clock::Clock", Vec::new()),
+            }],
+        };
+        let kept = TypedType::Record {
+            closed: true,
+            fields: vec![TypedRecordField {
+                name: "clock".to_owned(),
+                optional: false,
+                type_ref: external("Clock", "std/clock::Clock", Vec::new()),
+            }],
+        };
+        assert_eq!(
+            crate::typed::type_ref::normalize_requirement_merge(vec![
+                shorthand.clone(),
+                provider.clone()
+            ]),
+            kept
+        );
+        assert_eq!(
+            crate::typed::type_ref::normalize_requirement_merge(vec![provider, shorthand]),
+            kept
+        );
+
+        let conflict = crate::typed::type_ref::normalize_requirement_merge(vec![
+            record(vec![field("service", "Int")]),
+            record(vec![field("service", "String")]),
+        ]);
+        assert_eq!(
+            conflict,
+            record(vec![field("service", "Int"), field("service", "String")])
+        );
+    }
+
+    #[test]
     fn infers_through_standard_read_only_signal_coercion() {
         let mut substitutions = BTreeMap::new();
         let parameters = vec![TypeParameter {

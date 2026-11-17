@@ -212,6 +212,76 @@ pub(crate) fn typed_type_contains_hole(type_ref: &TypedType) -> bool {
     }
 }
 
+/// A requirement row keeps one field per name when the types are the same
+/// service. An unresolved shorthand such as `with Clock` and the standard
+/// provider `std/clock::Clock` name the same service, so they collapse.
+/// Different types stay side by side and remain a requirement conflict.
+fn absorb_requirement_field(
+    fields: &mut Vec<crate::TypedRecordField>,
+    field: crate::TypedRecordField,
+) {
+    if let Some(existing) = fields.iter_mut().find(|existing| {
+        existing.name == field.name && requirement_types_match(&existing.type_ref, &field.type_ref)
+    }) {
+        if matches!(field.type_ref, TypedType::ExternalNamed { .. })
+            && !matches!(existing.type_ref, TypedType::ExternalNamed { .. })
+        {
+            existing.type_ref = field.type_ref;
+        }
+        return;
+    }
+    fields.push(field);
+}
+
+fn requirement_types_match(left: &TypedType, right: &TypedType) -> bool {
+    if left == right {
+        return true;
+    }
+    match (left, right) {
+        (
+            TypedType::Named {
+                name: shorthand,
+                arguments: shorthand_arguments,
+            },
+            TypedType::ExternalNamed {
+                name: provider,
+                canonical,
+                arguments: provider_arguments,
+            },
+        )
+        | (
+            TypedType::ExternalNamed {
+                name: provider,
+                canonical,
+                arguments: provider_arguments,
+            },
+            TypedType::Named {
+                name: shorthand,
+                arguments: shorthand_arguments,
+            },
+        ) if shorthand_arguments.is_empty()
+            && provider_arguments.is_empty()
+            && shorthand == provider
+            && canonical.ends_with(&format!("::{shorthand}")) =>
+        {
+            true
+        }
+        (
+            TypedType::ExternalNamed {
+                canonical: left_canonical,
+                arguments: left_arguments,
+                ..
+            },
+            TypedType::ExternalNamed {
+                canonical: right_canonical,
+                arguments: right_arguments,
+                ..
+            },
+        ) if left_canonical == right_canonical && left_arguments == right_arguments => true,
+        _ => false,
+    }
+}
+
 pub(crate) fn normalize_requirement_merge(operands: Vec<TypedType>) -> TypedType {
     let mut pending = operands;
     let mut flattened = Vec::new();
@@ -232,12 +302,7 @@ pub(crate) fn normalize_requirement_merge(operands: Vec<TypedType>) -> TypedType
                 fields: operand_fields,
             } => {
                 for field in operand_fields {
-                    if fields.iter().any(|existing: &crate::TypedRecordField| {
-                        existing.name == field.name && existing.type_ref == field.type_ref
-                    }) {
-                        continue;
-                    }
-                    fields.push(field);
+                    absorb_requirement_field(&mut fields, field);
                 }
             }
             operand => unresolved.push(operand),
