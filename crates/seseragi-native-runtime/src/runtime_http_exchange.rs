@@ -377,35 +377,30 @@ fn native_http_fail(error: V) -> V {
 }
 
 // Records a failure of the body unless the exchange already stopped it.
-fn native_http_body_failure(id: &V, outcome: &V, settled: &V, failure: V) {
-    settled.write_reference(V::Bool(true));
+fn native_http_body_failure(id: &V, outcome: &V, failure: V) {
     if native_http_stream_fail_body(native_http_int(id)) {
         outcome.write_reference(failure);
     }
 }
 
-// Captures: the exchange handle, the body cursor, the outcome and whether
-// the body ended in a way the exchange has observed.
+// Captures: the exchange handle, the body cursor and the outcome.
 fn native_http_body_loop(c: &[V]) -> V {
     V::bind(
         V::effect(Instruction::Attempt, vec![stream_pull(&c[1])]),
         V::fun(c.to_vec(), |c, pulled| {
             if pulled.tagged("std/prelude::Left") {
-                native_http_body_failure(&c[0], &c[2], &c[3], native_left(pulled.payload()));
+                native_http_body_failure(&c[0], &c[2], native_left(pulled.payload()));
                 return stream_pure(V::Unit);
             }
             let next = pulled.payload();
             if next.tagged("std/prelude::Nothing") {
                 if let Some(mismatch) = native_http_stream_mismatch(native_http_int(&c[0])) {
-                    native_http_body_failure(&c[0], &c[2], &c[3], native_right(mismatch));
+                    native_http_body_failure(&c[0], &c[2], native_right(mismatch));
                     return stream_pure(V::Unit);
                 }
                 return V::bind(
                     V::effect(Instruction::HttpWrite, vec![c[0].clone(), V::Unit]),
-                    V::fun(vec![c[3].clone()], |c, _| {
-                        c[0].write_reference(V::Bool(true));
-                        stream_pure(V::Unit)
-                    }),
+                    V::fun(vec![], |_, _| stream_pure(V::Unit)),
                 );
             }
             let bytes = next.payload();
@@ -419,7 +414,6 @@ fn native_http_body_loop(c: &[V]) -> V {
                         native_http_body_loop(c)
                     } else {
                         // The exchange stopped the body.
-                        c[3].write_reference(V::Bool(true));
                         stream_pure(V::Unit)
                     }
                 }),
@@ -428,35 +422,60 @@ fn native_http_body_loop(c: &[V]) -> V {
     )
 }
 
-// The body Fiber. It always closes the body cursor. A Defect stops the
-// exchange like a failure, and the exchange reports the Defect.
+// The body Fiber. Its pulls, the close of the body cursor and the resources
+// the body acquired all end inside its own scope. A failure while closing is
+// a failure of the body. A Defect anywhere, even after the body has ended,
+// stops the exchange like a failure, and the exchange reports the Defect. An
+// interrupted body Fiber was stopped by the exchange or its consumer.
 fn native_http_body_fiber(id: V, cursor: V, outcome: V) -> V {
-    let settled = stream_cell(V::Bool(false));
+    let finished = stream_cell(V::Bool(false));
+    let body = V::effect(
+        Instruction::Scoped,
+        vec![V::effect(
+            Instruction::Bracket,
+            vec![
+                stream_pure(V::Unit),
+                V::fun(vec![id.clone(), cursor.clone(), outcome.clone()], |c, _| {
+                    native_http_body_loop(c)
+                }),
+                V::fun(vec![cursor], |c, _| stream_close(&c[0])),
+            ],
+        )],
+    );
     V::effect(
         Instruction::Bracket,
         vec![
             stream_pure(V::Unit),
             V::fun(
-                vec![id.clone(), cursor.clone(), outcome.clone(), settled.clone()],
-                |c, _| native_http_body_loop(c),
+                vec![body, id.clone(), outcome.clone(), finished.clone()],
+                |c, _| {
+                    V::bind(
+                        V::effect(Instruction::Attempt, vec![c[0].clone()]),
+                        V::fun(c[1..].to_vec(), |c, result| {
+                            if result.tagged("std/prelude::Left") {
+                                native_http_body_failure(
+                                    &c[0],
+                                    &c[1],
+                                    native_left(result.payload()),
+                                );
+                            }
+                            c[2].write_reference(V::Bool(true));
+                            stream_pure(V::Unit)
+                        }),
+                    )
+                },
             ),
-            // The exchange is stopped before the cursor closes, so a Defect
-            // while closing cannot leave it waiting for the body.
-            V::fun(vec![id, cursor, outcome, settled], |c, _| {
-                V::bind(
-                    V::leaf(c.to_vec(), |c, _| {
-                        if !c[3].read_reference().boolean() {
-                            native_http_body_failure(
-                                &c[0],
-                                &c[2],
-                                &c[3],
-                                V::adt(NATIVE_HTTP_BODY_DEFECT, V::Unit),
-                            );
-                        }
-                        Ok(V::Unit)
-                    }),
-                    V::fun(vec![c[1].clone()], |c, _| stream_close(&c[0])),
-                )
+            V::fun(vec![id, outcome, finished], |c, _| {
+                V::leaf(c.to_vec(), |c, context| {
+                    if !c[2].read_reference().boolean() && !context.cancelled {
+                        native_http_body_failure(
+                            &c[0],
+                            &c[1],
+                            V::adt(NATIVE_HTTP_BODY_DEFECT, V::Unit),
+                        );
+                    }
+                    Ok(V::Unit)
+                })
             }),
         ],
     )
@@ -662,6 +681,24 @@ mod http_exchange_tests {
         result.payload()
     }
 
+    // Runs a test on its own thread and fails if it does not end in time.
+    fn bounded(test: impl FnOnce() + Send + 'static) {
+        let (done, finished) = std::sync::mpsc::channel();
+        let worker = std::thread::spawn(move || {
+            test();
+            let _ = done.send(());
+        });
+        if finished
+            .recv_timeout(std::time::Duration::from_secs(20))
+            .is_err()
+        {
+            if worker.is_finished() {
+                std::panic::resume_unwind(worker.join().unwrap_err());
+            }
+            panic!("the exchange did not end");
+        }
+    }
+
     fn open_exchanges() -> usize {
         NATIVE_HTTP_STREAMS.with(|streams| streams.borrow().1.len())
     }
@@ -717,5 +754,47 @@ mod http_exchange_tests {
             error.render()
         );
         assert_eq!(open_exchanges(), 0);
+    }
+
+    #[test]
+    fn a_defect_releasing_the_body_ends_the_exchange() {
+        let base = silent();
+        bounded(move || {
+            // The body's only chunk holds a resource whose release dies once
+            // the body has ended; the server never answers.
+            let chunk = V::effect(
+                Instruction::AcquireRelease,
+                vec![
+                    stream_pure(bytes("ab")),
+                    V::fun(vec![], |_, _| native_effect_die(V::text("release failed"))),
+                ],
+            );
+            let body = native_http_operation(
+                "std/http::streamBody",
+                vec![native_stream_operation(
+                    "std/stream::fromEffect",
+                    vec![chunk],
+                )],
+            );
+            let events = native_http_operation(
+                "std/http::exchange",
+                vec![body, post(&format!("{base}/"), &[])],
+            );
+            let result = NativeContext::default().root(native_stream_operation(
+                "std/stream::runCollect",
+                vec![events],
+            ));
+            match result {
+                Err(NativeExit::Defect(errors)) => assert!(
+                    errors.iter().any(|error| error.value == "release failed"),
+                    "{:?}",
+                    errors.iter().map(|error| &error.value).collect::<Vec<_>>()
+                ),
+                Err(NativeExit::Failure(error)) => panic!("failure {}", error.value.render()),
+                Err(NativeExit::Cancelled) => panic!("cancelled"),
+                Ok(value) => panic!("success {}", value.render()),
+            }
+            assert_eq!(open_exchanges(), 0);
+        });
     }
 }
