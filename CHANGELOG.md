@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.61.179] - 2026-11-17
+
+### Added
+
+- Homebrew installs the CLI and the language server on macOS (Apple silicon and Intel) and Linux (x64): `brew install KentaroMorishita/seseragi/seseragi`, and `brew upgrade seseragi` updates it. Use the full name for the first install so Homebrew trusts the tap. Each release updates the formula in `KentaroMorishita/homebrew-seseragi` from the published checksums, after installing it on each of those systems.
+
+### Changed
+
+- `seseragi upgrade` recognizes a CLI installed with Homebrew and prints `brew upgrade seseragi` instead of replacing its files. Homebrew links the CLI from a `bin` that also holds `seseragi-lsp`, so `seseragi upgrade` used to treat it as an install-script location.
+
 ## [0.61.178] - 2026-11-17
 
 ### Fixed
