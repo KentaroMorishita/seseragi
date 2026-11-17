@@ -3516,7 +3516,10 @@ ExplicitTestFailureなどへ変換します。
 
 `Test`はcaseまたはsuiteを表すimmutableなopaque treeです。test bodyはTest値を構築した時点では実行せず、
 runnerが選択したcaseだけを一度実行します。suiteはchildrenのsource順を保ちます。skipはbodyを実行せず、
-timeoutはrunnerのhost monotonic timeで測ります。timeoutによる終了はbodyのcancellationとfinalizer完了を待ち、
+timeoutはrunnerのhost monotonic timeで測ります。期限を過ぎても、caseのFiberがすぐ次のstepへ進めるあいだは
+打ち切りません。runnerが期限を見るのは、どのFiberもasync wait・sleep・I/Oなどで待っているときと、`yieldNow`で
+譲ったFiberが再開するときだけです。したがって、待たずに終わるbodyは期限が0でも成功します。benchmark caseの
+timeoutも同じです。timeoutによる終了はbodyのcancellationとfinalizer完了を待ち、
 TestFailureのerror channelへ偽装しません。未終了child Fiber、登録解除されていないtest-owned resource、
 uncaught defectはcase failureです。
 

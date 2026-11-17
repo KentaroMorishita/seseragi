@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.179] - 2026-11-17
+
+### Fixed
+
+- `seseragi test --target native` and `seseragi bench --target native` time out a case only when no Fiber can take a turn, as on the TS target, where a test's timer fires only after every runnable step has run. A body that never waits used to fail when its Effect steps took longer than its timeout, so a test with a zero or very short timeout failed now and then on a busy machine.
+
 ## [0.61.178] - 2026-11-17
 
 ### Fixed
