@@ -1,3 +1,3 @@
-Pure blockの中では、先に置いた`let`を後続のlocal functionから参照できます。local functionは自身のbodyから再帰呼び出しでき、generic parameterもtop-level関数と同じように型付けされます。後に宣言する関数は前の関数からは見えません。
+まずRunを押して100000回のカウントダウンが即座に完了することを確かめたら、`finalScore 40`や`bonus`の値を変えて実行してみてください。
 
-同じ関数を最終式から直接呼ぶtail recursionはloopへlowerされるため、入力件数に比例してhost call stackを増やしません。相互再帰や、再帰結果へ演算を加えるnon-tail recursionはこの保証の対象外です。
+ブロック内の局所関数は、より前に定義された`let`束縛を参照でき、ジェネリック型引数も持てます。`countdown`のように自身の呼び出しを末尾位置に置くとループへ変換されるため、100000回の再帰でもスタックオーバーフローになりません。

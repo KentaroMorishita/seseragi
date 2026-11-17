@@ -3451,7 +3451,7 @@ fails String =
     expect(runSnapshots).toEqual(appSnapshots)
     expect(appSnapshots.stdout.split("\n")).toHaveLength(4)
     expect(appSnapshots.stdout).toContain("川辺をゆっくり歩く")
-    expect(appSnapshots.stdout).toContain("木陰のloopを巡る")
+    expect(appSnapshots.stdout).toContain("木陰の周回コースを歩く")
     expect(appSnapshots.stdout).toContain("尾根の展望へ登る")
     expect(appSnapshots.stdout).toContain("width: 28%")
     expect(appSnapshots.stdout).toContain("width: 62%")

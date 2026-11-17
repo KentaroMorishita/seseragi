@@ -6,7 +6,7 @@ trait Label<A> {
   fn label value: A -> String
 }
 
-// label Activeに必要なdictionaryは、このinstanceから選択されます。
+// label Activeに必要な辞書は、このinstanceから選択されます。
 instance Label<Badge> {
   fn label value: Badge -> String = match value {
     Active -> "active"
@@ -14,4 +14,4 @@ instance Label<Badge> {
   }
 }
 
-pub effect fn main = Active |> label |> println
+pub effect fn main = println (label Active)

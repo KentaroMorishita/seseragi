@@ -1,5 +1,5 @@
 fn fibonacci index: Int -> Int = {
-  // The accumulator form keeps the recursive call in tail position.
+  // アキュムレーターを使うと、再帰呼び出しを末尾位置に保てます。
   fn loop remaining: Int -> current: Int -> next: Int -> Int =
     if remaining == 0 then current else loop (remaining - 1) next (current + next)
 
