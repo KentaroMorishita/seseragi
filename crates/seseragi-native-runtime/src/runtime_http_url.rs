@@ -266,15 +266,32 @@ fn native_url_host(text: &str) -> Option<String> {
 // not carry, so a host with a combining mark, which normalization could
 // change, is refused rather than encoded differently from the TS target.
 fn native_url_domain_to_ascii(domain: &str) -> Option<String> {
-    let mapped: String = domain
-        .chars()
-        .map(|c| match c as u32 {
-            0x3002 | 0xff0e | 0xff61 => '.',
-            0xff01..=0xff5e => char::from_u32(c as u32 - 0xfee0).unwrap(),
-            _ => c,
-        })
-        .flat_map(char::to_lowercase)
-        .collect();
+    // Characters IDNA maps through compatibility tables (ligatures, width
+    // and presentation forms, letterlike and enclosed symbols, superscripts,
+    // math letters and similar) are refused: encoding them unmapped would
+    // name a different host than the TS target.
+    let compatibility = |c: char| {
+        matches!(c as u32,
+            0x00aa | 0x00b2 | 0x00b3 | 0x00b5 | 0x00b9 | 0x00ba | 0x00bc..=0x00be
+            | 0x0132 | 0x0133 | 0x013f | 0x0140 | 0x0149 | 0x017f | 0x01c4..=0x01cc
+            | 0x01f1..=0x01f3 | 0x02b0..=0x02ff | 0x1d2c..=0x1dbf | 0x2000..=0x209f | 0x20a8 | 0x2100..=0x218f | 0x2460..=0x24ff | 0x2f00..=0x2fdf
+            | 0x3000..=0x303f | 0x3200..=0x33ff | 0xf900..=0xfaff | 0xfb00..=0xfdff
+            | 0xfe10..=0xfe1f | 0xfe30..=0xfe4f | 0xfe50..=0xfeff | 0xff00..=0xffef
+            | 0x1d400..=0x1d7ff | 0x1f100..=0x1f2ff | 0x2f800..=0x2fa1f)
+    };
+    let mut mapped = String::new();
+    for c in domain.chars() {
+        match c as u32 {
+            0x3002 | 0xff0e | 0xff61 => mapped.push('.'),
+            0xff01..=0xff5e => mapped.push(char::from_u32(c as u32 - 0xfee0).unwrap()),
+            // Cherokee letters fold to the uppercase forms in IDNA.
+            0x13a0..=0x13f5 => mapped.push(c),
+            0x13f8..=0x13fd => mapped.push(char::from_u32(c as u32 - 8).unwrap()),
+            0xab70..=0xabbf => mapped.push(char::from_u32(c as u32 - 0xab70 + 0x13a0).unwrap()),
+            _ if compatibility(c) => return None,
+            _ => mapped.extend(c.to_lowercase()),
+        }
+    }
     if mapped.chars().any(|c| {
         c.is_control()
             || c.is_whitespace()
@@ -742,6 +759,22 @@ mod http_url_tests {
                 "http://%E4%BE%8B%E3%81%88.jp/",
                 Some("http://xn--r8jz45g.jp/"),
             ),
+            ("http://%E1%8E%A0.com/", Some("http://xn--58d.com/")),
+            ("http://%EA%AD%B0.com/", Some("http://xn--58d.com/")),
+            ("http://%C3%9F.com/", Some("http://xn--zca.com/")),
+            ("http://%CF%82.com/", Some("http://xn--3xa.com/")),
+            (
+                "http://%E6%97%A5%E6%9C%AC.com/",
+                Some("http://xn--wgv71a.com/"),
+            ),
+            // Compatibility mappings need IDNA tables; they are refused.
+            ("http://%EF%AC%83.com/", None),
+            ("http://%E2%91%A0.com/", None),
+            ("http://%E2%84%8C.com/", None),
+            ("http://%F0%9D%90%80.com/", None),
+            ("http://%C2%B2.com/", None),
+            ("http://%C5%BF.com/", None),
+            ("http://%EF%BD%B1.com/", None),
             ("http://%FF.com/", None),
             ("http://%C2%A0.com/", None),
             // Normalization would compose this; it is refused natively.
