@@ -691,6 +691,7 @@ body[data-state~="dark"] .coach .row a {
 
 .status-chip {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   gap: 6px;
   height: 26px;
@@ -711,6 +712,9 @@ body[data-state~="dark"] .coach .row a {
 }
 
 .seg button {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
   height: 26px;
   padding: 0 10px;
   border-radius: 6px;
@@ -837,6 +841,470 @@ body[data-state~="dark"] .seg button[aria-pressed="true"] {
 .prompt--link {
   border-style: dashed;
   color: var(--accent-ink);
+}
+
+.try-next-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+}
+
+.try-next-head h3 {
+  margin: 0;
+}
+
+.try-next-head .count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--fg-3);
+  font-size: var(--text-2xs);
+  font-weight: 650;
+  line-height: 20px;
+  text-align: center;
+}
+
+.ghost--sm {
+  height: 26px;
+  padding: 0 8px;
+  font-size: var(--text-xs);
+}
+
+.ghost--sm .chev {
+  width: 14px;
+  height: 14px;
+}
+
+.when-quiet {
+  display: none;
+}
+
+/* ---------- 通常状態（初回の案内を畳む） ---------- */
+
+body[data-state~="quiet"] .coach,
+body[data-state~="quiet"] .console .meta {
+  display: none;
+}
+
+body[data-state~="quiet"] .try-next {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+body[data-state~="quiet"] .try-next-head {
+  margin-bottom: 0;
+}
+
+body[data-state~="quiet"] .prompts,
+body[data-state~="quiet"] .when-open {
+  display: none;
+}
+
+body[data-state~="quiet"] .when-quiet {
+  display: inline;
+}
+
+body[data-state~="quiet"] .try-next-head .chev {
+  transform: rotate(180deg);
+}
+
+body[data-state~="quiet"] .code .ln.is-hint {
+  background: none;
+}
+
+body[data-state~="quiet"] .code .ln.is-hint::before {
+  color: var(--gutter);
+  font-weight: 400;
+}
+
+body[data-state~="quiet"] .edit-here {
+  padding: 0;
+  box-shadow: none;
+  background: none;
+}
+
+body[data-state~="complete"] .hl {
+  background: none;
+  box-shadow: none;
+}
+
+/* ============ エディターの支援（自由に書く画面） ============ */
+
+body:not([data-state~="error"]) .only-error,
+body:not([data-state~="complete"]) .only-complete {
+  display: none !important;
+}
+
+body[data-state~="error"] .only-not-error,
+body[data-state~="complete"] .only-not-complete,
+body[data-state~="complete"] .hover-card {
+  display: none !important;
+}
+
+.badge--plain {
+  background: var(--surface-3) !important;
+  color: var(--fg-2) !important;
+}
+
+.file-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.file-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-code);
+  font-size: var(--text-xs);
+  color: var(--fg-3);
+}
+
+.file-tab[aria-selected="true"] {
+  background: var(--surface-2);
+  color: var(--fg-1);
+}
+
+.file-tab .mod {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.file-tab--add {
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+}
+
+/* 吹き出しは、指す文字の位置に置いた幅 0 の印から出す */
+.anchor {
+  position: relative;
+}
+
+.pop {
+  position: absolute;
+  z-index: 6;
+  left: -12px;
+  bottom: calc(100% + 8px);
+  display: grid;
+  gap: 4px;
+  width: max-content;
+  max-width: 460px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-float);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  line-height: 1.55;
+  color: var(--fg-2);
+  white-space: normal;
+  text-indent: 0;
+}
+
+.pop .sig {
+  font-family: var(--font-code);
+  font-size: var(--text-sm);
+  color: var(--syn-text);
+  white-space: pre-wrap;
+}
+
+.pop .row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+}
+
+.pop .row b {
+  font-weight: 600;
+  color: var(--fg-3);
+}
+
+.pop .row code {
+  font-family: var(--font-code);
+  color: var(--syn-text);
+}
+
+.pop .row b + code {
+  margin-right: 8px;
+}
+
+.pop--below {
+  top: calc(100% + 4px);
+  bottom: auto;
+  left: -4px;
+}
+
+.pop--error {
+  border-left: 3px solid var(--error);
+}
+
+.pop .row--head {
+  color: var(--fg-1);
+  font-weight: 600;
+}
+
+.code-id {
+  font-family: var(--font-code);
+  color: var(--error);
+}
+
+.hl {
+  border-radius: 3px;
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.squiggle {
+  text-decoration: underline wavy var(--error) 1.5px;
+  text-underline-offset: 5px;
+  text-decoration-skip-ink: none;
+}
+
+.code .ln.has-error {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--error) 9%, transparent), transparent 80%);
+}
+
+.code .ln.has-error::before {
+  color: var(--error);
+  font-weight: 600;
+}
+
+.gm {
+  position: absolute;
+  left: 10px;
+  top: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--error);
+}
+
+.code .ln.is-cursor {
+  background: var(--surface-2);
+}
+
+.code .caret {
+  display: inline-block;
+  width: 2px;
+  height: 18px;
+  margin-left: 1px;
+  vertical-align: -3px;
+  background: var(--accent);
+}
+
+/* 補完の一覧（今の Playground にはない。新しく入れる案） */
+.completion {
+  gap: 0;
+  min-width: 260px;
+  padding: 4px;
+}
+
+.completion .opt {
+  display: grid;
+  grid-template-columns: 20px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-code);
+  font-size: var(--text-sm);
+  color: var(--syn-text);
+}
+
+.completion .opt.is-active {
+  background: var(--accent-soft);
+}
+
+.completion .kind {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--syn-type) 14%, transparent);
+  color: var(--syn-type);
+}
+
+.completion .kind svg {
+  width: 12px;
+  height: 12px;
+}
+
+.completion .ty {
+  color: var(--fg-3);
+  font-size: var(--text-xs);
+}
+
+.completion .detail {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  padding: 8px 8px 4px;
+  border-top: 1px solid var(--line);
+}
+
+.completion .keys {
+  margin-left: auto;
+  color: var(--fg-3);
+  white-space: nowrap;
+}
+
+/* 出力の Problems */
+.seg .n {
+  display: inline-block;
+  min-width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+  background: var(--error);
+  color: var(--surface);
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+}
+
+.seg .tab-console {
+  background: var(--surface);
+  color: var(--fg-1);
+  box-shadow: 0 1px 2px rgba(12, 20, 24, 0.1);
+}
+
+body[data-state~="error"] .seg .tab-console {
+  background: none;
+  color: var(--fg-3);
+  box-shadow: none;
+}
+
+body[data-state~="error"] .seg .tab-problems {
+  background: var(--surface);
+  color: var(--fg-1);
+  box-shadow: 0 1px 2px rgba(12, 20, 24, 0.1);
+}
+
+body[data-state~="dark"] .seg .tab-console,
+body[data-state~="dark"][data-state~="error"] .seg .tab-problems {
+  background: var(--surface-3);
+}
+
+body[data-state~="dark"][data-state~="error"] .seg .tab-console {
+  background: none;
+}
+
+.status-chip--error {
+  background: color-mix(in srgb, var(--error) 11%, transparent);
+  color: var(--error);
+}
+
+.problems {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+}
+
+.diag {
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--error) 28%, var(--line));
+  border-left: 3px solid var(--error);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--error) 4%, var(--surface));
+}
+
+.diag-loc {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  font-size: var(--text-xs);
+  text-align: left;
+}
+
+.diag-loc .sev {
+  font-weight: 650;
+  color: var(--error);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.diag-loc code {
+  font-family: var(--font-code);
+  color: var(--fg-2);
+}
+
+.diag-loc .where {
+  margin-left: auto;
+  font-family: var(--font-code);
+  color: var(--accent-ink);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.diag-msg {
+  margin: 6px 0 10px;
+  font-weight: 650;
+  color: var(--fg-1);
+}
+
+.diag dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 14px;
+  margin: 0 0 8px;
+  font-size: var(--text-xs);
+}
+
+.diag dt {
+  color: var(--fg-3);
+}
+
+.diag dd {
+  margin: 0;
+  font-family: var(--font-code);
+  font-size: var(--text-sm);
+}
+
+.diag ul {
+  margin: 0 0 8px;
+  padding-left: 18px;
+  font-size: var(--text-sm);
+  color: var(--fg-2);
+}
+
+.diag p {
+  margin: 4px 0 0;
+  font-size: var(--text-sm);
+  color: var(--fg-2);
+}
+
+.diag p b {
+  margin-right: 6px;
+  font-size: var(--text-xs);
+  font-weight: 650;
+  color: var(--fg-1);
+}
+
+.dot.dot--error {
+  background: var(--error);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--error) 18%, transparent);
 }
 
 /* ============ Playground の配置 ============ */
@@ -1719,6 +2187,35 @@ body[data-state~="map"] .overlay--map {
   }
 
   .foot {
+    display: none;
+  }
+
+  .pop {
+    max-width: min(300px, calc(100vw - 120px));
+  }
+
+  .pop .sig {
+    font-size: var(--text-xs);
+  }
+
+  .gm {
+    left: 4px;
+  }
+
+  /* 記号（-> など）の途中では折り返さない */
+  .code .p {
+    white-space: nowrap;
+  }
+
+  .pop--error {
+    left: -190px;
+  }
+
+  .out-card .card-head:has(.tab-problems) .card-title {
+    display: none;
+  }
+
+  .out-card .card-head:has(.tab-problems) [aria-label="Clear"] {
     display: none;
   }
 

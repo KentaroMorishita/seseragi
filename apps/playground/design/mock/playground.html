@@ -15,8 +15,9 @@
   </head>
   <body>
     <!--
-      状態（# にカンマでつなぐ）: en / dark / palette / output
+      状態（# にカンマでつなぐ）: en / dark / quiet / palette / output
         playground.html             初めて開いたとき（ライト・日本語）
+        playground.html#quiet       2 回目から。初回の案内を畳んだ通常状態
         playground.html#dark        ダーク
         playground.html#en          英語
         playground.html#palette     ⌘K（例・レッスン・API・設定をまとめて探す）
@@ -85,7 +86,7 @@
               <span data-en="This code already runs, and its result is already showing.">このコードはそのまま動きます。結果はもう出ています。</span>
               <div class="row">
                 <a href="./tour.html" data-en="Learn in the Tour →">Tour で基本から →</a>
-                <span class="dim">Close</span>
+                <button class="dim" type="button" data-toggle="quiet">Close</button>
               </div>
             </div>
 <pre class="code"><span class="ln"><span class="c" data-en="// Returns a short piece of advice for each kind of weather.">// 天気ごとに、ひとことアドバイスを返します。</span></span><span class="ln"><span class="k">type</span> <span class="t">Weather</span> <span class="p">=</span></span><span class="ln">  <span class="p">|</span> <span class="t">Sunny</span></span><span class="ln">  <span class="p">|</span> <span class="t">Rainy</span> <span class="t">Int</span></span><span class="ln"> </span><span class="ln"><span class="k">fn</span> advice weather<span class="p">:</span> <span class="t">Weather</span> <span class="p">-&gt;</span> <span class="t">String</span> <span class="p">=</span> <span class="k">match</span> weather <span class="p">{</span></span><span class="ln">  <span class="t">Sunny</span> <span class="p">-&gt;</span> <span class="s" data-en='"Nice day for a walk"'>"散歩日和です"</span></span><span class="ln">  <span class="t">Rainy</span> mm <span class="p">-&gt;</span> <span class="s" data-en="`Take an umbrella (">`傘を持って出かけましょう（</span><span class="p">${</span>mm<span class="p">}</span><span class="s" data-en="mm)`">mm）`</span></span><span class="ln"><span class="p">}</span></span><span class="ln"> </span><span class="ln is-hint"><span class="k">let</span> forecast <span class="p">=</span> <span class="p">[</span><span class="t">Sunny</span><span class="p">,</span> <span class="edit-here"><span class="t">Rainy</span> 3</span><span class="p">,</span> <span class="t">Sunny</span><span class="p">]</span></span><span class="ln"> </span><span class="ln"><span class="k">pub effect fn</span> main <span class="p">=</span> forecast <span class="f">|&gt;</span> map advice <span class="f">|&gt;</span> join <span class="s">"\n"</span> <span class="f">|&gt;</span> println</span></pre>
@@ -122,7 +123,12 @@
               </ol>
             </div>
             <div class="try-next">
-              <h3>Try next</h3>
+              <div class="try-next-head">
+                <h3>Try next</h3>
+                <span class="count">4</span>
+                <span class="spacer"></span>
+                <button class="ghost ghost--sm" type="button" data-toggle="quiet"><span class="when-open">Hide</span><span class="when-quiet">Show</span><svg class="i chev" viewBox="0 0 16 16"><path d="m4 10 4-4 4 4" /></svg></button>
+              </div>
               <div class="prompts">
                 <button class="prompt" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M8 2.5v3M8 10.5v3M2.5 8h3M10.5 8h3" /></svg><span data-en="Make it rain 12mm">雨量を 12mm にする</span></button>
                 <button class="prompt" type="button"><svg class="i" viewBox="0 0 16 16"><path d="M8 2.5v3M8 10.5v3M2.5 8h3M10.5 8h3" /></svg><span data-en="Add Cloudy">くもりを足す</span></button>

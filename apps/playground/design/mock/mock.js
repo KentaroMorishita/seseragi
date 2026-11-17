@@ -1,16 +1,19 @@
 // 確認用: URL の # で表示状態を切り替える。カンマでつなげて組み合わせられる。
 //   言語:   en（指定なしは日本語）
 //   テーマ: dark（指定なしはライト）
+//   案内:   quiet（初回の案内を畳んだ通常状態）
+//   状態:   error（エラーがある） / complete（補完を開いている）
 //   表示:   palette / output / map / code のどれか一つ
 // 例: playground.html#en,dark,palette
 // 本番では言語を URL のパス（/ と /en/）で、テーマを保存した設定で表します。# はモックの都合です。
 
 const VIEWS = ["palette", "output", "map", "code"];
+const TOGGLES = ["quiet", "error", "complete"];
 
 const read = () => new Set(location.hash.slice(1).split(",").filter(Boolean));
 
 const write = (parts) => {
-  const order = ["en", "dark", ...VIEWS];
+  const order = ["en", "dark", ...TOGGLES, ...VIEWS];
   const hash = order.filter((part) => parts.has(part)).join(",");
   history.replaceState(null, "", hash ? `#${hash}` : location.pathname);
   apply();
@@ -48,7 +51,8 @@ document.addEventListener("click", (event) => {
   const lang = target?.closest("[data-lang]");
   const theme = target?.closest("[data-theme-toggle]");
   const view = target?.closest("[data-view]");
-  if (!lang && !theme && !view) return;
+  const toggle = target?.closest("[data-toggle]");
+  if (!lang && !theme && !view && !toggle) return;
   event.preventDefault();
   const parts = read();
   if (lang) {
@@ -58,6 +62,11 @@ document.addEventListener("click", (event) => {
   if (theme) {
     if (parts.has("dark")) parts.delete("dark");
     else parts.add("dark");
+  }
+  if (toggle) {
+    const name = toggle.dataset.toggle;
+    if (parts.has(name)) parts.delete(name);
+    else parts.add(name);
   }
   if (view) {
     for (const name of VIEWS) parts.delete(name);
