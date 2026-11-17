@@ -93,7 +93,7 @@ jobs:
             echo "tour=true" >>"$GITHUB_OUTPUT"
             exit 0
           fi
-          files="$(git diff --name-only "origin/$BASE_REF...HEAD")"
+          files="$(git diff --name-only --no-renames "origin/$BASE_REF...HEAD")"
           shared='^(\.bun-version|\.github/workflows/samples\.yml|scripts/check-scoped\.sh|scripts/sample-cli-process\.ts|apps/playground/tests/wasm-compiler-support\.ts)$'
           samples='^(examples/samples/|apps/playground/src/(sample-catalog|preview-utility-contract)\.ts|apps/playground/src/generated/sample-manifest\.ts|apps/playground/tests/sample-(catalog|compilation)\.test\.ts|scripts/(check-samples-cli|sample-selection|sample-selection\.test|generate-playground-samples)\.ts)'
           tour='^(examples/tour/|examples/spec/(lessons|playground)/|apps/playground/src/generated/tour-manifest\.ts|apps/playground/tests/tour-compilation\.test\.ts|scripts/(check-tour-cli|sample-cli-process\.test|tour-curriculum|tour-lessons|generate-playground-tour)\.ts)'

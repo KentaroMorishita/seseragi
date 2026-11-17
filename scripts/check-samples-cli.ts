@@ -118,7 +118,8 @@ async function changedSampleIds(
   const base = process.env.SESERAGI_SAMPLE_BASE ?? "origin/main"
   const mergeBase = (await git(["merge-base", base, "HEAD"])).trim()
   // Committed, staged and unstaged changes since the base, plus new files.
-  const changed = await git(["diff", "--name-only", mergeBase])
+  // --no-renames lists both sides of a move, so the sample a file left runs.
+  const changed = await git(["diff", "--name-only", "--no-renames", mergeBase])
   const untracked = await git([
     "ls-files",
     "--others",
