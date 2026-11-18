@@ -1,8 +1,24 @@
-fn double value: Int -> Int = value * 2
+fn increment value: Int -> Int = value * 2
 
-fn render value: Maybe<Int> -> String = match value {
-  Nothing -> "Nothing"
-  Just item -> `Just ${item}`
+fn renderMaybe value: Maybe<Int> -> String = match value {
+  Nothing -> "Maybe: Nothing"
+  Just item -> `Maybe: ${item}`
 }
 
-pub effect fn main = double <$> Just 21 |> render |> println
+fn renderEither value: Either<String, Int> -> String = match value {
+  Left error -> `Either: ${error}`
+  Right item -> `Either: ${item}`
+}
+
+pub effect fn main = do {
+  let maybeValue = increment <$> Just 1
+  println (renderMaybe maybeValue)
+  let either: Either<String, Int> = Right 2
+  println (renderEither (increment <$> either))
+  let arrayValues = increment <$> [1, 2]
+  println `Array: ${arrayValues}`
+  let listValues = increment <$> `[3, 4]
+  println `List: ${listValues}`
+  effectValue <- increment <$> succeed 4
+  println `Effect: ${effectValue}`
+}

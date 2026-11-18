@@ -1,4 +1,0 @@
-let failed: Either<String, Int> = Left "invalid"
-let succeeded: Either<String, Int> = Right 42
-
-pub effect fn main = println $ `${failed} / ${succeeded}`

@@ -1,10 +1,11 @@
 import * as signals from "std/signal"
 
 pub effect fn main = do {
-  source <- signals.make 7
+  source <- signals.make 10
   let values = signals.map (\value: Int -> value) source
-  let timesSix = signals.constant (\value: Int -> value * 6)
-  let answer = timesSix <*> values
+  let doubled = (\value: Int -> value * 2) <$> values
+  let addTwo = signals.constant (\value: Int -> value + 5)
+  let answer = addTwo <*> doubled
   current <- *answer
   println `Signal: ${current}`
 }

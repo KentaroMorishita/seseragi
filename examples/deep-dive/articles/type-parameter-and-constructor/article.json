@@ -5,7 +5,7 @@
   "summary": "型parameterのarityがparser上の記法ではなくtype checkerの契約になる理由を辿ります。",
   "relatedTourLessons": [
     "design-type-constructor-kinds",
-    "abstraction-type-constructor-parameter"
+    "abstraction-type-parameter"
   ],
   "relatedLinks": [
     {

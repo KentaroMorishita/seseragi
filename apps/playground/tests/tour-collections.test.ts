@@ -36,7 +36,7 @@ describe("Tour collection curriculum", () => {
         index === 0 ? "exhaustive-match" : coreCollectionIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        coreCollectionIds[index + 1] ?? "maybe-role"
+        coreCollectionIds[index + 1] ?? "maybe-match"
       )
     }
     for (const [index, lesson] of sideTripLessons.entries()) {
