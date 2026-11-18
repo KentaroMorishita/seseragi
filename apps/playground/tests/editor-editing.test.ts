@@ -364,10 +364,10 @@ describe("Playground editor operations", () => {
 
   test("uses a quiet marker instead of CodeMirror's full-size space dot", async () => {
     const styles = await Bun.file(
-      new URL("../src/styles.css", import.meta.url)
+      new URL("../src/ui/playground.css", import.meta.url)
     ).text()
     expect(styles).toContain(".editor-host .ssrg-indent-space")
-    expect(styles).toContain("rgb(142 163 154 / 32%) 0 0.7px")
+    expect(styles).toContain("var(--surface-3) 0 0.7px")
   })
 
   test("renders primary and secondary selections without underline shadows", async () => {
@@ -384,7 +384,7 @@ describe("Playground editor operations", () => {
       Bun.file(
         new URL("../src/editor/search-panel.ts", import.meta.url)
       ).text(),
-      Bun.file(new URL("../src/styles.css", import.meta.url)).text(),
+      Bun.file(new URL("../src/ui/playground.css", import.meta.url)).text(),
     ])
 
     for (const accessibleName of [

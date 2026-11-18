@@ -6,7 +6,9 @@ describe("mobile editing layout contract", () => {
   test("keeps every focused text surface at the iPhone-safe 16px size", async () => {
     const theme = await Bun.file(new URL("src/editor/theme.ts", root)).text()
     const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
-    const tourStyles = await Bun.file(new URL("src/styles.css", root)).text()
+    const tourStyles = await Bun.file(
+      new URL("src/ui/playground.css", root)
+    ).text()
 
     // エディターは既定で 16px。Playground は狭い画面で 16px に戻す
     expect(theme).toContain('fontSize: "var(--cm-font-size, 16px)"')
@@ -31,7 +33,7 @@ describe("mobile editing layout contract", () => {
   })
 
   test("uses a dedicated compact CodeMirror layout on small screens", async () => {
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
 
     expect(styles).toContain(
       "@media (max-width: 760px), (max-width: 960px) and (max-height: 520px)"
@@ -57,16 +59,13 @@ describe("mobile editing layout contract", () => {
   })
 
   test("moves panel navigation out of the vertical stack in landscape", async () => {
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
 
     expect(styles).toContain(
       "@media (orientation: landscape) and (max-width: 960px) and (max-height: 520px)"
     )
-    expect(styles).toMatch(
-      /\.mobile-tabs \{[\s\S]*?position: absolute;[\s\S]*?left: var\(--safe-area-left\);[\s\S]*?width: 42px;/
-    )
-    expect(styles).toMatch(/\.workspace \{[\s\S]*?margin-left: 42px;/)
-    expect(styles).toContain("grid-template-rows: 42px 0 minmax(0, 1fr) 0")
+    // v2 は横向きでも、出力を下からのシートに重ねる（下のタブの列は持たない）
+    expect(styles).not.toContain(".mobile-tabs")
     expect(styles).toContain("--safe-area-left: env(safe-area-inset-left)")
   })
 
@@ -136,13 +135,14 @@ describe("mobile editing layout contract", () => {
 
   test("removes the inactive mobile panel root from layout", async () => {
     const html = await Bun.file(new URL("index.html", root)).text()
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
     const panels = await Bun.file(
       new URL("src/ui/mobile-panels.ts", root)
     ).text()
 
+    // v2 はコードを残したまま、出力のシートの高さだけを変える
     expect(styles).toMatch(
-      /\.workspace\[data-mobile-panel="code"\] \.io-panel,\s*\.workspace\[data-mobile-panel="io"\] \.code-workspace \{\s*display: none;/
+      /\.workspace\[data-mobile-panel="io"\] \.pg-output-card \{\s*height: 70dvh;/
     )
     expect(styles).not.toContain(
       '.workspace[data-mobile-panel="io"] .editor-panel'
@@ -159,7 +159,7 @@ describe("mobile editing layout contract", () => {
     const reference = await Bun.file(
       new URL("src/ui/reference-card.ts", root)
     ).text()
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
     const palette = await Bun.file(
       new URL("src/editor/syntax-theme.css", root)
     ).text()
@@ -167,7 +167,7 @@ describe("mobile editing layout contract", () => {
 
     expect(reference).toContain("highlightSeseragi(item.signature)")
     expect(reference).toContain('signature.className = "seseragi-highlight"')
-    expect(styles).toContain('@import "./editor/syntax-theme.css"')
+    expect(styles).toContain("--seseragi-syntax-keyword: var(--syn-keyword)")
     expect(styles).toContain(".seseragi-highlight .tok-keyword")
     expect(styles).toContain(".seseragi-highlight .tok-typeName")
     expect(styles).toContain(".seseragi-highlight .tok-standardType")
@@ -196,7 +196,7 @@ describe("mobile editing layout contract", () => {
     const editor = await Bun.file(
       new URL("src/editor/create-editor.ts", root)
     ).text()
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
 
     expect(editor).toContain('event.pointerType !== "touch"')
     expect(editor).toContain("activateHover(")
