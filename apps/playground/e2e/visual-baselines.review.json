@@ -19,11 +19,11 @@
     "html-components-desktop-initial-darwin.png": "b513a3e8ce89e3d30e29da8db1018b50db3c126664a348c87621f14ed636878c",
     "html-components-desktop-initial-linux.png": "e0a63e92023d15d51a5d77b58bc19a03dd20929e2cb6f6ae522b19681d71df06",
     "html-components-iphone-390-image-fallback-darwin.png": "811c790e58444bfb8bd2131d90def2f67dce1247d050354bce665f633a385863",
-    "html-components-iphone-390-image-fallback-linux.png": "995aa6bd7ab0b8df4821f68f5ff4acbb13948f2b13441cd94de63d47cff5479a",
+    "html-components-iphone-390-image-fallback-linux.png": "418e6bf97088a39053dcce80d6dbc9f944f043bb94b4c57a63998f4bf2fce6d9",
     "html-components-iphone-390-initial-darwin.png": "224d829a4f3fa29a6bfa710b6ed7c14bcd35cc740c7caefcc634763f9203c361",
-    "html-components-iphone-390-initial-linux.png": "d3d136bc42ee63f231e5fce0f41b6525cd3b8bd2d0413630647ba44b651800a7",
+    "html-components-iphone-390-initial-linux.png": "3f94f340b41d5e827ab4b498655b8fef57e4824b8547aead67f5ed7b532af46a",
     "html-components-minimum-320-code-darwin.png": "82f908d68e8ea007b020ff3106732f890eb4a7250894e58212b6085eebac07e7",
-    "html-components-minimum-320-code-linux.png": "7b9122ce61a415f8f9aaf2e80974be9a1941536f57b02ad60e3319b418ff3fb4",
+    "html-components-minimum-320-code-linux.png": "e0838882d2a9b60fb6eef4312bbf25aa29cbc051645d53cefe4a0c834c116ac5",
     "project-flow-app-desktop-day-studio-darwin.png": "927c9ac83343c4ad35fc6aa8e587e2ce5bff0d6944f26c213ed8bd6e120e5fdf",
     "project-flow-app-desktop-day-studio-linux.png": "809862406d4bd3dd9ce696877d3d8362063d2ac070daea566814c2e9266a871d",
     "project-flow-app-desktop-empty-disabled-darwin.png": "d9ff4ababc00b22b937b86a097964a0f0461fa09f5ced83d3b6e4858f1cfb565",
@@ -35,14 +35,14 @@
     "project-flow-app-desktop-invalid-submit-darwin.png": "f3908075e0295b0234c2b876a5c35a0f8ca252c7441c91acce9339376c2cdc8a",
     "project-flow-app-desktop-invalid-submit-linux.png": "cfd2678bc9c5c0537d1baf62154cd0bc6d4993b3710a0f0f2f09bbfae749f18e",
     "seseragi-landing-page-android-360-alive-darwin.png": "4a54aa8b5f8d265f6c0d97404d59cce1dfbebb2c125f25551b803a6cbdef45c9",
-    "seseragi-landing-page-android-360-alive-linux.png": "476008a26e5a1d469bfb31480900662697500db0185c38d214eff5b0f453f073",
+    "seseragi-landing-page-android-360-alive-linux.png": "96ee55fdf39c692fbecf3ae31af00d1c4c136238a1635ea6db40a8feeb517204",
     "seseragi-landing-page-desktop-composable-darwin.png": "dc9a91e05d4d1cb3d874d8a934c86c392b1fcd12a78427d493aab689891eb8ca",
     "seseragi-landing-page-desktop-composable-linux.png": "ef18a29e047d58de097a8cb0820110b165819e0c2a44e5f3bb6c733d94230b23",
     "seseragi-landing-page-desktop-initial-darwin.png": "d5c07d2441f43ccd98dd9b068a35215a7e9ce27ce1eda4f23000b7774edca7cc",
     "seseragi-landing-page-desktop-initial-linux.png": "994fa54824b2193adaed393995210219280edbfddbfd459c6cde5d1401f093f1",
     "seseragi-landing-page-iphone-390-initial-darwin.png": "295ef4de2e551823039e00c7d1194b9a06c9f6148e90cf2878b7da22377d8ad6",
-    "seseragi-landing-page-iphone-390-initial-linux.png": "80b924e6fefb68bfeaf5b43b34a91083f0c8ab00b637fa9949ebaac485935aad",
+    "seseragi-landing-page-iphone-390-initial-linux.png": "040552cc380bae31dd79f06f1211ccc1014032ac6ae32022062a5ea86401edae",
     "seseragi-landing-page-minimum-320-code-darwin.png": "ac3c31087de3f0a258877ec80ab35006a6f373f26627e445b6c7a37198ebe483",
-    "seseragi-landing-page-minimum-320-code-linux.png": "0a8549dec408dfc14f9dbd2340db10d10e2801ad3f362aa52eda40ca7bd56afe"
+    "seseragi-landing-page-minimum-320-code-linux.png": "e47ba008a508e5d29ae54870dbfbd8a0a4796a580e1aa1373244c1447d0201ff"
   }
 }
