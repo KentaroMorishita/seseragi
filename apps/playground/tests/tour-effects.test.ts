@@ -3,39 +3,26 @@ import { tourLessons } from "../src/tour/curriculum"
 
 const effectIds = [
   "effect-pure-vs-effect",
-  "effect-single-operation",
-  "effect-do-block",
-  "effect-sequence",
-  "effect-bind-success",
-  "effect-succeed-value",
-  "effect-failure-short-circuit",
-  "effect-fails-type",
-  "effect-with-capability",
-  "effect-inferred-contract",
-  "effect-explicit-contract",
-  "effect-map-error",
-  "effect-value-boundary",
   "10-effects-and-do",
+  "effect-failure-short-circuit",
+  "effect-map-error",
+  "effect-with-capability",
 ] as const
 
 describe("Tour Effect curriculum", () => {
   test("stages execution, failure and contracts sequentially", () => {
-    const lessons = tourLessons.slice(69, 69 + effectIds.length)
+    const lessons = tourLessons.slice(16, 16 + effectIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...effectIds])
-    expect(
-      lessons.every(({ id, deliveryIssue }) =>
-        id === "10-effects-and-do"
-          ? deliveryIssue === 262
-          : deliveryIssue === 177
-      )
-    ).toBe(true)
+    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 1348)).toBe(
+      true
+    )
     for (const [index, lesson] of lessons.entries()) {
       expect(lesson.prerequisites).toEqual([
-        index === 0 ? "effect-failure-bridge" : effectIds[index - 1]!,
+        index === 0 ? "either-map-error" : effectIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        effectIds[index + 1] ?? "abstraction-concrete-generic"
+        effectIds[index + 1] ?? "abstraction-type-parameter"
       )
     }
   })
@@ -57,31 +44,24 @@ describe("Tour Effect curriculum", () => {
     }
   })
 
-  test("fixes the short-circuit and application failure contracts", () => {
+  test("fixes the short-circuit, recovery and capability contracts", () => {
     const shortCircuit = lessonById("effect-failure-short-circuit")
     expect(shortCircuit.source).toContain('println "before"')
-    expect(shortCircuit.source).toContain('println "unreachable"')
+    expect(shortCircuit.source).toContain("fail Rejected")
     expect(shortCircuit.expectedOutput).toBe("before")
     expect(shortCircuit.expectedFailure).toBe("Rejected")
 
     const mapped = lessonById("effect-map-error")
-    expect(mapped.source).toContain("|> mapError InvalidInputFailure")
-    expect(mapped.expectedOutput).toBe("")
-    expect(mapped.expectedFailure).toBe(
-      "InvalidInputFailure (InvalidInput bad)"
+    expect(mapped.source).toContain("|> mapError ParseFailure")
+    expect(mapped.source).toContain("|> recover recoverOrder")
+    expect(mapped.expectedFailure).toBe("")
+    expect(mapped.expectedOutput).toContain("fallback (no stock: coffee)")
+
+    const capability = lessonById("effect-with-capability")
+    expect(capability.source).toContain(
+      "-> Unit with Console fails ConsoleError"
     )
-  })
-
-  test("shows inferred and explicit contracts as separate forms", () => {
-    const inferred = lessonById("effect-inferred-contract")
-    expect(inferred.source).toContain("pub effect fn main = println")
-    expect(inferred.source).not.toContain("with Console")
-    expect(inferred.source).not.toContain("fails ConsoleError")
-
-    const explicit = lessonById("effect-explicit-contract")
-    expect(explicit.source).toContain("-> Unit")
-    expect(explicit.source).toContain("with Console")
-    expect(explicit.source).toContain("fails ConsoleError")
+    expect(capability.source).toContain("effect fn reportPair")
   })
 
   test("relates Effect flatMap, >>=, and do after the Maybe lessons", () => {

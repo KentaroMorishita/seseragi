@@ -1,3 +1,7 @@
-examples/tour/lessons/effect-failure-short-circuit/diagnostic.ssrg:4:36: error[SES-T0101]: Expression invalid
-  | fn stop value: StepError -> Unit = fail value
-  |                                    ^^^^^^^^^^ the expression could not be resolved to a typed language construct
+examples/tour/lessons/effect-failure-short-circuit/diagnostic.ssrg:5:40: error[SES-E0001]: Effect body failure does not match the declared failure type
+  |   if count > 0 then succeed count else fail Rejected
+  |                                        ^^^^^^^^^^^^^ declared failure type is Never
+  = expected: Never
+  = actual: StepError
+  = diff: expected Never, actual StepError
+  = help: Use mapError to convert each operation failure to the declared failure type.

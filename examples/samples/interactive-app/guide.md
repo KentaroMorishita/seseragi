@@ -1,9 +1,12 @@
-このsampleを選ぶ理由: 一つのStateとpure reducerで完結する小さなTrail plannerを、Signal作成やDOM runtime接続を手書きせず`dom.app`で動かしたいときに選びます。
+このサンプルを選ぶ理由: 一つの状態を Signal に持ち、その変化に合わせて画面全体を描き直す、いちばん小さな形を見たいときに選びます。
 
-三つのTrail state、typed Action、pure `update`、HTML `view`を一画面へ置きます。Actionを選ぶと見出し、説明、所要時間、accent、progressが同時に変わります。長いutility列はsource内の`cx`と役割名を持つclass valueへ分け、動的な色と進捗幅はnamed `html.Style`へ置いています。
+三つの散歩コースから一つを選ぶと、見出し、説明、標高の断面、時間・距離・登りの数字、背景の色が一緒に変わります。
 
-森林のfixed Unsplash imageはroute選択の文脈を作り、mobileでは三つのactionが一列、desktopでは三列へ切り替わります。
+コードは四つの区切りに分かれています。
 
-`dom.app`は内部で`MutableSignal`作成、`signals.map view`、target query、default options、`dom.run`、Actionからpure `update`へのdispatchを所有します。
+- **状態:** 選んでいるコースは `deriving Eq` を付けた `Trail` 型です。コースごとの文言や色は `info` 関数が `TrailInfo` 構造体にまとめて返すので、コースを足すときは `info` の一か所を直せば済みます。
+- **見た目:** 色や余白は、名前を付けた `html.Style` の関数にしています。選ばれているボタンは `choiceStyle` の `True` の分岐で塗ります。
+- **画面の部品:** 標高の断面は `std/web/svg` の `polygon` と `polyline` で描きます。外部の画像は使いません。選ばれているボタンには `aria-pressed` を付けます。
+- **実行の境界:** `main` で `signals.make` を使って状態の Signal を作り、`signals.map` で画面の Signal にして `dom.run` に渡します。ボタンを押すと `signals.set` で状態が変わり、画面が描き直されます。
 
-pure reducerだけで足りる場合はこの版を選びます。明示的な`signals.make`と`dom.run`の最小構成を見たい場合は`web-starter`、複数のfeature-owned Signalやcustom実行境界を扱う場合は`feature-composition`、formと複数eventの完成例は`form-todo`を確認します。
+複数の Signal を組み合わせる形は `feature-composition`、フォームを含む完成した画面は `form-todo` を見てください。

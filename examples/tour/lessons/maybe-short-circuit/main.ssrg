@@ -1,7 +1,25 @@
-fn next value: Int -> Maybe<Int> = Just (value + 1)
+fn double value: Int -> Int = value * 2
+fn add left: Int -> right: Int -> Int = left + right
 
-let source: Maybe<Int> = Nothing
-let named: Maybe<Int> = flatMap next source
-let viaOperator: Maybe<Int> = source >>= next
+fn next value: Int -> Maybe<Int> = if value > 0 then Just (value + 1) else Nothing
 
-pub effect fn main = println $ `flatMap: ${named} / >>=: ${viaOperator}`
+let mapped = map double (Just 21)
+let mappedOp = double <$> Just 21
+
+let combined = apply (map add (Just 20)) (Just 22)
+let combinedOp = add <$> Just 20 <*> Just 22
+
+let input: Maybe<Int> = Just 41
+let chained = flatMap next input
+let chainedOp = input >>= next
+
+let missing: Maybe<Int> = Nothing
+let stopped = flatMap next missing
+let stoppedOp = missing >>= next
+
+pub effect fn main = do {
+  println `map: ${mapped} / <$>: ${mappedOp}`
+  println `apply: ${combined} / <*>: ${combinedOp}`
+  println `flatMap: ${chained} / >>=: ${chainedOp}`
+  println `missing -> flatMap: ${stopped} / >>=: ${stoppedOp}`
+}

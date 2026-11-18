@@ -1,0 +1,74 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "tuple-and-record",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "小さな関数を組み立てて値を受け渡せるようになりました。ここからは複数の値をひとまとめに扱うデータの形を学びます。",
+    "walkthrough": [
+      {
+        "heading": "固定長のタプルを作って分解する",
+        "body": "1行目の `(String, Int)` は `String` と `Int` を順に並べる固定長のタプル型です。2行目の `let (city, stops) = pair` で位置ごとの要素を変数に取り出します。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 2
+        }
+      },
+      {
+        "heading": "無名レコードの作成とスプレッド更新",
+        "body": "4行目の `{ city: city, stops: stops, line: \"Rapid\" }` は名前なしの無名レコードです。5行目の `{ ...route, stops: 3 }` は元の `route` を変えずに `stops` だけを更新した新しいレコードを作ります。",
+        "sourceRange": {
+          "startLine": 4,
+          "endLine": 6
+        }
+      },
+      {
+        "heading": "フィールド参照と構造による互換性",
+        "body": "`.city` や `.stops` のようにドットでフィールドを取り出せます。`summarize` が要求する型は `city` と `stops` の 2 つだけなので、余分な `line` がある `route` も、最小限の `express` も同じ関数に渡せます。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 12
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "タプルと無名レコード",
+        "body": "`(A, B)` は位置で要素をまとめる固定長タプル、`{ field: value }` は名前付きフィールドで値をまとめる無名レコードです。"
+      },
+      {
+        "kind": "syntax",
+        "name": "タプル分解とスプレッド更新",
+        "body": "`let (a, b) = pair` でタプルを位置ごとに分解でき、`{ ...record, field: newValue }` で元の値を変えずに一部を更新したレコードを作れます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの1行目にある `(\"Osaka\", 2)` を `(\"Kobe\", 4)` に、5行目の `stops: 3` を `stops: 5` に書き換えて `Run` し、`Output` の1行目と2行目が `Rapid: Kobe (4)` と `Updated: Kobe (5)` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "必要なフィールドが足りないレコードを渡す",
+      "body": "無名レコードは必要なフィールドがすべて揃っていれば互換しますが、`stops` を欠いた `{ city: \"Kyoto\" }` を `summarize` に渡すと実行前の診断で不足しているフィールドが示されます。"
+    },
+    "recap": [
+      "固定長のタプルは位置で値をまとめ、`let (a, b) = ...` で各要素を取り出せる。",
+      "無名レコードは `{ ... }` で作り、`.field` で参照し、`{ ...record, field: newValue }` で元の値を保ったまま更新できる。",
+      "関数が要求するフィールドをすべて持っていれば、余分なフィールドの有無にかかわらず同じ関数に渡せる。"
+    ],
+    "next": {
+      "lessonId": "06-records-and-structs",
+      "body": "次は型に固有の名前を付けて形で混同されないようにする `struct` を学びます。"
+    },
+    "notes": [
+      "スプレッド更新で新しいレコードを作っても元の `route` は書き換わらず、`Output` には変更前の値がそのまま残ります。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

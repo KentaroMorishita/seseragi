@@ -1,1 +1,66 @@
-{"$schema":"../../lesson.schema.json","id":"abstraction-applicative-apply","formatVersion":2,"sections":{"prerequisite":"Maybeで`map add left`の途中型を作り、named `apply`を`<*>`へ書き換えました。","walkthrough":[{"heading":"具体型で追った途中型を再確認する","body":"`left`と`right`は独立したMaybeです。curried addを一つ目へmapすると`Maybe<Int -> Int>`が残ります。","sourceRange":{"startLine":1,"endLine":6}},{"heading":"MaybeをFへ置き換える","body":"途中型を`F<A -> B>`、二つ目を`F<A>`、結果を`F<B>`と書くと、Maybe以外にも共通するapply contractになります。","sourceRange":{"startLine":8,"endLine":8}},{"heading":"Named形とoperator形を同じcontractへ戻す","body":"`apply partial right`と`operatorPartial <*> right`は具体型で既に使った同じoperationです。ここではApplicativeというTrait名とinstance選択を結びます。","sourceRange":{"startLine":8,"endLine":10}},{"heading":"Semanticsはinstanceごとに異なる","body":"共通type schemeは同じでも、MaybeはNothingを保ち、ArrayやListはCartesian product、Validationはerror蓄積という別semanticsを持ちます。","sourceRange":{"startLine":8,"endLine":10}}],"introduced":[{"kind":"api","name":"Applicative共通contract","body":"Applicativeは具体型で使った`apply` / `<*>`を`F<A -> B> -> F<A> -> F<B>`として統一します。組み合わせ方は各instanceが決めます。"}],"exercise":{"instruction":"課題sourceの6か7を変更し、共通contractでもapplyと<*>が同じ結果になることを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"値を関数として適用する","body":"失敗例は`Just 42`を左辺の関数containerとして使います。左側が`Maybe<Int -> Int>`である必要を確認します。"},"recap":["具体型のapplyと<*>はApplicativeの同じoperationである。","共通type schemeは同じでも組み合わせsemanticsはinstanceごとに異なる。"],"next":{"lessonId":"abstraction-monad-bind","body":"次はMaybeとEffectで使ったflatMap・>>=・doをMonad contractとして回収します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "abstraction-applicative-apply",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`Maybe` で `map add left` の途中型を作り、`apply` を `<*>` に書き換えました。ここではその仕組みを `Applicative` の共通契約として見直します。",
+    "walkthrough": [
+      {
+        "heading": "2 引数関数を 1 つ目の値に部分適用する",
+        "body": "`left` と `right` は互いに独立した `Maybe<Int>` です。カリー化された `add` を `left` へ `map` すると、残りの引数を受け取る関数が入った `Maybe<Int -> Int>` 型の `partial` ができます。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 12
+        }
+      },
+      {
+        "heading": "apply と演算子で 2 つ目の値を渡す",
+        "body": "`apply partial right` も `operatorPartial <*> right` も、箱に入った関数 `F<A -> B>` と箱に入った値 `F<A>` から `F<B>` を作る `Applicative` の操作です。`F` を `Maybe` 以外の型に置き換えても同じ形で書けます。",
+        "sourceRange": {
+          "startLine": 13,
+          "endLine": 15
+        }
+      },
+      {
+        "heading": "組み合わせの振る舞いは型ごとに決まる",
+        "body": "共通の型シグネチャは同じでも、実際の振る舞いは選ばれた `instance` ごとに異なります。`Maybe` はどちらかが `Nothing` なら `Nothing` を返し、`Array` や `List` では全要素の組み合わせが作られます。",
+        "sourceRange": {
+          "startLine": 16,
+          "endLine": 18
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "Applicative の共通契約",
+        "body": "`Applicative<F<_>>` は `pure` と `apply`（演算子 `<*>`）を宣言し、独立した複数の `F<A>` 値を組み合わせて `F<B>` を作ります。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 9 行目にある `Just 20` を `Just 30` に、10 行目の `Just 22` を `Just 15` に書き換えて `Run` し、3 つの `Output` がすべて `Just 45` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "関数ではない値を左辺に渡す",
+      "body": "失敗例では `<*>` の左辺に関数ではなく `Just 42` を置いています。左辺には `Maybe<Int -> Int>` のように関数を包んだ値が必要なため、型の不一致が報告されます。"
+    },
+    "recap": [
+      "`apply` と `<*>` はどちらも `Applicative` の同じ操作を表している。",
+      "カリー化された関数を `<$>` と `<*>` でつなぐと、独立した複数の値を簡潔に組み合わせられる。",
+      "型の枠組みは共通でも、実際の合成規則は型ごとの `instance` が決める。"
+    ],
+    "next": {
+      "lessonId": "abstraction-monad-bind",
+      "body": "次は前の結果に応じて次の処理を選ぶ `flatMap`・`>>=`・`do` を、`Monad` の共通契約として整理します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

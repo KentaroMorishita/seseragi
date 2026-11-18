@@ -144,6 +144,26 @@
       "end": 461
     }
   ],
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_arrayShow",
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.unit",
     "core.int",
@@ -1060,19 +1080,9 @@
                                 "value": {
                                   "kind": "dictionary-call",
                                   "dictionary": {
-                                    "kind": "type-application-call",
-                                    "callee": "_ssrg_show_arrayShow",
-                                    "typeArguments": [
-                                      {
-                                        "kind": "number"
-                                      }
-                                    ],
-                                    "arguments": [
-                                      {
-                                        "kind": "runtime-reference",
-                                        "name": "_ssrg_show_intShow"
-                                      }
-                                    ]
+                                    "kind": "call",
+                                    "callee": "$ssrg$closedDisplay$0",
+                                    "arguments": []
                                   },
                                   "method": "show",
                                   "arguments": [

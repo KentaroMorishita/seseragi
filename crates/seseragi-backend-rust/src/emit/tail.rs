@@ -196,8 +196,19 @@ impl Backend<'_> {
                 ..
             } => {
                 let value = self.fresh();
-                let mut body = format!("{{ let {value} = {};", self.expr(scrutinee, scope)?);
+                let (scrutinee, view) =
+                    self.decision_scrutinee(scrutinee, scrutinee_type, branches, scope)?;
+                let mut body = format!("{{ let {value} = {scrutinee};");
                 for branch in branches {
+                    if view {
+                        body.push_str(&self.maybe_view_branch(
+                            branch,
+                            &value,
+                            scope,
+                            |backend, value, inner| backend.tail_body(value, inner, target),
+                        )?);
+                        continue;
+                    }
                     let plan = seseragi_lowering::core_list_prefix_plan(
                         scrutinee_type,
                         branch,

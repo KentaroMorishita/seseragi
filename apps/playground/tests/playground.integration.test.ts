@@ -2564,8 +2564,11 @@ describe("Playground sample catalog", () => {
     )
     expect(new Set(webSamples.map(({ architecture }) => architecture))).toEqual(
       new Set(
+        // Official UI samples use Signal; dom.app stays a valid value for
+        // user workspaces but no shipped sample is written with it.
         sampleArchitectures.filter(
-          (architecture) => architecture !== "signal-mount"
+          (architecture) =>
+            architecture !== "signal-mount" && architecture !== "dom-app"
         )
       )
     )
@@ -2583,7 +2586,7 @@ describe("Playground sample catalog", () => {
         expect.objectContaining({
           id: "interactive-app",
           experience: "minimal",
-          architecture: "dom-app",
+          architecture: "signal-run",
           focus: "state",
         }),
         expect.objectContaining({
@@ -2607,8 +2610,10 @@ describe("Playground sample catalog", () => {
       ])
     )
     for (const sample of webSamples) {
-      expect(sample.guide.trimStart().startsWith("このsampleを選ぶ理由:")).toBe(
-        true
+      // #1381 moves every guide to plain Japanese ("このサンプル…"); accept both
+      // openings until all guides are rewritten.
+      expect(sample.guide.trimStart()).toMatch(
+        /^この(?:sample|サンプル)を選ぶ理由:/u
       )
       expect(sample.title).not.toBe("Interactive Web App")
     }
@@ -3376,67 +3381,74 @@ fails dom.DomRuntimeError<Never> =
     )
 
     expect(sample?.interactive).toBe(true)
-    expect(sample?.source).toContain("dom.app {")
-    expect(sample?.source).not.toContain("dom.run (dom.defaultOptions ())")
+    // UI samples are built on Signal and dom.run, not the Elm-style dom.app.
+    expect(sample?.source).toContain("signals.make")
+    expect(sample?.source).toContain("dom.run (dom.defaultOptions ())")
+    expect(sample?.source).not.toContain("dom.app")
     expect(main).toContain("onDomMounted")
     expect(main).toContain('setStatus("success", "Interactive")')
     expect(main).toContain("execution.cancel()")
   })
 
-  test("keeps dom.app trail planner view snapshots across route updates", async () => {
-    const domApp = samples.find(({ id }) => id === "interactive-app")
-    if (domApp === undefined) {
+  test("keeps trail planner view snapshots across trail changes", async () => {
+    const trail = samples.find(({ id }) => id === "interactive-app")
+    if (trail === undefined) {
       throw new Error("missing interactive-app sample")
     }
 
-    expect(domApp.comparisonSample).toBeUndefined()
-    expect(domApp.architecture).toBe("dom-app")
+    expect(trail.comparisonSample).toBeUndefined()
+    expect(trail.architecture).toBe("signal-run")
 
-    const runtimeMarker = "// Runtime boundary:"
+    const runtimeMarker = "// ── 実行の境界"
+    expect(trail.source).toContain(runtimeMarker)
 
     const snapshotSource = (source: string) => `${source.slice(
       0,
       source.indexOf(runtimeMarker)
     )}
-pub effect fn main -> Unit
-with Console
-fails String =
-  do {
-    imageUrl <-
-      parseSampleUrl "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=960&h=480&q=80"
-    println (html.renderToString (view imageUrl initialState))
-    |> mapError (\\error: ConsoleError -> show error)
-    println (html.renderToString (view imageUrl (update ChooseRiverside initialState)))
-    |> mapError (\\error: ConsoleError -> show error)
-    println (html.renderToString (view imageUrl (update ChooseWoodland initialState)))
-    |> mapError (\\error: ConsoleError -> show error)
-    println (html.renderToString (view imageUrl (update ChooseRidge initialState)))
-    |> mapError (\\error: ConsoleError -> show error)
-  }
-`
-    const executeSnapshots = async (id: string, source: string) => {
-      const response = await compile(`${id}-snapshots.ssrg`, source)
-      expect(response.status).toBe("success")
-      if (response.status !== "success" || response.entry === undefined) {
-        throw new Error(`missing ${id} snapshot entry`)
-      }
-      return executeGeneratedModule(
-        response.generated.typescript,
-        response.entry
-      )
-    }
+effect fn pressedAttribute value: String -> html.Attribute fails String =
+  html.attribute "aria-pressed" value
+    |> fromEither
+    |> mapError (\\error: html.HtmlBuildError -> show error)
 
-    const appSnapshots = await executeSnapshots(
-      domApp.id,
-      snapshotSource(domApp.source)
+pub effect fn main -> Unit with Console fails String = do {
+  on <- pressedAttribute "true"
+  off <- pressedAttribute "false"
+  let pressed = Pressed { on, off }
+  state <- signals.make Woodland
+  println (html.renderToString (page pressed state Riverside))
+    |> mapError (\\error: ConsoleError -> show error)
+  println (html.renderToString (page pressed state Woodland))
+    |> mapError (\\error: ConsoleError -> show error)
+  println (html.renderToString (page pressed state Ridge))
+    |> mapError (\\error: ConsoleError -> show error)
+}
+`
+    const response = await compile(
+      `${trail.id}-snapshots.ssrg`,
+      snapshotSource(trail.source)
     )
-    expect(appSnapshots.stdout.split("\n")).toHaveLength(4)
-    expect(appSnapshots.stdout).toContain("川辺をゆっくり歩く")
-    expect(appSnapshots.stdout).toContain("木陰の周回コースを歩く")
-    expect(appSnapshots.stdout).toContain("尾根の展望へ登る")
-    expect(appSnapshots.stdout).toContain("width: 28%")
-    expect(appSnapshots.stdout).toContain("width: 62%")
-    expect(appSnapshots.stdout).toContain("width: 88%")
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || response.entry === undefined) {
+      throw new Error(`missing ${trail.id} snapshot entry`)
+    }
+    const snapshots = await executeGeneratedModule(
+      response.generated.typescript,
+      response.entry
+    )
+    const lines = snapshots.stdout.trim().split("\n")
+    expect(lines).toHaveLength(3)
+    expect(lines[0]).toContain("川辺をゆっくり歩く")
+    expect(lines[1]).toContain("木陰の周回コースを歩く")
+    expect(lines[2]).toContain("尾根の展望へ登る")
+    // Each trail paints its own accent and elevation profile.
+    expect(lines[0]).toContain("#1d6fa5")
+    expect(lines[1]).toContain("#2f7a4b")
+    expect(lines[2]).toContain("#b0552a")
+    expect(lines[2]).toContain("280,18")
+    // Exactly one choice is pressed in each state.
+    for (const line of lines)
+      expect(line.match(/aria-pressed="true"/gu)).toHaveLength(1)
   })
 
   test("shows stateful feature composition without a flattened root Action", () => {

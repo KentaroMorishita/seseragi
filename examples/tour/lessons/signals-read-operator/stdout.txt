@@ -1,3 +1,0 @@
-signals.read Signal: 42
-*Signal: 42
-*MutableSignal: 42

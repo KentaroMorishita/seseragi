@@ -12,8 +12,10 @@ thread_local! {
     static DICTIONARIES: RefCell<BTreeMap<&'static str, V>> = const { RefCell::new(BTreeMap::new()) };
     pub static GLOBALS: RefCell<Vec<V>> = const { RefCell::new(Vec::new()) };
     pub static LIVE: Cell<usize> = const { Cell::new(0) };
+    #[cfg(test)]
     static PEAK: Cell<usize> = const { Cell::new(0) };
     pub static ALLOCATIONS: Cell<usize> = const { Cell::new(0) };
+    #[cfg(test)]
     static SHARES: Cell<usize> = const { Cell::new(0) };
 }
 
@@ -37,6 +39,7 @@ impl<T: TraceValue + 'static> Shared<T> {
         DRAINING.with(|_| {});
         LIVE.with(|n| {
             n.set(n.get() + 1);
+            #[cfg(test)]
             PEAK.with(|p| p.set(p.get().max(n.get())));
         });
         ALLOCATIONS.with(|n| n.set(n.get() + 1));
@@ -59,7 +62,9 @@ impl<T: TraceValue + 'static> Shared<T> {
     }
 }
 impl<T: TraceValue + 'static> Clone for Shared<T> {
+    #[inline]
     fn clone(&self) -> Self {
+        #[cfg(test)]
         SHARES.with(|n| n.set(n.get() + 1));
         Self(Some(Rc::clone(
             self.0.as_ref().expect("live shared handle"),
@@ -70,12 +75,19 @@ impl<T: TraceValue + 'static> Clone for Shared<T> {
 // Destroy last owners through a work queue. Dropping a parent can enqueue
 // children, but cannot recurse through a long immutable value graph.
 impl<T: TraceValue + 'static> Drop for Shared<T> {
+    #[inline]
     fn drop(&mut self) {
         let node = self.0.take().expect("live shared handle");
         if Rc::strong_count(&node) != 1 {
             drop(node);
             return;
         }
+        Self::drop_last(node);
+    }
+}
+impl<T: TraceValue + 'static> Shared<T> {
+    #[inline(never)]
+    fn drop_last(node: Rc<Node<T>>) {
         let mut managed_child = false;
         let inspected = node.value.edges(&mut |value| {
             managed_child |= value.node_id().is_some();
@@ -197,7 +209,6 @@ pub fn clear_globals() {
     drop(values);
 }
 
-#[derive(Clone)]
 pub enum V {
     Unit,
     Int(i64),
@@ -236,9 +247,120 @@ pub enum V {
     Permit(Shared<NativePermit>),
 }
 
+// Most clones copy a scalar. Keep that path small enough to inline at every
+// call site; a shared node only gains one more owner.
+impl Clone for V {
+    #[inline(always)]
+    fn clone(&self) -> Self {
+        match self {
+            Self::Unit => Self::Unit,
+            Self::Int(value) => Self::Int(*value),
+            Self::Byte(value) => Self::Byte(*value),
+            Self::Float(value) => Self::Float(*value),
+            Self::Char(value) => Self::Char(*value),
+            Self::Bool(value) => Self::Bool(*value),
+            Self::ListEmpty => Self::ListEmpty,
+            _ => self.clone_shared(),
+        }
+    }
+}
+
+impl V {
+    #[inline(never)]
+    fn clone_shared(&self) -> Self {
+        match self {
+            Self::Text(value) => Self::Text(value.clone()),
+            Self::Bytes(value) => Self::Bytes(value.clone()),
+            Self::File(value) => Self::File(value.clone()),
+            Self::ChildProcess(value) => Self::ChildProcess(value.clone()),
+            Self::PathResource(value) => Self::PathResource(value.clone()),
+            Self::BigInt(value) => Self::BigInt(value.clone()),
+            Self::Decimal(value) => Self::Decimal(value.clone()),
+            Self::DecimalContext(value) => Self::DecimalContext(value.clone()),
+            Self::Regex(value) => Self::Regex(value.clone()),
+            Self::Tuple(value) => Self::Tuple(value.clone()),
+            Self::Array(value) => Self::Array(value.clone()),
+            Self::Map(value) => Self::Map(value.clone()),
+            Self::Set(value) => Self::Set(value.clone()),
+            Self::MapIndex(value) => Self::MapIndex(value.clone()),
+            Self::MapEntry(value) => Self::MapEntry(value.clone()),
+            Self::List(value) => Self::List(value.clone()),
+            Self::Record(value) => Self::Record(value.clone()),
+            Self::HtmlStyleRecord(value) => Self::HtmlStyleRecord(value.clone()),
+            Self::Fun(value) => Self::Fun(value.clone()),
+            Self::Dict(value) => Self::Dict(value.clone()),
+            Self::Reference(value) => Self::Reference(value.clone()),
+            Self::Effect(value) => Self::Effect(value.clone()),
+            Self::Fiber(value) => Self::Fiber(value.clone()),
+            Self::Deferred(value) => Self::Deferred(value.clone()),
+            Self::Queue(value) => Self::Queue(value.clone()),
+            Self::Semaphore(value) => Self::Semaphore(value.clone()),
+            Self::Permit(value) => Self::Permit(value.clone()),
+            Self::Adt(value) => Self::Adt(value.clone()),
+            Self::Unit
+            | Self::Int(_)
+            | Self::Byte(_)
+            | Self::Float(_)
+            | Self::Char(_)
+            | Self::Bool(_)
+            | Self::ListEmpty => unreachable!("Rust ABI: scalar values are copied inline"),
+        }
+    }
+}
+
 pub struct Function {
-    pub captures: Vec<V>,
+    pub captures: Captures,
     code: fn(&[V], V) -> V,
+}
+
+/// A function's captured values. Up to three live in the function's own node,
+/// so a small closure costs one allocation instead of two.
+pub enum Captures {
+    Zero,
+    One([V; 1]),
+    Two([V; 2]),
+    Three([V; 3]),
+    Many(Vec<V>),
+}
+
+impl std::ops::Deref for Captures {
+    type Target = [V];
+    #[inline]
+    fn deref(&self) -> &[V] {
+        match self {
+            Self::Zero => &[],
+            Self::One(values) => values,
+            Self::Two(values) => values,
+            Self::Three(values) => values,
+            Self::Many(values) => values,
+        }
+    }
+}
+
+impl From<Vec<V>> for Captures {
+    #[inline]
+    fn from(values: Vec<V>) -> Self {
+        if values.is_empty() {
+            Self::Zero
+        } else {
+            Self::Many(values)
+        }
+    }
+}
+
+impl<const N: usize> From<[V; N]> for Captures {
+    #[inline]
+    fn from(values: [V; N]) -> Self {
+        let mut values = values.into_iter();
+        let mut next = || values.next().expect("Rust ABI: capture count");
+        match N {
+            0 => Self::Zero,
+            1 => Self::One([next()]),
+            2 => Self::Two([next(), next()]),
+            3 => Self::Three([next(), next(), next()]),
+            _ => Self::Many(values.collect()),
+        }
+    }
 }
 
 impl V {
@@ -247,8 +369,11 @@ impl V {
         Self::Text(Shared::new(value.to_owned()))
     }
     #[inline]
-    pub fn fun(captures: Vec<V>, code: fn(&[V], V) -> V) -> Self {
-        Self::Fun(Shared::new(Function { captures, code }))
+    pub fn fun(captures: impl Into<Captures>, code: fn(&[V], V) -> V) -> Self {
+        Self::Fun(Shared::new(Function {
+            captures: captures.into(),
+            code,
+        }))
     }
     #[inline]
     pub fn adt(tag: &'static str, payload: V) -> Self {
@@ -699,7 +824,7 @@ mod tests {
         assert!(released_while_the_drop_queue_is_busy(value));
         assert!(released_while_the_drop_queue_is_busy(Shared::new(
             Function {
-                captures: vec![V::Int(42)],
+                captures: vec![V::Int(42)].into(),
                 code: |capture, _| capture[0].clone(),
             }
         )));

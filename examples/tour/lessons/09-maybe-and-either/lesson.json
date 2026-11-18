@@ -1,1 +1,79 @@
-{"$schema":"../../lesson.schema.json","id":"09-maybe-and-either","formatVersion":2,"sections":{"prerequisite":"MaybeとEitherを構築し、matchし、payloadを変換できるようになりました。","walkthrough":[{"heading":"欠如か理由付き失敗かで選ぶ","body":"検索結果の不在にはMaybe、入力検証の失敗理由を呼び出し元へ残すならEitherを使います。","sourceRange":{"startLine":1,"endLine":1}}],"introduced":[{"kind":"type","name":"fallibility selection","body":"理由を必要としない欠如はMaybe、error情報を保持する失敗はEitherで表します。"}],"exercise":{"instruction":"課題sourceのMaybeとEitherを別caseへ変え、残る情報の違いを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Maybeへerror理由を直接入れる","body":"失敗例ではMaybe<String>へLeftを置きます。欠如と理由付き失敗の型を区別してください。"},"recap":["Maybeは値の有無を表す。","Eitherは失敗理由と成功値を表す。"],"next":{"lessonId":"effect-failure-bridge","body":"次はvalueとしての失敗と実行中のfailureの境界を整理します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "09-maybe-and-either",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`Maybe` で「値があるかないか」を扱えるようになりました。ここでは「なぜ失敗したのか」という理由も表せる `Either` を学びます。",
+    "walkthrough": [
+      {
+        "heading": "Left と Right で失敗理由と成功値を表す",
+        "body": "12〜13 行目の `Either<String, Int>` は、左側に失敗理由の型（`String`）、右側に成功値の型（`Int`）を持ちます。成功は `Right`、失敗は理由付きの `Left` で作ります。",
+        "sourceRange": {
+          "startLine": 12,
+          "endLine": 13
+        }
+      },
+      {
+        "heading": "match で失敗と成功の両方を取り出す",
+        "body": "6〜9 行目の `match` で `Left reason` と `Right count` を分けて処理します。パターンで束縛した `reason` や `count` はそれぞれの結果の中で必ず使います。",
+        "sourceRange": {
+          "startLine": 6,
+          "endLine": 9
+        }
+      },
+      {
+        "heading": "理由の要・不要で Maybe と Either を使い分ける",
+        "body": "11 行目の `note` のように「あるかないか」だけを表すなら `Maybe`、注文数の不正のように理由を伝えたいなら `Either` を選びます。",
+        "sourceRange": {
+          "startLine": 11,
+          "endLine": 13
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Either<E, A>",
+        "body": "左側の型引数 `E` に失敗理由、右側の型引数 `A` に成功値を持つ型です。理由不要の欠如には `Maybe`、理由を残す失敗には `Either` を使います。"
+      },
+      {
+        "kind": "syntax",
+        "name": "Left と Right",
+        "body": "`Left` は失敗理由を、`Right` は成功値を包む `Either` のコンストラクターです。"
+      },
+      {
+        "kind": "syntax",
+        "name": "Either の match",
+        "body": "`Left` と `Right` の両方を `match` で網羅的に分岐し、取り出した値を使って結果を返します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 12 行目にある `Right 3` を `Left \"out of stock\"` に書き換えて `Run` し、`Output` の 2 行目が `error: out of stock` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Maybe 型に Either の Left を入れる",
+      "body": "失敗例では `Maybe<Int>` 型の変数へ理由付きの `Left` を入れようとしています。失敗理由を持たせたいときは型を `Either<String, Int>` にします。"
+    },
+    "recap": [
+      "`Either<E, A>` は失敗理由の型 `E` と成功値の型 `A` を一つの値として表せます。",
+      "理由が不要な欠如には `Maybe`、失敗理由を伝えたいときは `Either` を使います。",
+      "`match` では `Left` と `Right` を両方扱い、束縛した変数は分岐の中で必ず使います。"
+    ],
+    "next": {
+      "lessonId": "either-map-error",
+      "body": "次は `Either` の成功値や失敗理由をそれぞれ別の関数で変換し、次の `Effect` 層へ渡す前にエラーの型を揃える方法を学びます。"
+    },
+    "notes": [
+      "複数の変換をつなぐときも、`|>` の位置を揃えて改行して書くと読みやすくなります。また、`Either` の `match` でも片方の分岐を書き忘れると実行前にエラー表示が出ます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

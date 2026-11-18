@@ -36,16 +36,16 @@ describe("structured Tour inline rich text", () => {
     }
   })
 
-  test("renders the primitive comparison markers as inline code tokens", () => {
-    const lesson = tourLessons.find(({ id }) => id === "primitive-comparison")
+  test("renders the values and bindings markers as inline code tokens", () => {
+    const lesson = tourLessons.find(({ id }) => id === "02-values-and-bindings")
     if (lesson?.format === undefined) {
-      throw new Error("missing primitive-comparison structured lesson")
+      throw new Error("missing 02-values-and-bindings structured lesson")
     }
 
-    expect(codeValues(lesson.format.prerequisite)).toContain("+")
+    expect(codeValues(lesson.format.prerequisite)).toContain("let")
     expect(
       codeValues(lesson.format.walkthrough[0]?.body ?? inline("missing"))
-    ).toEqual(expect.arrayContaining(["42 > 40", "True"]))
+    ).toEqual(expect.arrayContaining(["+", "42 > 40", "True"]))
   })
 
   test("keeps identifiers and accessibility headings outside rich text", async () => {

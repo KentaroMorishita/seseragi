@@ -1,1 +1,62 @@
-{"$schema":"../../lesson.schema.json","id":"web-accessibility-label","formatVersion":2,"sections":{"prerequisite":"Typed ActionをmatchしてMutableSignalへ反映しました。","walkthrough":[{"heading":"Labelとinputをidで結ぶ","body":"labelのhtmlForとinputのidを同じ値にし、visible labelから入力へ移動できる関係を作ります。","sourceRange":{"startLine":1,"endLine":9}},{"heading":"状態をroleで伝える","body":"role=statusのpは、編集可能状態を支援技術へ伝えるlive status surfaceになります。","sourceRange":{"startLine":8,"endLine":11}}],"introduced":[{"kind":"api","name":"label, htmlFor and role","body":"Visible label、matching id、状態に合うroleをtyped propsとして明示します。"}],"exercise":{"instruction":"Label textとmatching id/htmlForを一緒に変更してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"HtmlForへIntを渡す","body":"失敗例はid参照StringへIntを渡します。"},"recap":["LabelのhtmlForとinput idを一致させる。","状態messageには意味に合うroleを付ける。"],"next":{"lessonId":"web-feature-state","body":"最後にcomponentとstateの所有境界をまとめます。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.html","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "web-accessibility-label",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "画像と外部リンクの安全な扱いを学びました。ここではフォームの入力欄とラベルの関連付けや、状態メッセージを伝えるアクセシビリティ属性を学びます。",
+    "walkthrough": [
+      {
+        "heading": "html.label と入力欄を id で結びつける",
+        "body": "10〜11 行目では `html.label` の `htmlFor` と `html.input` の `id` に同じ `\"draft\"` を指定しています。これによりラベルをクリックして入力欄へ移動できるようになります。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 11
+        }
+      },
+      {
+        "heading": "role 属性で状態メッセージの役割を伝える",
+        "body": "12〜16 行目では `html.p` に `role: \"status\"` を付けて現在の状態を表示しています。支援技術が状態変化を読み取りやすくなり、最後は HTML 文字列として出力します。",
+        "sourceRange": {
+          "startLine": 12,
+          "endLine": 16
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "html.label と htmlFor",
+        "body": "入力欄の説明ラベルを作り、`htmlFor` に対象となる入力欄の `id` を指定して結びつけます。出力時には HTML の `for` 属性になります。"
+      },
+      {
+        "kind": "api",
+        "name": "role 属性",
+        "body": "要素が画面上で担う役割を示す属性です。更新結果や状態を知らせる領域には `role: \"status\"` を指定します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 10〜11 行目にある `\"draft\"` を両方 `\"task\"` に、10 行目の `\"Plan name\"` を `\"Task title\"` に書き換えて `Run` し、`Output` の `for`・`id`・ラベル文字が揃って変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "htmlFor に数値を渡す",
+      "body": "失敗例では要素の `id` を文字列で指定するべき `htmlFor` に数値 `42` を渡しています。属性の型が合わないため、実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "`html.label` の `htmlFor` と入力欄の `id` を同じ文字列にして、見た目だけでなく構造上も関連付ける。",
+      "状態メッセージの領域には `role: \"status\"` のように役割に合った属性を付ける。"
+    ],
+    "next": {
+      "lessonId": "web-feature-state",
+      "body": "次はここまでのフォーム入力・アクセシビリティ・`Signal` を組み合わせ、機能単位で状態の所有権を閉じる構成を学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.html",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

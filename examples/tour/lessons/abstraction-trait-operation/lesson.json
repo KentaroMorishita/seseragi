@@ -1,1 +1,79 @@
-{"$schema":"../../lesson.schema.json","id":"abstraction-trait-operation","formatVersion":2,"sections":{"prerequisite":"payload型とtype constructor parameterを区別できます。","walkthrough":[{"heading":"必要なoperationをsignatureで宣言する","body":"`trait Label<A>`は`A -> String`の`label`を提供する契約です。このlessonではまだinstanceを定義しません。","sourceRange":{"startLine":1,"endLine":12}}],"introduced":[{"kind":"syntax","name":"Trait operation","body":"Traitは継承用objectではなく、型ごとに提供すべきoperationの型を宣言します。"}],"exercise":{"instruction":"課題sourceの出力を読み、Traitが要求するparameter型と戻り型を言葉で確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"存在しない戻り型を書く","body":"失敗例はTrait operationの戻り型に未定義の型を使います。契約も通常の型検査を受けます。"},"recap":["Traitは型が満たすoperationの契約を宣言する。","method signatureのAはTrait parameterと対応する。"],"next":{"lessonId":"abstraction-user-instance","body":"次はBadge型へLabelの実装を与えます。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "abstraction-trait-operation",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "前のレッスンで型パラメーター `<A>` を使った汎用関数と汎用データ型を学びました。ここでは型ごとに異なる実装を持ちながら共通の操作で扱える型クラスを学びます。",
+    "walkthrough": [
+      {
+        "heading": "deriving で Eq と Show を自動導出する",
+        "body": "`deriving Eq, Show` を付けると、自作の型でも等値比較の `==` と文字列化の `show` が自動で使えるようになります。手書きで比較関数や変換関数を用意する必要はありません。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 5
+        }
+      },
+      {
+        "heading": "trait で共通操作を宣言し instance で実装する",
+        "body": "`trait Label<A>` は `label` という操作の契約を宣言し、`instance Label<Status>` と `instance Label<Task>` が型ごとの具体的な実装を与えます。型クラスは継承ではなく、型ごとに一意な実装を紐づける仕組みです。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 21
+        }
+      },
+      {
+        "heading": "where 制約付き関数と実装の自動選択",
+        "body": "`fn formatTag<A>` は `where Label<A>` によって `Label` を実装した型だけを受け取る制約を宣言し、本体で `label value` を呼び出します。`main` では渡した値の型に応じて `Status` 用と `Task` 用の `instance` が自動で選ばれ、`==` や `show` も同じ仕組みで動きます。",
+        "sourceRange": {
+          "startLine": 23,
+          "endLine": 31
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "trait と instance",
+        "body": "`trait` は型が満たすべき共通操作の型シグネチャを宣言し、`instance` は特定の型に対するその操作の実装を定義します。"
+      },
+      {
+        "kind": "syntax",
+        "name": "where 制約",
+        "body": "`where Label<A>` のように汎用関数の後ろに制約を書くと、その型クラスを実装した型だけを受け取り、関数本体で対応する操作を呼べます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "deriving Eq, Show",
+        "body": "型宣言に `deriving Eq, Show` を添えると、`==` による比較（`Eq`）と `show` による文字列化（`Show`）の実装をコンパイラが自動生成します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 26 行目にある `Ready` を `Draft` に、27 行目の `done: True` を `done: False` に書き換えて `Run` し、`Output` の 3 行が `Draft` と `done: False` の結果に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "instance のない型を制約付き関数に渡す",
+      "body": "失敗例では `Label` の `instance` を実装していない `Device` 型を `formatTag` へ渡しています。`where Label<A>` の制約を満たす実装が見つからないため、実行前に `Problems` へ不足エラーが表示されます。"
+    },
+    "recap": [
+      "`trait` で共通操作の契約を宣言し、`instance` で型ごとの実装を与える。",
+      "`where` 制約を付けた汎用関数は、呼び出し側の型に応じた `instance` をコンパイル時に選択して実行する。",
+      "`deriving Eq, Show` を付けると `==` と `show` を自動導出でき、標準的な比較や表示としてそのまま使える。"
+    ],
+    "next": {
+      "lessonId": "signals-value-difference",
+      "body": "ジェネリクスと型クラスまでの中心となる仕組みが揃いました。次の章では、時間の経過とともに値が変化する `Signal` を学びます。"
+    },
+    "notes": [
+      "`Functor`・`Applicative`・`Monad` といった標準型クラスの詳しい設計や、`impl` メソッド・独自演算子の定義は、補足トラック「抽象と型クラスの設計」で学べます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

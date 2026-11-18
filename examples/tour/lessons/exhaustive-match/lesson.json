@@ -3,17 +3,59 @@
   "id": "exhaustive-match",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "constructor pattern、payload binding、nested pattern、wildcardを使えるようになりました。",
-    "walkthrough": [{
-      "heading": "すべてのconstructorをarmへ並べる",
-      "body": "ChoiceはOneまたはTwoです。両方のarmがあるため、どのChoice valueにもresultが決まります。",
-      "sourceRange": { "startLine": 1, "endLine": 5 }
-    }],
-    "introduced": [{ "kind": "type", "name": "exhaustive match", "body": "ADTが取りうるすべてのconstructorを扱うmatchです。" }],
-    "exercise": { "instruction": "課題sourceでChoice valueをTwoへ変え、二つ目のarmが選ばれることを確認してください。", "reset": "restore-lesson-source" },
-    "diagnostic": { "heading": "Two armを省く", "body": "失敗例はOneだけを扱います。compilerが示すmissing constructorを追加してください。" },
-    "recap": ["網羅的なmatchはすべてのconstructorを扱う。", "missing armはcompiler diagnosticから確認できる。"],
-    "next": { "lessonId": "data-shape-selection", "body": "最後にTuple、Record、Struct、ADTの選び方を比較します。" }
+    "prerequisite": "`match` を使って複数のコンストラクターに分岐できるようになりました。ここでは書き漏らしを防ぐ網羅性チェックを確認します。",
+    "walkthrough": [
+      {
+        "heading": "取りうるケースをすべて並べる",
+        "body": "`Choice` には `One`、`Two`、`Three` の3つのコンストラクターがあります。`choose` の `match` はその3つすべてを並べているため、どの `Choice` が渡されても必ず `Int` の結果が決まります。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 10
+        }
+      },
+      {
+        "heading": "新しいケースを増やしても漏れに気付ける",
+        "body": "あとから `Choice` に新しいコンストラクターを追加したときも、対応し忘れた `match` をコンパイラがすべて検出してくれるため、実行時の取りこぼしを心配せずに変更できます。",
+        "sourceRange": {
+          "startLine": 12,
+          "endLine": 15
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "網羅性チェック",
+        "body": "`match` が対象となる型のすべてのコンストラクターを扱っているかをコンパイラが実行前に検証する仕組みです。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの14行目にある `choose Two` を `choose Three` に書き換えて `Run` し、`Output` の2行目が `3` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "ケースを1つ書き忘れる",
+      "body": "失敗例では `One` と `Two` だけを書き、`Three` の分岐を省略しています。`match` が全ケースを網羅していないため実行前にエラーとなり、不足している `Three` が示されます。"
+    },
+    "recap": [
+      "`match` は対象型のすべてのコンストラクターを網羅して書く。",
+      "ケースを1つでも書き忘れると、実行前にコンパイラが未処理のコンストラクターを教えてくれる。",
+      "型に新しいケースを追加しても、漏れのある箇所をエラー表示からすぐに見つけられる。"
+    ],
+    "next": {
+      "lessonId": "08-collections-and-ranges",
+      "body": "データ型とパターン分岐の基礎はここまでです。次は複数の値を並べて扱うコレクションへ進みます。"
+    },
+    "notes": [
+      "コードから `Three -> 3` の行を消してみると、エディターの波線と出力側の `Problems` タブに未処理のパターン（`missing patterns: Three`）と修正のヒント（`Help`）が表示されます。確認後は `Reset` で元のコードに戻せます。"
+    ]
   },
-  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
 }

@@ -1,5 +1,5 @@
 examples/tour/lessons/signals-write-operator/diagnostic.ssrg:3:46: error[SES-T0101]: Argument type does not match the parameter type
-  | fn invalid view: Signal<Int> -> Task<Unit> = view := 42
+  | fn invalid view: Signal<Int> -> Task<Unit> = view := 20
   |                                              ^^^^ argument 2 expected MutableSignal<unknown>, received Signal<Int>
   = expected: MutableSignal<unknown>
   = actual: Signal<Int>

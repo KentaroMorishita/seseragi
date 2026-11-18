@@ -1,13 +1,19 @@
-type LearningSurface =
-  | Tour
-  | Article
+type NextStep deriving Show =
+  | Discover
+  | Docs
+  | SideTrips
 
-fn role surface: LearningSurface -> String = match surface {
-  Tour -> "Tour: run, edit, diagnose"
-  Article -> "Articles: why, internals, trade-offs"
+fn describe step: NextStep -> String = match step {
+  Discover -> "Playground の Discover（Recipe / Showcase）で実例を探す"
+  Docs -> "公式ドキュメント（seseragi-docs）と Seseragi Articles で設計を読む"
+  SideTrips -> "本編後の 2 つの補足トラックで抽象やコレクションを掘り下げる"
 }
 
-pub effect fn main = do {
-  role Tour |> println
-  role Article |> println
-}
+fn formatNextStep step: NextStep -> String = `${show step}: ${describe step}`
+
+fn renderNextSteps steps: Array<NextStep> -> String =
+  steps
+  |> map formatNextStep
+  |> join "\n"
+
+pub effect fn main = renderNextSteps [Discover, Docs, SideTrips] |> println

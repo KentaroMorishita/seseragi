@@ -1,4 +1,14 @@
-effect fn announce message: String -> Unit with Console fails ConsoleError =
-  println message
+pub effect fn announce message: String -> Unit with Console fails ConsoleError =
+  println `explicit: ${message}`
 
-pub effect fn main = announce "Console reused"
+effect fn reportPair first: String
+  -> second: String
+  -> Unit
+with Console
+fails ConsoleError =
+  do {
+    announce first
+    println `caller: ${second}`
+  }
+
+pub effect fn main = reportPair "contract fixed" "explicit"

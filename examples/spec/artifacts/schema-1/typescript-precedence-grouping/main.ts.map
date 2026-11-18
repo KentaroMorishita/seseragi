@@ -9,6 +9,8 @@
     "fn ratio value: Float -> Float =\n  (value - 1.0) / (value + 1.0)\n\nfn averageDifference positive: Float -> negative: Float -> Float =\n  (positive - negative) / 2.0\n\nfn double value: Float -> Float =\n  value * 2.0\n\nlet groupedThroughPipeline =\n  ((9.0 - 1.0) / 2.0)\n  |> double\n\npub effect fn main =\n  do {\n    println (debug [ratio 3.0, ratio 7.0, ratio 1.0])\n    println (debug [averageDifference 9.0 1.0, averageDifference 2.0 6.0])\n    println (debug groupedThroughPipeline)\n  }\n"
   ],
   "names": [
+    "arrayDebug",
+    "floatDebug",
     "ratio",
     "$ssrg$atSource",
     "floatDiv",
@@ -28,8 +30,7 @@
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "arrayDebug",
-    "floatDebug",
+    "$ssrg$closedDisplay$0",
     "$ssrg$atSource",
     "ratio",
     "$ssrg$atSource",
@@ -39,8 +40,7 @@
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "arrayDebug",
-    "floatDebug",
+    "$ssrg$closedDisplay$0",
     "$ssrg$atSource",
     "averageDifference",
     "$ssrg$atSource",
@@ -57,5 +57,5 @@
     "$ssrg$atSource",
     "floatSub"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA;AAGAO;AAGAK;AAOAG;AAJAyB"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAE;AAGAO;AAGAK;AAOAG;AAJAuB"
 }

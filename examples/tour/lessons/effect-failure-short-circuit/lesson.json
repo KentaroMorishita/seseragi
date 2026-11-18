@@ -1,1 +1,81 @@
-{"$schema":"../../lesson.schema.json","id":"effect-failure-short-circuit","formatVersion":2,"sections":{"prerequisite":"succeedでEffectのsuccess valueを作れるようになりました。","walkthrough":[{"heading":"Failureで後続を止める","body":"beforeを出した後にfail Rejectedで失敗し、後ろのunreachableは出力されません。mapErrorはConsole failureを同じAppErrorへ揃える境界で、後のlessonで詳しく扱います。","sourceRange":{"startLine":1,"endLine":5}}],"introduced":[{"kind":"api","name":"Effect failure short circuit","body":"failはtyped failureを作り、doの後続Effectを実行しません。"}],"exercise":{"instruction":"課題sourceのsucceedをfailへ戻し、continuedが出なくなる違いを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Pure関数からfailする","body":"失敗例は通常のfnからfailure Effectを返します。Effect functionとして宣言してください。"},"recap":["failはtyped failureでEffectを終了する。","failure後のdo statementは実行されない。"],"next":{"lessonId":"effect-fails-type","body":"次はfailure型をcontractとして読みます。"},"notes":["このlessonのmapErrorはfailure型を一つへ揃えるためだけに使い、変換規則はeffect-map-errorで説明します。"]},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","expectedFailure":"failure.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "effect-failure-short-circuit",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`do` と `<-` で成功値を受け取りながら順番に処理を進められるようになりました。ここからは `Effect` が途中で失敗したときの動きを学びます。",
+    "walkthrough": [
+      {
+        "heading": "fails で失敗の型を宣言する",
+        "body": "`requirePositive` は失敗する可能性があるため、シグネチャに `fails StepError` と書きます。`count > 0` でないときは `fail Rejected` で `StepError` 型の失敗値を返します。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 9
+        }
+      },
+      {
+        "heading": "fromEither で Either から Effect へ橋渡しする",
+        "body": "`parseCount` は純粋な `Either` 値を返します。13 行目の `fromEither` を使うと、`Right` の値は成功値として `count` に入り、`Left` の値はそのまま `Effect` の失敗値になります。",
+        "sourceRange": {
+          "startLine": 5,
+          "endLine": 13
+        }
+      },
+      {
+        "heading": "fail が起きると後続は実行されない",
+        "body": "12 行目で `before` が出力されたあと、14 行目の `requirePositive` が `Rejected` で失敗します。そのため 15 行目の `println` は実行されず、途中中断して終了します。",
+        "sourceRange": {
+          "startLine": 11,
+          "endLine": 16
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "fails",
+        "body": "`effect fn` のシグネチャで、その処理が起こしうる回復可能な失敗の型を `fails 型名` の形で宣言します。"
+      },
+      {
+        "kind": "api",
+        "name": "fail",
+        "body": "指定したエラー値で `Effect` を失敗させます。実行中に `fail` に到達すると、同じ `do` ブロックの後続行は実行されません。"
+      },
+      {
+        "kind": "api",
+        "name": "fromEither",
+        "body": "純粋な `Either` 値を `Effect` へ変換します。`Right` は成功値、`Left` は `Effect` の失敗値になります。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 13 行目にある `parseCount \"0\"` の `\"0\"` を `\"3\"` に書き換えて `Run` し、`Output` に `before` と `accepted: 3` の両方が表示されることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "fails を書かずに fail を返す",
+      "body": "失敗例では戻り値型 `-> Int` だけを書いて `fails StepError` を省いています。戻り値型を書く形式で `fails` を省略すると失敗しない `Never` 扱いになるため、`fail Rejected` と型が合わず実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "`fails ErrorType` は `Effect` が返しうる回復可能な失敗の型を宣言します。",
+      "`fail` で失敗すると `do` ブロックの残り行は実行されずに途中中断します。",
+      "`fromEither` を使うと、純粋な `Either` の `Left` と `Right` を `Effect` の失敗と成功へそのまま橋渡しできます。"
+    ],
+    "next": {
+      "lessonId": "effect-map-error",
+      "body": "次は失敗した `Effect` から `recover` で立て直す方法と、`mapError` でエラー型を揃える方法を学びます。"
+    },
+    "notes": [
+      "12・15 行目の `mapError OutputFailure` は、`println` の `ConsoleError` を `StepError` に揃えて同じ `do` ブロックに並べるために使っています。詳しくは次のレッスンで学びます。",
+      "13 行目の `\"0\"` を `\"bad\"` に変えると、`parseCount` が `Left Rejected` を返し、`fromEither` の時点で途中中断することも試せます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "expectedFailure": "failure.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}
