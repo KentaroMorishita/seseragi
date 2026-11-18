@@ -497,9 +497,13 @@ body.preview-fullscreen-fallback-open {
   position: relative;
   min-height: 0;
   overflow: hidden;
+  display: grid;
+  /* 1 行目は外部通信を止めたときの知らせ（出していないときは高さ 0）、2 行目が出力 */
+  grid-template-rows: auto minmax(0, 1fr);
 }
 
-.pg-output-body > :not(.preview-link-notice) {
+.pg-output-body > :not(.preview-link-notice, .preview-network-notice) {
+  grid-row: 2;
   width: 100%;
   height: 100%;
 }
@@ -521,6 +525,103 @@ body.preview-fullscreen-fallback-open {
   color: var(--fg-2);
   font-size: var(--text-xs);
   overflow-wrap: anywhere;
+}
+
+/* 外部の画像と通信を止めたときの一行（#1371）。Preview の上の段に置き、
+   プログラムの画面（見出しやリンク）には重ねない。Allow で許可できる */
+.preview-network-notice {
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 4px 4px 4px var(--space-3);
+  border-bottom: 1px solid var(--line);
+  border-left: 3px solid var(--warn);
+  background: var(--warn-soft);
+  color: var(--fg-1);
+  font-size: var(--text-xs);
+}
+
+.preview-network-notice span {
+  flex: 1;
+}
+
+/* 外部通信を確かめるモーダルと、許可の一覧 */
+.pg-dialog.network-consent {
+  width: min(480px, calc(100vw - 32px));
+}
+
+.network-consent[open] {
+  display: block;
+}
+
+.network-consent-body {
+  padding: 24px 24px 8px;
+}
+
+.network-consent-body h2 {
+  margin: 0 0 var(--space-3);
+}
+
+.network-consent-body p,
+.network-consent-body li {
+  color: var(--fg-2);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+}
+
+.network-consent-body p {
+  margin: 0 0 var(--space-3);
+  color: var(--fg-1);
+}
+
+.network-consent-body ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.network-consent-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4) 24px 20px;
+}
+
+.pg-dialog.network-settings {
+  width: min(560px, calc(100vw - 32px));
+}
+
+.network-settings[open] {
+  display: block;
+}
+
+.network-settings-list {
+  margin: 0;
+  padding: var(--space-2) var(--space-3) var(--space-4);
+  list-style: none;
+}
+
+.network-settings-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+}
+
+.network-settings-list li:hover {
+  background: var(--surface-2);
+}
+
+.network-settings-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.network-settings-empty {
+  color: var(--fg-3);
 }
 
 .preview-link-notice a {

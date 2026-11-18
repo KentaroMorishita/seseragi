@@ -14,13 +14,12 @@ test("runs Tour image, external link, form and Signal interactions", async ({
   await expect(page.locator("#tour-lesson-title")).toContainText(
     "External linkとimageを表示する"
   )
-  await page.locator("#tour-tools-button").click()
-  await page
-    .getByRole("menuitemcheckbox", {
-      name: "Allow preview HTTP, WebSocket and external images",
-    })
-    .click()
   await page.locator("#tour-run-button").click()
+  // 外部の画像を使うレッスンでは、初めての Run で許可を確かめる（#1371）
+  await page
+    .locator("#network-consent-dialog")
+    .getByRole("button", { name: "Allow" })
+    .click()
   const staticPreview = page.locator("#tour-html-preview").contentFrame()
   const image = staticPreview.getByRole("img", {
     name: "明るい共同作業スペース",

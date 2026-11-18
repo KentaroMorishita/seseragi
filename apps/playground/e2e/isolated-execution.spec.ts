@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test"
+import { rememberNetworkDecision } from "./network-decision-support"
 
 test("evaluates program modules in an opaque preview realm", async ({
   page,
@@ -244,6 +245,7 @@ fails AppError = do {
 test("settles execution when an ordinary same-frame link replaces the preview", async ({
   page,
 }) => {
+  await rememberNetworkDecision(page, ["example:form-todo"], "denied")
   await page.goto("/")
   await page.locator("#sample-browser-button").click()
   await page.locator('[data-sample-id="form-todo"]').click()

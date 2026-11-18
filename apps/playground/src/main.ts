@@ -56,10 +56,22 @@ import {
 } from "./workspace/bindings"
 import "./ui/design/index.css"
 import "./ui/playground.css"
+import {
+  contractNeedsNetwork,
+  createNetworkPermissionStore,
+  htmlNeedsNetwork,
+} from "./runtime/network-permissions"
 import { connectEditorSettings } from "./ui/editor-settings"
 import { requiredElement } from "./ui/elements"
-import { connectExecutionSettings } from "./ui/execution-settings"
 import { connectMobilePanels } from "./ui/mobile-panels"
+import {
+  allowFromNotice,
+  connectNetworkNotice,
+  createNetworkConsent,
+  createNetworkGate,
+  createNetworkSettings,
+  type NetworkScope,
+} from "./ui/network-consent"
 import { connectOverflowMenu } from "./ui/overflow-menu"
 import { connectPanelLayout } from "./ui/panel-layout"
 import { connectPreviewFullscreen } from "./ui/preview-fullscreen"
@@ -287,10 +299,28 @@ let applicationId =
   restoredWorkspace.status === "restored" && linkedSource === undefined
     ? (restoredWorkspace.applicationId ?? crypto.randomUUID())
     : crypto.randomUUID()
-const executionSettings = connectExecutionSettings(mobileToolsMenu, () => {
-  cancelActiveExecution()
-  showTextOutput("Network の設定を変えました。もう一度 Run を押してください。")
+// 外部通信の許可（#1371）。例ごと、自分のコードなら作業場所ごとに覚える
+const networkPermissions = createNetworkPermissionStore(browserStorage())
+const networkNotice = connectNetworkNotice(
+  requiredElement("#preview-network-notice", HTMLElement),
+  () =>
+    allowFromNotice(
+      networkPermissions,
+      currentNetworkScope,
+      networkNotice,
+      () => void run()
+    )
+)
+const networkGate = createNetworkGate({
+  store: networkPermissions,
+  consent: createNetworkConsent(document),
+  notice: networkNotice,
+  current: currentNetworkScope,
+  rerun: () => void run(),
 })
+const networkSettings = createNetworkSettings(document, networkPermissions)
+let runNetworkAllowed = false
+let staticPreviewRequest = 0
 const restoredBlank =
   linkedSource === undefined &&
   restoredWorkspace.status === "restored" &&
@@ -839,6 +869,26 @@ function searchCommands(): readonly SearchCommand[] {
       },
     },
     {
+      id: "network-access",
+      title: "Network access",
+      detail: "外部の画像と通信を許可した例を見て、取り消す",
+      keywords: "network 外部通信 画像 許可 permission",
+      tag: () => {
+        const decision = networkPermissions.get(
+          currentNetworkScope().scope
+        )?.decision
+        return decision === undefined
+          ? undefined
+          : decision === "allowed"
+            ? "Allowed"
+            : "Blocked"
+      },
+      run: () => {
+        networkSettings.open(searchButton)
+        return undefined
+      },
+    },
+    {
       id: "editor-settings",
       title: "Editor settings",
       detail: "インデントの表示と、Format の行の幅を変える",
@@ -866,7 +916,6 @@ function loadSample(
     return false
   }
   cancelActiveExecution()
-  executionSettings.reset()
   applicationId = crypto.randomUUID()
   currentSample = sample
   workspaceState = createWorkspace(sample.workspace)
@@ -906,7 +955,6 @@ function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
     return false
   }
   cancelActiveExecution()
-  executionSettings.reset()
   applicationId = crypto.randomUUID()
   currentSample = undefined
   workspaceState = createSingleFileWorkspace("")
@@ -969,7 +1017,6 @@ function applyWorkspaceChange(
     projectChanged ||
     JSON.stringify(previous.files) !== JSON.stringify(nextState.files)
   ) {
-    executionSettings.reset()
     cancelActiveExecution()
   }
   if (switched) {
@@ -993,7 +1040,6 @@ function handleEditorChange(nextSource: string): void {
       workspaceState.activeFile !== undefined &&
       workspaceState.dirtyFiles.includes(workspaceState.activeFile)
     bindingConversion.invalidate()
-    executionSettings.reset()
     cancelActiveExecution()
     workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
     interopInspector.sync(workspaceState)
@@ -1207,6 +1253,7 @@ function setWhitespaceVisible(visible: boolean): void {
 
 async function run(): Promise<void> {
   cancelActiveExecution()
+  networkGate.reset()
   const revision = runRevision
   let request: ProjectRequest
   try {
@@ -1314,6 +1361,11 @@ async function run(): Promise<void> {
       JSON.stringify(workspaceState.files) !== runtimeRevision
     )
       return
+    // 外部通信が要る実行なら、まだ答えていない例で一度だけ確かめる
+    runNetworkAllowed = await networkGate.resolve(
+      contractNeedsNetwork(compiled.entry.contract)
+    )
+    if (revision !== runRevision) return
     const execution = await prepareIsolatedExecution(
       {
         modules: generatedModules,
@@ -1464,9 +1516,16 @@ function navigateWorkspaceDiagnostic(
 function renderHtmlPreview(html: string): void {
   clearHtmlPreview()
   if (html === "") return
+  const request = staticPreviewRequest
+  // 外部の画像があれば、まだ答えていない例で一度だけ確かめてから描く
+  void networkGate.resolve(htmlNeedsNetwork(html)).then((allowed) => {
+    if (request === staticPreviewRequest) showStaticPreview(html, allowed)
+  })
+}
 
+function showStaticPreview(html: string, networkAllowed: boolean): void {
   const url = URL.createObjectURL(
-    new Blob([previewLinks.staticDocument(html, executionSettings.allowed())], {
+    new Blob([previewLinks.staticDocument(html, networkAllowed)], {
       type: "text/html",
     })
   )
@@ -1495,7 +1554,8 @@ async function prepareIsolatedExecution(
       signal: preparation.signal,
       onDomMounted,
       onOpenLink: previewLinks.openLink,
-      networkAllowed: executionSettings.allowed(),
+      onNetworkBlocked: () => networkGate.blocked(),
+      networkAllowed: runNetworkAllowed,
     })
     if (
       preparation.signal.aborted ||
@@ -1512,6 +1572,7 @@ async function prepareIsolatedExecution(
 }
 
 function clearHtmlPreview(): void {
+  staticPreviewRequest += 1
   activePreviewPreparation?.abort()
   activePreviewPreparation = undefined
   previewLinks.release()
@@ -1572,4 +1633,14 @@ function showIoOnSmallScreens(): void {
 // 下の帯の状態の言葉。Output の Problems と同じ言い方にする（DESIGN.md「画面の言葉」）。
 function problemCount(count: number): string {
   return `${count} ${count === 1 ? "problem" : "problems"}`
+}
+
+// 外部通信の許可を覚える単位。例を開いていればその例、自分のコードなら作業場所
+function currentNetworkScope(): NetworkScope {
+  return currentSample === undefined
+    ? {
+        scope: `workspace:${session.persistenceKey}`,
+        label: "自分のコード（このブラウザの作業場所）",
+      }
+    : { scope: `example:${currentSample.id}`, label: currentSample.title }
 }

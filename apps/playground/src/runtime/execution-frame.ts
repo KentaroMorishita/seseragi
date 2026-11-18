@@ -2,6 +2,7 @@
 import { serveExecutionPort } from "./execution-session"
 import type { IsolatedExecutionRequest } from "./isolated-execution"
 import { installPreviewLinkBridge } from "./preview-links"
+
 declare const __SESERAGI_EXECUTION_WORKER__: string
 
 let connected = false
@@ -39,6 +40,16 @@ window.addEventListener("message", function connect(event: MessageEvent) {
       installPreviewLinkBridge(window, (href) =>
         port.postMessage({ type: "open-link", href })
       )
+      // 外部の画像や通信が CSP に止められたら、シェルに知らせる（#1371）。
+      // シェルは許可を確かめ、許可されたら実行し直す。何を止めたかは送らない
+      let reportedBlock = false
+      window.addEventListener("securitypolicyviolation", (event) => {
+        if (reportedBlock) return
+        if (!/^(img|media|connect|font)-src/u.test(event.effectiveDirective))
+          return
+        reportedBlock = true
+        port.postMessage({ type: "network-blocked" })
+      })
       port.dispatchEvent(new MessageEvent("message", { data: message.data }))
       return
     }

@@ -107,15 +107,18 @@ async function select(page: Page, entry: MatrixSample): Promise<void> {
 }
 
 async function run(page: Page, entry: MatrixSample): Promise<FrameLocator> {
-  // These visual fixtures intentionally include external images. Grant their
-  // temporary permission through the same control as a user before Run.
-  await page.locator("#mobile-tools-button").click()
-  await page
-    .getByRole("menuitemcheckbox", {
-      name: "Allow preview HTTP, WebSocket and external images",
-    })
-    .click()
+  // These visual fixtures intentionally include external images. Allow them
+  // through the same consent dialog a user sees on the first Run (#1371).
   await page.locator("#run-button").click()
+  const consent = page.locator("#network-consent-dialog")
+  if (
+    await consent
+      .waitFor({ state: "visible", timeout: 15_000 })
+      .then(() => true)
+      .catch(() => false)
+  ) {
+    await consent.getByRole("button", { name: "Allow" }).click()
+  }
   const preview = page.frameLocator("#html-preview")
   await expect(preview.locator("h1")).toContainText(entry.heading)
   await expect(preview.locator("img").first()).toBeVisible()

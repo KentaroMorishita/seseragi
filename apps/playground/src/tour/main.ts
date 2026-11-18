@@ -28,12 +28,24 @@ import {
   type IsolatedExecutionRequest,
   startIsolatedProject,
 } from "../runtime/isolated-execution"
+import {
+  contractNeedsNetwork,
+  createNetworkPermissionStore,
+  htmlNeedsNetwork,
+} from "../runtime/network-permissions"
 import { connectPreviewLinks } from "../runtime/preview-links"
 import {
   isPreviewNavigationCancellation,
   previewNavigationCancelled,
 } from "../runtime/preview-navigation"
-import { connectExecutionSettings } from "../ui/execution-settings"
+import {
+  allowFromNotice,
+  connectNetworkNotice,
+  createNetworkConsent,
+  createNetworkGate,
+  createNetworkSettings,
+  type NetworkScope,
+} from "../ui/network-consent"
 import "../ui/design/index.css"
 import "../ui/playground.css"
 import {
@@ -227,10 +239,28 @@ let progress: TourProgress = loadTourProgress(
   requestedLesson
 )
 let currentLesson = findTourLesson(progress.currentLessonId)
-const executionSettings = connectExecutionSettings(toolsMenu, () => {
-  cancelActiveExecution()
-  showTextOutput("Network の設定を変えました。もう一度 Run を押してください。")
+// 外部通信の許可（#1371）。レッスンごとに覚える
+const networkPermissions = createNetworkPermissionStore(browserStorage())
+const networkNotice = connectNetworkNotice(
+  requiredElement("#tour-preview-network-notice", HTMLElement),
+  () =>
+    allowFromNotice(
+      networkPermissions,
+      currentNetworkScope,
+      networkNotice,
+      () => void run()
+    )
+)
+const networkGate = createNetworkGate({
+  store: networkPermissions,
+  consent: createNetworkConsent(document),
+  notice: networkNotice,
+  current: currentNetworkScope,
+  rerun: () => void run(),
 })
+const networkSettings = createNetworkSettings(document, networkPermissions)
+let runNetworkAllowed = false
+let staticPreviewRequest = 0
 let source = currentLesson.source
 let outputMode: "text" | "html" = currentLesson.outputMode
 let latestAnalysis: AnalysisDocument | undefined
@@ -248,7 +278,6 @@ const editor = createEditor(
   editorHost,
   source,
   (nextSource) => {
-    executionSettings.reset()
     cancelActiveExecution()
     source = nextSource
     latestAnalysis = undefined
@@ -328,6 +357,16 @@ const search = connectSearchPalette({
         return undefined
       },
     })),
+    {
+      id: "network-access",
+      title: "Network access",
+      detail: "外部の画像と通信を許可したレッスンや例を見て、取り消す",
+      keywords: "network 外部通信 画像 許可 permission",
+      run: () => {
+        networkSettings.open(searchButton)
+        return undefined
+      },
+    },
     {
       id: "editor-settings",
       title: "Editor settings",
@@ -715,7 +754,6 @@ function loadLesson(
   expandedChapterIds.add(currentLesson.chapterId)
   progress = visitTourLesson(progress, currentLesson.id)
   persistProgress()
-  executionSettings.reset()
   source = currentLesson.source
   outputMode = currentLesson.outputMode
   latestAnalysis = undefined
@@ -928,7 +966,6 @@ function sourceExcerpt(sourceText: string, range: TourSourceRange): string {
 
 function selectCanonicalSourceRange(range: TourSourceRange): void {
   if (source !== currentLesson.source) {
-    executionSettings.reset()
     source = currentLesson.source
     replaceEditorSource(editor, source)
     applyWalkthroughPins()
@@ -1104,7 +1141,6 @@ function completeCurrentLesson(): void {
 
 function resetLesson(): void {
   cancelActiveExecution()
-  executionSettings.reset()
   source = currentLesson.source
   outputMode = currentLesson.outputMode
   stdinInput.value = currentLesson.stdin
@@ -1123,7 +1159,6 @@ function loadSourceVariant(
   statusMessage: string
 ): void {
   cancelActiveExecution()
-  executionSettings.reset()
   source = variantSource
   outputMode = "text"
   replaceEditorSource(editor, source)
@@ -1179,6 +1214,7 @@ async function formatSource(): Promise<void> {
 
 async function run(): Promise<void> {
   cancelActiveExecution()
+  networkGate.reset()
   const revision = runRevision
   runButton.disabled = true
   showTextOutput("Compiling…")
@@ -1207,6 +1243,10 @@ async function run(): Promise<void> {
       return
     }
     setStatus("running", "Running…")
+    if (revision !== runRevision) return
+    runNetworkAllowed = await networkGate.resolve(
+      contractNeedsNetwork(compiled.entry)
+    )
     if (revision !== runRevision) return
     const execution = await prepareIsolatedExecution(
       {
@@ -1315,8 +1355,15 @@ function showDiagnostics(
 function renderHtmlPreview(html: string): void {
   clearHtmlPreview()
   if (html === "") return
+  const request = staticPreviewRequest
+  void networkGate.resolve(htmlNeedsNetwork(html)).then((allowed) => {
+    if (request === staticPreviewRequest) showStaticPreview(html, allowed)
+  })
+}
+
+function showStaticPreview(html: string, networkAllowed: boolean): void {
   const url = URL.createObjectURL(
-    new Blob([previewLinks.staticDocument(html, executionSettings.allowed())], {
+    new Blob([previewLinks.staticDocument(html, networkAllowed)], {
       type: "text/html",
     })
   )
@@ -1345,7 +1392,8 @@ async function prepareIsolatedExecution(
       signal: preparation.signal,
       onDomMounted,
       onOpenLink: previewLinks.openLink,
-      networkAllowed: executionSettings.allowed(),
+      onNetworkBlocked: () => networkGate.blocked(),
+      networkAllowed: runNetworkAllowed,
     })
     if (
       preparation.signal.aborted ||
@@ -1362,6 +1410,7 @@ async function prepareIsolatedExecution(
 }
 
 function clearHtmlPreview(): void {
+  staticPreviewRequest += 1
   activePreviewPreparation?.abort()
   activePreviewPreparation = undefined
   previewLinks.release()
@@ -1537,4 +1586,12 @@ function applyWalkthroughPins(): void {
         }))
       : []
   )
+}
+
+// 外部通信の許可を覚える単位。Tour ではレッスンごと
+function currentNetworkScope(): NetworkScope {
+  return {
+    scope: `lesson:${currentLesson.id}`,
+    label: `Tour: ${currentLesson.title}`,
+  }
 }

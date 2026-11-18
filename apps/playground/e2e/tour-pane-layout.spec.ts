@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page, test } from "@playwright/test"
+import { rememberNetworkDecision } from "./network-decision-support"
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
@@ -7,6 +8,8 @@ test.beforeEach(async ({ page }) => {
 })
 
 test("resizes and restores every desktop Tour pane", async ({ page }) => {
+  // 外部の画像を使うレッスン。許可は止めたままにして、モーダルを出さない
+  await rememberNetworkDecision(page, ["lesson:web-link-image"], "denied")
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto("/tour/?lesson=web-link-image")
 
