@@ -2748,7 +2748,7 @@ describe("Playground sample catalog", () => {
       new URL("../index.html", import.meta.url)
     ).text()
     const styles = await Bun.file(
-      new URL("../src/styles.css", import.meta.url)
+      new URL("../src/ui/playground.css", import.meta.url)
     ).text()
 
     expect(html).toContain('id="sample-guide-button"')
