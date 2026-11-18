@@ -9,6 +9,8 @@
     "import {\n  Secret,\n  Box,\n  create,\n  read,\n  unpack,\n  update,\n  box,\n  unbox,\n  nested,\n  collect\n} from \"./facade\"\n\npub effect fn main = {\n  let secret = create 7\n  do {\n    println $ show (read secret)\n    println $ show (unpack secret)\n    println $ show secret\n    println $ show (secret == create 7)\n    println $ show (unbox (box 42))\n    println $ show (nested (box secret))\n    println $ show (collect [secret])\n    println $ show (read (update secret))\n  }\n}\n"
   ],
   "names": [
+    "arrayShow",
+    "intShow",
     "main",
     "secret",
     "$ssrg$atSource",
@@ -56,8 +58,7 @@
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "arrayShow",
-    "intShow",
+    "$ssrg$closedDisplay$0",
     "$ssrg$atSource",
     "collect",
     "$ssrg$atSource",
@@ -69,5 +70,5 @@
     "$ssrg$atSource",
     "update"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAaAA"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAaAE"
 }

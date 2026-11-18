@@ -16,6 +16,12 @@ fn whole values: Array<Int> -> index: Int -> String = match values[index] {
   found -> "found " + show found
 }
 
+fn guarded values: Array<Int> -> index: Int -> String = match values[index] {
+  found when found == Just 0 -> "zero " + show found
+  found when found == Just 7 -> "seven " + show found
+  found -> "other " + show found
+}
+
 fn nested values: Array<Maybe<Int>> -> index: Int -> Int = match values[index] {
   Just (Just value) -> value
   Just Nothing -> -1
@@ -39,5 +45,6 @@ pub fn probe -> Array<String> = {
     describe values 3, describe values (-1), whole values 1, whole values 0, whole values 9,
     show (nested [Just 4, Nothing] 0), show (nested [Just 4, Nothing] 1),
     show (nested [Just 4, Nothing] 2), show (applied [\x: Int -> x + step] 0),
-    show (applied [] 0), show (pick values (9007199254740991 + 0))]
+    show (applied [] 0), show (pick values (9007199254740991 + 0)),
+    guarded values 0, guarded values 1, guarded values 5]
 }

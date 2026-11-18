@@ -1733,7 +1733,9 @@ impl<'a> Backend<'a> {
                     .all(|branch| Self::maybe_view_reads(scrutinee_type, branch, scope))
             {
                 if let Ok(value) = self.array_index_option(scrutinee, scope) {
-                    return Ok((value, true));
+                    // The whole `Maybe` is built at most once, by the first
+                    // branch that binds it.
+                    return Ok((format!("({value}, std::cell::OnceCell::<V>::new())"), true));
                 }
             }
         }
@@ -1767,7 +1769,8 @@ impl<'a> Backend<'a> {
                 .all(|binding| binding.path.is_empty() || payload(&binding.path))
     }
 
-    /// One branch of a Decision whose scrutinee `root` is an `Option<V>`.
+    /// One branch of a Decision whose scrutinee `root` holds the element as
+    /// an `Option<V>` and the whole `Maybe` once a branch has needed it.
     pub(super) fn maybe_view_branch(
         &mut self,
         branch: &CoreDecisionBranch,
@@ -1775,6 +1778,8 @@ impl<'a> Backend<'a> {
         scope: &Scope,
         value: impl FnOnce(&mut Self, &CoreExpr, &Scope) -> Result<String>,
     ) -> Result<String> {
+        let whole = format!("{root}.1");
+        let root = &format!("{root}.0");
         let conditions = branch
             .tests
             .iter()
@@ -1809,7 +1814,7 @@ impl<'a> Backend<'a> {
         let mut inner = scope.clone();
         for binding in &branch.bindings {
             let projected = match binding.path.split_first() {
-                None => format!("native_maybe({root}.clone())"),
+                None => format!("{whole}.get_or_init(|| native_maybe({root}.clone())).clone()"),
                 Some((_, rest)) => Self::project(
                     &format!("({root}.as_ref().expect(\"Rust ABI: Just payload\"))"),
                     rest,
