@@ -1,4 +1,10 @@
 import { expect, type Locator, type Page, test } from "@playwright/test"
+import { startQuietly } from "./quiet-start-support"
+
+// 初めて開いたときの案内（最初の例の自動実行など）は first-example.spec.ts で確かめる
+test.beforeEach(async ({ page }) => {
+  await startQuietly(page)
+})
 
 const workspaceKey = "seseragi.playground.workspace-ratio"
 const ioKey = "seseragi.playground.io-ratio"

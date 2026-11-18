@@ -1,5 +1,11 @@
 import { expect, type Page, test } from "@playwright/test"
 import type { BrowserExecution } from "../src/runtime/browser-execution"
+import { startQuietly } from "./quiet-start-support"
+
+// 初めて開いたときの案内（最初の例の自動実行など）は first-example.spec.ts で確かめる
+test.beforeEach(async ({ page }) => {
+  await startQuietly(page)
+})
 
 async function runFixture(
   page: Page,

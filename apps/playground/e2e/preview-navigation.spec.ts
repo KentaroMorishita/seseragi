@@ -6,6 +6,12 @@ import {
   listenerCount,
   releasePreviewReadiness,
 } from "./preview-navigation-support"
+import { startQuietly } from "./quiet-start-support"
+
+// 初めて開いたときの案内（最初の例の自動実行など）は first-example.spec.ts で確かめる
+test.beforeEach(async ({ page }) => {
+  await startQuietly(page)
+})
 
 async function selectInteractive(page: Page): Promise<void> {
   await page.locator("#sample-browser-button").click()
@@ -45,7 +51,7 @@ for (const action of ["sample", "reset", "clear"] as const) {
       await expect(page.locator("#status-text")).toHaveText("Analysis ready")
     await page.locator("#run-button").click()
     if (action === "sample") {
-      await expect(page.locator("#output")).toContainText("Hello")
+      await expect(page.locator("#output")).toContainText("散歩日和です")
     } else {
       await expect(
         page
@@ -138,7 +144,7 @@ test("an explicit Run recovers from a failed actual WASM fetch in the same Worke
   expect(fetches).toBe(1)
   expect(workers).toHaveLength(1)
   await page.locator("#run-button").click()
-  await expect(page.locator("#output")).toContainText("Hello")
+  await expect(page.locator("#output")).toContainText("散歩日和です")
   await expect(page.locator("#run-button")).toBeEnabled()
   expect(fetches).toBe(2)
   expect(workers).toHaveLength(1)

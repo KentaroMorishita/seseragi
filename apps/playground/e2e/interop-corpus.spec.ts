@@ -1,5 +1,11 @@
 import { readFile } from "node:fs/promises"
 import { expect, test } from "@playwright/test"
+import { startQuietly } from "./quiet-start-support"
+
+// 初めて開いたときの案内（最初の例の自動実行など）は first-example.spec.ts で確かめる
+test.beforeEach(async ({ page }) => {
+  await startQuietly(page)
+})
 
 for (const name of ["domains", "relations", "structures", "callables"]) {
   test(`Inspector presents semantic corpus ${name} and compatibility evidence`, async ({

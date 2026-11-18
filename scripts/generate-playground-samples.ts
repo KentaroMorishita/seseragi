@@ -158,6 +158,9 @@ const loadedSamples = await Promise.all(
         featured: metadata.featured,
         isNew: metadata.isNew,
         interactive: metadata.interactive,
+        ...(metadata.guidance === undefined
+          ? {}
+          : { guidance: metadata.guidance }),
         sourcePath: entrySource.sourcePath,
         ...(manifest === undefined
           ? {}
@@ -350,8 +353,12 @@ async function renderInteractionFixtureUpdates(
   const definitions = new Map(
     samples.map(({ definition }) => [definition.id, definition])
   )
-  const entries = (await readdir(interactionFixturesRoot, { withFileTypes: true }))
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".interaction.json"))
+  const entries = (
+    await readdir(interactionFixturesRoot, { withFileTypes: true })
+  )
+    .filter(
+      (entry) => entry.isFile() && entry.name.endsWith(".interaction.json")
+    )
     .sort((left, right) => left.name.localeCompare(right.name))
 
   return Promise.all(

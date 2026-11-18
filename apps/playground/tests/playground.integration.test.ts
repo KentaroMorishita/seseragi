@@ -2544,6 +2544,7 @@ describe("Playground sample catalog", () => {
         group.samples.filter((id) => byId.get(id)?.featured)
       )
     ).toEqual([
+      "weather-advice",
       "collections",
       "project-greeting",
       "html-components",
@@ -2714,7 +2715,8 @@ describe("Playground sample catalog", () => {
     expect(main).toContain('id: "new-file"')
     expect(main).toContain('id: "first-example"')
     expect(main).toContain('id: "reset"')
-    expect(main).toContain('sample.id === "hello-world"')
+    // 最初の例は「天気のアドバイス」（#1350 の全体設計 2）
+    expect(main).toContain('sample.id === "weather-advice"')
     expect(main).toContain("createWorkspace(defaultSample.workspace)")
     expect(main).toContain('createSingleFileWorkspace("")')
     expect(main).toContain("currentSample ?? blankWorkspaceOrigin")
@@ -3301,9 +3303,7 @@ fails dom.DomRuntimeError<Never> =
     expect(html).toContain('id="show-html-preview-button"')
     expect(html).toContain('sandbox="allow-scripts allow-forms"')
     expect(html).toContain('referrerpolicy="no-referrer"')
-    expect(main).toContain(
-      "previewLinks.staticDocument(html, networkAllowed)"
-    )
+    expect(main).toContain("previewLinks.staticDocument(html, networkAllowed)")
     expect(main).toContain("createDocument: createPreviewDocument")
     expect(main).toContain("startIsolatedProject(htmlPreview")
     expect(main).not.toContain("startGeneratedProject(")

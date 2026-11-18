@@ -71,6 +71,28 @@ export type SampleMetadata = {
   readonly files: SampleFiles
   readonly workspace?: SampleWorkspace
   readonly preview?: SamplePreviewContract
+  readonly guidance?: SampleGuidance
+}
+
+/**
+ * 用意した例の案内（#1350 の全体設計 2、DESIGN.md「案内は初回だけ、消せて、ふだんは静か」）。
+ * - autoRun: 開いたときに一度だけ自動で実行する
+ * - hint: 初めて開いたときだけ、書き換える場所（anchor の文字）を指すひとこと
+ * - tryNext: 出力の下に並べるチップ。押すと edits を順にコードへ入れて実行する
+ */
+export type SampleGuidance = {
+  readonly autoRun: boolean
+  readonly hint?: {
+    readonly anchor: string
+    readonly title: string
+    readonly body: string
+  }
+  readonly tryNext: readonly SampleTryNext[]
+}
+
+export type SampleTryNext = {
+  readonly label: string
+  readonly edits: readonly { readonly find: string; readonly replace: string }[]
 }
 
 export type PlaygroundSampleProjectFile = {
@@ -165,6 +187,7 @@ export function parseSampleMetadata(
       "files",
       "workspace",
       "preview",
+      "guidance",
     ],
     `sample ${directoryId}`
   )
@@ -214,6 +237,10 @@ export function parseSampleMetadata(
     metadata.preview === undefined
       ? undefined
       : parseSamplePreviewContract(metadata.preview, id)
+  const guidance =
+    metadata.guidance === undefined
+      ? undefined
+      : parseSampleGuidance(metadata.guidance, id)
   const webCatalog = parseWebCatalogClassification(
     metadata,
     id,
@@ -253,6 +280,7 @@ export function parseSampleMetadata(
     files,
     ...(workspace === undefined ? {} : { workspace }),
     ...(preview === undefined ? {} : { preview }),
+    ...(guidance === undefined ? {} : { guidance }),
   }
 }
 
@@ -781,5 +809,71 @@ function assertAllowedKeys(
   const unknown = Object.keys(value).filter((key) => !allowedKeys.has(key))
   if (unknown.length > 0) {
     throw new Error(`${context} has unknown field(s): ${unknown.join(", ")}`)
+  }
+}
+
+function parseSampleGuidance(value: unknown, id: string): SampleGuidance {
+  const guidance = expectObject(value, `sample ${id}.guidance`)
+  assertAllowedKeys(
+    guidance,
+    ["autoRun", "hint", "tryNext"],
+    `sample ${id}.guidance`
+  )
+  const hint =
+    guidance.hint === undefined
+      ? undefined
+      : (() => {
+          const raw = expectObject(guidance.hint, `sample ${id}.guidance.hint`)
+          assertAllowedKeys(
+            raw,
+            ["anchor", "title", "body"],
+            `sample ${id}.guidance.hint`
+          )
+          return {
+            anchor: expectNonEmptyString(
+              raw.anchor,
+              `sample ${id}.guidance.hint.anchor`
+            ),
+            title: expectNonEmptyString(
+              raw.title,
+              `sample ${id}.guidance.hint.title`
+            ),
+            body: expectNonEmptyString(
+              raw.body,
+              `sample ${id}.guidance.hint.body`
+            ),
+          }
+        })()
+  if (!Array.isArray(guidance.tryNext ?? [])) {
+    throw new Error(`sample ${id}.guidance.tryNext must be an array`)
+  }
+  const tryNext = ((guidance.tryNext ?? []) as unknown[]).map((raw, index) => {
+    const label = `sample ${id}.guidance.tryNext[${index}]`
+    const chip = expectObject(raw, label)
+    assertAllowedKeys(chip, ["label", "edits"], label)
+    if (!Array.isArray(chip.edits) || chip.edits.length === 0) {
+      throw new Error(`${label}.edits must be a non-empty array`)
+    }
+    return {
+      label: expectNonEmptyString(chip.label, `${label}.label`),
+      edits: chip.edits.map((rawEdit, editIndex) => {
+        const editLabel = `${label}.edits[${editIndex}]`
+        const edit = expectObject(rawEdit, editLabel)
+        assertAllowedKeys(edit, ["find", "replace"], editLabel)
+        const find = expectNonEmptyString(edit.find, `${editLabel}.find`)
+        if (typeof edit.replace !== "string") {
+          throw new Error(`${editLabel}.replace must be a string`)
+        }
+        return { find, replace: edit.replace }
+      }),
+    }
+  })
+  return {
+    autoRun: expectOptionalBoolean(
+      guidance.autoRun,
+      `sample ${id}.guidance.autoRun`
+    ),
+    ...(hint === undefined ? {} : { hint }),
+    tryNext,
   }
 }

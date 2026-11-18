@@ -102,10 +102,14 @@ import sample19Source from "../../../../examples/samples/type-aliases/main.ssrg?
 import sample19Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
 import sample19Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
 
-import sample20Manifest from "../../../../examples/samples/web-starter/seseragi.toml?raw"
-import sample20Source from "../../../../examples/samples/web-starter/src/main.ssrg?raw"
-import sample20Source2 from "../../../../examples/samples/web-starter/src/app.ssrg?raw"
-import sample20Guide from "../../../../examples/samples/web-starter/guide.md?raw"
+import sample20Source from "../../../../examples/samples/weather-advice/main.ssrg?raw"
+import sample20Guide from "../../../../examples/samples/weather-advice/guide.md?raw"
+import sample20Output from "../../../../examples/samples/weather-advice/stdout.txt?raw"
+
+import sample21Manifest from "../../../../examples/samples/web-starter/seseragi.toml?raw"
+import sample21Source from "../../../../examples/samples/web-starter/src/main.ssrg?raw"
+import sample21Source2 from "../../../../examples/samples/web-starter/src/app.ssrg?raw"
+import sample21Guide from "../../../../examples/samples/web-starter/guide.md?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -1109,6 +1113,87 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
+      "id": "weather-advice",
+      "title": "天気のアドバイス",
+      "summary": "天気を型で表し、match で言葉を選び、|> で流して、日ごとのひとことを出します。",
+      "kind": "recipe",
+      "difficulty": "beginner",
+      "topics": [
+        "type",
+        "match",
+        "pipeline",
+        "template string"
+      ],
+      "capabilities": [
+        "console"
+      ],
+      "outputMode": "text",
+      "prerequisites": [],
+      "featured": true,
+      "isNew": false,
+      "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "hint": {
+          "anchor": "Rainy 3",
+          "title": "3 を 12 に変えて、Run を押してみましょう。",
+          "body": "このコードはそのまま動きます。結果はもう出ています。"
+        },
+        "tryNext": [
+          {
+            "label": "雨量を 12mm にする",
+            "edits": [
+              {
+                "find": "Rainy 3,",
+                "replace": "Rainy 12,"
+              }
+            ]
+          },
+          {
+            "label": "くもりを足す",
+            "edits": [
+              {
+                "find": "  | Rainy Int\n",
+                "replace": "  | Rainy Int\n  | Cloudy\n"
+              },
+              {
+                "find": "\n}\n\nlet forecast",
+                "replace": "\n  Cloudy -> \"折りたたみ傘があると安心です\"\n}\n\nlet forecast"
+              },
+              {
+                "find": "let forecast = [",
+                "replace": "let forecast = [Cloudy, "
+              }
+            ]
+          },
+          {
+            "label": "予報を 1 日増やす",
+            "edits": [
+              {
+                "find": "Sunny]\n",
+                "replace": "Sunny, Rainy 25]\n"
+              }
+            ]
+          }
+        ]
+      },
+      "sourcePath": "examples/samples/weather-advice/main.ssrg",
+      "guidePath": "examples/samples/weather-advice/guide.md",
+      "expectedOutputPath": "examples/samples/weather-advice/stdout.txt",
+      "sourceHash": "sha256:92df23a3c4e8fc2f360fac4e2f3fdef89fb68e3da0a445dd9047f28705db1d30",
+      "workspaceHash": "sha256:7082ef9b1b250c4be47092048f4579d5559d8e06010e9c6dbd57f53df1e6d7c9"
+    },
+    source: sample20Source,
+    manifest: "",
+    projectFiles: [
+      { path: "main.ssrg", source: sample20Source },
+    ],
+    guide: sample20Guide,
+    stdin: "",
+    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
       "id": "web-starter",
       "title": "Web starter — 最初のlocal package",
       "summary": "seseragi new webが生成するものと同じsourceで、Signal counterをlocal Web packageとして動かします。",
@@ -1161,13 +1246,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample20Source,
-    manifest: sample20Manifest,
+    source: sample21Source,
+    manifest: sample21Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample20Source },
-      { path: "app.ssrg", source: sample20Source2 },
+      { path: "main.ssrg", source: sample21Source },
+      { path: "app.ssrg", source: sample21Source2 },
     ],
-    guide: sample20Guide,
+    guide: sample21Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   }
@@ -1181,6 +1266,7 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
       "summary": "条件分岐、末尾再帰、配列の絞り込みと集計を小さなプログラムで試します。",
       "kind": "recipe",
       "samples": [
+        "weather-advice",
         "fizzbuzz",
         "fibonacci-sequence",
         "collections",

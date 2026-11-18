@@ -395,14 +395,15 @@ body.preview-fullscreen-fallback-open {
   height: 100%;
   min-height: 0;
   display: grid;
+  /* 見出し・Input・区切り・出力・Try next（出していないときは高さ 0） */
   grid-template-rows:
     auto minmax(80px, var(--stdin-panel-ratio, 34%)) 8px
-    minmax(0, 1fr);
+    minmax(0, 1fr) auto;
   background: var(--surface);
 }
 
 .io-panel[data-stdin-collapsed="true"] .pg-output {
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
 .io-panel[data-stdin-collapsed="true"] .pg-input,
@@ -419,6 +420,10 @@ body.preview-fullscreen-fallback-open {
 /* 全画面では、Input を開いていてもプレビューに残りの高さを渡す */
 .pg-output[data-preview-fullscreen] {
   grid-template-rows: auto minmax(0, 1fr);
+}
+
+.pg-output[data-preview-fullscreen] .pg-try-next {
+  display: none;
 }
 
 .pg-output[data-preview-fullscreen] .pg-input,
@@ -502,7 +507,7 @@ body.preview-fullscreen-fallback-open {
   grid-template-rows: auto minmax(0, 1fr);
 }
 
-.pg-output-body > :not(.preview-link-notice, .preview-network-notice) {
+.pg-output-body > :not(.preview-link-notice, .preview-network-notice, .pg-auto-note) {
   grid-row: 2;
   width: 100%;
   height: 100%;
@@ -525,6 +530,136 @@ body.preview-fullscreen-fallback-open {
   color: var(--fg-2);
   font-size: var(--text-xs);
   overflow-wrap: anywhere;
+}
+
+/* ---------- 用意した例の案内（ひとこと、Try next、自動実行の知らせ） ---------- */
+
+.pg-auto-note {
+  grid-row: 1;
+  margin: 0;
+  padding: var(--space-3) var(--space-5) 0;
+  color: var(--fg-3);
+  font-size: var(--text-xs);
+}
+
+.pg-try-next {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.pg-try-next-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pg-try-next-head h3 {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 650;
+}
+
+.pg-try-next-count {
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--fg-3);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  text-align: center;
+}
+
+.pg-try-next[data-collapsed="true"] {
+  padding-bottom: var(--space-3);
+}
+
+.pg-try-next-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.pg-try-chip:disabled {
+  color: var(--fg-3);
+  text-decoration: line-through;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* ひとこと（コーチマーク）。指す文字に印を付け、その下に吹き出しを出す */
+.cm-coach-anchor {
+  border-radius: 3px;
+  background: var(--accent-soft);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.cm-tooltip.cm-coach-tooltip {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.pg-coach {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  width: min(300px, 70vw);
+  margin-top: 10px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  box-shadow: var(--shadow-float);
+}
+
+.pg-coach::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 18px;
+  width: 10px;
+  height: 10px;
+  background: var(--primary);
+  transform: rotate(45deg);
+}
+
+.pg-coach strong {
+  font-size: var(--text-sm);
+}
+
+.pg-coach-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: 4px;
+}
+
+.pg-coach-row a {
+  color: var(--accent-2);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pg-coach-row button {
+  padding: 2px 8px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: inherit;
+  opacity: 0.72;
+  cursor: pointer;
+}
+
+.pg-coach-row button:hover {
+  opacity: 1;
 }
 
 /* 外部の画像と通信を止めたときの一行（#1371）。Preview の上の段に置き、
@@ -2738,6 +2873,13 @@ body.preview-fullscreen-fallback-open {
   }
 
   .pg-search-foot {
+    display: none;
+  }
+}
+
+/* 狭い画面では、出力のシートがコードに重なるので、ひとこと（コーチマーク）は出さない */
+@media (max-width: 760px), (max-width: 960px) and (max-height: 520px) {
+  .cm-tooltip.cm-coach-tooltip {
     display: none;
   }
 }

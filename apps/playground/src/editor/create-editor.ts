@@ -12,6 +12,8 @@ import {
   hoverTooltip,
   lineNumbers,
   repositionTooltips,
+  showTooltip,
+  type Tooltip,
   tooltips,
   ViewPlugin,
   WidgetType,
@@ -25,6 +27,7 @@ import { seseragiEditorTheme } from "./theme"
 const whitespaceCompartment = new Compartment()
 const editableCompartment = new Compartment()
 const linePinsCompartment = new Compartment()
+const coachMarkCompartment = new Compartment()
 
 export function createEditor(
   parent: HTMLElement,
@@ -55,6 +58,7 @@ export function createEditorState(
       whitespaceCompartment.of([]),
       editableCompartment.of(EditorView.editable.of(true)),
       linePinsCompartment.of([]),
+      coachMarkCompartment.of([]),
       ...(hoverAt === undefined ? [] : analysisTooltipExtensions(hoverAt)),
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({
@@ -265,4 +269,54 @@ export function setEditorLinePins(
   editor.dispatch({
     effects: linePinsCompartment.reconfigure(pins.length === 0 ? [] : field),
   })
+}
+
+export type EditorCoachMark = Readonly<{
+  from: number
+  to: number
+  render: () => HTMLElement
+}>
+
+// 初めて開いた最初の例で、書き換える場所を指すひとこと（コーチマーク）。
+// 指す文字に印を付け、その下に吹き出しを出す。コードを書き換えても、同じ文字に付いていく。
+export function setEditorCoachMark(
+  editor: EditorView,
+  mark: EditorCoachMark | undefined
+): void {
+  if (mark === undefined) {
+    editor.dispatch({ effects: coachMarkCompartment.reconfigure([]) })
+    return
+  }
+  const highlight = Decoration.mark({ class: "cm-coach-anchor" })
+  const field = StateField.define<{ from: number; to: number }>({
+    create: () => ({ from: mark.from, to: mark.to }),
+    update: (range, transaction) => ({
+      from: transaction.changes.mapPos(range.from, 1),
+      to: transaction.changes.mapPos(range.to, -1),
+    }),
+    provide: (value) => [
+      showTooltip.compute([value], (state): Tooltip | null => {
+        const range = state.field(value)
+        return {
+          pos: range.from,
+          above: false,
+          // エディターは返した要素に自分の吹き出しの見た目を付けるので、
+          // ひとことのカードは一段内側に置く
+          create: (view) => {
+            const dom = view.dom.ownerDocument.createElement("div")
+            dom.className = "cm-coach-tooltip"
+            dom.append(mark.render())
+            return { dom }
+          },
+        }
+      }),
+      EditorView.decorations.compute([value], (state) => {
+        const range = state.field(value)
+        return range.to > range.from
+          ? Decoration.set([highlight.range(range.from, range.to)])
+          : Decoration.none
+      }),
+    ],
+  })
+  editor.dispatch({ effects: coachMarkCompartment.reconfigure(field) })
 }

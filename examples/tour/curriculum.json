@@ -5252,6 +5252,13 @@
       "reason": "aliasとTask表記を確認する発展Recipeへ再分類する。"
     },
     {
+      "sampleId": "weather-advice",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "Playground を初めて開いたときの最初の例。type・match・|> を一度に見せ、Try next で書き換えて試す。"
+    },
+    {
       "sampleId": "web-starter",
       "currentKind": "recipe",
       "decision": "discover-recipe",

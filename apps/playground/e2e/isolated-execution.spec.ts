@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test"
 import { rememberNetworkDecision } from "./network-decision-support"
+import { startQuietly } from "./quiet-start-support"
+
+// 初めて開いたときの案内（最初の例の自動実行など）は first-example.spec.ts で確かめる
+test.beforeEach(async ({ page }) => {
+  await startQuietly(page)
+})
 
 test("evaluates program modules in an opaque preview realm", async ({
   page,
