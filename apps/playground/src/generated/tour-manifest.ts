@@ -405,7 +405,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "walkthrough": [
         {
           "heading": "コメントと名前の定義",
-          "body": "1 行目の `//` から行末まではコメントです。プログラムの動きには影響せず、メモを残せます。2 行目では文字列 `\"Seseragi\"` に `name` という名前を付けています。",
+          "body": "初期コードの先頭にある `//` から行末まではコメントです。プログラムの動きには影響せず、メモを残せます。`let name = \"Seseragi\"` では文字列 `\"Seseragi\"` に `name` という名前を付けています。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 2
@@ -480,7 +480,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "walkthrough": [
         {
           "heading": "型注釈・型推論と演算・比較",
-          "body": "1 行目の `let total: Int = 20 + 22` は `: Int` と型注釈を付けながら `+` で整数を計算します。2 行目の `1.5`（`Float`）や 3 行目の `42 > 40`（`Bool`）は型注釈を省略しても右辺から型が推論され、`42 > 40` の結果は `True` になります。4 行目の `()` は値がないことを表す `Unit` 型です。",
+          "body": "初期コードの `let total: Int = 20 + 22` は `: Int` と型注釈を付けながら `+` で整数を計算します。`let ratio = 1.5`（`Float`）や `let isLarge = 42 > 40`（`Bool`）は型注釈を省略しても右辺から型が推論され、`42 > 40` の結果は `True` になります。`let empty: Unit = ()` の `()` は値がないことを表す `Unit` 型です。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 4
@@ -488,7 +488,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "変更できない束縛を参照する",
-          "body": "`let` で付けた名前は後から値を上書きできない変更できない束縛です。`main` の中では名前をそのまま参照し、`Output` へ 4 つの型の値をまとめて表示しています。",
+          "body": "`let` で付けた名前は後から値を上書きできない束縛（不変束縛）です。`main` の中では名前をそのまま参照し、`Output` へ 4 つの型の値をまとめて表示しています。",
           "sourceRange": {
             "startLine": 6,
             "endLine": 7
@@ -513,7 +513,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "3 行目の `42 > 40` を `42 > 50` に書き換えて `Run` し、`Output` の `Bool: True` が `Bool: False` に変わることを確かめてください。",
+        "instruction": "`let isLarge = 42 > 40` の `42 > 40` を `42 > 50` に書き換えて `Run` し、`Output` の `Bool: True` が `Bool: False` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -553,7 +553,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "walkthrough": [
         {
           "heading": "値を返す式としての if",
-          "body": "2 行目の `if score >= 80 then \"pass\" else \"retry\"` は命令文ではなく、選んだ側の値をそのまま返す式です。条件 `score >= 80` が `True` なので `label` には `\"pass\"` が入ります。",
+          "body": "`let label = if score >= 80 then \"pass\" else \"retry\"` の `if` は命令文ではなく、選んだ側の値をそのまま返す式です。初期コードでは `score` が `85` で `score >= 80` が `True` になるため、`label` には `\"pass\"` が入ります。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 2
@@ -561,7 +561,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "else が必須で、式の一部にも書ける",
-          "body": "3 行目の `if` 式は `Int` 型の `5` または `0` を返し、5 行目の `score + bonus` の計算にそのまま使われています。`then` と `else` の両方を必ず書くのは、どちらの分岐でも 1 つの値を返す必要があるためです。",
+          "body": "`let bonus = if score >= 80 then 5 else 0` は `Int` 型の `5` または `0` を返し、`main` の `score + bonus` の計算にそのまま使われています。`then` と `else` の両方を必ず書くのは、どちらの分岐でも同じ型の 1 つの値を返す必要があるためです。",
           "sourceRange": {
             "startLine": 3,
             "endLine": 5
@@ -576,7 +576,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "1 行目の `85` を `70` に書き換えて `Run` し、`Output` が `label: retry, total: 70` に変わることを確かめてください。",
+        "instruction": "まず `else \"retry\"` を `else 0` に書き換えて `Run` し、`then` と `else` の型が揃わないと `Problems` に型不一致エラー（`expected String, actual Int`）が出ることを確かめてください。次に `else \"retry\"` に戻したうえで `let score = 85` を `let score = 70` に書き換えて `Run` し、`Output` が `label: retry, total: 70` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -616,7 +616,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "walkthrough": [
         {
           "heading": "fn で関数を定義し、引数と戻り型を読む",
-          "body": "1 行目の `fn add` は副作用を持たない純粋な関数を定義します。`left: Int -> right: Int -> Int` は、`Int` 型の引数 `left` と `right` を受け取り、最後の `->` の後にある `Int` 型を返すという意味です。",
+          "body": "`fn add` は副作用を持たない純粋な関数を定義します。`left: Int -> right: Int -> Int` は、`Int` 型の引数 `left` と `right` を受け取り、最後の `->` の後にある `Int` 型を返すという意味です。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 1
@@ -624,7 +624,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "空白区切りの呼び出しと部分適用",
-          "body": "4 行目の `add 10 20` のように、関数名と引数を空白で並べて呼び出します。3 行目の `add 10` のように 1 つ目の引数だけを渡すと、残りの引数を受け取る関数 `add10` ができ、5 行目で `add10 22` のように呼び出せます。",
+          "body": "初期コードの `add 10 20` のように、関数名と引数を空白で並べて呼び出します。`let add10 = add 10` のように 1 つ目の引数だけを渡すと、残りの引数を受け取る関数 `add10` ができ、`add10 22` のように呼び出せます（演習で書き換える前の初期コードの例です）。",
           "sourceRange": {
             "startLine": 3,
             "endLine": 5
@@ -632,7 +632,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "計算した結果を出力する",
-          "body": "純粋な関数 `add` が返した値（`30` と `32`）を、`main` の中でテンプレート文字列に埋め込んで `Output` へ出力しています。",
+          "body": "初期コードでは、純粋な関数 `add` が返した値（`30` と `32`）を `main` の中でテンプレート文字列に埋め込んで `Output` へ出力しています（書き換え後は変更した値に変わります）。",
           "sourceRange": {
             "startLine": 7,
             "endLine": 7
@@ -657,7 +657,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "3 行目の `let add10 = add 10` を `let add20 = add 20` に、5 行目の `add10 22` を `add20 22` に書き換えて `Run` し、`second: 42` に変わることを確かめてください。",
+        "instruction": "`let add10 = add 10` を `let add20 = add 20` に、`add10 22` を `add20 22` に書き換えて `Run` し、`second: 42` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -698,7 +698,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "walkthrough": [
         {
           "heading": "小さな変換関数を用意する",
-          "body": "1〜5 行目では `greeting`・`wrap`・`addLabel` という 1 つずつ小さな役割を持つ関数を定義しています。`wrap` と `addLabel` は最後に対象の `value: String` を受け取る形にしておくと、部分適用でパイプラインに並べやすくなります。",
+          "body": "`greeting`・`wrap`・`addLabel` という 1 つずつ小さな役割を持つ関数を定義しています。`wrap` と `addLabel` は最後に対象の `value: String` を受け取る形にしておくと、部分適用でパイプラインに並べやすくなります。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 5
@@ -706,7 +706,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "パイプライン |> で上から下へ流す",
-          "body": "7〜11 行目の `|>` は左の値を次の関数の最後の引数として渡します。`name` が `greeting` を通り、`wrap \"**\"` を通り、`addLabel \"Welcome\"` を通る流れを、行を分けて上から下へ読めます。",
+          "body": "`buildMessage` の中の `|>` は左の値を次の関数の最後の引数として渡します。初期コードでは `name` が `greeting`、`wrap \"**\"`、`addLabel \"Welcome\"` の順に流れる様子を、行を分けて上から下へ読めます。",
           "sourceRange": {
             "startLine": 7,
             "endLine": 11
@@ -714,7 +714,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "$ で右側の計算結果をまとめて渡す",
-          "body": "13 行目の `$` は右側全体 `buildMessage \"Seseragi\"` を先に計算し、その 1 つの結果を左側の `println` へ渡します。`println (buildMessage \"Seseragi\")` のように括弧で囲むのと同じ意味です。",
+          "body": "`main` の `$` は右側全体 `buildMessage \"Seseragi\"` を先に計算し、その 1 つの結果を左側の `println` へ渡します。`println (buildMessage \"Seseragi\")` のように括弧で囲むのと同じ意味です。",
           "sourceRange": {
             "startLine": 13,
             "endLine": 13
@@ -734,12 +734,12 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "11 行目の次に `|> wrap \"==\"` を 1 段書き足し、13 行目の `\"Seseragi\"` を `\"Tour\"` に書き換えて `Run` し、`Output` が `==Welcome: **Hello, Tour!**==` に変わることを確かめてください。",
+        "instruction": "`buildMessage` の `|> addLabel \"Welcome\"` の次に `|> wrap \"==\"` を 1 段書き足し、`main` の `buildMessage \"Seseragi\"` を `buildMessage \"Tour\"` に書き換えて `Run` し、`Output` が `==Welcome: **Hello, Tour!**==` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
         "heading": "$ や括弧を付けずに別の関数呼び出しを渡す",
-        "body": "失敗例では 13 行目から `$` を外して `println buildMessage \"Seseragi\"` と書いています。この書き方では `println` に `buildMessage` と `\"Seseragi\"` の 2 つの引数を渡そうとしてしまい、引数の数のエラーになります。"
+        "body": "失敗例では `main` の `println $ buildMessage \"Seseragi\"` から `$` を外して `println buildMessage \"Seseragi\"` と書いています。この書き方では `println` に `buildMessage` と `\"Seseragi\"` の 2 つの引数を渡そうとしてしまい、引数の数のエラーになります。"
       },
       "recap": [
         "`|>` は左側の値を右側の関数へ流し、行を分けてデータの変換を上から順に書けます。",
@@ -774,7 +774,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "walkthrough": [
         {
           "heading": "固定長のタプルを作って分解する",
-          "body": "1行目の `(String, Int)` は `String` と `Int` を順に並べる固定長のタプル型です。2行目の `let (city, stops) = pair` で位置ごとの要素を変数に取り出します。",
+          "body": "`let pair: (String, Int) = (\"Osaka\", 2)` の `(String, Int)` は `String` と `Int` を順に並べる固定長のタプル型です。`let (city, stops) = pair` で位置ごとの要素を変数に取り出します（初期コードの例です）。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 2
@@ -782,7 +782,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "無名レコードの作成とスプレッド更新",
-          "body": "4行目の `{ city: city, stops: stops, line: \"Rapid\" }` は名前なしの無名レコードです。5行目の `{ ...route, stops: 3 }` は元の `route` を変えずに `stops` だけを更新した新しいレコードを作ります。",
+          "body": "`{ city: city, stops: stops, line: \"Rapid\" }` は名前なしの無名レコードです。`{ ...route, stops: 3 }` は元の `route` を変えずに `stops` だけを更新した新しいレコードを作ります。",
           "sourceRange": {
             "startLine": 4,
             "endLine": 6
@@ -810,7 +810,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの1行目にある `(\"Osaka\", 2)` を `(\"Kobe\", 4)` に、5行目の `stops: 3` を `stops: 5` に書き換えて `Run` し、`Output` の1行目と2行目が `Rapid: Kobe (4)` と `Updated: Kobe (5)` に変わることを確かめてください。",
+        "instruction": "`let pair: (String, Int) = (\"Osaka\", 2)` の `(\"Osaka\", 2)` を `(\"Kobe\", 4)` に、`{ ...route, stops: 3 }` の `stops: 3` を `stops: 5` に書き換えて `Run` し、`Output` の 1 行目と 2 行目が `Rapid: Kobe (4)` と `Updated: Kobe (5)` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -866,7 +866,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "型名を明示して値を組み立てる",
-          "body": "`Customer { ... }` のように宣言した型名を先頭に書いて値を作ります。宣言にあるすべてのフィールドが揃っていなければ作成できません。",
+          "body": "初期コードの `Customer { name: \"Mio\", plan: \"Pro\" }` のように宣言した型名を先頭に書いて値を作ります（演習で書き換える前の例です）。宣言にあるすべてのフィールドが揃っていなければ作成できません。",
           "sourceRange": {
             "startLine": 7,
             "endLine": 8
@@ -886,7 +886,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの7行目にある `name: \"Mio\", plan: \"Pro\"` を `name: \"Ren\", plan: \"Team\"` に書き換えて `Run` し、`Output` の1行目が `Customer -> Ren: Team` に変わることを確かめてください。",
+        "instruction": "`Customer { name: \"Mio\", plan: \"Pro\" }` の `name: \"Mio\", plan: \"Pro\"` を `name: \"Ren\", plan: \"Team\"` に書き換えて `Run` し、`Output` の 1 行目が `Customer -> Ren: Team` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -962,7 +962,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの7行目にある `Shipped \"Osaka\"` を `Shipped \"Kobe\"` に書き換えて `Run` し、`Output` の2行目が `Shipped Kobe` に変わることを確かめてください。",
+        "instruction": "`Shipped \"Osaka\"` を `Shipped \"Kobe\"` に書き換えて `Run` し、`Output` の 2 行目が `Shipped Kobe` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1007,7 +1007,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "パターン束縛で中身の値を取り出して使う",
-          "body": "`Shipped city` と書くと、`Shipped \"Osaka\"` に含まれる文字列が `city` に束縛されます。右辺の `` `Shipped to ${city}` `` のように、取り出した変数は必ず処理の中で使います。",
+          "body": "`Shipped city` と書くと、`Shipped \"Osaka\"` に含まれる文字列が `city` に束縛され、右辺の `` `Shipped to ${city}` `` で参照できます。使わない変数に名前を付けてもコンパイルエラーにはなりませんが、未使用変数の警告を避けて意図を明確にする作法として、不要な値には `_` を使います。",
           "sourceRange": {
             "startLine": 8,
             "endLine": 8
@@ -1035,7 +1035,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの9行目にある `Delivered (city, _)` を `Delivered (city, stops)` に、同じ行の右辺を `` `Delivered to ${city} in ${stops} stops` `` に書き換えて `Run` し、`Output` の3行目が `Delivered to Kyoto in 2 stops` に変わることを確かめてください。",
+        "instruction": "`Delivered (city, _) -> ...` のパターンを `Delivered (city, stops)` に、同じ分岐の右辺を `` `Delivered to ${city} in ${stops} stops` `` に書き換えて `Run` し、`Output` の 3 行目が `Delivered to Kyoto in 2 stops` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1044,7 +1044,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       },
       "recap": [
         "`match` でコンストラクターを判別し、中身の値を変数に束縛して利用できる。",
-        "パターンで束縛した変数は右辺で必ず使い、不要な位置には `_` を書く。",
+        "パターンで束縛した変数は右辺で参照し、不要な位置には未使用変数の警告を避ける作法として `_` を書く（コンパイル規則ではなく読みやすさと警告回避のための書き方）。",
         "タプルなどを入れ子にしたパターンでも一度に値を取り出せる。"
       ],
       "next": {
@@ -1083,7 +1083,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "新しいケースを増やしても漏れに気付ける",
-          "body": "あとから `Choice` に新しいコンストラクターを追加したときも、対応し忘れた `match` をコンパイラがすべて検出してくれるため、実行時の取りこぼしを心配せずに変更できます。",
+          "body": "あとから `Choice` に新しいコンストラクターを追加したときも、対応し忘れた `match` をコンパイラが実行前にすべてエラーで教えてくれます。そのため実行時に予期しないケースを見落とす心配なく変更できます。",
           "sourceRange": {
             "startLine": 12,
             "endLine": 15
@@ -1098,7 +1098,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの14行目にある `choose Two` を `choose Three` に書き換えて `Run` し、`Output` の2行目が `3` に変わることを確かめてください。",
+        "instruction": "まず `match value` の中から `Three -> 3` の 1 行を消して `Run` し、`Problems` に網羅性エラー（`missing patterns: Three`）が出ることを確かめてください。次に `Three -> 3` を戻したうえで、`main` の `choose Two` を `choose Three` に書き換えて `Run` し、`Output` の 2 行目が `3` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1134,11 +1134,11 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     expectedOutput: (lesson10Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "ADT とパターンマッチで値の種類を判別できるようになりました。ここからは同じ型の値を複数まとめて扱います。",
+      "prerequisite": "ADT とパターンマッチで値の種類を判別できるようになりました。ここからは同じ型の値を複数まとめて扱います。なお、このレッスンで先に出てくる `Maybe` は、Step 08〜09 の ADT と同じく「値がある（`Just 値`）」「値がない（`Nothing`）」の 2 ケースを持つ標準の型です（詳しい扱いは次の章の Step 13 で学びます）。",
       "walkthrough": [
         {
           "heading": "Array と Range を作る",
-          "body": "`[10, 20, 30]` は同じ型の要素を順に並べる `Array` リテラル、`1 ..= 5` は開始と終端を含む整数範囲 `Range` です。",
+          "body": "初期コードの `[10, 20, 30]` は同じ型の要素を順に並べる `Array` リテラル、`1 ..= 5` は開始と終端を含む整数範囲 `Range` です。",
           "sourceRange": {
             "startLine": 3,
             "endLine": 4
@@ -1146,7 +1146,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "境界チェック付きで要素を取り出す",
-          "body": "`arrays.length scores` で要素数を調べ、`arrays.get 1 scores` で先頭から 2 番目の要素を取り出します。存在する位置なら `Just 20`、範囲外の `3` なら `Nothing` の `Maybe` 値が返ります。",
+          "body": "`arrays.length scores` で配列の要素数を調べ、`arrays.get` で添字を指定して要素を取り出します。添字は `0` から数えるため、初期コードの要素数 3 の `scores` で有効な添字は `0`・`1`・`2` です。範囲内の添字 `1` なら `Just 20`、範囲外の添字 `3` なら `Nothing` という `Maybe` 値が返ります。",
           "sourceRange": {
             "startLine": 7,
             "endLine": 9
@@ -1170,11 +1170,11 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         {
           "kind": "api",
           "name": "arrays.get と Maybe",
-          "body": "`arrays.get index array` は境界チェック付きの添字アクセスを行い、範囲内なら `Just 値`、範囲外なら `Nothing` を返します。"
+          "body": "`arrays.get index array` は 0 始まりの境界チェック付き添字アクセスです。範囲内なら値ありを表す `Just 値`、範囲外なら値なしを表す `Nothing`（どちらも `Maybe` 型のコンストラクター）を返します。"
         }
       ],
       "exercise": {
-        "instruction": "エディターの `scores` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の長さと `arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
+        "instruction": "`let scores: Array<Int> = [10, 20, 30]` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の `length 3` が `length 4` に変わり、`arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1210,19 +1210,19 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     expectedOutput: (lesson11Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "`Array` と `Range` の作り方や、`arrays.get` による安全な要素の取り出し方を学びました。ここでは複数の処理をパイプラインでつないで集計します。",
+      "prerequisite": "`Array` と `Range` の作り方を学びました。ここでは Step 04 の部分適用と Step 05 のパイプライン `|>` を使い、配列の絞り込み（`arrays.filter`）・各要素の変換（`map`）・1 つの値への集計（`reduce`）を 1 段ずつ組み合わせてみます。",
       "walkthrough": [
         {
           "heading": "絞り込み、変換、集計をパイプラインでつなぐ",
-          "body": "`values` は `|>` に沿って上から順に流れます。`arrays.filter even` で偶数だけを残し、`map double` でそれぞれ 2 倍にして、`reduce 0 (+)` で合計します。",
+          "body": "初期コードの `numbers = [1, 2, 3, 4, 5, 6]` が `|>` に沿って上から順に流れます。`arrays.filter even` で偶数だけの `[2, 4, 6]` に絞り、`map double` で 2 倍の `[4, 8, 12]` に変え、`reduce 0 (+)` で初期値 `0` から順に足し合わせて `24` を得ます（演習で書き換える前の初期コードの例です）。",
           "sourceRange": {
             "startLine": 6,
             "endLine": 10
           }
         },
         {
-          "heading": "処理関数を先に渡し、配列を最後に流す",
-          "body": "`arrays.filter`・`map`・`reduce` は判定や変換の関数を先に受け取り、対象の配列を最後の引数で受け取るため、部分適用のまま `|>` に並べられます。",
+          "heading": "部分適用と (+) で配列を最後の引数へ流す",
+          "body": "`arrays.filter`・`map`・`reduce` は条件や変換の関数を先に受け取り、対象の配列を最後の引数で受け取る設計です。そのため Step 04 の部分適用だけで `arrays.filter even` や `reduce 0 (+)` を作り、そのまま `|>` に並べられます。`(+)` は足し算演算子 `+` を 2 引数の関数として渡す書き方です。",
           "sourceRange": {
             "startLine": 8,
             "endLine": 10
@@ -1230,7 +1230,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "演算子表記でも各要素を変換できる",
-          "body": "`double <$> numbers` は `map double numbers` と同じ要素変換です。演算子の左に関数、右に配列を置いて書けます。",
+          "body": "初期コードの `double <$> numbers` は `map double numbers` と同じ要素変換の短縮表記です。演算子の左に関数、右に配列を置いて書けます。",
           "sourceRange": {
             "startLine": 13,
             "endLine": 13
@@ -1241,7 +1241,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         {
           "kind": "api",
           "name": "filter、map、reduce の連携",
-          "body": "配列を最後の引数に取る関数へ条件や変換の関数を先に渡し、`|>` で絞り込み・変換・集計を順に組み合わせます。"
+          "body": "配列を最後の引数に取る `arrays.filter`（絞り込み）・`map`（各要素の変換）・`reduce`（初期値から順に集計）に条件や変換関数を先に渡し、`|>` で順に組み合わせます。"
         },
         {
           "kind": "syntax",
@@ -1250,7 +1250,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの `numbers` を `[1, 2, 3, 4]` に、`reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
+        "instruction": "`let numbers = [1, 2, 3, 4, 5, 6]` を `[1, 2, 3, 4]` に、`|> reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1328,7 +1328,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 6 行目にある `Just \"Mio\"` を `Nothing` に書き換えて `Run` し、`Output` の 1 行目が `user: none` に、3 行目の `active` の値が `Guest` に変わることを確かめてください。",
+        "instruction": "エディターの `Just \"Mio\"` を `Nothing` に書き換えて `Run` し、`Output` の 1 行目が `user: none` に、3 行目の `active` の値が `Guest` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1409,7 +1409,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 12 行目にある `Just 41` を `Just 0` に書き換えて `Run` し、`Output` の 3 行目が `flatMap: Nothing` と `>>=: Nothing` に変わることを確かめてください。",
+        "instruction": "エディターの `Just 41` を `Just 0` に書き換えて `Run` し、`Output` の 3 行目が `flatMap: Nothing` と `>>=: Nothing` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1490,7 +1490,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 12 行目にある `Right 3` を `Left \"out of stock\"` に書き換えて `Run` し、`Output` の 2 行目が `error: out of stock` に変わることを確かめてください。",
+        "instruction": "エディターの `Right 3` を `Left \"out of stock\"` に書き換えて `Run` し、`Output` の 2 行目が `error: out of stock` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1566,7 +1566,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 14 行目にある `Left \"invalid\"` を `Left \"empty input\"` に書き換えて `Run` し、`Output` の 3 行目が `Left empty input` に、5 行目が `error: empty input` に変わることを確かめてください。",
+        "instruction": "エディターの `Left \"invalid\"` を `Left \"empty input\"` に書き換えて `Run` し、`Output` の 3 行目が `Left empty input` に、5 行目が `error: empty input` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1642,7 +1642,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 11 行目にある `first` を `second` に書き換えて `Run` し、`Output` の 3 行目が `step: second` に変わることを確かめてください。",
+        "instruction": "エディターの `main` の `do` ブロック末尾にある `first` を `second` に書き換えて `Run` し、`Output` の 3 行目が `step: second` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1723,7 +1723,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 3 行目にある `succeed 21` を `succeed 15` に書き換えて `Run` し、`Output` の 3 行がすべて `30` に変わることを確かめてください。",
+        "instruction": "エディターの `succeed 21` を `succeed 15` に書き換えて `Run` し、`Output` の 3 行がすべて `30` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1805,7 +1805,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 13 行目にある `parseCount \"0\"` の `\"0\"` を `\"3\"` に書き換えて `Run` し、`Output` に `before` と `accepted: 3` の両方が表示されることを確かめてください。",
+        "instruction": "エディターの `parseCount \"0\"` の `\"0\"` を `\"3\"` に書き換えて `Run` し、`Output` に `before` と `accepted: 3` の両方が表示されることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1882,7 +1882,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 34 行目にある `\"2\"`（`\"coffee\"` の前）を `\"bad\"` に書き換えて `Run` し、`Output` の 2 行目が `bad count: bad` を含む表示に変わることを確かめてください。",
+        "instruction": "エディターの `prepareOrder \"2\" \"coffee\"` の `\"2\"` を `\"bad\"` に書き換えて `Run` し、`Output` の 2 行目が `bad count: bad` を含む表示に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1959,7 +1959,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 4 行目にある `reportPair` の引数を `->` でつなぎ、続けて `-> Unit`・`with Console`・`fails ConsoleError` を書いて明示形にし、9 行目の `\"inferred\"` を `\"explicit\"` に書き換えて `Run` し、`Output` の 2 行目が `caller: explicit` に変わることを確かめてください。",
+        "instruction": "エディターの `effect fn reportPair` の引数を `->` でつなぎ、続けて `-> Unit`・`with Console`・`fails ConsoleError` を書いて明示形にし、`main` の `\"inferred\"` を `\"explicit\"` に書き換えて `Run` し、`Output` の 2 行目が `caller: explicit` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2035,7 +2035,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 19 行目にある `Empty` を `(Box 42)` に、20 行目の `\"Tour\"` を `\"Step\"` に書き換えて `Run` し、`Output` が `Seseragi: 42` と `22 / Step` に変わることを確かめてください。",
+        "instruction": "エディターの `unwrapOr` に渡している `Empty` を `(Box 42)` に、`\"Tour\"` を `\"Step\"` に書き換えて `Run` し、`Output` が `Seseragi: 42` と `22 / Step` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2117,7 +2117,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 26 行目にある `Ready` を `Draft` に、27 行目の `done: True` を `done: False` に書き換えて `Run` し、`Output` の 3 行が `Draft` と `done: False` の結果に変わることを確かめてください。",
+        "instruction": "エディターの `Ready` を `Draft` に、`done: True` を `done: False` に書き換えて `Run` し、`Output` の 3 行が `Draft` と `done: False` の結果に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2198,7 +2198,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 5 行目にある `signals.make 42` の `42` を `100` に書き換えて `Run` し、`Output` の 3 行がすべて `100` に変わることを確かめてください。",
+        "instruction": "エディターの `signals.make 42` の `42` を `100` に書き換えて `Run` し、`Output` の 3 行がすべて `100` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2279,7 +2279,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 8 行目にある `state := 30` を `state := 50` に書き換えて `Run` し、`Output` の `afterOp` が `50`、`afterUpdate` が `62` に変わることを確かめてください。",
+        "instruction": "エディターの `state := 30` を `state := 50` に書き換えて `Run` し、`Output` の `afterOp` が `50`、`afterUpdate` が `62` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2357,7 +2357,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 16 行目にある `count := 3` を `count := 5` に書き換えて `Run` し、`Output` の `after update` が `500` に変わることを確かめてください。",
+        "instruction": "エディターの `count := 3` を `count := 5` に書き換えて `Run` し、`Output` の `after update` が `500` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2439,7 +2439,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 11 行目と 12 行目にある `20` と `22` をそれぞれ `30` と `15` に書き換えて `Run` し、`Output` が `total: 45` と `observed: 3 -> 45` に変わることを確かめてください。",
+        "instruction": "エディターの `signals.planSet 20 left` を `signals.planSet 30 left` に、`signals.planSet 22 right` を `signals.planSet 15 right` に書き換えて `Run` し、`Output` が `total: 45` と `observed: 3 -> 45` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2520,7 +2520,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 13 行目にある `\"Seseragi Web\"` を `\"Hello HTML\"` に書き換えて `Run` し、`Output` と `Preview` の見出しが変わることを確かめてください。",
+        "instruction": "エディターの `\"Seseragi Web\"` を `\"Hello HTML\"` に書き換えて `Run` し、`Output` と `Preview` の見出しが変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2588,7 +2588,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 10 行目にある `\"Welcome\"` を `\"Components\"` に、`\"Seseragi\"` を `\"Reusable UI\"` に書き換えて `Run` し、`Output` と `Preview` の表示が変わることを確かめてください。",
+        "instruction": "エディターの `\"Welcome\"` を `\"Components\"` に、`\"Seseragi\"` を `\"Reusable UI\"` に書き換えて `Run` し、`Output` と `Preview` の表示が変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2665,7 +2665,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 26 行目にある `(DraftChanged \"Ada\")` を `Cleared` に書き換えて `Run` し、`Output` の段落が `<p>Empty</p>` に変わることを確かめてください。",
+        "instruction": "エディターの `(DraftChanged \"Ada\")` を `Cleared` に書き換えて `Run` し、`Output` の段落が `<p>Empty</p>` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2743,7 +2743,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 26 行目にある送信ボタンの `\"Add\"` を `\"Save\"` に書き換えて `Run` し、`Output` と `Preview` のボタン表示が変わることを確かめてください。",
+        "instruction": "エディターの送信ボタンの `\"Add\"` を `\"Save\"` に書き換えて `Run` し、`Output` と `Preview` のボタン表示が変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2894,7 +2894,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 5 行目にある `Pen` の `amount` を `600` から `900` に書き換えて `Run` し、`Output` の 2 行目が `Pen: 900` に変わることを確かめてください。",
+        "instruction": "エディターの `Pen` の `amount` を `600` から `900` に書き換えて `Run` し、`Output` の 2 行目が `Pen: 900` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -2982,7 +2982,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 7 行目にある `Discover` の説明を `\"Recipe を 1 つ試す\"` に書き換えて `Run` し、`Output` の 1 行目が変わることを確かめてください。",
+        "instruction": "エディターの `Discover -> ...` の説明文字列を `\"Recipe を 1 つ試す\"` に書き換えて `Run` し、`Output` の 1 行目が変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3050,7 +3050,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 1 行目にある `Score` を `Rank` に、9 行目の `Just 41` を `Just 7` に書き換えて `Run` し、`Output` の両方が `Just Rank 7` に変わることを確かめてください。",
+        "instruction": "エディターの `Score` を `Rank` に、`Just 41` を `Just 7` に書き換えて `Run` し、`Output` の両方が `Just Rank 7` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3118,7 +3118,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 9 行目にある `Just 20` を `Just 30` に、10 行目の `Just 22` を `Just 15` に書き換えて `Run` し、3 つの `Output` がすべて `Just 45` に変わることを確かめてください。",
+        "instruction": "エディターの `Just 20` を `Just 30` に、`Just 22` を `Just 15` に書き換えて `Run` し、3 つの `Output` がすべて `Just 45` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3186,7 +3186,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 20 行目にある `Just 84` を `Just 7` に書き換えて `Run` し、`flatMap`・`>>=`・`do` の 3 つがすべて `Nothing` で止まることを確かめてください。",
+        "instruction": "エディターの `Just 84` を `Just 7` に書き換えて `Run` し、`flatMap`・`>>=`・`do` の 3 つがすべて `Nothing` で止まることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3246,7 +3246,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 1 行目にある `value + 1` を `value * 2` に書き換えて `Run` し、5 つの型すべてで中の数値が 2 倍になりつつそれぞれの形が保たれることを確かめてください。",
+        "instruction": "エディターの `value + 1` を `value * 2` に書き換えて `Run` し、5 つの型すべてで中の数値が 2 倍になりつつそれぞれの形が保たれることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3297,7 +3297,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 4 行目にある `20` を `10` に、7 行目の `value + 2` を `value + 5` に書き換えて `Run` し、`Output` が `Signal: 25` に変わることを確かめてください。",
+        "instruction": "エディターの `signals.make 20` の `20` を `10` に、`value + 2` を `value + 5` に書き換えて `Run` し、`Output` が `Signal: 25` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3356,7 +3356,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 8 行目にある `signals.set` の引数 `41` を `99` に書き換えて `Run` し、`Output` が `switchMap: 100` に変わることを確かめてください。",
+        "instruction": "エディターの `signals.set` の引数 `41` を `99` に書き換えて `Run` し、`Output` が `switchMap: 100` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3415,7 +3415,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 16 行目にある `value: 21` を `value: 15` に書き換えて `Run` し、`Output` が `30` に変わることを確かめてください。",
+        "instruction": "エディターの `value: 21` を `value: 15` に書き換えて `Run` し、`Output` が `30` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3475,7 +3475,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 10 行目にある `\"Sese\"` を `\"Kamo\"` に、11 行目の `\"Tour\"` を `\"Code\"` に書き換えて `Run` し、`Output` が `Kamoragi` と `Code!` に変わることを確かめてください。",
+        "instruction": "エディターの `\"Sese\"` を `\"Kamo\"` に、`\"Tour\"` を `\"Code\"` に書き換えて `Run` し、`Output` が `Kamoragi` と `Code!` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3548,7 +3548,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 16 行目にある `Just 42` を `Just 7` に、17 行目の `[1, 2, 3]` を `[7, 8]` に書き換えて `Run` し、`Output` がそれぞれの形を保ったまま変わることを確かめてください。",
+        "instruction": "エディターの `inspectShape \"Maybe\" (Just 42)` の `Just 42` を `Just 7` に、`inspectShape \"Array\" [1, 2, 3]` の `[1, 2, 3]` を `[7, 8]` に書き換えて `Run` し、`Output` がそれぞれの形を保ったまま変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3612,7 +3612,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 12 行目にある `\"badge\"` を `\"badge-ready\"` に、16 行目の `\"device\"` を `\"device-ready\"` に書き換えて `Run` し、同じ `describe` の出力が変わることを確かめてください。",
+        "instruction": "エディターの `instance Label<Badge>` の `\"badge\"` を `\"badge-ready\"` に、`instance Label<Device>` の `\"device\"` を `\"device-ready\"` に書き換えて `Run` し、同じ `describe` の出力が変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3679,7 +3679,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 14〜15 行目にある `Just 20` を `Just 10` に書き換えて `Run` し、`Functor composition` の両辺が引き続き一致して `Just 22` に変わることを確かめてください。",
+        "instruction": "エディターの `compLeft` と `compRight` にある `Just 20` を両方 `Just 10` に書き換えて `Run` し、`Functor composition` の両辺が引き続き一致して `Just 22` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3738,7 +3738,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 5 行目の後ろに `type Account`（値 `Guest`）、17 行目の後ろにその `Label` 実装（`\"GUEST\"`）、23 行目の後ろに `present Guest` の出力を追加して `Run` し、`present` を変えずに `GUEST` が出ることを確かめてください。",
+        "instruction": "エディターの `type Device` の後ろに `type Account`（値 `Guest`）、`instance Label<Device>` の後ろにその `Label` 実装（`\"GUEST\"`）、`main` の `present Online |> println` の後ろに `present Guest |> println` を追加して `Run` し、`present` を変えずに `GUEST` が出ることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3802,7 +3802,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 20 行目にある `\"Repository\"` を `\"Open Seseragi\"` に書き換えて `Run` し、`Output` のリンク文字が変わることを確かめてください。",
+        "instruction": "エディターの `\"Repository\"` を `\"Open Seseragi\"` に書き換えて `Run` し、`Output` のリンク文字が変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -3869,7 +3869,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの 10〜11 行目にある `\"draft\"` を両方 `\"task\"` に、10 行目の `\"Plan name\"` を `\"Task title\"` に書き換えて `Run` し、`Output` の `for`・`id`・ラベル文字が揃って変わることを確かめてください。",
+        "instruction": "エディターの `htmlFor: \"draft\"` と `id: \"draft\"` の `\"draft\"` を両方 `\"task\"` に、`children: \"Plan name\"` を `children: \"Task title\"` に書き換えて `Run` し、`Output` の `for`・`id`・ラベル文字が揃って変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {

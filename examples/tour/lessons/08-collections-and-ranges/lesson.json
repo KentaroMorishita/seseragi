@@ -3,11 +3,11 @@
   "id": "08-collections-and-ranges",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "ADT とパターンマッチで値の種類を判別できるようになりました。ここからは同じ型の値を複数まとめて扱います。",
+    "prerequisite": "ADT とパターンマッチで値の種類を判別できるようになりました。ここからは同じ型の値を複数まとめて扱います。なお、このレッスンで先に出てくる `Maybe` は、Step 08〜09 の ADT と同じく「値がある（`Just 値`）」「値がない（`Nothing`）」の 2 ケースを持つ標準の型です（詳しい扱いは次の章の Step 13 で学びます）。",
     "walkthrough": [
       {
         "heading": "Array と Range を作る",
-        "body": "`[10, 20, 30]` は同じ型の要素を順に並べる `Array` リテラル、`1 ..= 5` は開始と終端を含む整数範囲 `Range` です。",
+        "body": "初期コードの `[10, 20, 30]` は同じ型の要素を順に並べる `Array` リテラル、`1 ..= 5` は開始と終端を含む整数範囲 `Range` です。",
         "sourceRange": {
           "startLine": 3,
           "endLine": 4
@@ -15,7 +15,7 @@
       },
       {
         "heading": "境界チェック付きで要素を取り出す",
-        "body": "`arrays.length scores` で要素数を調べ、`arrays.get 1 scores` で先頭から 2 番目の要素を取り出します。存在する位置なら `Just 20`、範囲外の `3` なら `Nothing` の `Maybe` 値が返ります。",
+        "body": "`arrays.length scores` で配列の要素数を調べ、`arrays.get` で添字を指定して要素を取り出します。添字は `0` から数えるため、初期コードの要素数 3 の `scores` で有効な添字は `0`・`1`・`2` です。範囲内の添字 `1` なら `Just 20`、範囲外の添字 `3` なら `Nothing` という `Maybe` 値が返ります。",
         "sourceRange": {
           "startLine": 7,
           "endLine": 9
@@ -39,11 +39,11 @@
       {
         "kind": "api",
         "name": "arrays.get と Maybe",
-        "body": "`arrays.get index array` は境界チェック付きの添字アクセスを行い、範囲内なら `Just 値`、範囲外なら `Nothing` を返します。"
+        "body": "`arrays.get index array` は 0 始まりの境界チェック付き添字アクセスです。範囲内なら値ありを表す `Just 値`、範囲外なら値なしを表す `Nothing`（どちらも `Maybe` 型のコンストラクター）を返します。"
       }
     ],
     "exercise": {
-      "instruction": "エディターの `scores` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の長さと `arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
+      "instruction": "`let scores: Array<Int> = [10, 20, 30]` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の `length 3` が `length 4` に変わり、`arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

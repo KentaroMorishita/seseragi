@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 13 行目にある `parseCount \"0\"` の `\"0\"` を `\"3\"` に書き換えて `Run` し、`Output` に `before` と `accepted: 3` の両方が表示されることを確かめてください。",
+      "instruction": "エディターの `parseCount \"0\"` の `\"0\"` を `\"3\"` に書き換えて `Run` し、`Output` に `before` と `accepted: 3` の両方が表示されることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

@@ -30,7 +30,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 8 行目にある `signals.set` の引数 `41` を `99` に書き換えて `Run` し、`Output` が `switchMap: 100` に変わることを確かめてください。",
+      "instruction": "エディターの `signals.set` の引数 `41` を `99` に書き換えて `Run` し、`Output` が `switchMap: 100` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

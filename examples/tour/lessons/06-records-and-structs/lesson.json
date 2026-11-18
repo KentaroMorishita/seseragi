@@ -23,7 +23,7 @@
       },
       {
         "heading": "型名を明示して値を組み立てる",
-        "body": "`Customer { ... }` のように宣言した型名を先頭に書いて値を作ります。宣言にあるすべてのフィールドが揃っていなければ作成できません。",
+        "body": "初期コードの `Customer { name: \"Mio\", plan: \"Pro\" }` のように宣言した型名を先頭に書いて値を作ります（演習で書き換える前の例です）。宣言にあるすべてのフィールドが揃っていなければ作成できません。",
         "sourceRange": {
           "startLine": 7,
           "endLine": 8
@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの7行目にある `name: \"Mio\", plan: \"Pro\"` を `name: \"Ren\", plan: \"Team\"` に書き換えて `Run` し、`Output` の1行目が `Customer -> Ren: Team` に変わることを確かめてください。",
+      "instruction": "`Customer { name: \"Mio\", plan: \"Pro\" }` の `name: \"Mio\", plan: \"Pro\"` を `name: \"Ren\", plan: \"Team\"` に書き換えて `Run` し、`Output` の 1 行目が `Customer -> Ren: Team` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
