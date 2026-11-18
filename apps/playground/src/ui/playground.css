@@ -212,6 +212,13 @@ body.preview-fullscreen-fallback-open {
 .pg-code-card,
 .pg-output-card {
   min-width: 0;
+  /* 見出しの中身が長くても、カードの幅を超えて広がらないようにする */
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.pg-code-head,
+.pg-output-head {
+  min-width: 0;
 }
 
 /* コードのカード */
@@ -221,6 +228,7 @@ body.preview-fullscreen-fallback-open {
 }
 
 .pg-picker {
+  flex: 0 1 auto;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -245,13 +253,22 @@ body.preview-fullscreen-fallback-open {
   white-space: nowrap;
 }
 
+/* 名前が長くても、見出しのボタンは縮めずにカードの中に残す */
+.pg-code-head > .ui-button {
+  flex: none;
+}
+
 .pg-picker-chev {
   display: inline-grid;
   color: var(--fg-3);
 }
 
 .pg-file-pill {
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   height: 24px;
   padding: 0 var(--space-2);
   border-radius: var(--radius-xs);
@@ -390,8 +407,10 @@ body.preview-fullscreen-fallback-open {
   display: none;
 }
 
-/* 全画面のボタンは、Preview を出しているときだけ見せる */
-.pg-output:not(:has(#html-preview:not([hidden]))) #fullscreen-preview-button {
+/* 全画面のボタンは、Preview を出しているときだけ見せる。
+   全画面のあいだは閉じるボタンを兼ねるので、Console に切り替えても隠さない */
+.pg-output:not([data-preview-fullscreen]):not(:has(#html-preview:not([hidden])))
+#fullscreen-preview-button {
   display: none;
 }
 
