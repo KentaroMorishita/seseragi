@@ -625,6 +625,10 @@
   vertical-align: 1px;
 }
 
+.tour-code-card .cm-line-pin::before {
+  content: attr(data-label);
+}
+
 .tour-output-card {
   min-width: 0;
   min-height: 0;

@@ -35,7 +35,7 @@ test("pins each Walkthrough number to its line in the editor", async ({
   const pins = page.locator(".cm-line-pin")
   await expect(cards).not.toHaveCount(0)
   await expect(pins).toHaveCount(await cards.count())
-  await expect(pins.first()).toHaveText("1")
+  await expect(pins.first()).toHaveAttribute("data-label", "1")
 
   // 答えのコードは行がずれるので、ピンを出さない。Reset で戻る
   await page.locator("#tour-exercise-button").click()
