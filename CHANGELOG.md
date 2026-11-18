@@ -1,12 +1,18 @@
 # Change Log
 
-## [0.61.184] - 2026-11-18
+## [0.61.185] - 2026-11-18
 
 ### Changed
 
 - The Playground is rebuilt on the v2 design (#1358). The top bar keeps the `Playground` / `Tour` switch always visible and adds Search (`⌘K`, which opens the examples for now), a theme switch (System, Light, Dark; the default follows the operating system) and More. Run sits on the flow between the code card and the output card, and the output card shows the outcome as a chip such as `✓ 18 ms` or `1 error`. The bottom bar shows the analysis state, `Saved in this browser`, Docs and GitHub.
 - On a narrow screen the output is a sheet that peeks from the bottom and opens to 70% of the screen after Run, and Run floats at the bottom right. The editor and inputs stay at 16px so iOS does not zoom when they get focus.
 - Every editor feature keeps working in its new place: the Explorer and file tabs, Guide, Format, Input, Console and Preview, full screen, diagnostics and hover, Interop and Convert bindings, and the API reference and Settings, which are in More until Search covers them. The Tour and the Deep Dive keep their current look until they are rebuilt.
+
+## [0.61.184] - 2026-11-18
+
+### Fixed
+
+- On Bun and Node, an `exchange` whose request body keeps producing chunks, including empty chunks, finishes when the server sends a final response before the body ends. The sender yields while it skips empty chunks, so the response is read and the request body is cancelled. A browser schedules that pause with a timer, so the same upload still finishes where `setImmediate` is absent.
 
 ## [0.61.183] - 2026-11-18
 
