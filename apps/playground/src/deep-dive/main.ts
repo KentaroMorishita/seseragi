@@ -1,5 +1,5 @@
 import "../ui/design/index.css"
-import "../ui/playground.css"
+import "../styles.css"
 import { requiredElement } from "../ui/elements"
 import { renderGuideMarkdown } from "../ui/guide-markdown"
 import {
@@ -10,12 +10,7 @@ import {
   findDeepDiveArticle,
 } from "./catalog"
 import { deepDiveArticleIdFromUrl, deepDiveArticleUrl } from "./route"
-import "./deep-dive.css"
-import curriculumJson from "../../../../examples/tour/curriculum.json"
-import { exampleEntries, lessonEntries } from "../ui/search-index"
-import { connectSearchPalette } from "../ui/search-palette"
-import { createThemeController } from "../ui/theme"
-import { browserStorage, connectThemeButton } from "../ui/theme-button"
+import "./styles.css"
 
 const navigation = requiredElement("#deep-dive-navigation", HTMLElement)
 const navigationContent = requiredElement(
@@ -35,79 +30,6 @@ const related = requiredElement("#deep-dive-related", HTMLElement)
 const relatedList = requiredElement("#deep-dive-related-list", HTMLUListElement)
 const articleIds = deepDiveArticles.map(({ id }) => id)
 const mobileNavigationQuery = window.matchMedia("(max-width: 760px)")
-const lessonTitles = new Map(
-  curriculumJson.categories.flatMap((category) =>
-    category.chapters.flatMap((chapter) =>
-      chapter.lessons.map((lesson) => [lesson.id, lesson.title] as const)
-    )
-  )
-)
-const searchButton = requiredElement("#dd-search-button", HTMLButtonElement)
-const themeController = createThemeController({
-  storage: browserStorage(),
-  root: document.documentElement,
-  query: window.matchMedia("(prefers-color-scheme: dark)"),
-  eventTarget: window,
-})
-connectThemeButton(
-  requiredElement("#dd-theme-button", HTMLButtonElement),
-  themeController
-)
-// Search は Playground・Tour と同じ。例は Playground で、レッスンは Tour で開く。
-const search = connectSearchPalette({
-  dialog: requiredElement("#search-dialog", HTMLDialogElement),
-  input: requiredElement("#search-input", HTMLInputElement),
-  scopes: requiredElement("#search-scopes", HTMLElement),
-  results: requiredElement("#search-results", HTMLElement),
-  detail: requiredElement("#search-detail", HTMLElement),
-  examples: [],
-  loadEntries: async () => {
-    const { discoverGroups, samples } = await import("../samples")
-    return [
-      ...exampleEntries(
-        samples.filter(({ kind }) => kind !== "lesson"),
-        discoverGroups
-      ),
-      ...lessonEntries(curriculumJson),
-    ]
-  },
-  onExample: (id) => {
-    window.location.assign(
-      new URL(`../?example=${encodeURIComponent(id)}`, window.location.href)
-    )
-    return undefined
-  },
-  onLesson: (id) =>
-    window.location.assign(
-      new URL(`../tour/?lesson=${encodeURIComponent(id)}`, window.location.href)
-    ),
-  commands: (["light", "dark", "system"] as const).map((preference) => ({
-    id: `theme-${preference}`,
-    title: `${preference[0]?.toUpperCase()}${preference.slice(1)} theme`,
-    detail: {
-      light: "明るい色で表示する",
-      dark: "暗い色で表示する",
-      system: "OS の設定に合わせる",
-    }[preference],
-    keywords: "theme テーマ",
-    tag: () =>
-      themeController.get().preference === preference ? "Current" : undefined,
-    run: () => {
-      themeController.set(preference)
-      return undefined
-    },
-  })),
-  renderApiDetail: () => document.createElement("div"),
-})
-searchButton.addEventListener("click", () =>
-  search.open({ opener: searchButton })
-)
-document.addEventListener("keydown", (event) => {
-  if (!event.metaKey && !event.ctrlKey) return
-  if (event.key.toLowerCase() !== "k" || event.shiftKey || event.altKey) return
-  event.preventDefault()
-  searchButton.click()
-})
 let currentArticle = findDeepDiveArticle(
   deepDiveArticleIdFromUrl(window.location.href, articleIds)
 )
@@ -178,7 +100,7 @@ function renderRelated(article: DeepDiveArticle): void {
   const tourLinks = article.relatedTourLessons.map((lessonId) => {
     const link = document.createElement("a")
     link.href = `../tour/?lesson=${encodeURIComponent(lessonId)}`
-    link.textContent = `Tour: ${lessonTitles.get(lessonId) ?? lessonId}`
+    link.textContent = `Tour: ${lessonId}`
     return listItem(link)
   })
   const referenceLinks = article.relatedLinks.map(({ label, href }) => {
@@ -235,8 +157,6 @@ function setNavigationOpen(open: boolean, returnFocus = false): void {
   if (mobileNavigationQuery.matches) {
     navigation.inert = !open
     navigation.setAttribute("aria-hidden", String(!open))
-    // 重ねて開いた一覧の中へフォーカスを移し、Escape で閉じられるようにする
-    if (open) closeButton.focus({ preventScroll: true })
   } else {
     navigation.inert = false
     navigation.removeAttribute("aria-hidden")

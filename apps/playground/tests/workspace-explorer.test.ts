@@ -160,7 +160,7 @@ describe("Playground workspace Explorer", () => {
     const [html, main, styles, explorer] = await Promise.all([
       Bun.file(new URL("../index.html", import.meta.url)).text(),
       Bun.file(new URL("../src/main.ts", import.meta.url)).text(),
-      Bun.file(new URL("../src/ui/playground.css", import.meta.url)).text(),
+      Bun.file(new URL("../src/styles.css", import.meta.url)).text(),
       Bun.file(new URL("../src/workspace/explorer.ts", import.meta.url)).text(),
     ])
 
@@ -183,18 +183,18 @@ describe("Playground workspace Explorer", () => {
 
   test("keeps the desktop editor in its own grid area when Explorer closes", async () => {
     const [styles, explorer] = await Promise.all([
-      Bun.file(new URL("../src/ui/playground.css", import.meta.url)).text(),
+      Bun.file(new URL("../src/styles.css", import.meta.url)).text(),
       Bun.file(new URL("../src/workspace/explorer.ts", import.meta.url)).text(),
     ])
 
     expect(styles).toMatch(
-      /\.pg-code-body \{[\s\S]*?grid-template-areas: "explorer explorer-resizer editor";/
+      /\.code-workspace \{[\s\S]*?grid-template-areas: "explorer explorer-resizer editor";/
     )
     expect(styles).toMatch(/\.explorer-panel \{[\s\S]*?grid-area: explorer;/)
     expect(styles).toMatch(
       /\.explorer-resizer \{[\s\S]*?grid-area: explorer-resizer;/
     )
-    expect(styles).toMatch(/\.pg-editor-panel \{[\s\S]*?grid-area: editor;/)
+    expect(styles).toMatch(/\.editor-panel \{[\s\S]*?grid-area: editor;/)
     expect(explorer).toContain(
       "elements.panel.hidden = !state.explorer.visible"
     )

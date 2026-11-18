@@ -111,7 +111,7 @@ describe("Seseragi Articles", () => {
       await Promise.all([
         Bun.file(new URL("deep-dive/index.html", root)).text(),
         Bun.file(new URL("src/deep-dive/main.ts", root)).text(),
-        Bun.file(new URL("src/deep-dive/deep-dive.css", root)).text(),
+        Bun.file(new URL("src/deep-dive/styles.css", root)).text(),
         Bun.file(new URL("tour/index.html", root)).text(),
         Bun.file(new URL("src/tour/main.ts", root)).text(),
         Bun.file(new URL("index.html", root)).text(),

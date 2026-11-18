@@ -183,7 +183,7 @@ describe("Playground workspace editor tabs", () => {
     const [html, main, styles, explorer] = await Promise.all([
       Bun.file(new URL("../index.html", import.meta.url)).text(),
       Bun.file(new URL("../src/main.ts", import.meta.url)).text(),
-      Bun.file(new URL("../src/ui/playground.css", import.meta.url)).text(),
+      Bun.file(new URL("../src/styles.css", import.meta.url)).text(),
       Bun.file(new URL("../src/workspace/explorer.ts", import.meta.url)).text(),
     ])
 
