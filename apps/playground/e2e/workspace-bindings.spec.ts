@@ -321,6 +321,8 @@ for (const undoBeforeOpening of [false, true]) {
     await expect(page.locator("#status-text")).toHaveText(
       "Converted 1 binding(s)"
     )
+    // Clear file lives in the More menu.
+    await page.locator("#mobile-tools-button").click()
     await page.locator("#clear-source-button").click()
     await expect(editor).toHaveText("")
     const open = page.getByRole("button", { name: "Interop", exact: true })

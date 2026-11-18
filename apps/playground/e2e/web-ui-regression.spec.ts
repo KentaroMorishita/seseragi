@@ -232,10 +232,12 @@ async function expectKeyboardReachable(preview: FrameLocator): Promise<void> {
       height: window.innerHeight,
     }
   })
+  // innerWidth / innerHeight are whole pixels, while the preview frame can have a
+  // fractional size (the mobile output sheet is 70dvh tall), so allow under 1px.
   expect(bounds.left).toBeGreaterThanOrEqual(0)
-  expect(bounds.right).toBeLessThanOrEqual(bounds.width)
+  expect(bounds.right).toBeLessThan(bounds.width + 1)
   expect(bounds.top).toBeGreaterThanOrEqual(0)
-  expect(bounds.bottom).toBeLessThanOrEqual(bounds.height)
+  expect(bounds.bottom).toBeLessThan(bounds.height + 1)
 }
 
 async function expectNoStickyOrFixedSampleControls(
@@ -357,7 +359,13 @@ test.describe("canonical Web UI browser regression", () => {
 
         await select(page, entry)
         if (viewport.id === "minimum-320") {
-          await page.locator('[data-panel-target="code"]').click()
+          // 実行のあとは出力のシートが引き上がっているので、下げてコードを見せる
+          if (
+            (await page
+              .locator(".workspace")
+              .getAttribute("data-mobile-panel")) === "io"
+          )
+            await page.locator("[data-panel-toggle]").click()
           const editor = page.locator(".cm-scroller")
           await expect(editor).toBeVisible()
           expect(

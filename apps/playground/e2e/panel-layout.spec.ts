@@ -36,17 +36,17 @@ test("restores default desktop panel ratios after narrow and short viewports", a
   await page.goto("/")
   const workspace = page.locator(".workspace")
   const io = page.locator("#io-panel")
-  await expectRatio(workspace, "--editor-panel-ratio", "68.00%")
+  await expectRatio(workspace, "--editor-panel-ratio", "55.00%")
   await expectRatio(io, "--stdin-panel-ratio", "34.00%")
 
   await resize(page, 1425)
-  await expectRatio(workspace, "--editor-panel-ratio", "68.00%")
+  await expectRatio(workspace, "--editor-panel-ratio", "55.00%")
   await resize(page, 640)
   await expectRatio(workspace, "--editor-panel-ratio", "50.00%")
   await resize(page, 1440, 300)
   await expectRatio(io, "--stdin-panel-ratio", "50.00%")
   await resize(page, 1440)
-  await expectRatio(workspace, "--editor-panel-ratio", "68.00%")
+  await expectRatio(workspace, "--editor-panel-ratio", "55.00%")
   await expectRatio(io, "--stdin-panel-ratio", "34.00%")
   expect(
     await page.evaluate(
@@ -72,14 +72,14 @@ test("preserves user panel sizes across mobile reload and later user resizing", 
   await workspaceResizer.press("ArrowLeft")
   await page.locator("#stdin-toggle-button").click()
   await ioResizer.press("ArrowDown")
-  await expectRatio(workspace, "--editor-panel-ratio", "65.50%")
+  await expectRatio(workspace, "--editor-panel-ratio", "52.50%")
   await expectRatio(io, "--stdin-panel-ratio", "36.50%")
 
   await resize(page, 640)
   await page.reload()
   await expectRatio(workspace, "--editor-panel-ratio", "50.00%")
   await resize(page, 1440)
-  await expectRatio(workspace, "--editor-panel-ratio", "65.50%")
+  await expectRatio(workspace, "--editor-panel-ratio", "52.50%")
   await expectRatio(io, "--stdin-panel-ratio", "36.50%")
   const persisted = await page.evaluate(
     ({ workspace, io }) => ({
@@ -88,7 +88,7 @@ test("preserves user panel sizes across mobile reload and later user resizing", 
     }),
     { workspace: workspaceKey, io: ioKey }
   )
-  expect(persisted.workspace).toBeCloseTo(0.655)
+  expect(persisted.workspace).toBeCloseTo(0.525)
   expect(persisted.io).toBeCloseTo(0.365)
 
   await workspaceResizer.press("End")
@@ -105,9 +105,11 @@ test("preserves user panel sizes across mobile reload and later user resizing", 
   await expectRatio(workspace, "--editor-panel-ratio", "67.50%")
   const box = await workspaceResizer.boundingBox()
   if (box === null) throw new Error("workspace separator is not visible")
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  // Grab the flow line above the Run button that sits on its middle.
+  const grabY = box.y + 24
+  await page.mouse.move(box.x + box.width / 2, grabY)
   await page.mouse.down()
-  await page.mouse.move(800, box.y + box.height / 2, { steps: 4 })
+  await page.mouse.move(800, grabY, { steps: 4 })
   await page.mouse.up()
   const dragged = await page.evaluate(
     (key) => Number(localStorage.getItem(key)),

@@ -58,7 +58,7 @@ FeaturedはDiscoverを開いた利用者へ最初に薦めるRecipe / Showcase�
 
 | 層 | 責務 | 置き場所 |
 | --- | --- | --- |
-| Global / surface | 現在地、Playground / Tour切替、Tour進捗、Run、global overflow | global header |
+| Global / surface | 現在地、Playground / Tour切替、Search（`⌘K`）、テーマ、global overflow（More）。TourではTour進捗とRunも | global header |
 | Workspace | sample / workspace選択、Discover、New blank、Reset、file / Explorer | workspace chrome |
 | Editor command | active fileへのFormatなど | editor / file header |
 | Pane control | Explorer、Curriculum、Outputの開閉・resize・表示切替 | 対象paneのheaderまたは境界 |
@@ -67,10 +67,14 @@ FeaturedはDiscoverを開いた利用者へ最初に薦めるRecipe / Showcase�
 global headerへ新機能のbuttonを直接追加しません。まず作用範囲を判断し、workspace、editor、pane、Settingsの
 いずれかへ置きます。global headerにはsurface全体に効く操作だけを残します。
 
+PlaygroundのRunはglobal headerに置かず、コードのカードと出力のカードの間の流れの上に置きます
+（[`DESIGN.md`](./DESIGN.md)「3. 画面の骨格」）。Tourは#1359で同じ形にするまで、今の配置のままです。
+
 ### Surface switching
 
-Playgroundでは`Playground ▾`、Tourでは`Tour ▾`を同じ位置・操作modelで表示します。どちらからも相互に
-移動でき、desktopとmobileで常設の別linkや「戻る」buttonを増やしません。
+Playgroundでは、global headerの中央に`Playground` / `Tour`の二択を常に表示します。メニューに畳まず、
+今いる側を選択中として見せます。Tourは#1359で同じ二択にするまで`Tour ▾`のままです。どちらからも
+相互に移動でき、desktopとmobileで常設の別linkや「戻る」buttonを増やしません。
 
 Discoverはglobal surfaceではなく、Playground workspaceの選択方法です。workspace selectorを開くと
 Blank / starter / Resetと同じ文脈でRecipe / Showcaseを検索できます。選択後も利用者が編集する対象は
@@ -81,7 +85,7 @@ Playground workspaceのままです。
 - Explorerのopen controlはPlayground workspace chrome、close controlはExplorer headerに置く。
 - Curriculumのopen / closeはTourのlocal navigationまたはpane境界に置く。
 - FormatはPlayground / Tourともactive editorのheaderに置く。
-- Input / Text / Preview / Clear / Full screenはOutput paneが所有し、global headerへ移さない。
+- Input / Console / Preview / Clear / Full screenはOutput paneが所有し、global headerへ移さない。PlaygroundのOutput paneは、実行の状態のチップ（`✓ 18 ms`、`1 error`）も持つ。
 - resize / collapseはlayout変更だけを行い、sourceや実行結果を暗黙に書き換えない。
 
 ### Shared Settings
@@ -93,9 +97,14 @@ whitespace`とformatter line widthは同じSettings surfaceに置き、一方で
 
 ## Desktop / mobileの対応
 
-desktopはworkspace、editor、paneの横幅を活かしてlocal headerと境界へ操作を配置します。mobileはglobal
-headerを`surface switcher / overflow / Run`の一行に保ち、その下へworkspace selectorとlocal pane navigationを
-置きます。compact layoutで配置を変えても名称、作用範囲、遷移先、catalog内容は変えません。
+desktopはworkspace、editor、paneの横幅を活かしてlocal headerと境界へ操作を配置します。
+
+Playgroundのmobileは、global headerを`ロゴ / Playground・Tour / Search / テーマ / More`の一行に保ち、
+コードのカードの見出し（workspace selector、Guide、Format）を二段目にします。Outputは下から顔を出すシートにし、
+引き上げると画面の7割まで広げます。Runは右下に浮かべます。Tourのmobileは#1359で作り直すまで、
+global headerを`surface switcher / overflow / Run`の一行に保ち、その下へlocal pane navigationを置きます。
+
+compact layoutで配置を変えても名称、作用範囲、遷移先、catalog内容は変えません。
 
 ## 追加時の判断
 

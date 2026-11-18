@@ -48,7 +48,7 @@ describe("desktop panel layout", () => {
     )
     // コード・流れ・出力の三列。コードの幅は workspace-resizer が動かす
     expect(styles).toMatch(
-      /\.pg-stage \{[\s\S]*?var\(--editor-panel-ratio\)\) 104px/
+      /\.pg-stage \{[\s\S]*?calc\(var\(--editor-panel-ratio\) - 52px\)\) 104px/
     )
   })
 
