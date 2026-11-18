@@ -92,9 +92,7 @@ test("renders every guide safely at mobile width", async ({
 
   await page.goto("/tour/?lesson=06-records-and-structs")
   const tourGuide = page.locator("#tour-walkthrough")
-  await expect(
-    page.getByRole("heading", { name: "codeを上から追う" })
-  ).toBeVisible()
+  await expect(page.getByRole("heading", { name: "Walkthrough" })).toBeVisible()
   await expect(
     tourGuide.getByText("struct Profile", { exact: true })
   ).toBeVisible()
