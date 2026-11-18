@@ -298,6 +298,7 @@ describe("release readiness", () => {
       "crates/seseragi-lsp/**",
       "crates/seseragi-provider/**",
       "runtime/ts/**",
+      "runtime/providers/**",
       "apps/playground/**",
       "extensions/seseragi/**",
       "examples/spec/**",

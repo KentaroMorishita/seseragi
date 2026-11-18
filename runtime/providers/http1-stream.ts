@@ -33,8 +33,9 @@ const headLimitBytes = 16 * 1024
 const trailerLimitBytes = 16 * 1024
 const chunkLineLimitBytes = 1024
 const informationalResponseLimit = 16
-// A write that the socket accepts stays on the microtask queue. Pause after
-// this many chunks so an early final response can be read and cancel the body.
+// A write that the socket accepts, and an empty chunk that is skipped, stay
+// on the microtask queue. Pause after this many chunks so an early final
+// response can be read and cancel the body.
 const requestBodyYieldInterval = 128
 const headDelimiter = Buffer.from("\r\n\r\n")
 const lineDelimiter = Buffer.from("\r\n")
@@ -526,6 +527,7 @@ async function pumpBody(
   cancelled: () => boolean
 ): Promise<void> {
   let written = 0
+  let skipped = 0
   while (!cancelled()) {
     if (written > 0 && written % requestBodyYieldInterval === 0) {
       await yieldForSocketIo()
@@ -539,7 +541,14 @@ async function pumpBody(
       return
     }
     const bytes = Buffer.from(next.value)
-    if (bytes.length === 0) continue
+    if (bytes.length === 0) {
+      skipped += 1
+      if (skipped % requestBodyYieldInterval === 0) {
+        await yieldForSocketIo()
+        if (cancelled()) return
+      }
+      continue
+    }
     if (chunked) {
       await writeSocket(
         socket,

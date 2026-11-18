@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.184] - 2026-11-18
+
+### Fixed
+
+- On Bun and Node, an `exchange` whose request body keeps producing chunks, including empty chunks, finishes when the server sends a final response before the body ends. The sender yields while it skips empty chunks, so the response is read and the request body is cancelled.
+
 ## [0.61.183] - 2026-11-18
 
 ### Added

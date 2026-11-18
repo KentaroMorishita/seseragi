@@ -4,6 +4,7 @@ import { createBunHttp1Exchange } from "../../providers/http1-stream"
 
 const chunk = Uint8Array.of(97, 98)
 let pulls = 0
+let pullsAfterCancel = 0
 let cancelled = false
 const events: Array<{ kind: string; status?: number; text?: string }> = []
 let complete = false
@@ -64,8 +65,11 @@ const registration = createBunHttp1Exchange(
   },
   {
     async pull() {
+      if (cancelled) {
+        pullsAfterCancel += 1
+        return { done: true, value: undefined }
+      }
       pulls += 1
-      if (cancelled) return { done: true, value: undefined }
       return { done: false, value: chunk }
     },
     async cancel() {
@@ -89,14 +93,16 @@ const started = events.find((event) => event.kind === "ResponseStarted")
 if (
   !complete ||
   !cancelled ||
-  pulls >= 1_000 ||
+  pullsAfterCancel !== 0 ||
   started?.status !== 413 ||
   body !== "too large"
 ) {
-  console.error(JSON.stringify({ complete, cancelled, pulls, events }))
+  console.error(
+    JSON.stringify({ complete, cancelled, pulls, pullsAfterCancel, events })
+  )
   process.exit(1)
 }
 
 process.stdout.write(
-  `${JSON.stringify({ complete, cancelled, pulls, status: started.status, body })}\nearly final response probe passed\n`
+  `${JSON.stringify({ complete, cancelled, pulls, pullsAfterCancel, status: started.status, body })}\nearly final response probe passed\n`
 )

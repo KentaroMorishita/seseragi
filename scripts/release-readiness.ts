@@ -22,7 +22,7 @@ export const USER_VISIBLE_SURFACES = [
     ],
   },
   { name: "lsp", prefixes: ["crates/seseragi-lsp/"] },
-  { name: "runtime", prefixes: ["runtime/ts/"] },
+  { name: "runtime", prefixes: ["runtime/ts/", "runtime/providers/"] },
   {
     name: "wasm-playground",
     prefixes: ["crates/seseragi-wasm/", "apps/playground/"],

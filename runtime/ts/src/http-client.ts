@@ -254,6 +254,10 @@ export const ResponseTrailers = (value: Headers): HttpEvent =>
 export const emptyHeaders: Headers = freezeHeaders([])
 const defaultBodyLimitValue: HttpBodyLimit = limitValue(8 * 1024 * 1024)
 const MAX_HTTP_CHUNK_BYTES = 64 * 1024
+// An empty chunk that resolves immediately stays on the microtask queue.
+// Pause after this many skips so the socket can read an early final response
+// and cancel the body before the next pull.
+const emptyRequestBodyYieldInterval = 128
 const decodedResponseBodies = new WeakSet<object>()
 
 /** Runtime-provider bridge marker; not part of std/http. */
@@ -557,6 +561,7 @@ function exchangeImpl<Environment, Failure>(
     }
 
     let pendingBody: Uint8Array<ArrayBufferLike> = new Uint8Array()
+    let skippedEmpty = 0
     let sentBytes = 0
     let observation = 0
     let bodyFailure: Readonly<{ order: number; error: Failure }> | undefined
@@ -605,7 +610,13 @@ function exchangeImpl<Environment, Failure>(
             return { done: true, value: undefined }
           }
           const bytes = toUint8Array(next.value)
-          if (bytes.length === 0) continue
+          if (bytes.length === 0) {
+            skippedEmpty += 1
+            if (skippedEmpty % emptyRequestBodyYieldInterval === 0) {
+              await yieldForSocketIo()
+            }
+            continue
+          }
           pendingBody = bytes
           const chunk = pendingBody.slice(0, MAX_HTTP_CHUNK_BYTES)
           pendingBody = pendingBody.slice(chunk.length)
@@ -825,6 +836,12 @@ function sendApplicationRequest(
       body: fromUint8Array(content),
     }) as Response
     return serviceSuccess(response)
+  })
+}
+
+function yieldForSocketIo(): Promise<void> {
+  return new Promise((resolve) => {
+    setImmediate(resolve)
   })
 }
 
