@@ -1136,7 +1136,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:819372a6322dc873a827e4e3199da2da28f11f0af9a8083f38e4f285d00a3c75",
       "guidePath": "examples/samples/web-starter/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:d90ab3792b65582dee8d2a34bb2f8a4052c9fd714ce9ff13fafe6fe3b27d2245",
+      "workspaceHash": "sha256:58ae694d8c5eb0dee52ab4604ded09e096bbf293beb3d09b82796a92d49745ee",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1154,7 +1154,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/web-starter/src/app.ssrg",
-            "sourceHash": "sha256:e48372ccc5c1a468dba357080e02a16c50ba8f393a4ae4ce68e7e2ebe4a85f96"
+            "sourceHash": "sha256:d229e9d3cbdf1343e842b72affde1db6fd65def03a18f7944deba854e16704dc"
           }
         ]
       }
