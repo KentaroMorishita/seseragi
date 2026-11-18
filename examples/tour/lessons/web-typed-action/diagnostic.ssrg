@@ -1,4 +1,10 @@
 import * as signals from "std/signal"
-import { Signal } from "std/signal"
+import { MutableSignal } from "std/signal"
 
-fn invalid state: Signal<String> -> Task<Unit> = signals.set "wrong" state
+type Action =
+  | DraftChanged String
+  | Cleared
+
+fn invalid state: MutableSignal<String> -> action: Action -> Task<Unit> = match action {
+  DraftChanged value -> signals.set value state
+}

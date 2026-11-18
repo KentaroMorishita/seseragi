@@ -2,6 +2,32 @@ use super::*;
 
 impl Backend<'_> {
     pub(super) fn array_index(&mut self, expression: &CoreExpr, scope: &Scope) -> Result<String> {
+        let (receiver, offset) = self.array_index_reads(expression, scope)?;
+        Ok(format!(
+            "{{ {receiver} {offset} native_array_index({}, {}) }}",
+            receiver.0, offset.0
+        ))
+    }
+
+    /// The same read for a match that tests it at once: the element stays an
+    /// `Option<V>`, with the location a Defect inside the read reports.
+    pub(super) fn array_index_option(
+        &mut self,
+        expression: &CoreExpr,
+        scope: &Scope,
+    ) -> Result<String> {
+        let (receiver, offset) = self.array_index_reads(expression, scope)?;
+        let value = format!(
+            "{{ {receiver} {offset} native_array_get({}, {}) }}",
+            receiver.0, offset.0
+        );
+        Ok(match self.source_location(core_expr_origin(expression)) {
+            Some(source) => format!("native_source({source}, || {value})"),
+            None => value,
+        })
+    }
+
+    fn array_index_reads(&mut self, expression: &CoreExpr, scope: &Scope) -> Result<(Read, Read)> {
         let CoreExpr::Call {
             callee,
             arguments,
@@ -69,8 +95,15 @@ impl Backend<'_> {
         let offset = self.expr(&arguments[1], scope)?;
         self.capabilities.insert("array-index".into());
         self.direct_calls += 1;
-        Ok(format!(
-            "{{ let {receiver_name} = {receiver}; let {offset_name} = {offset}; native_array_index({receiver_name}, {offset_name}) }}"
-        ))
+        Ok((Read(receiver_name, receiver), Read(offset_name, offset)))
+    }
+}
+
+/// A value read once into a named local, in source order.
+struct Read(String, String);
+
+impl std::fmt::Display for Read {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(formatter, "let {} = {};", self.0, self.1)
     }
 }

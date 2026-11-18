@@ -1,5 +1,0 @@
-trait Container<F<_>> {
-}
-
-instance Container<Int> {
-}

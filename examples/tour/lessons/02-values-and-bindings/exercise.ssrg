@@ -1,3 +1,7 @@
-let language = "Tour"
+let total: Int = 20 + 22
+let ratio = 1.5
+let isLarge = 42 > 50
+let empty: Unit = ()
 
-pub effect fn main = println language
+pub effect fn main =
+  println `Int: ${total}, Float: ${ratio}, Bool: ${isLarge}, Unit: ${empty}`

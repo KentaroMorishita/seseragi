@@ -1,1 +1,1 @@
-<div><label for="email">Email</label><input id="email" name="email" type="text"></div>
+<form><label for="task">Task title</label><input id="task" type="text"><p role="status">Ready to edit</p></form>

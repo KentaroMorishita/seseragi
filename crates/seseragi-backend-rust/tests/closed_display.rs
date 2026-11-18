@@ -108,6 +108,47 @@ fn main() {{
 }
 
 #[test]
+fn standard_collection_factories_are_built_once_at_their_first_read() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/closed-collection-display.ssrg");
+    let core = compile_core_module(CompileInput::new("main.ssrg", "display/main", source)).unwrap();
+    let artifact = emit_rust_module(&core.core_ir, "probe").unwrap();
+    assert!(artifact
+        .source
+        .contains("closed-standard-display:Show:Array[std/prelude::Int]"));
+    let inline = link::inline_runtime(&artifact.source);
+    let signature = "fn native_array_display_dictionary(element: V, debug: bool) -> V {";
+    assert_eq!(inline.matches(signature).count(), 1);
+    let mut rust = inline[..inline.rfind("\nfn main()").unwrap()].replace(
+        signature,
+        &format!("{signature} FACTORIES.with(|n| n.set(n.get()+1));"),
+    );
+    rust.push_str(&format!(
+        r#"
+thread_local! {{static FACTORIES: Cell<usize> = const {{Cell::new(0)}};}}
+fn main() {{
+    let kernel={kernel}(vec![]);
+    FACTORIES.with(|n|assert_eq!(n.get(),0));
+    for value in 41..51 {{
+        let result=kernel.apply(V::Int(value));
+        assert_eq!(result.render(),format!("[{{}}, {{}}, {{}}, {{}}]",value,value+1,value+2,value+3));
+        drop(result);
+        FACTORIES.with(|n|assert_eq!(n.get(),1));
+    }}
+    clear_dictionaries();
+    let result=kernel.apply(V::Int(-2));
+    assert_eq!(result.render(),"[-2, -1, 0, 1]");
+    FACTORIES.with(|n|assert_eq!(n.get(),2));
+    drop(result); drop(kernel);clear_dictionaries();clear_globals();
+    assert_eq!(LIVE.with(Cell::get),0);
+}}
+"#,
+        kernel = symbol("kernel")
+    ));
+    Scratch::new().run(&rust);
+}
+
+#[test]
 fn user_and_parameter_dependent_display_factories_keep_the_original_path() {
     for (source,expected) in [
         (include_str!("../../../examples/spec/fixtures/rust-backend/tuple-nominal.ssrg"),include_str!("../../../examples/spec/fixtures/rust-backend/tuple-nominal.stdout")),

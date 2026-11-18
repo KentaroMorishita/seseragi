@@ -1,5 +1,0 @@
-type Outcome<E, A> =
-  | Failed E
-  | Succeeded A
-
-let invalid: Outcome<String, Int> = Succeeded "wrong success type"

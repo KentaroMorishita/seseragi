@@ -1,3 +1,10 @@
+type Device =
+  | Offline
+
 trait Label<A> {
-  fn label value: A -> MissingLabel
+  fn label value: A -> String
 }
+
+fn formatTag<A> value: A -> String where Label<A> = `(${label value})`
+
+pub effect fn main = println $ formatTag Offline

@@ -1,1 +1,3 @@
-Just 7
+Int: 42
+Maybe: Just 7
+Array: [7, 8]

@@ -8,7 +8,7 @@ test("resets only the desktop lesson pane for every lesson route", async ({
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto("/tour/?lesson=web-feature-state")
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Component分割とstate ownershipを保つ"
+    "部品の分割と状態の管理を保つ"
   )
 
   await recordElementScrollTargets(page)
@@ -16,7 +16,7 @@ test("resets only the desktop lesson pane for every lesson route", async ({
   await page.locator("#tour-next-button").click()
   await expectLessonAtTop(page)
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Step 1: input dataを定義する"
+    "Listを組み立てる"
   )
 
   await scrollLessonToEnd(page)
@@ -27,14 +27,14 @@ test("resets only the desktop lesson pane for every lesson route", async ({
   await page.locator('[data-lesson-id="web-link-image"]').click()
   await expectLessonAtTop(page)
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "External linkとimageを表示する"
+    "外部リンクと画像を表示する"
   )
 
   await scrollLessonToEnd(page)
   await page.goBack()
   await expectLessonAtTop(page)
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Component分割とstate ownershipを保つ"
+    "部品の分割と状態の管理を保つ"
   )
 
   const scrollTargets = await page.evaluate(
@@ -62,7 +62,7 @@ test("keeps the mobile page scroll reset", async ({ page }) => {
   await page.locator("#tour-next-button").click()
   await expect.poll(() => page.evaluate(() => document.body.scrollTop)).toBe(0)
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Step 1: input dataを定義する"
+    "Listを組み立てる"
   )
 })
 

@@ -23,7 +23,7 @@ const $ssrg$source1004 = { file: "main.ssrg", line: 56, column: 5, uri: "seserag
 const $ssrg$source1013 = { file: "main.ssrg", line: 56, column: 14, uri: "seseragi://artifact/show-debug-structural", start: 1013, end: 1047 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_tupleShow<readonly [number, string]>(_ssrg_show_intShow, _ssrg_show_stringShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_tupleShow<readonly [number, string]>(_ssrg_show_intShow, _ssrg_show_stringShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 type Badge =
   | { readonly tag: "Active" }
   | { readonly tag: "Paused" };

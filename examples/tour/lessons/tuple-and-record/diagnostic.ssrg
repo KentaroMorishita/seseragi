@@ -1,0 +1,9 @@
+fn summarize info: {
+  city: String,
+  stops: Int
+} -> String =
+  `${info.city} (${info.stops})`
+
+let incomplete = { city: "Kyoto" }
+
+pub effect fn main = println (summarize incomplete)

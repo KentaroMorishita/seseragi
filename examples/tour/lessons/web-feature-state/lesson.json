@@ -4,47 +4,60 @@
   "interactive": true,
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "Formへlabelとaccessibility statusを追加しました。",
+    "prerequisite": "ラベルや `role` 属性を付けたフォームを書けるようになりました。ここでは `Model`・`Action`・表示関数・`MutableSignal` を組み合わせ、機能単位で状態の更新権限を閉じ込めます。",
     "walkthrough": [
       {
-        "heading": "Feature内へModelとActionを閉じる",
-        "body": "Model、Action、update、form componentは一つのfeature境界で定義され、入力・checkbox・submitをtyped state transitionへします。",
+        "heading": "状態と純粋な遷移規則を機能単位でまとめる",
+        "body": "6〜21 行目ではフォームが持つ `Model`、操作を表す `Action`、初期値 `initial`、次の状態を計算する純粋な関数 `update` を定義しています。",
         "sourceRange": {
-          "startLine": 1,
+          "startLine": 6,
+          "endLine": 21
+        }
+      },
+      {
+        "heading": "画面部品は Model から Html を返す純粋な関数に保つ",
+        "body": "29〜59 行目の `form` と `page` は受け取った `Model` から `Html<Action>` を組み立てるだけで、内部で状態を直接書き換えたり保持したりしません。",
+        "sourceRange": {
+          "startLine": 29,
           "endLine": 59
         }
       },
       {
-        "heading": "MainだけがMutableSignalを所有する",
-        "body": "mainがstateを作り、handlerへMutableSignal、dom.runへderived Signal<Html<Action>>だけを渡します。",
+        "heading": "main だけが MutableSignal を持ち、dom.run へ渡す",
+        "body": "61〜70 行目では `main` が `signals.make` で状態を作り、更新権限を `handle` の `signals.update` に閉じ込めます。`dom.run` へは `signals.map` で導出した読み取り専用の `Signal` を渡します。",
         "sourceRange": {
           "startLine": 61,
-          "endLine": 64
+          "endLine": 70
         }
       }
     ],
     "introduced": [
       {
         "kind": "type",
-        "name": "component state ownership",
-        "body": "Feature内でMutableSignalの生成・handler・viewを接続し、componentはModelからHtmlを返すpure関数に保ちます。"
+        "name": "機能単位での状態の所有境界",
+        "body": "更新可能な `MutableSignal` の生成と書き換えを機能の入口とハンドラー内に閉じ、画面コンポーネントを純粋な関数のまま保つ構成です。"
+      },
+      {
+        "kind": "api",
+        "name": "signals.update",
+        "body": "現在の状態を受け取って次の状態を返す純粋な関数（ここでは `update action`）を渡し、`MutableSignal` を安全に更新します。"
       }
     ],
     "exercise": {
-      "instruction": "Pureなform componentのtitleとbutton textを変更してください。",
+      "instruction": "まず `Run` を押し、`Preview` で文字入力・`Pin` のチェック・`Save` の送信を試してください。次に下のボタンで静的確認用の課題コードを開き、`\"Owned feature\"` や `\"Save\"` を書き換えて `Run` し、`Output` の HTML が変わることを確かめてください（既定の課題コードでは下の期待結果が出ます）。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "Feature外のSignalから更新する",
-      "body": "失敗例はread-only Signalを更新し、ownership境界を越えようとします。"
+      "heading": "読み取り専用の Signal を更新しようとする",
+      "body": "失敗例では更新権限を持たない `Signal<String>` を `signals.set` に渡しています。状態の書き換えが許可された場所だけに限られるため、実行前にエラー表示が出ます。"
     },
     "recap": [
-      "ComponentはModelからHtmlを返すpure関数に分ける。",
-      "MutableSignalはfeatureのmainとhandlerへ閉じ、runtimeへSignal<Html>を渡す。"
+      "画面部品は `Model` から `Html<Action>` を返す純粋な関数に分け、状態の所有から切り離す。",
+      "`MutableSignal` は機能の入口と `handle` 内に閉じ、実行環境には導出した `Signal<Html<Action>>` だけを渡す。"
     ],
     "next": {
-      "lessonId": "applications-console-data",
-      "body": "次は既習概念を同じconsole applicationへ一段ずつ統合します。"
+      "lessonId": "list-values",
+      "body": "Web UI の補足トラックはこれで完了です。次の補足トラックでは連結リスト（`List`）やコレクションの細目を学べます。"
     }
   },
   "files": {

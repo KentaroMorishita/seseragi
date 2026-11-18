@@ -3,43 +3,65 @@
   "id": "05-pipelines",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "関数定義、空白による適用、currying、partial application、括弧、`$`、`|>`を別々に確認しました。",
+    "prerequisite": "前のレッスンで `fn` による関数定義、空白区切りの呼び出し、部分適用を学びました。ここでは複数の関数をつなげて読みやすく書く方法を学びます。",
     "walkthrough": [
       {
-        "heading": "一つの仕事を持つ関数を用意する",
-        "body": "`greeting`は挨拶を作り、`emphasize`は受け取ったStringを強調します。それぞれの戻り型が次の関数のparameter型と一致します。",
-        "sourceRange": { "startLine": 1, "endLine": 3 }
+        "heading": "小さな変換関数を用意する",
+        "body": "1〜5 行目では `greeting`・`wrap`・`addLabel` という 1 つずつ小さな役割を持つ関数を定義しています。`wrap` と `addLabel` は最後に対象の `value: String` を受け取る形にしておくと、部分適用でパイプラインに並べやすくなります。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 5
+        }
       },
       {
-        "heading": "小さな関数をmessageへ組み合わせる",
-        "body": "`message`はgreeting resultを`$`でemphasizeへ渡します。mainは名前をmessageへ流し、そのresultをprintlnへ流します。",
-        "sourceRange": { "startLine": 5, "endLine": 7 }
+        "heading": "パイプライン |> で上から下へ流す",
+        "body": "7〜11 行目の `|>` は左の値を次の関数の最後の引数として渡します。`name` が `greeting` を通り、`wrap \"**\"` を通り、`addLabel \"Welcome\"` を通る流れを、行を分けて上から下へ読めます。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 11
+        }
+      },
+      {
+        "heading": "$ で右側の計算結果をまとめて渡す",
+        "body": "13 行目の `$` は右側全体 `buildMessage \"Seseragi\"` を先に計算し、その 1 つの結果を左側の `println` へ渡します。`println (buildMessage \"Seseragi\")` のように括弧で囲むのと同じ意味です。",
+        "sourceRange": {
+          "startLine": 13,
+          "endLine": 13
+        }
       }
     ],
     "introduced": [
       {
         "kind": "syntax",
-        "name": "function composition",
-        "body": "小さなfunctionの戻り値を次のfunctionへ渡し、複数の一段処理から一つの処理を組み立てます。"
+        "name": "|>",
+        "body": "左側の値を右側の関数へ渡します。複数段つなげて書くときは改行して `|>` を揃えるとデータの流れが読みやすくなります。"
+      },
+      {
+        "kind": "syntax",
+        "name": "$",
+        "body": "右側全体を 1 つの式として先に評価し、左側の関数へ最後の引数として渡します。括弧の入れ子を減らしたいときに便利です。"
       }
     ],
     "exercise": {
-      "instruction": "課題sourceで最初の名前と二つの小さな関数を変え、同じ接続で新しいmessageが出ることを確認してください。",
+      "instruction": "11 行目の次に `|> wrap \"==\"` を 1 段書き足し、13 行目の `\"Seseragi\"` を `\"Tour\"` に書き換えて `Run` し、`Output` が `==Welcome: **Hello, Tour!**==` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "関数同士の接続型をずらす",
-      "body": "失敗例ではemphasizeがIntを返すと宣言しながらStringを作ります。小さな関数の境界にある型差分を確認してください。"
+      "heading": "$ や括弧を付けずに別の関数呼び出しを渡す",
+      "body": "失敗例では 13 行目から `$` を外して `println buildMessage \"Seseragi\"` と書いています。この書き方では `println` に `buildMessage` と `\"Seseragi\"` の 2 つの引数を渡そうとしてしまい、引数の数のエラーになります。"
     },
     "recap": [
-      "小さなpure functionへ一つずつ仕事を分けられる。",
-      "戻り型と次のparameter型を合わせてfunctionをつなげられる。",
-      "`$`と`|>`でvalueが進む順を明示できる。"
+      "`|>` は左側の値を右側の関数へ流し、行を分けてデータの変換を上から順に書けます。",
+      "変換対象の `value` を最後の引数にした関数は、`wrap \"**\"` のような部分適用で `|>` に組み込めます。",
+      "`$` を使うと括弧を書かずに右側の計算結果全体を左側の関数へ渡せます。"
     ],
     "next": {
-      "lessonId": "tuple-values",
-      "body": "関数の段階学習は完了です。次は複数のvalueを一つのtupleへまとめます。"
-    }
+      "lessonId": "tuple-and-record",
+      "body": "関数とパイプラインの基礎が揃いました。次は複数の値を 1 つにまとめるタプルとレコードを学びます。"
+    },
+    "notes": [
+      "パイプラインが長いときや `Format` を実行したときは、ここで見たように `|>` ごとに改行して整列したレイアウトへ整形されます。"
+    ]
   },
   "files": {
     "source": "main.ssrg",

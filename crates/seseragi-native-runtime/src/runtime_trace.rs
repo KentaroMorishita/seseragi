@@ -63,7 +63,8 @@ impl TraceValue for ListCell {
 }
 impl TraceValue for Function {
     fn edges(&self, visit: &mut dyn FnMut(&V)) -> Result<(), &'static str> {
-        self.captures.edges(visit)
+        self.captures.iter().for_each(visit);
+        Ok(())
     }
 }
 impl TraceValue for RefCell<V> {

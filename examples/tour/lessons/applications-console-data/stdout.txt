@@ -1,3 +1,3 @@
 Book: 2400
 Pen: 600
-Cancelled: 0
+error: Cancelled: invalid amount

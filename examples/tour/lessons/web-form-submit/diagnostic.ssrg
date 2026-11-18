@@ -1,6 +1,8 @@
 import * as html from "std/web/html"
 
 type Action =
-  | Submitted
+  | DraftChanged String
 
-let invalid: html.Html<Action> = html.form { onSubmit: "submit" }
+fn invalid event: html.ChangeEvent -> Action = DraftChanged event.value
+
+let field: html.Html<Action> = html.input { onInput: invalid }

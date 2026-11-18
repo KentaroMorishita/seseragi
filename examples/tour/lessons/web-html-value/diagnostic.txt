@@ -1,6 +1,6 @@
-examples/tour/lessons/web-html-value/diagnostic.ssrg:6:34: error[SES-T0101]: Binding annotation type mismatch
-  | let invalid: html.Html<Action> = 42
-  |                                  ^^ declared html.Html<Action>, initializer produces Int
+examples/tour/lessons/web-html-value/diagnostic.ssrg:7:52: error[SES-T0101]: Array element type mismatch
+  |   children: [html.h1 { children: "Seseragi Web" }, 42]
+  |                                                    ^^ element 2 expected html.Html<Action>, received Int
   = expected: html.Html<Action>
   = actual: Int
   = diff: expected html.Html<Action>, actual Int

@@ -1,3 +1,12 @@
 operator infixr 4 <+> left: String -> right: String -> String = append left right
 
-pub effect fn main = "generic" <+> " contract" |> println
+fn applyJoin operation: (String -> String -> String)
+  -> left: String
+  -> right: String
+  -> String =
+  operation left right
+
+pub effect fn main = do {
+  "Kamo" <+> "ragi" |> println
+  applyJoin (<+>) "Code" "!" |> println
+}

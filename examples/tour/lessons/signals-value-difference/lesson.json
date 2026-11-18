@@ -1,1 +1,79 @@
-{"$schema":"../../lesson.schema.json","id":"signals-value-difference","formatVersion":2,"sections":{"prerequisite":"FunctorとApplicativeを含む抽象化を段階的に学びました。","walkthrough":[{"heading":"値と時間変化する値を並べる","body":"`fixed`はその場で決まるIntです。`Signal<Int>`は現在値を持つため、Effect内で`signals.read`してIntを取り出します。","sourceRange":{"startLine":1,"endLine":4}}],"introduced":[{"kind":"type","name":"Signal<A>","body":"Signal<A>は時間とともに変化し得るAの現在値です。Aそのものとは区別されます。"}],"exercise":{"instruction":"固定値とSignalの現在値を変更し、二つが別の値として出力されることを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"SignalをIntとして使う","body":"失敗例はSignal<Int>をreadせずIntへ代入します。型の違いをdiagnosticで確認します。"},"recap":["通常の値はその場のAで、Signal<A>は時間変化するAの現在値を表す。","Signalの現在値はEffect内でreadする。"],"next":{"lessonId":"signals-make","body":"次は更新可能なMutableSignalを作ります。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "signals-value-difference",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "前の章までで、変わらない値や汎用的な `trait` を扱えるようになりました。ここからは、時間とともに現在値が変化しうる `Signal` の仕組みと読み取り方を学びます。",
+    "walkthrough": [
+      {
+        "heading": "signals.make で更新できる Signal を作る",
+        "body": "5 行目の `signals.make 42` は、初期値 `42` を持つ `MutableSignal<Int>` を作る `Effect` を返し、`<-` で取り出します。通常の `Int` とは異なり、あとから現在値を書き換えられます。",
+        "sourceRange": {
+          "startLine": 5,
+          "endLine": 5
+        }
+      },
+      {
+        "heading": "Signal 型の読み取り専用として受け取る",
+        "body": "6 行目の `view` は `MutableSignal<Int>` を `Signal<Int>` 型として受け取っています。書き換え権限を隠して、読み取り専用として他の処理へ渡したいときに使います。",
+        "sourceRange": {
+          "startLine": 6,
+          "endLine": 6
+        }
+      },
+      {
+        "heading": "signals.read と前置の * で現在値を読む",
+        "body": "7〜9 行目の `signals.read view` と `*view`・`*state` は、どちらも現在値を取り出す `Task<Int>` を返します。取り出した値は通常の `Int` として出力できます。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 12
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Signal と MutableSignal",
+        "body": "`Signal<A>` は時間とともに変化する `A` の読み取り専用型、`MutableSignal<A>` は現在値を更新できる元の型です。`MutableSignal<A>` はそのまま `Signal<A>` として渡せます。"
+      },
+      {
+        "kind": "api",
+        "name": "signals.make",
+        "body": "初期値を受け取り、更新できる `MutableSignal<A>` を作る `Task` を返します。`do` ブロックの中で `<-` を使って作成します。"
+      },
+      {
+        "kind": "syntax",
+        "name": "signals.read と前置 *",
+        "body": "`signals.read` と前置演算子 `*` はどちらも `Signal` や `MutableSignal` の現在値を読み取る `Task<A>` を返します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 5 行目にある `signals.make 42` の `42` を `100` に書き換えて `Run` し、`Output` の 3 行がすべて `100` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "通常の Int を signals.read に渡す",
+      "body": "失敗例では `Signal` ではなく通常の `Int` である `42` を `signals.read` に渡しています。`signals.read` が受け取れるのは `Signal` だけなので、実行前に `Problems` へエラー表示が出ます。修正するには `signals.make 42` や `signals.constant 42` で `Signal<Int>` を作り、`do` の中で読み取ってください。"
+    },
+    "recap": [
+      "`Signal<A>` は時間変化する現在値を表し、通常の値 `A` とは型で区別される。",
+      "`signals.make` で更新できる `MutableSignal<A>` を作り、読み取り専用の `Signal<A>` としてもそのまま渡せる。",
+      "`signals.read` と `*` はどちらも現在値を `Task<A>` として読み取る。"
+    ],
+    "next": {
+      "lessonId": "signals-write-operator",
+      "body": "次は `signals.set`・`:=`・`signals.update` を使って、`MutableSignal` の現在値を書き換える方法を学びます。"
+    },
+    "notes": [
+      "読み取り専用の `Signal<A>` から更新できる `MutableSignal<A>` へ戻すことはできません。関数の引数を `Signal<A>` にしておくと、読み取りしか許さない約束を型で表せます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

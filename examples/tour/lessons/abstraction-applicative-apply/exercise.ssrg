@@ -1,4 +1,4 @@
-fn multiply left: Int -> right: Int -> Int = left * right
+fn add left: Int -> right: Int -> Int = left + right
 
 fn render value: Maybe<Int> -> String = match value {
   Nothing -> "Nothing"
@@ -6,9 +6,14 @@ fn render value: Maybe<Int> -> String = match value {
 }
 
 pub effect fn main = do {
-  let left: Maybe<Int> = Just 6
-  let right: Maybe<Int> = Just 7
-  let partial: Maybe<Int -> Int> = map multiply left
-  apply partial right |> render |> println
-  multiply <$> left <*> right |> render |> println
+  let left: Maybe<Int> = Just 30
+  let right: Maybe<Int> = Just 15
+  let nested: Maybe<Int> = flatMap (\value: Int -> map (add value) right) left
+  let partial: Maybe<Int -> Int> = map add left
+  let named: Maybe<Int> = apply partial right
+  let operatorPartial: Maybe<Int -> Int> = add <$> left
+  let operator: Maybe<Int> = operatorPartial <*> right
+  println `flatMap + map: ${render nested}`
+  println `apply: ${render named}`
+  println `<*>: ${render operator}`
 }
