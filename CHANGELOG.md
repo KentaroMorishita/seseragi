@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.61.185] - 2026-11-18
+
+### Changed
+
+- Native programs do less work in three common patterns. Output, evaluation order, Defect positions and when values are released stay the same.
+  - `show` and `debug` on an Array, Maybe, Range or List whose element types are all standard, such as `show [1, 2]`, build their display dictionary once per program instead of at every call. The TS target shares these dictionaries the same way, as it already did for tuples. A dictionary that involves a type parameter or a user instance is still built at each call.
+  - `match values[i] { Just v -> ...; Nothing -> ... }` reads the element directly instead of building a `Just` and taking it apart. A branch that binds the whole `Maybe` still gets one.
+  - A closure that captures up to three values takes one allocation instead of two, and copying or dropping a value does less work.
+
 ## [0.61.184] - 2026-11-18
 
 ### Fixed

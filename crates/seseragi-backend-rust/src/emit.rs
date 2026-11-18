@@ -4,9 +4,9 @@ use seseragi_lowering::{
     CoreCallShape,
 };
 use seseragi_lowering::{
-    CoreCallEvidence, CoreDecisionProjection, CoreDecisionTest, CoreExpr, CoreInstanceEvidence,
-    CoreInstanceImplementation, CoreModule, CoreParameter, CoreRecordValueItem, CoreStatement,
-    CoreTemplatePart, CoreType,
+    CoreCallEvidence, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest, CoreExpr,
+    CoreInstanceEvidence, CoreInstanceImplementation, CoreModule, CoreParameter,
+    CoreRecordValueItem, CoreStatement, CoreTemplatePart, CoreType,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -782,10 +782,37 @@ impl<'a> Backend<'a> {
             .enumerate()
             .map(|(index, name)| format!("let {} = captures[{index}].clone();", id(name)))
             .collect::<String>();
+        // A capture array lets the runtime keep a few captures in the
+        // function's own node.
+        let values = if scope.iter().next().is_none() {
+            "vec![]".to_owned()
+        } else {
+            format!("[{values}]")
+        };
         format!(
-            "V::fun(vec![{values}], |captures, {}| {{ {restore} {body} }})",
+            "V::fun({values}, |captures, {}| {{ {restore} {body} }})",
             id(parameter)
         )
+    }
+
+    /// Builds a closed standard tuple or collection display dictionary once
+    /// per program, at its first read, and shares it afterwards.
+    fn closed_display(
+        &mut self,
+        selected: &CoreCallEvidence,
+        scope: &Scope,
+        dictionary: String,
+    ) -> String {
+        match seseragi_lowering::closed_standard_display_key(selected, scope.bound_type_names()) {
+            Some(key) => {
+                self.closed_dictionary_sites += 1;
+                format!(
+                    "cached({}, || {dictionary})",
+                    quoted(&format!("closed-standard-display:{key}"))
+                )
+            }
+            None => dictionary,
+        }
     }
 
     fn evidence(&mut self, evidence: &[CoreCallEvidence], scope: &Scope) -> Result<String> {
@@ -860,18 +887,7 @@ impl<'a> Backend<'a> {
                 }
             }
             if let Some(dictionary) = self.structural_display_dictionary(selected, scope)? {
-                if let Some(key) = seseragi_lowering::closed_standard_display_key(
-                    selected,
-                    scope.bound_type_names(),
-                ) {
-                    self.closed_dictionary_sites += 1;
-                    values.push(format!(
-                        "cached({}, || {dictionary})",
-                        quoted(&format!("closed-standard-display:{key}"))
-                    ));
-                } else {
-                    values.push(dictionary);
-                }
+                values.push(self.closed_display(selected, scope, dictionary));
                 continue;
             }
             if let Some(dictionary) = self.filesystem_display_dictionary(selected, scope)? {
@@ -899,7 +915,7 @@ impl<'a> Backend<'a> {
                 continue;
             }
             if let Some(dictionary) = self.list_dictionary(selected, scope)? {
-                values.push(dictionary);
+                values.push(self.closed_display(selected, scope, dictionary));
                 continue;
             }
             if let Some(dictionary) = lists::primitive_display(selected) {
@@ -1409,11 +1425,21 @@ impl<'a> Backend<'a> {
             } => {
                 let temporary = self.fresh();
                 let label = self.fresh();
-                let mut value = format!(
-                    "{{ let {temporary} = {}; '{label}: {{",
-                    self.expr(scrutinee, scope)?
-                );
+                let (scrutinee, view) =
+                    self.decision_scrutinee(scrutinee, scrutinee_type, branches, scope)?;
+                let mut value = format!("{{ let {temporary} = {scrutinee}; '{label}: {{");
                 for branch in branches {
+                    if view {
+                        value.push_str(&self.maybe_view_branch(
+                            branch,
+                            &temporary,
+                            scope,
+                            |backend, value, inner| {
+                                Ok(format!("break '{label} {};", backend.expr(value, inner)?))
+                            },
+                        )?);
+                        continue;
+                    }
                     let plan = seseragi_lowering::core_list_prefix_plan(
                         scrutinee_type,
                         branch,
@@ -1689,6 +1715,128 @@ impl<'a> Backend<'a> {
             .join(","))
     }
 
+    /// The scrutinee of a Decision. An Array index that the branches read only
+    /// as a `Maybe` tag, a `Just` payload or the whole value stays an
+    /// `Option<V>`, so the match builds no intermediate `Just`.
+    pub(super) fn decision_scrutinee(
+        &mut self,
+        scrutinee: &CoreExpr,
+        scrutinee_type: &CoreType,
+        branches: &[CoreDecisionBranch],
+        scope: &Scope,
+    ) -> Result<(String, bool)> {
+        if let CoreExpr::Call { callee, .. } = scrutinee {
+            if callee == "builtin::array-index"
+                && !scope.contains(callee)
+                && branches
+                    .iter()
+                    .all(|branch| Self::maybe_view_reads(scrutinee_type, branch, scope))
+            {
+                if let Ok(value) = self.array_index_option(scrutinee, scope) {
+                    // The whole `Maybe` is built at most once, by the first
+                    // branch that binds it.
+                    return Ok((format!("({value}, std::cell::OnceCell::<V>::new())"), true));
+                }
+            }
+        }
+        Ok((self.expr(scrutinee, scope)?, false))
+    }
+
+    fn maybe_view_reads(
+        scrutinee_type: &CoreType,
+        branch: &CoreDecisionBranch,
+        scope: &Scope,
+    ) -> bool {
+        let payload = |path: &[CoreDecisionProjection]| {
+            matches!(path.first(), Some(CoreDecisionProjection::AdtPayload))
+        };
+        seseragi_lowering::core_list_prefix_plan(scrutinee_type, branch, scope.bound_type_names())
+            .is_none()
+            && branch.tests.iter().all(|test| match test {
+                CoreDecisionTest::Constructor {
+                    path, constructor, ..
+                } if path.is_empty() => {
+                    matches!(
+                        constructor.as_str(),
+                        "std/prelude::Just" | "std/prelude::Nothing"
+                    )
+                }
+                test => decision_test_path(test).is_some_and(|path| payload(path)),
+            })
+            && branch
+                .bindings
+                .iter()
+                .all(|binding| binding.path.is_empty() || payload(&binding.path))
+    }
+
+    /// One branch of a Decision whose scrutinee `root` holds the element as
+    /// an `Option<V>` and the whole `Maybe` once a branch has needed it.
+    pub(super) fn maybe_view_branch(
+        &mut self,
+        branch: &CoreDecisionBranch,
+        root: &str,
+        scope: &Scope,
+        value: impl FnOnce(&mut Self, &CoreExpr, &Scope) -> Result<String>,
+    ) -> Result<String> {
+        let whole = format!("{root}.1");
+        let root = &format!("{root}.0");
+        let conditions = branch
+            .tests
+            .iter()
+            .map(|test| match test {
+                CoreDecisionTest::Constructor {
+                    path, constructor, ..
+                } if path.is_empty() => Ok(if constructor == "std/prelude::Just" {
+                    format!("{root}.is_some()")
+                } else {
+                    format!("{root}.is_none()")
+                }),
+                test => {
+                    let mut payload = test.clone();
+                    let path = decision_test_path_mut(&mut payload)
+                        .ok_or("Rust backend: unsupported decision test")?;
+                    path.remove(0);
+                    Ok(format!(
+                        "{root}.as_ref().is_some_and(|payload| {})",
+                        self.test(&payload, "payload", None)?
+                    ))
+                }
+            })
+            .collect::<Result<Vec<_>>>()?;
+        let mut body = format!(
+            "if {} {{",
+            if conditions.is_empty() {
+                "true".into()
+            } else {
+                conditions.join(" && ")
+            }
+        );
+        let mut inner = scope.clone();
+        for binding in &branch.bindings {
+            let projected = match binding.path.split_first() {
+                None => format!("{whole}.get_or_init(|| native_maybe({root}.clone())).clone()"),
+                Some((_, rest)) => Self::project(
+                    &format!("({root}.as_ref().expect(\"Rust ABI: Just payload\"))"),
+                    rest,
+                )?,
+            };
+            body.push_str(&format!("let {} = {projected};", id(&binding.name)));
+            inner.insert(binding.name.clone());
+        }
+        let guard = branch
+            .guard
+            .as_ref()
+            .map(|g| self.expr(g, &inner))
+            .transpose()?
+            .map(|g| format!("({g}).boolean()"))
+            .unwrap_or_else(|| "true".into());
+        body.push_str(&format!(
+            "if {guard} {{ {} }} }}",
+            value(self, &branch.value, &inner)?
+        ));
+        Ok(body)
+    }
+
     fn project(root: &str, path: &[CoreDecisionProjection]) -> Result<String> {
         let mut value = format!("{root}.clone()");
         for projection in path {
@@ -1861,4 +2009,28 @@ fn operation_arity(name: &str) -> Option<usize> {
         | "std/ref::modify" => 2,
         _ => return None,
     })
+}
+
+fn decision_test_path(test: &CoreDecisionTest) -> Option<&[CoreDecisionProjection]> {
+    match test {
+        CoreDecisionTest::Integer { path, .. }
+        | CoreDecisionTest::String { path, .. }
+        | CoreDecisionTest::Boolean { path, .. }
+        | CoreDecisionTest::Constructor { path, .. }
+        | CoreDecisionTest::ArrayLength { path, .. }
+        | CoreDecisionTest::ListLength { path, .. } => Some(path),
+        _ => None,
+    }
+}
+
+fn decision_test_path_mut(test: &mut CoreDecisionTest) -> Option<&mut Vec<CoreDecisionProjection>> {
+    match test {
+        CoreDecisionTest::Integer { path, .. }
+        | CoreDecisionTest::String { path, .. }
+        | CoreDecisionTest::Boolean { path, .. }
+        | CoreDecisionTest::Constructor { path, .. }
+        | CoreDecisionTest::ArrayLength { path, .. }
+        | CoreDecisionTest::ListLength { path, .. } => Some(path),
+        _ => None,
+    }
 }

@@ -84,6 +84,73 @@
       "end": 338
     }
   ],
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$2",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_debug_arrayDebug",
+        "typeArguments": [
+          {
+            "kind": "range"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "type-application-call",
+            "callee": "_ssrg_debug_rangeDebug",
+            "typeArguments": [
+              {
+                "kind": "number"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_intDebug"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "$ssrg$closedDisplay$1",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_debug_rangeDebug",
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_debug_intDebug"
+          }
+        ]
+      }
+    },
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_rangeShow",
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.range",
     "core.int",
@@ -165,19 +232,9 @@
               "value": {
                 "kind": "dictionary-call",
                 "dictionary": {
-                  "kind": "type-application-call",
-                  "callee": "_ssrg_show_rangeShow",
-                  "typeArguments": [
-                    {
-                      "kind": "number"
-                    }
-                  ],
-                  "arguments": [
-                    {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_show_intShow"
-                    }
-                  ]
+                  "kind": "call",
+                  "callee": "$ssrg$closedDisplay$0",
+                  "arguments": []
                 },
                 "method": "show",
                 "arguments": [
@@ -231,19 +288,9 @@
               "value": {
                 "kind": "dictionary-call",
                 "dictionary": {
-                  "kind": "type-application-call",
-                  "callee": "_ssrg_debug_rangeDebug",
-                  "typeArguments": [
-                    {
-                      "kind": "number"
-                    }
-                  ],
-                  "arguments": [
-                    {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_debug_intDebug"
-                    }
-                  ]
+                  "kind": "call",
+                  "callee": "$ssrg$closedDisplay$1",
+                  "arguments": []
                 },
                 "method": "debug",
                 "arguments": [
@@ -297,30 +344,9 @@
               "value": {
                 "kind": "dictionary-call",
                 "dictionary": {
-                  "kind": "type-application-call",
-                  "callee": "_ssrg_debug_arrayDebug",
-                  "typeArguments": [
-                    {
-                      "kind": "range"
-                    }
-                  ],
-                  "arguments": [
-                    {
-                      "kind": "type-application-call",
-                      "callee": "_ssrg_debug_rangeDebug",
-                      "typeArguments": [
-                        {
-                          "kind": "number"
-                        }
-                      ],
-                      "arguments": [
-                        {
-                          "kind": "runtime-reference",
-                          "name": "_ssrg_debug_intDebug"
-                        }
-                      ]
-                    }
-                  ]
+                  "kind": "call",
+                  "callee": "$ssrg$closedDisplay$2",
+                  "arguments": []
                 },
                 "method": "debug",
                 "arguments": [
@@ -394,19 +420,9 @@
                               "value": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_show_rangeShow",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_show_intShow"
-                                    }
-                                  ]
+                                  "kind": "call",
+                                  "callee": "$ssrg$closedDisplay$0",
+                                  "arguments": []
                                 },
                                 "method": "show",
                                 "arguments": [
@@ -498,19 +514,9 @@
                               "value": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_debug_rangeDebug",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_debug_intDebug"
-                                    }
-                                  ]
+                                  "kind": "call",
+                                  "callee": "$ssrg$closedDisplay$1",
+                                  "arguments": []
                                 },
                                 "method": "debug",
                                 "arguments": [
@@ -602,19 +608,9 @@
                               "value": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_show_rangeShow",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_show_intShow"
-                                    }
-                                  ]
+                                  "kind": "call",
+                                  "callee": "$ssrg$closedDisplay$0",
+                                  "arguments": []
                                 },
                                 "method": "show",
                                 "arguments": [
@@ -705,30 +701,9 @@
                           "value": {
                             "kind": "dictionary-call",
                             "dictionary": {
-                              "kind": "type-application-call",
-                              "callee": "_ssrg_debug_arrayDebug",
-                              "typeArguments": [
-                                {
-                                  "kind": "range"
-                                }
-                              ],
-                              "arguments": [
-                                {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_debug_rangeDebug",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_debug_intDebug"
-                                    }
-                                  ]
-                                }
-                              ]
+                              "kind": "call",
+                              "callee": "$ssrg$closedDisplay$2",
+                              "arguments": []
                             },
                             "method": "debug",
                             "arguments": [
