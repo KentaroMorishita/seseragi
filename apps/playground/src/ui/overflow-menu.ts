@@ -18,7 +18,7 @@ export function connectOverflowMenu({ button, menu }: OverflowMenuElements): {
   const open = (): void => {
     menu.hidden = false
     button.setAttribute("aria-expanded", "true")
-    menu.querySelector<HTMLElement>("[role^='menuitem']")?.focus()
+    menu.querySelector<HTMLElement>("[role^='menuitem']:not([hidden])")?.focus()
   }
 
   button.addEventListener("click", () => {
@@ -30,7 +30,9 @@ export function connectOverflowMenu({ button, menu }: OverflowMenuElements): {
   })
   menu.addEventListener("keydown", (event) => {
     const items = [
-      ...menu.querySelectorAll<HTMLButtonElement>("[role^='menuitem']"),
+      ...menu.querySelectorAll<HTMLButtonElement>(
+        "[role^='menuitem']:not([hidden])"
+      ),
     ]
     const current = items.indexOf(
       ownerDocument.activeElement as HTMLButtonElement

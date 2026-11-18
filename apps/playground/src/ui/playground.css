@@ -306,6 +306,10 @@ body.preview-fullscreen-fallback-open {
   vertical-align: 1px;
 }
 
+.pg-code-card {
+  container-type: inline-size;
+}
+
 .pg-code-body {
   --explorer-width: 220px;
   position: relative;
@@ -2373,9 +2377,11 @@ body.preview-fullscreen-fallback-open {
     );
   }
 
-  .workspace[data-mobile-panel="closed"] .pg-output-body,
-  .workspace[data-mobile-panel="closed"] .pg-input,
-  .workspace[data-mobile-panel="closed"] .pg-io-resizer {
+  /* 全画面のプレビューは、シートを畳んでいても隠さない */
+  .workspace[data-mobile-panel="closed"] .pg-output:not(
+      [data-preview-fullscreen]
+    )
+    > :is(.pg-output-body, .pg-input, .pg-io-resizer) {
     display: none;
   }
 
@@ -2479,5 +2485,29 @@ body.preview-fullscreen-fallback-open {
   .ui-app select,
   .ui-app textarea {
     font-size: 16px;
+  }
+}
+
+/* コードのカードが狭いとき（Explorer 180px + 区切り + エディター 220px が入らない幅）は、
+   モバイルと同じく Explorer をエディターの上に重ねて開く */
+@container (max-width: 520px) {
+  .code-workspace[data-explorer-visible="true"] {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .code-workspace[data-explorer-visible="true"] .explorer-panel {
+    position: absolute;
+    z-index: 8;
+    inset: 0 auto 0 0;
+    width: min(var(--explorer-width), calc(100% - 28px));
+    border-right-color: var(--line-strong);
+    box-shadow: var(--shadow-float);
+  }
+
+  .code-workspace[data-explorer-visible="true"] .explorer-resizer {
+    display: none;
   }
 }
