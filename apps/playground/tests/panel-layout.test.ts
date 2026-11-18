@@ -42,10 +42,11 @@ describe("desktop panel layout", () => {
     expect(html.indexOf('id="stdin-toggle-button"')).toBeGreaterThan(
       html.indexOf('id="output-section"')
     )
-    // 上のバー・本体・下の帯の三段。本体だけが伸びる
+    // 上のバー・共有リンクの知らせ・本体・下の帯。本体だけが伸び、本体は 3 段目に固定する
     expect(styles).toMatch(
-      /\.pg-shell \{[\s\S]*?grid-template-rows: var\(--top-h\) minmax\(0, 1fr\) auto;/
+      /\.pg-shell \{[\s\S]*?grid-template-rows: var\(--top-h\) auto minmax\(0, 1fr\) auto;/
     )
+    expect(styles).toMatch(/\.pg-stage \{\s*grid-row: 3;/)
     // コード・流れ・出力の三列。コードの幅は workspace-resizer が動かす
     expect(styles).toMatch(
       /\.pg-stage \{[\s\S]*?calc\(var\(--editor-panel-ratio\) - 52px\)\) 104px/
