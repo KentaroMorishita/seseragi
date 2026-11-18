@@ -1,1 +1,3 @@
-name: Mio / result: 42
+note: none
+error: out of stock
+error: count must be positive

@@ -8,7 +8,7 @@
   "topics": ["match", "tuple", "Range", "effectful for"],
   "capabilities": ["console"],
   "outputMode": "text",
-  "prerequisites": ["data-and-patterns"],
+  "prerequisites": ["hello-world"],
   "featured": false,
   "isNew": true,
   "files": {

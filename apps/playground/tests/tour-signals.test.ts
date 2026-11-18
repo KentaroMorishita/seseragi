@@ -21,13 +21,11 @@ const signalIds = [
 
 describe("Tour Signal curriculum", () => {
   test("stages one Signal concept at a time", () => {
-    const lessons = tourLessons.slice(100, 100 + signalIds.length)
+    const lessons = tourLessons.slice(23, 23 + signalIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...signalIds])
     expect(
-      [lessons[3], lessons[5]].every(
-        (lesson) => lesson?.deliveryIssue === 252
-      )
+      [lessons[3], lessons[5]].every((lesson) => lesson?.deliveryIssue === 252)
     ).toBe(true)
     expect(
       lessons
@@ -36,7 +34,7 @@ describe("Tour Signal curriculum", () => {
     ).toBe(true)
     for (const [index, lesson] of lessons.entries()) {
       expect(lesson.prerequisites).toEqual([
-        index === 0 ? "abstraction-custom-operator" : signalIds[index - 1]!,
+        index === 0 ? "abstraction-trait-operation" : signalIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
         signalIds[index + 1] ?? "web-html-value"

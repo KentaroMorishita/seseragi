@@ -4,60 +4,49 @@
   "groups": [
     {
       "id": "functions-and-collections",
-      "title": "関数・Collection・定番問題",
-      "summary": "再帰、Range、pattern、集計を目的のある小さなprogramへ組み合わせます。",
+      "title": "まずはここから（関数・集計・定番問題）",
+      "summary": "条件分岐、末尾再帰、配列の絞り込みと集計を小さなプログラムで試します。",
       "kind": "recipe",
       "samples": [
-        "local-functions",
-        "fibonacci-sequence",
         "fizzbuzz",
+        "fibonacci-sequence",
         "collections",
-        "collection-patterns"
+        "collection-patterns",
+        "local-functions"
       ]
     },
     {
       "id": "domain-recipes",
-      "title": "値・domain・表示",
-      "summary": "Record、newtype、alias、operatorで値の境界と表示を確かめます。",
+      "title": "データの形を設計する（型・不変更新・演算子）",
+      "summary": "レコード更新、取り違えを防ぐID型、型エイリアス、独自演算子を設計します。",
       "kind": "recipe",
-      "samples": ["records", "newtypes", "type-aliases", "unary-operators"]
+      "samples": ["records", "newtypes", "type-aliases", "impl-and-operators"]
     },
     {
       "id": "effects-and-abstraction",
-      "title": "入力・失敗・抽象化",
-      "summary": "標準入力、Either、Monad、implを既習概念から一段深く試します。",
+      "title": "入力・エラー・複数ファイルを扱う",
+      "summary": "標準入力、Eitherによる段階的な入力検証、複数モジュールの分割を試します。",
       "kind": "recipe",
-      "samples": [
-        "stdin-greeting",
-        "project-greeting",
-        "either-and-monad",
-        "impl-and-operators",
-        "typeclass-operator-parity"
-      ]
+      "samples": ["stdin-greeting", "either-and-monad", "project-greeting"]
     },
     {
       "id": "web-ui-recipes",
-      "title": "Web UIの最小構成",
-      "summary": "静的componentから、同じappのdom.app版と明示的dom.run版を比較します。",
+      "title": "ブラウザの画面を作る（HTML・状態更新）",
+      "summary": "静的なHTMLコンポーネントから、状態を持つ対話UIとWebパッケージの基本へ進みます。",
       "kind": "recipe",
-      "samples": [
-        "html-components",
-        "interactive-app",
-        "signal-run-route",
-        "web-starter"
-      ]
+      "samples": ["html-components", "interactive-app", "web-starter"]
     },
     {
       "id": "signal-showcases",
-      "title": "Signalと明示的な実行境界",
-      "summary": "transactionからfeature-owned Signalとdom.runの合成へ進みます。",
+      "title": "Signalによる状態管理と機能合成",
+      "summary": "複数のSignalの一括更新から、機能単位で状態を所有する設計へ進みます。",
       "kind": "showcase",
       "samples": ["signal-state", "feature-composition"]
     },
     {
       "id": "web-ui-showcases",
-      "title": "ComponentとWeb UI",
-      "summary": "single-fileの完成UIからmulti-module applicationへ進みます。",
+      "title": "本格的なWebアプリケーション構成",
+      "summary": "フォーム検証・フィルターから、複数モジュールのWebアプリとLP構成までを体験します。",
       "kind": "showcase",
       "samples": ["seseragi-landing-page", "form-todo", "project-flow-app"]
     }

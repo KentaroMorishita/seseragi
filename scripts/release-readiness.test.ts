@@ -8,6 +8,7 @@ import {
   pullRequestReleaseBoundary,
   releaseReadiness,
   repositoryRoot,
+  stripRustInlineTestModule,
 } from "./release-readiness"
 
 const temporaryRepositories: string[] = []
@@ -241,6 +242,93 @@ describe("release readiness", () => {
     expect(result.userVisibleFiles).toEqual([])
   })
 
+  test("allows generated Playground catalog manifests without a version bump", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    const generated = path.join(root, "apps", "playground", "src", "generated")
+    await mkdir(generated, { recursive: true })
+    await writeFile(
+      path.join(generated, "sample-manifest.ts"),
+      "export const generatedSamples = []\n"
+    )
+    await writeFile(
+      path.join(generated, "tour-manifest.ts"),
+      "export const generatedTourLessons = []\n"
+    )
+    await writeFile(
+      path.join(generated, "deep-dive-manifest.ts"),
+      "export const generatedDeepDive = {}\n"
+    )
+    git(root, "add", ".")
+    git(root, "commit", "-m", "refresh generated Playground catalog manifests")
+
+    expect(
+      pullRequestReleaseBoundary(base, "HEAD", root).userVisibleFiles
+    ).toEqual([])
+    const readiness = await releaseReadiness(root)
+    expect(readiness.state).toBe("released")
+    expect(readiness.userVisibleFiles).toEqual([])
+  })
+
+  test("allows Playwright e2e spec files without a version bump", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    const e2e = path.join(root, "apps", "playground", "e2e")
+    await mkdir(e2e, { recursive: true })
+    await writeFile(
+      path.join(e2e, "web-ui-regression.spec.ts"),
+      "export const testCases = []\n"
+    )
+    git(root, "add", ".")
+    git(root, "commit", "-m", "update playground e2e regression spec")
+
+    expect(
+      pullRequestReleaseBoundary(base, "HEAD", root).userVisibleFiles
+    ).toEqual([])
+    const readiness = await releaseReadiness(root)
+    expect(readiness.state).toBe("released")
+    expect(readiness.userVisibleFiles).toEqual([])
+  })
+
+  test("stripRustInlineTestModule strips trailing #[cfg(test)] mod tests while preserving production code", () => {
+    const prod = "pub fn answer() -> i32 { 42 }\n"
+    const withTests = `${prod}\n#[cfg(test)]\nmod tests {\n    #[test]\n    fn checks() {}\n}\n`
+    expect(stripRustInlineTestModule(withTests)).toBe(prod.trimEnd())
+
+    const withTrailingProd = `${withTests}\npub fn extra() {}\n`
+    expect(stripRustInlineTestModule(withTrailingProd)).toBe(withTrailingProd)
+
+    const withTrailingMacro = `${withTests}\ninclude!("new_impl.rs");\n`
+    expect(stripRustInlineTestModule(withTrailingMacro)).toBe(withTrailingMacro)
+  })
+
+  test("allows Rust inline #[cfg(test)] mod tests changes without a version bump", async () => {
+    const root = await repository()
+    const formatter = path.join(root, "crates", "seseragi-formatter", "src")
+    await mkdir(formatter, { recursive: true })
+    await writeFile(
+      path.join(formatter, "lib.rs"),
+      "pub fn fmt() {}\n\n#[cfg(test)]\nmod tests {\n    #[test]\n    fn a() {}\n}\n"
+    )
+    git(root, "add", ".")
+    git(root, "commit", "-m", "release formatter")
+    git(root, "tag", "-f", "-a", "v0.3.0", "-m", "release v0.3.0")
+    const base = git(root, "rev-parse", "HEAD")
+
+    await writeFile(
+      path.join(formatter, "lib.rs"),
+      "pub fn fmt() {}\n\n#[cfg(test)]\nmod tests {\n    #[test]\n    fn b() {}\n}\n"
+    )
+    git(root, "commit", "-am", "update inline formatter test fixture")
+
+    expect(
+      pullRequestReleaseBoundary(base, "HEAD", root).userVisibleFiles
+    ).toEqual([])
+    const readiness = await releaseReadiness(root)
+    expect(readiness.state).toBe("released")
+    expect(readiness.userVisibleFiles).toEqual([])
+  })
+
   test("rejects a canonical version behind a newer release tag", async () => {
     const root = await repository()
     await setVersion(root, "0.4.0")
@@ -270,6 +358,7 @@ describe("release readiness", () => {
       "crates/seseragi-lsp/**",
       "crates/seseragi-provider/**",
       "runtime/ts/**",
+      "runtime/providers/**",
       "apps/playground/**",
       "extensions/seseragi/**",
       "examples/spec/**",

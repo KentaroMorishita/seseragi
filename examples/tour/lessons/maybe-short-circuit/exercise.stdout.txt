@@ -1,1 +1,4 @@
-flatMap: Just 42 / >>=: Just 42
+map: Just 42 / <$>: Just 42
+apply: Just 42 / <*>: Just 42
+flatMap: Nothing / >>=: Nothing
+missing -> flatMap: Nothing / >>=: Nothing

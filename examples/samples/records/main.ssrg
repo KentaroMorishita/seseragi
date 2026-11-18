@@ -6,5 +6,10 @@ fn displayName profile: {
 
 let profile = { first: "Mio", last: "Tanaka", role: "Engineer" }
 
-// spreadは新しいRecordを作り、width typingは余分なrole fieldを許容します。
-pub effect fn main = { ...profile, first: "Aoi" } |> displayName |> println
+// スプレッド構文で新しいレコードを作り、必要なフィールドだけを関数へ渡します。
+pub effect fn main -> Unit with Console fails ConsoleError = {
+  ...profile,
+  first: "Aoi"
+}
+  |> displayName
+  |> println

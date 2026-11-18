@@ -13,15 +13,18 @@ fn completed sale: Sale -> Bool = sale.amount > 0
 
 fn renderSale sale: Sale -> String = `${sale.item}: ${sale.amount}`
 
-fn totalSales values: Array<Sale> -> Int = sum [sale.amount | sale <- values]
+fn totalSales values: Array<Sale> -> Int = sum (map (\sale: Sale -> sale.amount) values)
 
-fn report values: Array<Sale> -> String = {
-  // The same filtered values feed both formatting and aggregation.
-  let completedSales = arrays.filter completed values
+fn report completedSales: Array<Sale> -> String = {
+  // 絞り込んだ同じ配列から、表示用の行と合計金額の両方を作ります。
   let lines = map renderSale completedSales
   let total = totalSales completedSales
 
   join "\n" [`Completed: ${join ", " lines}`, `Total: ${total}`]
 }
 
-pub effect fn main = report sales |> println
+pub effect fn main -> Unit with Console fails ConsoleError =
+  sales
+  |> arrays.filter completed
+  |> report
+  |> println

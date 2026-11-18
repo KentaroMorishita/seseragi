@@ -1,6 +1,15 @@
-fn render value: Maybe<String> -> String = match value {
-  Nothing -> "name: none"
-  Just name -> `name: ${name}`
+fn formatUser value: Maybe<String> -> String = match value {
+  Nothing -> "user: none"
+  Just name -> `user: ${name}`
 }
 
-pub effect fn main = render Nothing |> println
+let primary: Maybe<String> = Nothing
+let secondary: Maybe<String> = Nothing
+let mainName = primary ?? "Guest"
+let backupName = secondary ?? "Guest"
+
+pub effect fn main = do {
+  println (formatUser primary)
+  println (formatUser secondary)
+  println `active: ${mainName} / backup: ${backupName}`
+}

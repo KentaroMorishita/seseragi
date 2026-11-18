@@ -9,8 +9,8 @@ compiler instanceの有無ではなく、通常codeを読むためにTour本編�
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `Maybe` | yes | yes | yes | `maybe-*` | `map` / `apply` / `flatMap` | `<$>` / `<*>` / `>>=` | 抽象化章で三表記を比較 | fallibility章で三operationを具体的に初出し、抽象化章でFunctor / Applicative / Monadへ回収する |
 | `Either<E, _>` | yes | yes | yes | `either-*` | Right側の`map` | `<$>` | なし | `either-map-error`でRight変換とLeft保持を体験する。`apply` / `flatMap`の反復は必修Tourを増やさず、共通contractと最初のLeftで止まるsemanticsを抽象化章で明示する |
-| `Array` | yes | yes | yes | `array-*` | `map` | `<$>` | なし | `collection-map`でListと並べてshape保持を確認する。Cartesian `apply` / `flatMap`は初学経路へ無理に追加せずDeep Dive / Reference候補とする |
-| `List` | yes | yes | yes | `list-*` | `map` | `<$>` | なし | `collection-map`でArrayだけのcoverageを禁止する。persistent shapeを出力で比較し、Cartesian `apply` / `flatMap`はArrayと同じ判断にする |
+| `Array` | yes | yes | yes | `08-collections-and-ranges` | `map` | `<$>` | なし | `collection-pipeline`でshape保持を確認する。Cartesian `apply` / `flatMap`は初学経路へ無理に追加せずDeep Dive / Reference候補とする |
+| `List` | yes | yes | yes | `list-*` | `map` | `<$>` | なし | `list-values`〜補足トラックでpersistent shapeを確認する。Cartesian `apply` / `flatMap`はArrayと同じ判断にする |
 | `NonEmptyList` | yes | yes | yes | なし | なし | なし | なし | 型自体が現行必修Tour外。non-empty保証とCartesian semanticsを扱う専用RecipeまたはDeep Diveを別Issueで設計し、本Issueでは捏造しない |
 | `Effect` / `Task` | yes | yes | yes | `effect-*`（TaskはEffect aliasとして扱う） | `flatMap` | `>>=` | `10-effects-and-do` | Maybeで既習のbindをEffectのsuccess channelへ再適用し、doが別物ではないことを具体codeで確認する。operator中心のEffect章にはしない |
 | `Signal` | yes | yes | no | `signals-*` | `signals.map` / `pure` / `apply` | `<$>` / `<*>` | なし | 既存Signal章を具体的な再適用先として維持する。`signals-monad-boundary`で`>>=`を提供しない契約をdiagnosticまで固定する |
@@ -19,9 +19,8 @@ compiler instanceの有無ではなく、通常codeを読むためにTour本編�
 
 ## 学習順の固定
 
-1. `collection-map`でArray / Listの`map`と`<$>`を初出する。
-2. `maybe-map`、`maybe-combine`、`maybe-short-circuit`でMaybeのFunctor、
-   Applicative、Monad表記を一つずつ体験する。
+1. `collection-pipeline`でArrayの`map`と`<$>`を初出する。
+2. `maybe-short-circuit`でMaybeの`map`・`apply`・`flatMap`と`<$>`・`<*>`・`>>=`を体験する。
 3. `either-map-error`でEitherのRight変換とLeft保持を確認する。
 4. `10-effects-and-do`でEffectの`flatMap` / `>>=` / `do`を対応付ける。
 5. `abstraction-*`は上記lessonをprerequisiteにし、`F<_>`、instance選択、

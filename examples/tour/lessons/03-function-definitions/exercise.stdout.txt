@@ -1,1 +1,1 @@
-greeting: Unit -> String
+first: 30, second: 42

@@ -8,7 +8,7 @@
   "topics": ["newtype", "nominal type", "pattern"],
   "capabilities": ["console"],
   "outputMode": "text",
-  "prerequisites": ["data-and-patterns"],
+  "prerequisites": ["hello-world"],
   "featured": false,
   "files": {
     "source": "main.ssrg",

@@ -1,1 +1,80 @@
-{"$schema":"../../lesson.schema.json","id":"10-effects-and-do","formatVersion":2,"sections":{"prerequisite":"MaybeでflatMapと>>=を相互に書き換え、Effectではdoと<-でsuccess valueを受け取りました。","walkthrough":[{"heading":"Effectを返すcallbackを用意する","body":"doubleはIntを受け取り、通常のIntではなく次の`Effect<{}, Never, Int>`を返します。","sourceRange":{"startLine":1,"endLine":2}},{"heading":"Named flatMapでEffectを合成する","body":"`flatMap double source`はsourceのsuccess valueをdoubleへ渡し、nested Effectを作らず次のEffectへ進みます。","sourceRange":{"startLine":5,"endLine":5}},{"heading":"Effectでも>>=へ書き換える","body":"`source >>= double`はMaybeで学んだものと同じvalue-firstのMonad bindです。Effectではsuccess valueだけが次へ渡ります。","sourceRange":{"startLine":6,"endLine":6}},{"heading":"Doは同じbindへ名前を付ける","body":"doの`value <- source`はsuccess valueへ名前を付け、続くpureへ渡します。三つのsource形は同じ42を返します。","sourceRange":{"startLine":6,"endLine":9}}],"introduced":[{"kind":"api","name":"EffectのflatMap・>>=・do","body":"EffectでもflatMap、>>=、doは同じsuccess-dependent compositionです。doは複数stepへ名前を付ける読みやすい表記です。"}],"exercise":{"instruction":"課題sourceの7またはtripleを変え、flatMap・>>=・doの三結果が一致することを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Success contractをずらす","body":"失敗例はInt successを宣言したvalidateからStringをsucceedします。"},"recap":["EffectのflatMapと>>=もsuccess valueから次のEffectを選ぶ。","doの<-は同じbindを複数stepで読みやすく表す。"],"next":{"lessonId":"abstraction-concrete-generic","body":"次は具体型で使ったoperationを共通Traitとして回収する準備をします。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "10-effects-and-do",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "前のレッスンで `Effect` は作っただけでは動かず、`main` で使われて初めて実行されることを学びました。ここでは複数の `Effect` を順番につなぐ書き方を学びます。",
+    "walkthrough": [
+      {
+        "heading": "succeed で通常の値を成功値として返す",
+        "body": "`succeed 21` は外部環境を使わず失敗もしない `Effect` を作り、成功値 `21` を返します。5 行目の `double` は受け取った `Int` を 2 倍にして `succeed` で返す関数です。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 5
+        }
+      },
+      {
+        "heading": "do の中の <- と let の使い分け",
+        "body": "`do` ブロック内の `value <- source` は `Effect` を実行して成功値を取り出します。一方、`let doubled` は純粋な値に名前を付けるだけで、最後に `succeed doubled` で再び `Effect` として返します。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 13
+        }
+      },
+      {
+        "heading": "flatMap と >>= と do は同じ合成",
+        "body": "7 行目の `flatMap` 呼び出し、8 行目の `>>=` 演算子、9 行目の `do` ブロックはいずれも同じ処理を表します。`main` の `do` では上から順に実行され、3 行とも `42` が出力されます。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 22
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "do と <-",
+        "body": "`do { ... }` は `Effect` を上から順に実行します。`x <- eff` で右側の `Effect` の成功値を受け取って次の行で使えます。"
+      },
+      {
+        "kind": "api",
+        "name": "succeed",
+        "body": "純粋な値を受け取り、失敗せずにその成功値で完了する `Effect` を作ります。"
+      },
+      {
+        "kind": "syntax",
+        "name": "do 内の let",
+        "body": "`Effect` を実行するのではなく、すでに取り出した通常の値を使って純粋な計算に名前を付けるときに使います。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 3 行目にある `succeed 21` を `succeed 15` に書き換えて `Run` し、`Output` の 3 行がすべて `30` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Effect ではない値に <- を使う",
+      "body": "失敗例では `Int` 型の `42` に `<-` を使っています。`<-` の右側に置けるのは `Effect` だけであり、通常の値に名前を付けたいときは `let` を使ってください。"
+    },
+    "recap": [
+      "`do` ブロックは書かれた順番どおりに `Effect` を 1 つずつ実行します。",
+      "`Effect` から成功値を取り出すときは `<-`、純粋な値に名前を付けるときは `let` を使います。",
+      "`succeed` で純粋な値を `Effect` の成功値として返せます。",
+      "`flatMap`・`>>=`・`do` はどれも前の成功値を使って次の `Effect` をつなぐ同じ合成です。"
+    ],
+    "next": {
+      "lessonId": "effect-failure-short-circuit",
+      "body": "次は `Effect` が途中で失敗したときに後続の処理がどう止まるかと、失敗型の表し方を学びます。"
+    },
+    "notes": [
+      "`Maybe` や `Either` で学んだ `flatMap` と `>>=` と同じく、`Effect` でも成功値の依存関係がある処理を連鎖できます。複数行で名前を付けたいときは `do` が読みやすくなります。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

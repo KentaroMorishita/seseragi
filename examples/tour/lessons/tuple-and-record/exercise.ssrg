@@ -1,0 +1,18 @@
+let pair: (String, Int) = ("Kobe", 4)
+let (city, stops) = pair
+
+let route = { city: city, stops: stops, line: "Rapid" }
+let updated = { ...route, stops: 5 }
+let express = { city: "Kyoto", stops: 1 }
+
+fn summarize info: {
+  city: String,
+  stops: Int
+} -> String =
+  `${info.city} (${info.stops})`
+
+pub effect fn main = do {
+  println `${route.line}: ${summarize route}`
+  println `Updated: ${summarize updated}`
+  println `Direct: ${summarize express}`
+}

@@ -27,7 +27,7 @@ for (const surface of ["Playground", "Tour"] as const) {
     const errors: string[] = []
     page.on("pageerror", (error) => errors.push(error.message))
     const tour = surface === "Tour"
-    await page.goto(tour ? "/tour/?lesson=comments-and-tools" : "/")
+    await page.goto(tour ? "/tour/?lesson=01-hello-world" : "/")
     await page.locator(".cm-content").fill(unformatted)
     await selectMain(page)
     await page
@@ -59,11 +59,11 @@ test("Tour changes lesson after an interior text selection", async ({
 }) => {
   const errors: string[] = []
   page.on("pageerror", (error) => errors.push(error.message))
-  await page.goto("/tour/?lesson=comments-and-tools")
+  await page.goto("/tour/?lesson=01-hello-world")
   await page.locator(".cm-content").fill(unformatted)
   await selectMain(page)
   await page.locator("#tour-next-button").click()
-  await expect(page).not.toHaveURL(/lesson=comments-and-tools$/)
+  await expect(page).not.toHaveURL(/lesson=01-hello-world$/)
   await expect(page.locator("#tour-status-text")).toHaveText("Analysis ready")
   expect(await sourceText(page)).not.toBe(unformatted)
   await page.locator("#tour-run-button").click()

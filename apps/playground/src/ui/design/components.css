@@ -1,0 +1,676 @@
+/*
+ * 共通部品（apps/playground/DESIGN.md「5. コンポーネントの決めごと」）
+ *
+ * Playground と Tour の両方で使う部品です。
+ * - 値は tokens.css のトークンだけを使います。色や影をここに直接書きません。
+ * - クラス名はすべて ui- で始め、今の画面の CSS とぶつからないようにします。
+ * - 選択中や現在地は、aria-current / aria-pressed / aria-expanded で表します。
+ * - 部品の見本は、開発サーバーの /ui-kit.html で見られます。
+ */
+
+/* ============ 画面の根元 ============ */
+
+.ui-app {
+  color-scheme: var(--ui-color-scheme);
+  background-color: var(--canvas);
+  background-image:
+    radial-gradient(
+      ellipse 60% 40% at 0% 0%,
+      var(--canvas-glow),
+      transparent 70%
+    ), radial-gradient(var(--canvas-dot) 1px, transparent 1px);
+  background-size:
+    auto,
+    20px 20px;
+  color: var(--fg-1);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "palt" 1;
+}
+
+.ui-app,
+.ui-app *,
+.ui-app *::before,
+.ui-app *::after {
+  box-sizing: border-box;
+}
+
+.ui-app :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.ui-app code,
+.ui-app kbd,
+.ui-app pre {
+  font-family: var(--font-code);
+  font-variant-ligatures: none;
+}
+
+.ui-heading {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ui-eyebrow {
+  margin: 0;
+  color: var(--fg-3);
+  font-size: var(--text-2xs);
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ui-numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ui-kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-xs);
+  background: var(--surface);
+  color: var(--fg-3);
+  font-family: var(--font-code);
+  font-size: var(--text-2xs);
+  line-height: 1.5;
+}
+
+/* ============ ボタン ============ */
+
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--fg-1);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.ui-button:hover {
+  background: var(--surface-2);
+}
+
+.ui-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.ui-button--primary {
+  border-color: transparent;
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.ui-button--primary:hover {
+  background: var(--primary);
+  opacity: 0.9;
+}
+
+.ui-button--ghost {
+  min-height: var(--control-h);
+  padding: 0 10px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--fg-2);
+  font-weight: 550;
+}
+
+.ui-button--ghost:hover {
+  background: var(--surface-2);
+  color: var(--fg-1);
+}
+
+.ui-button--sm {
+  min-height: 26px;
+  padding: 0 8px;
+  font-size: var(--text-xs);
+}
+
+.ui-button--icon {
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border-color: transparent;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--fg-2);
+}
+
+.ui-button--icon:hover {
+  background: var(--surface-2);
+}
+
+/* ============ Run ============ */
+
+.ui-run {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+}
+
+.ui-run-button {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  cursor: pointer;
+  box-shadow:
+    0 0 0 6px var(--canvas),
+    0 0 0 7px var(--accent-ring),
+    0 10px 30px -6px var(--accent-ring);
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.ui-run-button:hover {
+  transform: scale(1.04);
+}
+
+.ui-run-button:disabled {
+  cursor: progress;
+  opacity: 0.7;
+  transform: none;
+}
+
+.ui-run-button .ui-icon {
+  width: 20px;
+  height: 20px;
+  margin-left: 3px;
+  fill: currentColor;
+  stroke: none;
+}
+
+.ui-run-label {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--canvas);
+  font-size: var(--text-xs);
+  font-weight: 650;
+}
+
+/* ============ 切り替え ============ */
+
+/* 画面の切り替え（Playground / Tour）。アイコンと名前を常に両方出す */
+.ui-view-switch {
+  display: inline-flex;
+  padding: var(--space-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  box-shadow: var(--shadow-inset);
+}
+
+.ui-view-switch > a,
+.ui-view-switch > button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 34px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--fg-2);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 550;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.ui-view-switch > [aria-current="page"] {
+  background: var(--surface-selected);
+  color: var(--fg-1);
+  box-shadow:
+    var(--shadow-selected),
+    0 0 0 1px var(--line);
+}
+
+.ui-view-switch > [aria-current="page"] .ui-icon {
+  color: var(--accent);
+}
+
+/* 小さな切り替え（Console / Preview / Problems など） */
+.ui-segmented {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.ui-segmented > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--fg-3);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ui-segmented > [aria-pressed="true"],
+.ui-segmented > [aria-selected="true"] {
+  background: var(--surface-selected);
+  color: var(--fg-1);
+  box-shadow: var(--shadow-selected);
+}
+
+/* 言語の切り替え（JA / EN）。選択中は --primary の面 */
+.ui-lang-switch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+}
+
+.ui-lang-switch > a,
+.ui-lang-switch > button {
+  display: inline-grid;
+  place-items: center;
+  height: 28px;
+  min-width: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--fg-3);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.ui-lang-switch > [aria-current="true"],
+.ui-lang-switch > [aria-current="page"] {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+/* ============ チップ・バッジ・タグ ============ */
+
+/* Try next のチップ。中身の文に合わせて伸ばす */
+.ui-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 34px;
+  padding: 0 14px 0 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  color: var(--fg-1);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 550;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+}
+
+.ui-chip:hover {
+  border-color: var(--line-strong);
+}
+
+.ui-chip .ui-icon {
+  color: var(--accent);
+}
+
+.ui-chip--link {
+  border-style: dashed;
+  color: var(--accent-ink);
+}
+
+/* 状態のチップ（成功、失敗、実行中）。色だけでなく ✓ や件数の文字も出す */
+.ui-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--fg-2);
+  font-size: var(--text-xs);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ui-status--ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+.ui-status--error {
+  background: var(--error-soft);
+  color: var(--error);
+}
+
+.ui-status--warn {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+/* 件数のバッジ */
+.ui-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--fg-3);
+  font-size: var(--text-2xs);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.ui-badge--error {
+  background: var(--error);
+  color: var(--surface);
+}
+
+/* 例の印。ブランドのグラデーションは、例のバッジと完了のチェックにだけ使う */
+.ui-badge--brand {
+  width: 22px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: var(--radius-xs);
+  background: linear-gradient(135deg, var(--brand-from), var(--brand-to));
+  color: var(--on-brand);
+}
+
+.ui-badge--brand .ui-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.ui-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--fg-3);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ui-tag--accent {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.ui-tag--warn {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+/* ============ カード ============ */
+
+.ui-card {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.ui-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 52px;
+  padding: 0 var(--space-3) 0 var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.ui-card-title {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 650;
+  letter-spacing: -0.005em;
+}
+
+.ui-card-body {
+  min-height: 0;
+  overflow: auto;
+}
+
+.ui-spacer {
+  flex: 1;
+}
+
+/* ============ Search の入口 ============ */
+
+.ui-search-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  min-width: 260px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  color: var(--fg-3);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+}
+
+.ui-search-trigger > .ui-search-trigger-text {
+  flex: 1;
+  text-align: left;
+}
+
+/* 狭い画面では虫めがねだけにする */
+.ui-search-trigger--compact {
+  justify-content: center;
+  width: 36px;
+  min-width: 0;
+  padding: 0;
+}
+
+.ui-search-trigger--compact > :not(.ui-icon) {
+  display: none;
+}
+
+/* ============ 吹き出し（ホバー、エラー） ============ */
+
+.ui-popover {
+  display: grid;
+  gap: var(--space-1);
+  width: max-content;
+  max-width: min(460px, calc(100vw - 2 * var(--space-4)));
+  padding: 10px var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-float);
+  color: var(--fg-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  line-height: 1.55;
+}
+
+.ui-popover--error {
+  border-left: 3px solid var(--error);
+}
+
+.ui-popover-signature {
+  color: var(--syn-text);
+  font-family: var(--font-code);
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+}
+
+.ui-popover-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+}
+
+.ui-popover-row > b {
+  color: var(--fg-3);
+  font-weight: 600;
+}
+
+.ui-popover-row > code {
+  color: var(--syn-text);
+}
+
+.ui-popover-row--head {
+  color: var(--fg-1);
+  font-weight: 600;
+}
+
+.ui-code-id {
+  color: var(--error);
+  font-family: var(--font-code);
+}
+
+/* ============ コーチマーク ============ */
+
+.ui-coach {
+  position: relative;
+  width: min(300px, calc(100vw - 2 * var(--space-4)));
+  padding: 14px var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--shadow-float);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
+.ui-coach::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 28px;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: inherit;
+  transform: rotate(45deg);
+}
+
+.ui-coach-title {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-md);
+}
+
+.ui-coach-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.ui-coach-actions > a {
+  color: var(--on-primary-accent);
+}
+
+.ui-coach-actions > button {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+/* ============ 進み具合 ============ */
+
+/* レッスンの数だけ区切ったバー。span ごとに data-state="done" / "current" を付ける */
+.ui-progress {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.ui-progress > span {
+  flex: 1;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+}
+
+.ui-progress > [data-state="current"] {
+  background: linear-gradient(90deg, var(--accent) 50%, var(--surface-3) 50%);
+}
+
+.ui-progress > [data-state="done"] {
+  background: var(--accent);
+}
+
+/* ============ 動きを減らす設定 ============ */
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-app *,
+  .ui-app *::before,
+  .ui-app *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

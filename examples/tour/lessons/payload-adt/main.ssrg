@@ -1,7 +1,0 @@
-type Delivery =
-  | Preparing
-  | Shipped String
-
-let status: Delivery = Shipped "Osaka"
-
-pub effect fn main = println "delivery: Shipped Osaka"

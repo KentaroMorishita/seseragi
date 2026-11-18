@@ -33,6 +33,10 @@ const headLimitBytes = 16 * 1024
 const trailerLimitBytes = 16 * 1024
 const chunkLineLimitBytes = 1024
 const informationalResponseLimit = 16
+// A write that the socket accepts, and an empty chunk that is skipped, stay
+// on the microtask queue. Pause after this many chunks so an early final
+// response can be read and cancel the body.
+const requestBodyYieldInterval = 128
 const headDelimiter = Buffer.from("\r\n\r\n")
 const lineDelimiter = Buffer.from("\r\n")
 
@@ -329,9 +333,15 @@ export function createBunHttp1Exchange(
           connectedSocket,
           requestHead(url, requestValue, framing.headers, requestTarget)
         )
-        await pumpBody(connectedSocket, body, framing.chunked, () => {
-          requestBodyDone = true
-        })
+        await pumpBody(
+          connectedSocket,
+          body,
+          framing.chunked,
+          () => {
+            requestBodyDone = true
+          },
+          () => requestBodyCancelled
+        )
         if (demand > 0) connectedSocket.resume()
       })().catch((cause) => {
         if (requestBodyCancelled || stopped) return
@@ -513,17 +523,32 @@ async function pumpBody(
   socket: net.Socket | tls.TLSSocket,
   body: HttpClientRequestBody,
   chunked: boolean,
-  completed: () => void
+  completed: () => void,
+  cancelled: () => boolean
 ): Promise<void> {
-  while (true) {
+  let written = 0
+  let skipped = 0
+  while (!cancelled()) {
+    if (written > 0 && written % requestBodyYieldInterval === 0) {
+      await yieldForSocketIo()
+      if (cancelled()) return
+    }
     const next = await body.pull()
+    if (cancelled()) return
     if (next.done) {
       if (chunked) await writeSocket(socket, "0\r\n\r\n")
       completed()
       return
     }
     const bytes = Buffer.from(next.value)
-    if (bytes.length === 0) continue
+    if (bytes.length === 0) {
+      skipped += 1
+      if (skipped % requestBodyYieldInterval === 0) {
+        await yieldForSocketIo()
+        if (cancelled()) return
+      }
+      continue
+    }
     if (chunked) {
       await writeSocket(
         socket,
@@ -536,7 +561,14 @@ async function pumpBody(
     } else {
       await writeSocket(socket, bytes)
     }
+    written += 1
   }
+}
+
+function yieldForSocketIo(): Promise<void> {
+  return new Promise((resolve) => {
+    setImmediate(resolve)
+  })
 }
 
 function writeSocket(

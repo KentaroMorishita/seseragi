@@ -1,1 +1,79 @@
-{"$schema":"../../lesson.schema.json","id":"maybe-short-circuit","formatVersion":2,"sections":{"prerequisite":"独立した二つのMaybeをapplyと<*>で組み合わせました。","walkthrough":[{"heading":"Callbackは次のMaybeを返す","body":"`next`はpayloadから通常値ではなく次の`Maybe<Int>`を返します。","sourceRange":{"startLine":1,"endLine":1}},{"heading":"Named flatMapで次のMaybeを選ぶ","body":"`flatMap next source`はJust payloadをnextへ渡しますが、sourceがNothingならcallbackを呼びません。","sourceRange":{"startLine":3,"endLine":4}},{"heading":"Value >>= callbackへ書き換える","body":"`source >>= next`は同じMonad bindのvalue-first表記です。Nothingではnamed形と同じ位置で短絡します。","sourceRange":{"startLine":4,"endLine":5}},{"heading":"二つの表記の短絡結果を比べる","body":"flatMapと>>=の両方がNothingを返し、後続へpayloadを渡さないことを確認します。","sourceRange":{"startLine":7,"endLine":7}}],"introduced":[{"kind":"api","name":"Maybe flatMapと>>=","body":"`flatMap f value`と`value >>= f`は同じ依存合成です。callbackは次のMaybeを返し、Nothingは後続を短絡します。"}],"exercise":{"instruction":"課題sourceをNothingへ変え、flatMapと>>=が同じ位置で短絡することを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"CallbackがMaybeを返さない","body":"失敗例の>>= callbackは通常のIntを返します。右側は次のMaybeを返す必要があります。"},"recap":["flatMapと>>=は同じMaybe bindである。","Nothingは後続callbackを呼ばず、Justだけがpayloadを次へ渡す。"],"next":{"lessonId":"either-role","body":"次は失敗理由も値へ残すEitherを学びます。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "maybe-short-circuit",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`Just` と `Nothing` を `match` や `??` で扱う方法を学びました。ここでは中身を取り出さずに変換やつなぎ合わせを行います。",
+    "walkthrough": [
+      {
+        "heading": "map で中身だけを変換する",
+        "body": "6〜7 行目の `map` と `<$>` は、値があるときだけ `double` を適用します。中身が `Nothing` のときは関数を呼ばず `Nothing` のまま保ちます。",
+        "sourceRange": {
+          "startLine": 6,
+          "endLine": 7
+        }
+      },
+      {
+        "heading": "apply で複数の値を組み合わせる",
+        "body": "9〜10 行目では `apply` と `<*>` を使い、2 つの独立した `Maybe` の中身を `add` で足し合わせています。どちらか一方が `Nothing` なら結果も `Nothing` になります。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 10
+        }
+      },
+      {
+        "heading": "flatMap で欠如の短絡をつなぐ",
+        "body": "12〜18 行目では `flatMap` と `>>=` を使い、次の `Maybe` を返す関数 `next` をつなぎます。`input` が `Just 41` なら `Just 42` へ進み、`missing` のように `Nothing` なら後続を呼ばず途中中断して `Nothing` になります。",
+        "sourceRange": {
+          "startLine": 12,
+          "endLine": 18
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "Maybe の map",
+        "body": "`map f x` と `f <$> x` は、`Just` の中身だけを関数 `f` で変換し、`Nothing` はそのまま保ちます。"
+      },
+      {
+        "kind": "api",
+        "name": "Maybe の apply",
+        "body": "`apply` と `<*>` は、別々の `Maybe` に入った関数と値を組み合わせて 1 つの `Maybe` にまとめます。"
+      },
+      {
+        "kind": "api",
+        "name": "Maybe の flatMap",
+        "body": "`flatMap f x` と `x >>= f` は、`Maybe` を返す次の処理をつなぎます。途中に `Nothing` があれば以降の処理を呼ばず短絡します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 12 行目にある `Just 41` を `Just 0` に書き換えて `Run` し、`Output` の 3 行目が `flatMap: Nothing` と `>>=: Nothing` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "flatMap や >>= に普通の値を返す関数を渡す",
+      "body": "失敗例では `Maybe<Int>` ではなく通常の `Int` を返す `addOne` を `>>=` の右側に渡しています。普通の関数には `map` を使い、`Maybe` を返す関数に `flatMap` や `>>=` を使います。"
+    },
+    "recap": [
+      "`map` や `<$>` を使うと、`Maybe` に包まれた値だけを `match` なしで変換できます。",
+      "`apply` や `<*>` は複数の独立した `Maybe` を 1 つの処理に組み合わせます。",
+      "`flatMap` や `>>=` は次の `Maybe` を返す処理をつなぎ、`Nothing` の時点で後続を短絡します。"
+    ],
+    "next": {
+      "lessonId": "09-maybe-and-either",
+      "body": "次は「値がない理由」まで持てる `Either` 型と、`Maybe` との使い分けを学びます。"
+    },
+    "notes": [
+      "前の段階が `Just` でも、`next` の結果が `Nothing` になればそこで値がなくなります。これをそのまま次の `>>=` へ渡しても、以降の処理は安全に飛ばされます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

@@ -1,3 +1,5 @@
-let result: Maybe<Int> = Nothing >>= \value: Int -> value + 1
+fn addOne value: Int -> Int = value + 1
 
-pub effect fn main = println "short circuit"
+let result: Maybe<Int> = Just 41 >>= addOne
+
+pub effect fn main = println `${result}`

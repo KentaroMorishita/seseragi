@@ -515,3 +515,99 @@ jobs:
             target/release/seseragi-legacy-migration-v*.vsix
             scripts/install.sh
             scripts/install.ps1
+
+  homebrew-verify:
+    needs: [gate, publish]
+    name: Homebrew formula (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            platform: darwin-arm64
+          - runner: macos-15-intel
+            platform: darwin-x64
+          - runner: ubuntu-latest
+            platform: linux-x64
+    runs-on: ${{ matrix.runner }}
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.release_sha }}
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Write the formula from the published checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/checksums"
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern 'seseragi-v*.tar.gz.sha256' --dir "$RUNNER_TEMP/checksums"
+          bun scripts/homebrew-formula.ts "$RELEASE_TAG" "$RUNNER_TEMP/checksums" \
+            "$RUNNER_TEMP/seseragi.rb"
+      - name: Install from a local tap and check the CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v brew >/dev/null 2>&1; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          brew tap-new --no-git seseragi-release/verify
+          tap="$(brew --repository seseragi-release/verify)"
+          mkdir -p "$tap/Formula"
+          cp "$RUNNER_TEMP/seseragi.rb" "$tap/Formula/seseragi.rb"
+          brew install seseragi-release/verify/seseragi
+          version="${RELEASE_TAG#v}"
+          seseragi --version | grep -F "seseragi $version "
+          seseragi-lsp --version-json >/dev/null
+          brew test seseragi-release/verify/seseragi
+          # A Homebrew install is updated by Homebrew, never replaced.
+          SESERAGI_VERSION=0.0.1 seseragi upgrade | grep -F "brew upgrade seseragi"
+      - uses: actions/upload-artifact@v4
+        if: matrix.platform == 'linux-x64'
+        with:
+          name: seseragi-homebrew-formula-${{ needs.gate.outputs.release_sha }}
+          path: ${{ runner.temp }}/seseragi.rb
+          retention-days: 7
+
+  homebrew-publish:
+    needs: [gate, homebrew-verify]
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: seseragi-homebrew-formula-${{ needs.gate.outputs.release_sha }}
+          path: formula
+      - name: Push the formula to the tap
+        env:
+          DEPLOY_KEY: ${{ secrets.HOMEBREW_TAP_DEPLOY_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/homebrew_tap
+          chmod 600 ~/.ssh/homebrew_tap
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+          export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/homebrew_tap -o IdentitiesOnly=yes"
+          git clone git@github.com:KentaroMorishita/homebrew-seseragi.git tap
+          cd tap
+          # The first release creates the branch in an empty tap.
+          git checkout -B main
+          mkdir -p Formula
+          cp ../formula/seseragi.rb Formula/seseragi.rb
+          git add Formula/seseragi.rb
+          if git diff --cached --quiet; then
+            echo "The tap already has the formula for $RELEASE_TAG"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "seseragi ${RELEASE_TAG#v}"
+          git push origin main

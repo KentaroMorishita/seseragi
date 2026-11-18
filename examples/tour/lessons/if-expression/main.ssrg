@@ -1,0 +1,5 @@
+let score = 85
+let label = if score >= 80 then "pass" else "retry"
+let bonus = if score >= 80 then 5 else 0
+
+pub effect fn main = println `label: ${label}, total: ${score + bonus}`

@@ -25,16 +25,8 @@
     {
       "id": "interactive-app",
       "pickerLabel": "Trail plannerをdom.appで動かす",
-      "heading": "木陰のloopを巡る",
+      "heading": "木陰の周回コースを歩く",
       "architecture": "dom-app",
-      "requiredSurfaces": ["sample-picker", "code", "preview"],
-      "requiredStates": ["initial", "riverside-route", "image-fallback"]
-    },
-    {
-      "id": "signal-run-route",
-      "pickerLabel": "Trail plannerをSignal + dom.runで動かす",
-      "heading": "木陰のloopを巡る",
-      "architecture": "signal-run",
       "requiredSurfaces": ["sample-picker", "code", "preview"],
       "requiredStates": ["initial", "riverside-route", "image-fallback"]
     },

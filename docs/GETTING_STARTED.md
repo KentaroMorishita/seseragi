@@ -33,6 +33,15 @@ Windows では、利用者の PATH に自動で追加します。新しいター
 特定の版を入れたいときは、`SESERAGI_VERSION=0.61.165` のように環境変数で指定します。
 入れる場所を変えたいときは、`SESERAGI_INSTALL` にディレクトリを指定します。
 
+Homebrew を使っている場合は、macOS（Apple シリコンと Intel）と Linux（x64）で、次のコマンドでも入れられます。
+
+```sh
+brew install KentaroMorishita/seseragi/seseragi
+```
+
+最初のインストールでは、`KentaroMorishita/seseragi/seseragi` と省略しない名前で指定します。こうすると、Homebrew がこの tap の formula を信頼します。
+更新は `brew upgrade seseragi` で行います。Homebrew で入れた CLI では、`seseragi upgrade` はファイルを置き換えず、このコマンドを案内します。
+
 Rust は要りません（CLI をソースからビルドする場合だけ必要です）。
 インストールできたら、バージョンが表示されることを確認します。
 

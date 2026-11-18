@@ -134,7 +134,11 @@ describe("Tour curriculum coverage", () => {
     const audit = value.sampleAudit.find(
       ({ sampleId }) => sampleId === inserted.seedSamples[0]
     )!
-    audit.tourLessons.push(inserted.id)
+    audit.tourLessons.splice(
+      audit.tourLessons.indexOf(previous.id) + 1,
+      0,
+      inserted.id
+    )
     const contentIndex = previous.order
     const insertedContent: CanonicalTourContent = {
       id: inserted.id,
@@ -289,7 +293,7 @@ describe("Tour curriculum coverage", () => {
         content,
         samples
       )
-    ).toThrow("before string-literal introduces it")
+    ).toThrow(`before ${lessons[2]!.id} introduces it`)
     expect(() =>
       validateTourCurriculum(
         mutate((value) => {

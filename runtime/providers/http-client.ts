@@ -19,6 +19,10 @@ import { createBunHttp1Exchange } from "./http1-stream"
 
 type FetchHost = (input: string, init: RequestInit) => Promise<Response>
 
+// Matches the public exchange skip interval. An accepted empty chunk stays on
+// the microtask queue, so the response cannot be read until this loop yields.
+const emptyRequestBodyYieldInterval = 128
+
 export function createFetchHttpClientProvider(
   provider: string,
   target: "bun-process" | "node-process",
@@ -233,8 +237,12 @@ function createNodeHttpExchange(
   })
   request.once("error", failure)
 
+  let skippedEmpty = 0
   void (async () => {
     try {
+      // Node buffers the request until the first body byte. An empty body
+      // never produces one, so send the head before waiting on the next pull.
+      request.flushHeaders()
       while (!stopped && !bodyCancelled) {
         const next = await body.pull()
         if (next.done) {
@@ -243,7 +251,15 @@ function createNodeHttpExchange(
           return
         }
         const chunk = new Uint8Array(next.value)
-        if (chunk.length === 0) continue
+        if (chunk.length === 0) {
+          skippedEmpty += 1
+          if (skippedEmpty % emptyRequestBodyYieldInterval === 0) {
+            await new Promise<void>((resolve) => {
+              setImmediate(resolve)
+            })
+          }
+          continue
+        }
         await writeRequestChunk(request, chunk)
       }
       if (!requestBodyDone && !request.writableEnded) request.end()

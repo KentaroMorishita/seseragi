@@ -2,11 +2,13 @@ type AppError deriving Show =
   | InputFailure StdinError
   | OutputFailure ConsoleError
 
-pub effect fn main = do {
-  maybeName <- readLine () |> mapError InputFailure
-  let greeting = match maybeName {
-    Just name -> `Hello, ${name}!`
-    Nothing -> "Hello, stranger!"
-  }
-  println greeting |> mapError OutputFailure
+fn greeting maybeName: Maybe<String> -> String = match maybeName {
+  Just name -> `Hello, ${name}!`
+  Nothing -> "Hello, stranger!"
+}
+
+pub effect fn main -> Unit with Stdin, Console fails AppError = do {
+  maybeName <- mapError InputFailure (readLine ())
+  let message = greeting maybeName
+  mapError OutputFailure (println message)
 }

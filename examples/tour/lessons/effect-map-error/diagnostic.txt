@@ -1,3 +1,3 @@
-examples/tour/lessons/effect-map-error/diagnostic.ssrg:7:34: error[SES-T0101]: Expression invalid
-  | effect fn reject input: String = mapError InvalidInputFailure
-  |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the expression could not be resolved to a typed language construct
+examples/tour/lessons/effect-map-error/diagnostic.ssrg:15:14: error[SES-E0001]: Effect compact failure conflict
+  |   checked <- checkStock item
+  |              ^^^^^^^^^^^^^^^ operation can fail with ParseError

@@ -1,1 +1,0 @@
-ADTは「あり得る状態」をconstructorで閉じます。`match`は各constructorのpayloadを安全に取り出し、状態ごとの処理を一か所で読めるようにします。

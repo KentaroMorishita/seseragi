@@ -31,13 +31,13 @@ describe("sample catalog validation", () => {
     ).toThrow("unknown field")
   })
 
-  test("requires output snapshots for non-interactive samples", () => {
-    expect(() =>
+  test("leaves the output snapshot optional", () => {
+    expect(
       parseSampleMetadata(
         { ...validMetadata, files: { source: "main.ssrg", guide: "guide.md" } },
         "hello-world"
-      )
-    ).toThrow("requires expectedOutput")
+      ).files
+    ).toEqual({ source: "main.ssrg", guide: "guide.md" })
   })
 
   test("requires Web catalog classification only for HTML samples", () => {
