@@ -1,1 +1,2 @@
-view: 42
+total: 45
+observed: 3 -> 45

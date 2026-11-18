@@ -7,28 +7,48 @@
     "artifactRoot": "test-results/web-ui-review"
   },
   "viewports": [
-    { "id": "desktop", "width": 1440, "height": 1000 },
-    { "id": "landscape-568", "width": 568, "height": 320 },
-    { "id": "iphone-390", "width": 390, "height": 844 },
-    { "id": "android-360", "width": 360, "height": 800 },
-    { "id": "minimum-320", "width": 320, "height": 700 }
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "id": "landscape-568",
+      "width": 568,
+      "height": 320
+    },
+    {
+      "id": "iphone-390",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "android-360",
+      "width": 360,
+      "height": 800
+    },
+    {
+      "id": "minimum-320",
+      "width": 320,
+      "height": 700
+    }
   ],
   "samples": [
     {
       "id": "html-components",
-      "pickerLabel": "HTML componentとSSRの最小例",
-      "heading": "Seseragi components",
+      "pickerLabel": "読書メモのカードを HTML の部品で組み立てる",
+      "heading": "三冊の本",
       "architecture": "static",
       "requiredSurfaces": ["sample-picker", "code", "preview"],
-      "requiredStates": ["initial", "image-fallback"]
+      "requiredStates": ["initial"]
     },
     {
       "id": "interactive-app",
-      "pickerLabel": "Trail plannerをdom.appで動かす",
+      "pickerLabel": "散歩コースを Signal で切り替える",
       "heading": "木陰の周回コースを歩く",
-      "architecture": "dom-app",
+      "architecture": "signal-run",
       "requiredSurfaces": ["sample-picker", "code", "preview"],
-      "requiredStates": ["initial", "riverside-route", "image-fallback"]
+      "requiredStates": ["initial", "riverside-route"]
     },
     {
       "id": "feature-composition",
@@ -74,7 +94,7 @@
     },
     {
       "id": "web-starter",
-      "pickerLabel": "Web starter — 最初のlocal package",
+      "pickerLabel": "最初の Web プロジェクト（seseragi new web）",
       "heading": "Hello from Seseragi",
       "architecture": "multi-module",
       "requiredSurfaces": [
@@ -84,7 +104,7 @@
         "code",
         "preview"
       ],
-      "requiredStates": ["initial", "incremented", "image-fallback"]
+      "requiredStates": ["initial", "incremented"]
     },
     {
       "id": "seseragi-landing-page",

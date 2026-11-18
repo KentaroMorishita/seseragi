@@ -1,8 +1,8 @@
-examples/tour/lessons/signals-switch-map/diagnostic.ssrg:5:54: error[SES-T0101]: Argument type does not match the parameter type
-  |   signals.switchMap (\value: Int -> signals.constant (value + 1)) (signals.constant 41)
-  |                                                      ^^^^^^^^^^^ argument 1 expected String, received Int
-  = expected: String
-  = actual: Int
-  = diff: expected String, actual Int
+examples/tour/lessons/signals-switch-map/diagnostic.ssrg:3:33: error[SES-T0101]: Argument type does not match the parameter type
+  | let invalid = signals.switchMap (\value: Int -> value + 1) (signals.constant 41)
+  |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^ argument 1 expected Int -> Signal<B>, received Int -> Int
+  = expected: Int -> Signal<B>
+  = actual: Int -> Int
+  = diff: return type: expected Signal<B>, actual Int
   = note: Seseragi does not insert an implicit conversion between these types.
   = help: Change the expression or its annotation so the two types agree.

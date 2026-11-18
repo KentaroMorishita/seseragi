@@ -9,6 +9,11 @@
     "fn prepend<A> head: A -> tail: List<A> -> List<A> = head : tail\nfn first values: List<Int> -> Int = match values {\n  `[head, ...tail] -> head\n  `[] -> 0\n}\nlet values: List<Int> = 1 : 2 : 3 : `[]\nlet withFour = (:) 4\npub effect fn main = do {\n  println $ show (Nothing : `[Just 1])\n  println $ show values\n  println $ show (prepend 0 values)\n  println $ show (first values)\n  println $ show (withFour values == `[4, 1, 2, 3])\n}\n"
   ],
   "names": [
+    "listShow",
+    "maybeShow",
+    "intShow",
+    "listShow",
+    "intShow",
     "prepend",
     "$ssrg$atSource",
     "Cons",
@@ -19,9 +24,7 @@
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "listShow",
-    "maybeShow",
-    "intShow",
+    "$ssrg$closedDisplay$0",
     "$ssrg$atSource",
     "Cons",
     "Nothing",
@@ -31,13 +34,11 @@
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "listShow",
-    "intShow",
+    "$ssrg$closedDisplay$1",
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "listShow",
-    "intShow",
+    "$ssrg$closedDisplay$1",
     "$ssrg$atSource",
     "prepend",
     "$ssrg$atSource",
@@ -69,5 +70,5 @@
     "__ssrg$collection$saved0",
     "Cons"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA;AACAG;AAMAG;AAFAyC;AACAQ"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAK;AACAG;AAMAG;AAFAqC;AACAQ"
 }

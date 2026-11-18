@@ -1,6 +1,6 @@
-examples/tour/lessons/abstraction-type-parameter/diagnostic.ssrg:3:34: error[SES-T0101]: Argument type does not match the parameter type
-  | pub effect fn main = chooseFirst 1 "two" |> println
-  |                                  ^ argument 1 expected String, received Int
+examples/tour/lessons/abstraction-type-parameter/diagnostic.ssrg:10:53: error[SES-T0101]: Argument type does not match the parameter type
+  | pub effect fn main = println $ unwrapOr "none" (Box 42)
+  |                                                     ^^ argument 1 expected String, received Int
   = expected: String
   = actual: Int
   = diff: expected String, actual Int

@@ -1,4 +1,5 @@
-examples/tour/lessons/abstraction-trait-operation/diagnostic.ssrg:2:24: error[SES-N0001]: Name could not be resolved
-  |   fn label value: A -> MissingLabel
-  |                        ^^^^^^^^^^^^ type name
-  = help: Check the spelling, or define or import the name before using it.
+examples/tour/lessons/abstraction-trait-operation/diagnostic.ssrg:10:32: error[SES-T0201]: A required trait instance is not available
+  | pub effect fn main = println $ formatTag Offline
+  |                                ^^^^^^^^^ no Label instance matches the inferred call arguments
+  = note: Trait instances are selected from the current lexical and import scope.
+  = help: Define or import a matching instance, or use a type with an available instance.

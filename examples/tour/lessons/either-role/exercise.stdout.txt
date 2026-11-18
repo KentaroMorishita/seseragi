@@ -1,1 +1,0 @@
-Either<String, String>: error or success

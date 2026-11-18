@@ -67,7 +67,7 @@ export const generatedDeepDive = JSON.parse(`{
               "summary": "型parameterのarityがparser上の記法ではなくtype checkerの契約になる理由を辿ります。",
               "relatedTourLessons": [
                 "design-type-constructor-kinds",
-                "abstraction-type-constructor-parameter"
+                "abstraction-type-parameter"
               ],
               "relatedLinks": [
                 {
@@ -95,7 +95,7 @@ export const generatedDeepDive = JSON.parse(`{
               "summary": "where制約、canonical type identity、instance overlapを一つの選択問題として整理します。",
               "relatedTourLessons": [
                 "design-trait-evidence",
-                "abstraction-instance-selection"
+                "abstraction-trait-operation"
               ],
               "relatedLinks": [
                 {

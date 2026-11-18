@@ -1,8 +1,8 @@
-examples/tour/lessons/collection-pipeline/diagnostic.ssrg:6:31: error[SES-T0101]: Argument type does not match the parameter type
-  | let values = [1, 2, 3] |> map label |> arrays.filter even
-  |                               ^^^^^ argument 1 expected Int -> Int, received Int -> String
-  = expected: Int -> Int
-  = actual: Int -> String
-  = diff: return type: expected Int, actual String
+examples/tour/lessons/collection-pipeline/diagnostic.ssrg:9:20: error[SES-T0101]: Argument type does not match the parameter type
+  |   |> arrays.filter even
+  |                    ^^^^ argument 1 expected String -> Bool, received Int -> Bool
+  = expected: String -> Bool
+  = actual: Int -> Bool
+  = diff: parameter 1: expected String, actual Int
   = note: Seseragi does not insert an implicit conversion between these types.
   = help: Change the expression or its annotation so the two types agree.

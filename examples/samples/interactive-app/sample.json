@@ -1,17 +1,27 @@
 {
   "$schema": "../sample.schema.json",
   "id": "interactive-app",
-  "title": "Trail plannerをdom.appで動かす",
-  "summary": "三つのrouteを選ぶState、Action、pure update、viewをdom.appへ渡す最小appです。",
+  "title": "散歩コースを Signal で切り替える",
+  "summary": "選んだコースを Signal に持ち、見出し、標高の断面、時間と距離を一緒に描き直す小さな画面です。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["typed Action", "pure reducer", "Signal", "dom.app"],
-  "capabilities": ["dom"],
+  "topics": [
+    "Signal",
+    "dom.run",
+    "deriving Eq",
+    "SVG"
+  ],
+  "capabilities": [
+    "dom"
+  ],
   "outputMode": "html",
   "experience": "minimal",
-  "architecture": "dom-app",
+  "architecture": "signal-run",
   "focus": "state",
-  "prerequisites": ["signal-state", "html-components"],
+  "prerequisites": [
+    "signal-state",
+    "html-components"
+  ],
   "featured": true,
   "isNew": true,
   "interactive": true,

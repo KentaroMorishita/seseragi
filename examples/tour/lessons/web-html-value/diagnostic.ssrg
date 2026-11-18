@@ -3,4 +3,6 @@ import * as html from "std/web/html"
 type Action =
   | NoAction
 
-let invalid: html.Html<Action> = 42
+let invalid: html.Html<Action> = html.main {
+  children: [html.h1 { children: "Seseragi Web" }, 42]
+}

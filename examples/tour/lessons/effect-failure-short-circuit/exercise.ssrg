@@ -1,4 +1,16 @@
+pub type StepError deriving Show =
+  | Rejected
+  | OutputFailure ConsoleError
+
+fn parseCount raw: String -> Either<StepError, Int> =
+  if raw == "3" then Right 3 else if raw == "0" then Right 0 else Left Rejected
+
+effect fn requirePositive count: Int -> Int fails StepError =
+  if count > 0 then succeed count else fail Rejected
+
 pub effect fn main = do {
-  succeed ()
-  println "continued"
+  println "before" |> mapError OutputFailure
+  count <- parseCount "3" |> fromEither
+  checked <- requirePositive count
+  println `accepted: ${checked}` |> mapError OutputFailure
 }

@@ -1,8 +1,0 @@
-type Box<A> =
-  | Box A
-
-fn renderIntBox box: Box<Int> -> String = match box {
-  Box value -> `Box ${value}`
-}
-
-pub effect fn main = Box 42 |> renderIntBox |> println

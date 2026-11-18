@@ -1,3 +1,0 @@
-// FormatしてからRunします。
-let message = "Exercise ready"
-pub effect fn main = println message

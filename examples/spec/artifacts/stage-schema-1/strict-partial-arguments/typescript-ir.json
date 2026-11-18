@@ -159,6 +159,44 @@
     "partials": [],
     "application": true
   },
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$1",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_arrayShow",
+        "typeArguments": [
+          {
+            "kind": "boolean"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          }
+        ]
+      }
+    },
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_maybeShow",
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.adt",
     "core.string",
@@ -1342,19 +1380,9 @@
                               "name": "__ssrg$partial$0"
                             },
                             {
-                              "kind": "type-application-call",
-                              "callee": "_ssrg_show_maybeShow",
-                              "typeArguments": [
-                                {
-                                  "kind": "number"
-                                }
-                              ],
-                              "arguments": [
-                                {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_show_intShow"
-                                }
-                              ]
+                              "kind": "call",
+                              "callee": "$ssrg$closedDisplay$0",
+                              "arguments": []
                             }
                           ]
                         }
@@ -1777,19 +1805,9 @@
                             "name": "__ssrg$method$partial$2"
                           },
                           {
-                            "kind": "type-application-call",
-                            "callee": "_ssrg_show_arrayShow",
-                            "typeArguments": [
-                              {
-                                "kind": "boolean"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_show_boolShow"
-                              }
-                            ]
+                            "kind": "call",
+                            "callee": "$ssrg$closedDisplay$1",
+                            "arguments": []
                           }
                         ]
                       }

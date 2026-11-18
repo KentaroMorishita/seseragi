@@ -1,6 +1,0 @@
-examples/tour/lessons/web-component-children/diagnostic.ssrg:3:66: error[SES-T0101]: Array element type mismatch
-  | let invalid = html.main { children: [html.h1 { children: "Ok" }, 42] }
-  |                                                                  ^^ element 2 expected Html<Action>, received Int
-  = expected: Html<Action>
-  = actual: Int
-  = diff: expected Html<Action>, actual Int

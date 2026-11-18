@@ -1,0 +1,21 @@
+import * as effects from "std/effect"
+
+fn receiver -> Array<Int> = {
+  let ignored = 9007199254740991 + 1
+  [1]
+}
+
+fn pick values: Array<Int> -> index: Int -> Int = match values[index + 1] {
+  Just value -> value
+  Nothing -> 0
+}
+
+pub effect fn main = effects.scoped $ do {
+  effects.acquireRelease (do {
+    println "acquired"
+    effects.succeed ()
+  }) (\_: Unit -> effects.recover (\_: ConsoleError -> effects.succeed ()) (println "released"))
+  println (show (pick [1, 2] 0))
+  println (show (match (receiver ())[0] { Just value -> value; Nothing -> 0 }))
+  println "unreachable"
+}

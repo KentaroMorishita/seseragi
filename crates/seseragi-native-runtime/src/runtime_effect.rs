@@ -28,6 +28,13 @@ enum Instruction {
     Stdin(NativeStdinOperation),
     ProcessSignalPull,
     ChildProcess(NativeChildOperation),
+    // Captures: the body limit, the request body and the Request.
+    HttpSend,
+    // Captures: the handle of an open exchange.
+    HttpNext,
+    // Captures: the handle of an open exchange and one request body chunk,
+    // or Unit for the end of the body.
+    HttpWrite,
     SignalTransaction,
     SignalSubscribe,
 }
@@ -237,6 +244,9 @@ enum NativeTurn {
     Stdin(NativeStdinOperation, Vec<V>),
     ProcessSignalPull(usize),
     ChildProcess(NativeChildOperation, Vec<V>),
+    Http(Vec<V>),
+    HttpNext(Vec<V>),
+    HttpWrite(Vec<V>),
     CloseScope(NativeOutcome, bool),
     Complete(NativeOutcome),
 }
@@ -320,6 +330,27 @@ impl NativeMachine {
                                 NativeState::Return(Err(exit))
                             } else {
                                 return NativeTurn::FileSystem(operation, c);
+                            }
+                        }
+                        Instruction::HttpNext => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::HttpNext(c);
+                            }
+                        }
+                        Instruction::HttpWrite => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::HttpWrite(c);
+                            }
+                        }
+                        Instruction::HttpSend => {
+                            if let Err(exit) = context.checkpoint() {
+                                NativeState::Return(Err(exit))
+                            } else {
+                                return NativeTurn::Http(c);
                             }
                         }
                         Instruction::ChildProcess(operation) => {

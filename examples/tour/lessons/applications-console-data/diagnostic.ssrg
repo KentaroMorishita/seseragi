@@ -1,3 +1,11 @@
 struct Sale { item: String, amount: Int }
 
-let invalid = Sale { item: "Book" }
+fn render result: Either<String, Sale> -> String = match result {
+  Left error -> `error: ${error}`
+  Right sale -> `${sale.item}: ${sale.amount}`
+}
+
+fn broken values: Array<Sale> -> String =
+  values
+  |> map render
+  |> join "\n"

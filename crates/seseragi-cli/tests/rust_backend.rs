@@ -315,12 +315,22 @@ fn closed_display_dictionaries_keep_raw_types_values_cold_effects_and_cleanup() 
     compare_raw_ts_and_native_fixtures(&[
         ("tuple-show-kernel", 0),
         ("closed-display-values", 0),
+        ("closed-collection-display", 0),
         ("tuple-display", 0),
         ("tuple-nominal", 0),
         ("closed-display-effects", 0),
         ("tuple-effects", 0),
         ("closed-display-defect", 70),
         ("tuple-defect", 70),
+    ]);
+}
+
+#[test]
+fn array_index_matches_keep_values_order_defects_and_cleanup() {
+    compare_raw_ts_and_native_fixtures(&[
+        ("array-index-match", 0),
+        ("array-index-effects", 0),
+        ("array-index-match-defect", 70),
     ]);
 }
 

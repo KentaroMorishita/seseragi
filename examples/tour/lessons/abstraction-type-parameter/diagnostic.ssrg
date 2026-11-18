@@ -1,3 +1,10 @@
-fn chooseFirst<A> first: A -> second: A -> A = first
+type Box<A> =
+  | Empty
+  | Box A
 
-pub effect fn main = chooseFirst 1 "two" |> println
+fn unwrapOr<A> fallback: A -> box: Box<A> -> A = match box {
+  Empty -> fallback
+  Box value -> value
+}
+
+pub effect fn main = println $ unwrapOr "none" (Box 42)

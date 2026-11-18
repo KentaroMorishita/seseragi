@@ -1,6 +1,8 @@
-fn stopAbove value: Int -> Maybe<Int> = if value <= 50 then Just value else Nothing
+fn halfIfEven value: Int -> Maybe<Int> =
+  if value % 2 == 0 then Just (value / 2) else Nothing
 
-fn halve value: Int -> Maybe<Int> = if value % 2 == 0 then Just (value / 2) else Nothing
+fn decrementIfPositive value: Int -> Maybe<Int> =
+  if value > 0 then Just (value - 1) else Nothing
 
 fn render value: Maybe<Int> -> String = match value {
   Nothing -> "Nothing"
@@ -8,13 +10,19 @@ fn render value: Maybe<Int> -> String = match value {
 }
 
 fn viaDo value: Maybe<Int> -> Maybe<Int> = do {
-  accepted <- value >>= stopAbove
-  halve accepted
+  current <- value
+  half <- halfIfEven current
+  result <- decrementIfPositive half
+  Just result
 }
 
 pub effect fn main = do {
-  let input: Maybe<Int> = Just 44
-  flatMap halve (flatMap stopAbove input) |> render |> println
-  input >>= stopAbove >>= halve |> render |> println
-  viaDo input |> render |> println
+  let input: Maybe<Int> = Just 7
+  let namedHalf: Maybe<Int> = flatMap halfIfEven input
+  let named: Maybe<Int> = flatMap decrementIfPositive namedHalf
+  let operator: Maybe<Int> = input >>= halfIfEven >>= decrementIfPositive
+  let block: Maybe<Int> = viaDo input
+  println `flatMap: ${render named}`
+  println `>>=: ${render operator}`
+  println `do: ${render block}`
 }

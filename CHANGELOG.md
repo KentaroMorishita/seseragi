@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.61.185] - 2026-11-18
+## [Unreleased]
 
 ### Changed
 
@@ -8,6 +8,30 @@
 - On a narrow screen the output is a sheet that peeks from the bottom and opens to 70% of the screen after Run, and Run floats at the bottom right. The editor and inputs stay at 16px so iOS does not zoom when they get focus.
 - A link clicked inside the Playground or Tour Preview now opens in a new tab (#1375). The Preview frame keeps its sandbox; a clicked `http:` or `https:` link is passed to the page around it, which checks the URL and opens it with `noopener` and `noreferrer`. A link to the Playground itself (`/` or `/tour/`) opens in the same tab. Relative and `#` links are still handled by the program, and links the program clicks by itself or already handled, and schemes such as `javascript:`, are not opened. Because a browser may block a new tab opened this way without saying so, the output briefly shows the link so it can be opened by hand.
 - Every editor feature keeps working in its new place: the Explorer and file tabs, Guide, Format, Input, Console and Preview, full screen, diagnostics and hover, Interop and Convert bindings, and the API reference and Settings, which are in More until Search covers them. The Tour and the Deep Dive keep their current look until they are rebuilt.
+
+## [0.61.187] - 2026-11-18
+
+### Changed
+
+- Three Playground Web samples are rebuilt (#1376). The trail planner (`interactive-app`) now uses Signal and `dom.run` instead of the Elm-style `dom.app`, keeps each trail's text and colors in one struct, marks the chosen trail with `aria-pressed`, and draws an SVG elevation profile instead of an external photo. `html-components` becomes a reading-notes shelf built from a struct array with one function component, named styles, and SVG book covers. None of the three loads an external image any more.
+- `seseragi new web` creates the refreshed starter: named style functions, a struct update in `update`, a large count, and a hint on what to edit next, without the external photo. The labels `Count: N` and `Count one more` are unchanged.
+- The Playground sample catalog now requires a minimal Signal and `dom.run` Web sample instead of a `dom.app` one.
+
+## [0.61.186] - 2026-11-18
+
+### Added
+
+- `std/http` works on the native target (#1085): methods, statuses, URLs, headers, requests, body limits, responses, `errorMessage`, `sendBytes`, `sendEmpty` and `exchange`. The client speaks HTTP/1.1 on worker threads and matches the TS client on Content-Length and chunked bodies, 1xx responses, body limits, request Content-Length checks and the typed errors. `exchange` sends its request body chunk by chunk from its own Fiber while it reads the response, stops the body at a final response, and returns a body failure as `Left` and an HTTP failure as `Right`. Cancelling or closing an exchange closes its connection.
+- On native, `https` URLs fail with `HttpTlsFailure` (#1340), and compressed response bodies fail with `HttpProtocolFailure` instead of being decompressed. A program WASM build refuses `std/http`, and a native build refuses a `seseragi.toml` that selects another HttpClient provider.
+
+## [0.61.185] - 2026-11-18
+
+### Changed
+
+- Native programs do less work in three common patterns. Output, evaluation order, Defect positions and when values are released stay the same.
+  - `show` and `debug` on an Array, Maybe, Range or List whose element types are all standard, such as `show [1, 2]`, build their display dictionary once per program instead of at every call. The TS target shares these dictionaries the same way, as it already did for tuples. A dictionary that involves a type parameter or a user instance is still built at each call.
+  - `match values[i] { Just v -> ...; Nothing -> ... }` reads the element directly instead of building a `Just` and taking it apart. A branch that binds the whole `Maybe` still gets one.
+  - A closure that captures up to three values takes one allocation instead of two, and copying or dropping a value does less work.
 
 ## [0.61.184] - 2026-11-18
 
