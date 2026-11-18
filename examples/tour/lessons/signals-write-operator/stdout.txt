@@ -1,2 +1,4 @@
-signals.set: 21
-:=: 42
+before: 10
+afterSet: 20
+afterOp: 30
+afterUpdate: 42

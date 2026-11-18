@@ -1,3 +1,0 @@
-import * as signals from "std/signal"
-
-let invalid = signals.constant 1 >>= (\value: Int -> signals.constant (value + 1))

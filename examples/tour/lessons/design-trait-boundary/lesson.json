@@ -3,41 +3,47 @@
   "id": "design-trait-boundary",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "Trait evidenceとlawがgeneric codeの置換可能性を支えることを確認しました。",
+    "prerequisite": "実装の証拠と法則が、型パラメーターを使ったコードの置き換えやすさを支えることを確かめました。",
     "walkthrough": [
       {
-        "heading": "Consumerが必要とする最小operationから始める",
-        "body": "`present`が必要とするのはAをStringへする`label`だけです。将来用のoperationをcontractへ足しません。",
-        "sourceRange": { "startLine": 7, "endLine": 19 }
+        "heading": "呼び出し側が求める最小の操作から始める",
+        "body": "`present` が必要としているのは、値 `A` を `String` に変える `label` 操作だけです。将来使いそうな余分な操作を `trait` に増やさないのが設計の要点です。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 19
+        }
       },
       {
-        "heading": "複数instanceで置換可能性を確かめる",
-        "body": "BadgeとDeviceを同じconsumerへ渡し、Label contractだけで両方を扱えることを実行します。",
-        "sourceRange": { "startLine": 21, "endLine": 24 }
+        "heading": "複数の実装で置き換えやすさを確かめる",
+        "body": "`Badge` と `Device` を同じ `present` へ渡し、`Label` の約束だけでどちらの型も問題なく扱えることを確かめています。",
+        "sourceRange": {
+          "startLine": 21,
+          "endLine": 24
+        }
       }
     ],
     "introduced": [
       {
         "kind": "api",
-        "name": "minimal Trait boundary",
-        "body": "一つのconsumer、複数の具体instance、守るlawを説明できる最小operationだけをTraitへ出します。"
+        "name": "最小の trait 境界",
+        "body": "呼び出し側での共通の用途、複数の具体的な `instance`、守るべき法則を説明できる最小限の操作だけを `trait` に切り出します。"
       }
     ],
     "exercise": {
-      "instruction": "三つ目の型とLabel instanceを追加し、consumerを変更せず扱えることを確認してください。",
+      "instruction": "エディターの 5 行目の後ろに `type Account`（値 `Guest`）、17 行目の後ろにその `Label` 実装（`\"GUEST\"`）、23 行目の後ろに `present Guest` の出力を追加して `Run` し、`present` を変えずに `GUEST` が出ることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "同名methodだけで異なる意味を混ぜる",
-      "body": "失敗例はRenderとDescribeの`present`がambiguousになり、設計判断を省けないことを示します。"
+      "heading": "同じ名前だけで異なる意味を混ぜる",
+      "body": "失敗例では `Render` と `Describe` の両方に同名の `present` があるため、どちらを呼び出すか決まらず `Problems` に曖昧さのエラー表示が出ます。"
     },
     "recap": [
-      "同名methodや似たshapeだけを理由にTraitを作らない。",
-      "Consumer、複数instance、lawを説明できる最小contractを選ぶ。"
+      "メソッド名や形が似ているという理由だけで `trait` にまとめない。",
+      "呼び出し側・複数の `instance`・法則で説明できる最小の操作だけを `trait` の境界に選ぶ。"
     ],
     "next": {
-      "lessonId": "list-values",
-      "body": "本編の内容はここまでです。必要に応じて、補足トラックのコレクション操作や関連記事へ進めます。"
+      "lessonId": "web-link-image",
+      "body": "これで抽象と型クラスの補足トラックは完了です。続いてもう 1 つの補足トラックへ進み、検証済み URL を使った画像とリンクの表示を学びます。"
     }
   },
   "files": {

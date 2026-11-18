@@ -1,4 +1,0 @@
-import * as signals from "std/signal"
-import { MutableSignal } from "std/signal"
-
-fn invalid value: Int -> MutableSignal<Int> = pure value

@@ -1,6 +1,8 @@
-examples/tour/lessons/signals-value-difference/diagnostic.ssrg:3:20: error[SES-T0101]: Binding annotation type mismatch
-  | let invalid: Int = signals.constant 42
-  |                    ^^^^^^^^^^^^^^^^^^^ declared Int, initializer produces Signal<Int>
-  = expected: Int
-  = actual: Signal<Int>
-  = diff: expected Int, actual Signal<Int>
+examples/tour/lessons/signals-value-difference/diagnostic.ssrg:3:28: error[SES-T0101]: Argument type does not match the parameter type
+  | let invalid = signals.read 42
+  |                            ^^ argument 1 expected Signal<A>, received Int
+  = expected: Signal<A>
+  = actual: Int
+  = diff: expected Signal<A>, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

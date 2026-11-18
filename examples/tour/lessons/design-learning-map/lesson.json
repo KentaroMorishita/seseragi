@@ -3,41 +3,61 @@
   "id": "design-learning-map",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "Typed Action applicationまでを実行し、Tourのeditor・Run・Output・diagnosticを使いました。",
+    "prerequisite": "コンソールとブラウザーの総合演習まで終え、`Tour` の基本編を一通り学び終えました。ここでは学習を終えた後の広がり方を整理します。",
     "walkthrough": [
       {
-        "heading": "手を動かす教材と設計記事を分ける",
-        "body": "`LearningSurface`はTourとArticleの責務を値として並べます。Tourではcodeを実行し、Articlesでは背景とtrade-offを読みます。",
-        "sourceRange": { "startLine": 1, "endLine": 8 }
+        "heading": "3 つの次の進み方を値で表す",
+        "body": "`NextStep` 型は、実例を探す `Discover`、仕様や解説を読む `Docs`、発展編の `SideTrips` という 3 つの進路を並べています。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 10
+        }
       },
       {
-        "heading": "Tourの続きとして抽象設計を学ぶ",
-        "body": "このchapterも通常のTour lessonです。editor・Run・exercise・diagnosticを使い、別のprogress modelは作りません。",
-        "sourceRange": { "startLine": 10, "endLine": 13 }
+        "heading": "deriving Show と縦のパイプラインでまとめる",
+        "body": "`deriving Show` を付けた `NextStep` を `show` で文字列にし、`map` と `join` を縦の `|>` でつないで一覧に整形しています。",
+        "sourceRange": {
+          "startLine": 12,
+          "endLine": 17
+        }
+      },
+      {
+        "heading": "Playground の各画面とドキュメントの役割",
+        "body": "応用例は `Discover` の `Recipe` と `Showcase`、仕様や背景は `seseragi-docs` と `Articles`、追加演習はこの先の 2 つの補足トラックへ分かれています。",
+        "sourceRange": {
+          "startLine": 19,
+          "endLine": 19
+        }
       }
     ],
     "introduced": [
       {
         "kind": "api",
-        "name": "Tour and Articles learning map",
-        "body": "Tourは実行して学ぶ場所、Articlesは設計理由と内部を読む場所です。"
+        "name": "Discover と公式ドキュメントの使い分け",
+        "body": "応用例を試すときは `Discover`（`Recipe`・`Showcase`）を、言語仕様や設計の背景を深く知りたいときは `seseragi-docs` と `Articles` を使います。"
+      },
+      {
+        "kind": "api",
+        "name": "本編の後に続く 2 つの補足トラック",
+        "body": "標準型クラスや抽象の法則を扱う補足トラック 1 と、コレクションやリンク・画像などの細目を扱う補足トラック 2 へ進めます。"
       }
     ],
     "exercise": {
-      "instruction": "二つのsurface説明を書き換え、役割を自分の言葉でOutputへ出してください。",
+      "instruction": "エディターの 7 行目にある `Discover` の説明を `\"Recipe を 1 つ試す\"` に書き換えて `Run` し、`Output` の 1 行目が変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "Contextを要求するoperationへplain valueを渡す",
-      "body": "失敗例は`<$>`が要求するcontainerへIntを直接渡します。ここから先も境界をcompiler diagnosticで確認します。"
+      "heading": "match で分岐を書き漏らす",
+      "body": "失敗例では `NextStep` の `SideTrips` に対応する分岐を省略しています。すべての選択肢を網羅していないため、実行前に `Problems` へ不足エラーが表示されます。"
     },
     "recap": [
-      "抽象設計の教材も通常のTour lessonとして実行する。",
-      "長文の背景・内部・trade-offはArticlesから関連Tourへ接続する。"
+      "目的別の応用例は `Discover` の `Recipe` や `Showcase` からすぐ試せる。",
+      "言語仕様や設計理由の詳しい解説は、公式ドキュメントと `Articles` で読める。",
+      "さらに学びたい内容に合わせて、この先の 2 つの補足トラックへ進める。"
     ],
     "next": {
-      "lessonId": "design-type-constructor-kinds",
-      "body": "次は通常のtype parameterと`F<_>`のkind差を実行します。"
+      "lessonId": "abstraction-functor-map",
+      "body": "ここからは補足トラック 1 に進み、具体型で親しんだ `map` や `<$>` を `Functor` として整理します。"
     }
   },
   "files": {

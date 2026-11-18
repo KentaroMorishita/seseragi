@@ -1,6 +1,6 @@
-examples/tour/lessons/signals-handler-boundary/diagnostic.ssrg:4:61: error[SES-T0101]: Argument type does not match the parameter type
-  | fn invalid view: Signal<Int> -> Task<Unit> = signals.set 42 view
-  |                                                             ^^^^ argument 2 expected MutableSignal<Int>, received Signal<Int>
+examples/tour/lessons/signals-handler-boundary/diagnostic.ssrg:5:43: error[SES-T0101]: Argument type does not match the parameter type
+  |   signals.transaction [signals.planSet 20 view]
+  |                                           ^^^^ argument 2 expected MutableSignal<Int>, received Signal<Int>
   = expected: MutableSignal<Int>
   = actual: Signal<Int>
   = diff: expected MutableSignal<Int>, actual Signal<Int>

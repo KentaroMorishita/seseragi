@@ -1,3 +1,9 @@
-fn increment value: Int -> Int = value + 1
+type NextStep =
+  | Discover
+  | Docs
+  | SideTrips
 
-let invalid = increment <$> 41
+fn describe step: NextStep -> String = match step {
+  Discover -> "Recipe / Showcase"
+  Docs -> "seseragi-docs / Articles"
+}

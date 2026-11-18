@@ -1,2 +1,3 @@
-Notebook: 1200
-Marker: 300
+Book: 2400
+Pen: 900
+error: Cancelled: invalid amount

@@ -20,7 +20,7 @@ fn view state: Counter -> html.Html<Action> = html.main {
   }
 }
 
-  // dom.appがstateのSignal、event dispatch、mountとcleanupを所有します。
+// dom.app が状態の Signal・操作の受け渡し・描画と後片付けをまとめて管理します。
 pub effect fn main = dom.app {
   target: "#app",
   initial: Counter { count: 0 },
