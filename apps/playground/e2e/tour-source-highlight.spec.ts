@@ -35,10 +35,10 @@ test("highlights Tour source excerpts with the shared Seseragi tokens", async ({
       .allTextContents()
   ).toContain(">>=")
 
-  await page.goto("/tour/?lesson=comments-and-tools")
+  await page.goto("/tour/?lesson=01-hello-world")
   await expect(
     page.locator(".tour-walkthrough-card code .tok-comment")
-  ).toContainText("// このcomment")
+  ).toContainText("// 文字列を書き換えて")
 })
 
 test("preserves excerpt layout and selection on desktop and mobile", async ({

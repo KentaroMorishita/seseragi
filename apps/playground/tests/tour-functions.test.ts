@@ -1,50 +1,34 @@
 import { describe, expect, test } from "bun:test"
 import { tourLessons } from "../src/tour/curriculum"
 
-const functionIds = [
-  "03-function-definitions",
-  "one-parameter-function",
-  "function-return-type",
-  "04-function-calls",
-  "multiple-parameter-function",
-  "function-value",
-  "currying-from-code",
-  "partial-application",
-  "application-grouping",
-  "dollar-application",
-  "pipeline-application",
-  "mixed-application",
-  "05-pipelines",
-] as const
+const functionIds = ["03-function-definitions", "05-pipelines"] as const
 
 describe("Tour function curriculum", () => {
-  test("teaches definition, application and value flow one step at a time", () => {
-    const functions = tourLessons.slice(15, 15 + functionIds.length)
+  test("teaches definition, partial application, and pipelines sequentially", () => {
+    const functions = tourLessons.slice(3, 3 + functionIds.length)
 
     expect(functions.map(({ id }) => id)).toEqual([...functionIds])
-    expect(functions.every(({ deliveryIssue }) => deliveryIssue === 173)).toBe(
+    expect(functions.every(({ deliveryIssue }) => deliveryIssue === 1348)).toBe(
       true
     )
     expect(functions.every(({ format }) => format !== undefined)).toBe(true)
     for (const [index, lesson] of functions.entries()) {
       expect(lesson.prerequisites).toEqual([
-        index === 0 ? "comments-and-tools" : functionIds[index - 1]!,
+        index === 0 ? "if-expression" : functionIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        functionIds[index + 1] ?? "tuple-values"
+        functionIds[index + 1] ?? "tuple-and-record"
       )
     }
   })
 
-  test("keeps currying, partial application and both operators separate", () => {
-    expect(introducedBy("currying-from-code")).toEqual(["currying"])
-    expect(introducedBy("partial-application")).toEqual(["partial-application"])
-    expect(introducedBy("application-grouping")).toEqual([
-      "application-grouping",
-    ])
-    expect(introducedBy("dollar-application")).toEqual(["dollar-application"])
-    expect(introducedBy("pipeline-application")).toEqual(["pipeline"])
-    expect(introducedBy("mixed-application")).toEqual(["mixed-application"])
+  test("introduces partial application, dollar application and pipelines", () => {
+    expect(introducedBy("03-function-definitions")).toEqual(
+      expect.arrayContaining(["fn", "currying", "partial-application"])
+    )
+    expect(introducedBy("05-pipelines")).toEqual(
+      expect.arrayContaining(["dollar-application", "pipeline"])
+    )
   })
 
   test("keeps every function lesson runnable, changeable and diagnosable", () => {

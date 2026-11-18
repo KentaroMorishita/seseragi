@@ -1,7 +1,4 @@
-examples/tour/lessons/10-effects-and-do/diagnostic.ssrg:1:39: error[SES-E0001]: Effect body success does not match the declared return type
-  | effect fn validate project: String -> Int fails Never = succeed project
-  |                                       ^^^ declared success type is Int
-  = expected: Int
-  = actual: String
-  = diff: expected Int, actual String
-  = help: Return the declared success type, or change the effect function return type.
+examples/tour/lessons/10-effects-and-do/diagnostic.ssrg:2:12: error[SES-T0101]: This position requires an Effect value
+  |   value <- 42
+  |            ^^ do bind statement
+  = help: Use an Effect-producing operation here, or bind a pure value with let.

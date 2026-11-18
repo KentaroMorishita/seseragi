@@ -1,3 +1,0 @@
-fn nameLength label: String -> Int = "eight"
-
-pub effect fn main = println "nameLength: String -> Int"

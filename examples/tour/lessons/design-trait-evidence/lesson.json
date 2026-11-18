@@ -3,41 +3,52 @@
   "id": "design-trait-evidence",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "Trait、instance、where制約を使ってgeneric functionを呼びました。",
+    "prerequisite": "ステップ 23 で `trait`・`instance`・`where` 制約を学びました。ここでは呼び出し側の型からどの実装が選ばれるかを掘り下げます。",
     "walkthrough": [
       {
-        "heading": "whereをevidence要求として読む",
-        "body": "`where Label<A>`はcall siteのAに対応するLabel instanceを選べることを要求します。",
-        "sourceRange": { "startLine": 7, "endLine": 19 }
+        "heading": "where 制約は実装の証拠を求める約束",
+        "body": "`describe` に付いた `where Label<A>` は、呼び出し側で型 `A` に対応する `Label` の実装（実装の証拠）が揃っていることを求める約束です。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 19
+        }
       },
       {
-        "heading": "Nominal identityでinstanceを選ぶ",
-        "body": "BadgeとDeviceは別のidentityを持つため、同じ`describe`から異なるdictionaryが一意に選ばれます。",
-        "sourceRange": { "startLine": 21, "endLine": 24 }
+        "heading": "型ごとの一意な名前で実装を選ぶ",
+        "body": "`Badge` と `Device` は別の型なので、同じ `describe` を呼んでもコンパイラがそれぞれの `instance` を一意に選んで実行します。",
+        "sourceRange": {
+          "startLine": 21,
+          "endLine": 24
+        }
       }
     ],
     "introduced": [
       {
         "kind": "type",
-        "name": "Trait evidence and coherence",
-        "body": "Traitと型の組へ一つのinstanceを保つことで、generic callの意味を一意にします。"
+        "name": "実装の証拠",
+        "body": "`where` 制約を持つ関数を呼ぶとき、その型に対応する `instance` の実装がコンパイル時に証拠として渡されます。"
+      },
+      {
+        "kind": "type",
+        "name": "実装の一意性（coherence）",
+        "body": "1 つの `trait` と型の組に対して `instance` を 1 つだけに制限することで、どこから呼んでも同じ意味で動くことを保証します。"
       }
     ],
     "exercise": {
-      "instruction": "二つのinstanceのlabelを変更し、同じgeneric functionが別のevidenceを選ぶことを確認してください。",
+      "instruction": "エディターの 12 行目にある `\"badge\"` を `\"badge-ready\"` に、16 行目の `\"device\"` を `\"device-ready\"` に書き換えて `Run` し、同じ `describe` の出力が変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "標準instanceと重なるinstanceを定義する",
-      "body": "失敗例はsealedな`Functor<Maybe>`と重なり、coherence境界で拒否されます。"
+      "heading": "標準の実装と重複する instance を定義する",
+      "body": "失敗例では標準で用意された `Functor<Maybe>` に対して別の `instance` を書こうとしています。実装の一意性（coherence）を壊す重複定義のため、`Problems` にエラー表示が出ます。"
     },
     "recap": [
-      "where制約はgeneric functionが使うevidenceを要求する。",
-      "coherenceは同じTraitと型の組に複数の意味を持たせない。"
+      "`where` 制約は、呼び出し側の型に応じた実装の証拠が揃っていることをコンパイル時に求める。",
+      "実装の一意性（coherence）により、同じ `trait` と型の組に複数の実装が混ざるのを防げる。"
     ],
     "next": {
       "lessonId": "design-abstraction-laws",
-      "body": "次はFunctor・Applicative・Monadをoperationとlawで比較します。"
+      "body": "次は `Functor`・`Applicative`・`Monad` の強さの違いと、実装が守るべき法則をコードで確かめます。"
     }
   },
   "files": {

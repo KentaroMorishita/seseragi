@@ -1,1 +1,74 @@
-{"$schema":"../../lesson.schema.json","id":"effect-with-capability","formatVersion":2,"sections":{"prerequisite":"failsがEffectのfailure型を表すと分かりました。","walkthrough":[{"heading":"必要なserviceを宣言する","body":"with Consoleはannounceがconsole capabilityを実行環境へ要求することを表します。","sourceRange":{"startLine":1,"endLine":4}}],"introduced":[{"kind":"type","name":"with capability","body":"with ServiceはEffectのenvironment requirementへcanonical service fieldを追加します。"}],"exercise":{"instruction":"課題sourceのmessageを変え、同じConsole capabilityで実行してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"必要なcapabilityを省く","body":"失敗例はprintlnを使いながら明示contractのwith Consoleを省きます。"},"recap":["withは必要な実行serviceを表す。","Console capabilityがprintlnを提供する。"],"next":{"lessonId":"effect-inferred-contract","body":"次はbodyからcontractを推論させます。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "effect-with-capability",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "ここまでで `Effect` の構築・逐次実行・失敗と回復を学びました。最後に `Effect` が必要とする外部環境（`with`）と型推論の仕組みを学びます。",
+    "walkthrough": [
+      {
+        "heading": "with で必要な環境機能を明示する",
+        "body": "`announce` は `Unit` の後ろに `with` で `Console`、`fails` で `ConsoleError` を指定しています。外部出力に必要な環境機能と起こりうる失敗型をシグネチャに固定する書き方（明示形）です。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 2
+        }
+      },
+      {
+        "heading": "省略形では本体から環境と失敗型が推論される",
+        "body": "`reportPair` では `->`・`with`・`fails` を省略しています（推論形）。本体の `announce` と `println` から、必要な `Console` 環境機能と `ConsoleError` が上位の関数へ自動で推論されます。",
+        "sourceRange": {
+          "startLine": 4,
+          "endLine": 7
+        }
+      },
+      {
+        "heading": "呼び出し元の main でも同じ環境が伝わる",
+        "body": "`main` も推論形で書かれており、`reportPair` が必要とする `Console` 環境を受け継いで実行されます。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 9
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "with による環境機能の宣言",
+        "body": "`with` の後ろに `Console` のように書くことで、その `Effect` が実行時に必要とする外部環境を型として表します。"
+      },
+      {
+        "kind": "syntax",
+        "name": "推論形と明示形の effect fn",
+        "body": "`->` や `with`・`fails` をすべて省くと本体から推論され、戻り値の型や `with`・`fails` を書くと明示形として型を固定できます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 4 行目にある `reportPair` の引数を `->` でつなぎ、続けて `-> Unit`・`with Console`・`fails ConsoleError` を書いて明示形にし、9 行目の `\"inferred\"` を `\"explicit\"` に書き換えて `Run` し、`Output` の 2 行目が `caller: explicit` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "明示形で with を書き忘れる",
+      "body": "失敗例では `-> Unit` と `fails ConsoleError` を書いた明示形から `with Console` だけを省いています。明示形で `with` を省くと環境なし（`{}`）の意味になるため、`println` と合わず実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "`with Console` などの指定で、`Effect` が実行に必要とする環境機能を型に表せます。",
+      "`->`・`with`・`fails` をすべて省略した推論形では、本体が使う環境と失敗型が呼び出し元へ自動で推論されます。",
+      "公開関数や境界では明示形で環境と失敗型を固定でき、省略した `with` は環境なしとして検査されます。"
+    ],
+    "next": {
+      "lessonId": "abstraction-type-parameter",
+      "body": "`Effect` の基本が揃いました。次は型パラメーター `A` を使って、さまざまな型で共通に使える関数をまとめる方法を学びます。"
+    },
+    "notes": [
+      "明示形では `with` を省略すると環境なし（`{}`）、`fails` を省略すると失敗なし（`Never`）を意味します。推論させたいときは `->` ごとすべて省略してください。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

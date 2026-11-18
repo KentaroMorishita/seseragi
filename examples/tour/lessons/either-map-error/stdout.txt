@@ -1,4 +1,5 @@
-Right 42
-Right 42
-Left "invalid"
+map: Right 42
+<$>: Right 42
+left kept: Left invalid
+success: 41
 error: invalid

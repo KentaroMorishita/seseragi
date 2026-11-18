@@ -104,6 +104,26 @@
       "end": 475
     }
   ],
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_debug_arrayDebug",
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_debug_floatDebug"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.float.div-dictionary",
     "core.float.sub-dictionary",
@@ -566,19 +586,9 @@
                               "value": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_debug_arrayDebug",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_debug_floatDebug"
-                                    }
-                                  ]
+                                  "kind": "call",
+                                  "callee": "$ssrg$closedDisplay$0",
+                                  "arguments": []
                                 },
                                 "method": "debug",
                                 "arguments": [
@@ -730,19 +740,9 @@
                               "value": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_debug_arrayDebug",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_debug_floatDebug"
-                                    }
-                                  ]
+                                  "kind": "call",
+                                  "callee": "$ssrg$closedDisplay$0",
+                                  "arguments": []
                                 },
                                 "method": "debug",
                                 "arguments": [

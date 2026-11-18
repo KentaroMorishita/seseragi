@@ -1,2 +1,0 @@
-named: visible
-operator: visible

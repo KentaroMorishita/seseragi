@@ -1,20 +1,8 @@
-examples/tour/lessons/signals-combine/diagnostic.ssrg:3:56: error[SES-P0101]: `++` is not an operator
-  | fn join left: String -> right: String -> String = left ++ right
-  |                                                        ^^ pure function body
-  = help: Join two values with `append a b`; for strings, a template such as `${a}${b}` also works.
 examples/tour/lessons/signals-combine/diagnostic.ssrg:8:38: error[SES-T0101]: Argument type does not match the parameter type
-  |   let invalid = signals.combine join left right
-  |                                      ^^^^ argument 2 expected Signal<String>, received MutableSignal<Int>
+  |   let invalid = signals.combine join price count
+  |                                      ^^^^^ argument 2 expected Signal<String>, received MutableSignal<Int>
   = expected: Signal<String>
   = actual: MutableSignal<Int>
   = diff: expected Signal<String>, actual MutableSignal<Int>
-  = note: Seseragi does not insert an implicit conversion between these types.
-  = help: Change the expression or its annotation so the two types agree.
-examples/tour/lessons/signals-combine/diagnostic.ssrg:10:11: error[SES-T0101]: Argument type does not match the parameter type
-  |   println current
-  |           ^^^^^^^ argument 1 expected String, received A
-  = expected: String
-  = actual: A
-  = diff: expected String, actual A
   = note: Seseragi does not insert an implicit conversion between these types.
   = help: Change the expression or its annotation so the two types agree.

@@ -1,25 +1,27 @@
 {
   "$schema": "../sample.schema.json",
   "id": "html-components",
-  "title": "HTML componentとSSRの最小例",
-  "summary": "stateを持たず、tag、props、children、link、image、関数componentを順に組み立てます。",
+  "title": "読書メモのカードを HTML の部品で組み立てる",
+  "summary": "本のデータの配列から、同じ関数の部品で三枚のカードを並べ、HTML の文字列として書き出します。",
   "kind": "recipe",
   "difficulty": "intermediate",
   "topics": [
     "Html",
-    "document tags",
-    "link",
-    "image",
     "function component",
     "Style",
+    "SVG",
     "SSR"
   ],
-  "capabilities": ["console"],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "html",
   "experience": "minimal",
   "architecture": "static",
   "focus": "component",
-  "prerequisites": ["records"],
+  "prerequisites": [
+    "records"
+  ],
   "featured": true,
   "isNew": true,
   "files": {

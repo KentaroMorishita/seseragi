@@ -1,8 +1,4 @@
-examples/tour/lessons/design-learning-map/diagnostic.ssrg:3:29: error[SES-T0101]: Argument type does not match the parameter type
-  | let invalid = increment <$> 41
-  |                             ^^ argument 2 expected F<Int>, received Int
-  = expected: F<Int>
-  = actual: Int
-  = diff: expected F<Int>, actual Int
-  = note: Seseragi does not insert an implicit conversion between these types.
-  = help: Change the expression or its annotation so the two types agree.
+examples/tour/lessons/design-learning-map/diagnostic.ssrg:6:40: error[SES-T0301]: This match does not cover every possible value
+  | fn describe step: NextStep -> String = match step {
+  |                                        ^ missing patterns: SideTrips
+  = help: Add the missing pattern arms, or add a final _ arm when a catch-all is intended.

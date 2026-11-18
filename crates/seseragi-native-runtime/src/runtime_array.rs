@@ -1,14 +1,25 @@
 pub fn native_array_index(values: V, offset: V) -> V {
+    native_maybe(native_array_get(values, offset))
+}
+
+/// The element at an Array index, without building the `Maybe` around it.
+/// A match on the index reads this directly.
+#[inline]
+pub fn native_array_get(values: V, offset: V) -> Option<V> {
     let (V::Array(values), V::Int(offset)) = (values, offset) else {
         panic!("Rust ABI: expected Array and Int")
     };
     // Clone the selected edge before dropping the container. Functions, Refs,
     // and cold Effects keep their existing managed capture/collector graph.
-    match usize::try_from(offset)
+    usize::try_from(offset)
         .ok()
         .and_then(|index| values.get().get(index))
-    {
-        Some(value) => V::adt("std/prelude::Just", value.clone()),
+        .cloned()
+}
+
+pub fn native_maybe(value: Option<V>) -> V {
+    match value {
+        Some(value) => V::adt("std/prelude::Just", value),
         None => V::adt("std/prelude::Nothing", V::Unit),
     }
 }

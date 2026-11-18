@@ -9,6 +9,8 @@
     "// Float literalのdecimal、exponent、signed zeroをnested valueのまま実行へ運びます。\nstruct Measurement {\n  reading: Float\n}\n\nlet values: Array<Float> = [1.0, 2.3, -0.0, 6.022e23]\nlet pair: (Float, Float) = (1.25, 1e-9)\nlet sample: { value: Float } = { value: 2.5 }\nlet measurement: Measurement = Measurement { reading: -0.0 }\n\npub effect fn main =\n  do {\n    println (debug values)\n    println (debug pair)\n    println (debug sample)\n    println (show 1.0)\n    println (debug measurement.reading)\n  }\n"
   ],
   "names": [
+    "arrayDebug",
+    "floatDebug",
     "tupleDebug",
     "floatDebug",
     "floatDebug",
@@ -17,12 +19,11 @@
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "arrayDebug",
-    "floatDebug",
+    "$ssrg$closedDisplay$0",
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "$ssrg$closedDisplay$0",
+    "$ssrg$closedDisplay$1",
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
@@ -41,5 +42,5 @@
     "sample",
     "measurement"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;AACAG;;;;AASAC;AALAuB;AACAC;AACAC;AACAC"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;AACAK;;;;AASAC;AALAsB;AACAC;AACAC;AACAC"
 }

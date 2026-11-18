@@ -3,17 +3,72 @@
   "id": "07-adts-and-patterns",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "一種類のconstructorをmatch armで判別できるようになりました。",
-    "walkthrough": [{
-      "heading": "状態ごとにarmを分ける",
-      "body": "DeliveryにはPreparingとShippedがあります。上からpatternを比較し、一致したarmだけがresultを返します。",
-      "sourceRange": { "startLine": 1, "endLine": 5 }
-    }],
-    "introduced": [{ "kind": "syntax", "name": "multi-constructor match", "body": "ADTのconstructorごとにarmを並べ、状態ごとのresultを選びます。" }],
-    "exercise": { "instruction": "課題sourceをPreparingへ変え、別のmatch armが選ばれることを確かめてください。", "reset": "restore-lesson-source" },
-    "diagnostic": { "heading": "Armのresult型をずらす", "body": "失敗例では一方のarmだけIntを返します。すべてのarmが同じresult型になるよう確認してください。" },
-    "recap": ["複数のconstructorは別々のarmで扱える。", "選ばれるarmはvalueのconstructorで決まる。"],
-    "next": { "lessonId": "payload-pattern-binding", "body": "次はShippedのpayloadへ名前を付けてarm内で使います。" }
+    "prerequisite": "`type` を使って複数のケースと中身の値を持つ代数的データ型を定義できるようになりました。ここでは `match` で中身を取り出して分岐します。",
+    "walkthrough": [
+      {
+        "heading": "match でコンストラクターごとに分岐する",
+        "body": "`match delivery { ... }` は受け取った `Delivery` がどのコンストラクターかを見分け、一致した行の式を評価します。",
+        "sourceRange": {
+          "startLine": 6,
+          "endLine": 10
+        }
+      },
+      {
+        "heading": "パターン束縛で中身の値を取り出して使う",
+        "body": "`Shipped city` と書くと、`Shipped \"Osaka\"` に含まれる文字列が `city` に束縛されます。右辺の `` `Shipped to ${city}` `` のように、取り出した変数は必ず処理の中で使います。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 8
+        }
+      },
+      {
+        "heading": "入れ子の分解とワイルドカード",
+        "body": "`Delivered (city, _)` のようにタプルを入れ子で同時に分解できます。右側の経由数が不要なときは変数名を付けず、ワイルドカード `_` を書いて使わないことを明示します。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 9
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "match によるパターン分解",
+        "body": "`match` はコンストラクターの種類に応じて処理を分岐し、同時に中身の値へ名前を付けて取り出します。"
+      },
+      {
+        "kind": "syntax",
+        "name": "ワイルドカード _",
+        "body": "パターンの位置に `_` を書くと、どんな値にも一致させつつ変数束縛を作らずに無視する意図を明確に示せます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの9行目にある `Delivered (city, _)` を `Delivered (city, stops)` に、同じ行の右辺を `` `Delivered to ${city} in ${stops} stops` `` に書き換えて `Run` し、`Output` の3行目が `Delivered to Kyoto in 2 stops` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "分岐ごとに異なる型を返してしまう",
+      "body": "失敗例では `Delivered (_, stops)` の結果として `Int` 型の `stops` をそのまま返しています。`match` のすべての分岐は関数が宣言した戻り型（ここでは `String`）と揃える必要があります。"
+    },
+    "recap": [
+      "`match` でコンストラクターを判別し、中身の値を変数に束縛して利用できる。",
+      "パターンで束縛した変数は右辺で必ず使い、不要な位置には `_` を書く。",
+      "タプルなどを入れ子にしたパターンでも一度に値を取り出せる。"
+    ],
+    "next": {
+      "lessonId": "exhaustive-match",
+      "body": "次は `match` がすべてのケースを漏れなく扱っているかをコンパイラが実行前に確かめる仕組みを見ます。"
+    },
+    "notes": [
+      "すべての分岐は同じ型の値を返す必要があります。どれか1つの分岐だけ別の型を返すと実行前にエラー表示が出ます。"
+    ]
   },
-  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
 }

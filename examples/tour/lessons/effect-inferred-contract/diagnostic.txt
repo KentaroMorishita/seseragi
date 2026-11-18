@@ -1,3 +1,0 @@
-examples/tour/lessons/effect-inferred-contract/diagnostic.ssrg:1:36: error[SES-P0001]: Effect compact contract clause
-  | effect fn announce message: String with Console = println message
-  |                                    ^^^^ compact inferred effect function

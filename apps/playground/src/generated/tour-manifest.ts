@@ -9,1036 +9,385 @@ import lesson0ExerciseOutput from "../../../../examples/tour/lessons/01-hello-wo
 import lesson0Diagnostic from "../../../../examples/tour/lessons/01-hello-world/diagnostic.ssrg?raw"
 import lesson0DiagnosticOutput from "../../../../examples/tour/lessons/01-hello-world/diagnostic.txt?raw"
 
-import lesson1Source from "../../../../examples/tour/lessons/program-entry/main.ssrg?raw"
-import lesson1Output from "../../../../examples/tour/lessons/program-entry/stdout.txt?raw"
-import lesson1Exercise from "../../../../examples/tour/lessons/program-entry/exercise.ssrg?raw"
-import lesson1ExerciseOutput from "../../../../examples/tour/lessons/program-entry/exercise.stdout.txt?raw"
-import lesson1Diagnostic from "../../../../examples/tour/lessons/program-entry/diagnostic.ssrg?raw"
-import lesson1DiagnosticOutput from "../../../../examples/tour/lessons/program-entry/diagnostic.txt?raw"
-
-import lesson2Source from "../../../../examples/tour/lessons/string-literal/main.ssrg?raw"
-import lesson2Output from "../../../../examples/tour/lessons/string-literal/stdout.txt?raw"
-import lesson2Exercise from "../../../../examples/tour/lessons/string-literal/exercise.ssrg?raw"
-import lesson2ExerciseOutput from "../../../../examples/tour/lessons/string-literal/exercise.stdout.txt?raw"
-import lesson2Diagnostic from "../../../../examples/tour/lessons/string-literal/diagnostic.ssrg?raw"
-import lesson2DiagnosticOutput from "../../../../examples/tour/lessons/string-literal/diagnostic.txt?raw"
-
-import lesson3Source from "../../../../examples/tour/lessons/string-template/main.ssrg?raw"
-import lesson3Output from "../../../../examples/tour/lessons/string-template/stdout.txt?raw"
-import lesson3Exercise from "../../../../examples/tour/lessons/string-template/exercise.ssrg?raw"
-import lesson3ExerciseOutput from "../../../../examples/tour/lessons/string-template/exercise.stdout.txt?raw"
-import lesson3Diagnostic from "../../../../examples/tour/lessons/string-template/diagnostic.ssrg?raw"
-import lesson3DiagnosticOutput from "../../../../examples/tour/lessons/string-template/diagnostic.txt?raw"
-
-import lesson4Source from "../../../../examples/tour/lessons/int-literal/main.ssrg?raw"
-import lesson4Output from "../../../../examples/tour/lessons/int-literal/stdout.txt?raw"
-import lesson4Exercise from "../../../../examples/tour/lessons/int-literal/exercise.ssrg?raw"
-import lesson4ExerciseOutput from "../../../../examples/tour/lessons/int-literal/exercise.stdout.txt?raw"
-import lesson4Diagnostic from "../../../../examples/tour/lessons/int-literal/diagnostic.ssrg?raw"
-import lesson4DiagnosticOutput from "../../../../examples/tour/lessons/int-literal/diagnostic.txt?raw"
-
-import lesson5Source from "../../../../examples/tour/lessons/float-literal/main.ssrg?raw"
-import lesson5Output from "../../../../examples/tour/lessons/float-literal/stdout.txt?raw"
-import lesson5Exercise from "../../../../examples/tour/lessons/float-literal/exercise.ssrg?raw"
-import lesson5ExerciseOutput from "../../../../examples/tour/lessons/float-literal/exercise.stdout.txt?raw"
-import lesson5Diagnostic from "../../../../examples/tour/lessons/float-literal/diagnostic.ssrg?raw"
-import lesson5DiagnosticOutput from "../../../../examples/tour/lessons/float-literal/diagnostic.txt?raw"
-
-import lesson6Source from "../../../../examples/tour/lessons/bool-literal/main.ssrg?raw"
-import lesson6Output from "../../../../examples/tour/lessons/bool-literal/stdout.txt?raw"
-import lesson6Exercise from "../../../../examples/tour/lessons/bool-literal/exercise.ssrg?raw"
-import lesson6ExerciseOutput from "../../../../examples/tour/lessons/bool-literal/exercise.stdout.txt?raw"
-import lesson6Diagnostic from "../../../../examples/tour/lessons/bool-literal/diagnostic.ssrg?raw"
-import lesson6DiagnosticOutput from "../../../../examples/tour/lessons/bool-literal/diagnostic.txt?raw"
-
-import lesson7Source from "../../../../examples/tour/lessons/unit-literal/main.ssrg?raw"
-import lesson7Output from "../../../../examples/tour/lessons/unit-literal/stdout.txt?raw"
-import lesson7Exercise from "../../../../examples/tour/lessons/unit-literal/exercise.ssrg?raw"
-import lesson7ExerciseOutput from "../../../../examples/tour/lessons/unit-literal/exercise.stdout.txt?raw"
-import lesson7Diagnostic from "../../../../examples/tour/lessons/unit-literal/diagnostic.ssrg?raw"
-import lesson7DiagnosticOutput from "../../../../examples/tour/lessons/unit-literal/diagnostic.txt?raw"
-
-import lesson8Source from "../../../../examples/tour/lessons/02-values-and-bindings/main.ssrg?raw"
-import lesson8Output from "../../../../examples/tour/lessons/02-values-and-bindings/stdout.txt?raw"
-import lesson8Exercise from "../../../../examples/tour/lessons/02-values-and-bindings/exercise.ssrg?raw"
-import lesson8ExerciseOutput from "../../../../examples/tour/lessons/02-values-and-bindings/exercise.stdout.txt?raw"
-import lesson8Diagnostic from "../../../../examples/tour/lessons/02-values-and-bindings/diagnostic.ssrg?raw"
-import lesson8DiagnosticOutput from "../../../../examples/tour/lessons/02-values-and-bindings/diagnostic.txt?raw"
-
-import lesson9Source from "../../../../examples/tour/lessons/local-let/main.ssrg?raw"
-import lesson9Output from "../../../../examples/tour/lessons/local-let/stdout.txt?raw"
-import lesson9Exercise from "../../../../examples/tour/lessons/local-let/exercise.ssrg?raw"
-import lesson9ExerciseOutput from "../../../../examples/tour/lessons/local-let/exercise.stdout.txt?raw"
-import lesson9Diagnostic from "../../../../examples/tour/lessons/local-let/diagnostic.ssrg?raw"
-import lesson9DiagnosticOutput from "../../../../examples/tour/lessons/local-let/diagnostic.txt?raw"
-
-import lesson10Source from "../../../../examples/tour/lessons/type-annotations/main.ssrg?raw"
-import lesson10Output from "../../../../examples/tour/lessons/type-annotations/stdout.txt?raw"
-import lesson10Exercise from "../../../../examples/tour/lessons/type-annotations/exercise.ssrg?raw"
-import lesson10ExerciseOutput from "../../../../examples/tour/lessons/type-annotations/exercise.stdout.txt?raw"
-import lesson10Diagnostic from "../../../../examples/tour/lessons/type-annotations/diagnostic.ssrg?raw"
-import lesson10DiagnosticOutput from "../../../../examples/tour/lessons/type-annotations/diagnostic.txt?raw"
-
-import lesson11Source from "../../../../examples/tour/lessons/type-inference/main.ssrg?raw"
-import lesson11Output from "../../../../examples/tour/lessons/type-inference/stdout.txt?raw"
-import lesson11Exercise from "../../../../examples/tour/lessons/type-inference/exercise.ssrg?raw"
-import lesson11ExerciseOutput from "../../../../examples/tour/lessons/type-inference/exercise.stdout.txt?raw"
-import lesson11Diagnostic from "../../../../examples/tour/lessons/type-inference/diagnostic.ssrg?raw"
-import lesson11DiagnosticOutput from "../../../../examples/tour/lessons/type-inference/diagnostic.txt?raw"
-
-import lesson12Source from "../../../../examples/tour/lessons/primitive-arithmetic/main.ssrg?raw"
-import lesson12Output from "../../../../examples/tour/lessons/primitive-arithmetic/stdout.txt?raw"
-import lesson12Exercise from "../../../../examples/tour/lessons/primitive-arithmetic/exercise.ssrg?raw"
-import lesson12ExerciseOutput from "../../../../examples/tour/lessons/primitive-arithmetic/exercise.stdout.txt?raw"
-import lesson12Diagnostic from "../../../../examples/tour/lessons/primitive-arithmetic/diagnostic.ssrg?raw"
-import lesson12DiagnosticOutput from "../../../../examples/tour/lessons/primitive-arithmetic/diagnostic.txt?raw"
-
-import lesson13Source from "../../../../examples/tour/lessons/primitive-comparison/main.ssrg?raw"
-import lesson13Output from "../../../../examples/tour/lessons/primitive-comparison/stdout.txt?raw"
-import lesson13Exercise from "../../../../examples/tour/lessons/primitive-comparison/exercise.ssrg?raw"
-import lesson13ExerciseOutput from "../../../../examples/tour/lessons/primitive-comparison/exercise.stdout.txt?raw"
-import lesson13Diagnostic from "../../../../examples/tour/lessons/primitive-comparison/diagnostic.ssrg?raw"
-import lesson13DiagnosticOutput from "../../../../examples/tour/lessons/primitive-comparison/diagnostic.txt?raw"
-
-import lesson14Source from "../../../../examples/tour/lessons/comments-and-tools/main.ssrg?raw"
-import lesson14Output from "../../../../examples/tour/lessons/comments-and-tools/stdout.txt?raw"
-import lesson14Exercise from "../../../../examples/tour/lessons/comments-and-tools/exercise.ssrg?raw"
-import lesson14ExerciseOutput from "../../../../examples/tour/lessons/comments-and-tools/exercise.stdout.txt?raw"
-import lesson14Diagnostic from "../../../../examples/tour/lessons/comments-and-tools/diagnostic.ssrg?raw"
-import lesson14DiagnosticOutput from "../../../../examples/tour/lessons/comments-and-tools/diagnostic.txt?raw"
-
-import lesson15Source from "../../../../examples/tour/lessons/03-function-definitions/main.ssrg?raw"
-import lesson15Output from "../../../../examples/tour/lessons/03-function-definitions/stdout.txt?raw"
-import lesson15Exercise from "../../../../examples/tour/lessons/03-function-definitions/exercise.ssrg?raw"
-import lesson15ExerciseOutput from "../../../../examples/tour/lessons/03-function-definitions/exercise.stdout.txt?raw"
-import lesson15Diagnostic from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.ssrg?raw"
-import lesson15DiagnosticOutput from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.txt?raw"
-
-import lesson16Source from "../../../../examples/tour/lessons/one-parameter-function/main.ssrg?raw"
-import lesson16Output from "../../../../examples/tour/lessons/one-parameter-function/stdout.txt?raw"
-import lesson16Exercise from "../../../../examples/tour/lessons/one-parameter-function/exercise.ssrg?raw"
-import lesson16ExerciseOutput from "../../../../examples/tour/lessons/one-parameter-function/exercise.stdout.txt?raw"
-import lesson16Diagnostic from "../../../../examples/tour/lessons/one-parameter-function/diagnostic.ssrg?raw"
-import lesson16DiagnosticOutput from "../../../../examples/tour/lessons/one-parameter-function/diagnostic.txt?raw"
-
-import lesson17Source from "../../../../examples/tour/lessons/function-return-type/main.ssrg?raw"
-import lesson17Output from "../../../../examples/tour/lessons/function-return-type/stdout.txt?raw"
-import lesson17Exercise from "../../../../examples/tour/lessons/function-return-type/exercise.ssrg?raw"
-import lesson17ExerciseOutput from "../../../../examples/tour/lessons/function-return-type/exercise.stdout.txt?raw"
-import lesson17Diagnostic from "../../../../examples/tour/lessons/function-return-type/diagnostic.ssrg?raw"
-import lesson17DiagnosticOutput from "../../../../examples/tour/lessons/function-return-type/diagnostic.txt?raw"
-
-import lesson18Source from "../../../../examples/tour/lessons/04-function-calls/main.ssrg?raw"
-import lesson18Output from "../../../../examples/tour/lessons/04-function-calls/stdout.txt?raw"
-import lesson18Exercise from "../../../../examples/tour/lessons/04-function-calls/exercise.ssrg?raw"
-import lesson18ExerciseOutput from "../../../../examples/tour/lessons/04-function-calls/exercise.stdout.txt?raw"
-import lesson18Diagnostic from "../../../../examples/tour/lessons/04-function-calls/diagnostic.ssrg?raw"
-import lesson18DiagnosticOutput from "../../../../examples/tour/lessons/04-function-calls/diagnostic.txt?raw"
-
-import lesson19Source from "../../../../examples/tour/lessons/multiple-parameter-function/main.ssrg?raw"
-import lesson19Output from "../../../../examples/tour/lessons/multiple-parameter-function/stdout.txt?raw"
-import lesson19Exercise from "../../../../examples/tour/lessons/multiple-parameter-function/exercise.ssrg?raw"
-import lesson19ExerciseOutput from "../../../../examples/tour/lessons/multiple-parameter-function/exercise.stdout.txt?raw"
-import lesson19Diagnostic from "../../../../examples/tour/lessons/multiple-parameter-function/diagnostic.ssrg?raw"
-import lesson19DiagnosticOutput from "../../../../examples/tour/lessons/multiple-parameter-function/diagnostic.txt?raw"
-
-import lesson20Source from "../../../../examples/tour/lessons/function-value/main.ssrg?raw"
-import lesson20Output from "../../../../examples/tour/lessons/function-value/stdout.txt?raw"
-import lesson20Exercise from "../../../../examples/tour/lessons/function-value/exercise.ssrg?raw"
-import lesson20ExerciseOutput from "../../../../examples/tour/lessons/function-value/exercise.stdout.txt?raw"
-import lesson20Diagnostic from "../../../../examples/tour/lessons/function-value/diagnostic.ssrg?raw"
-import lesson20DiagnosticOutput from "../../../../examples/tour/lessons/function-value/diagnostic.txt?raw"
-
-import lesson21Source from "../../../../examples/tour/lessons/currying-from-code/main.ssrg?raw"
-import lesson21Output from "../../../../examples/tour/lessons/currying-from-code/stdout.txt?raw"
-import lesson21Exercise from "../../../../examples/tour/lessons/currying-from-code/exercise.ssrg?raw"
-import lesson21ExerciseOutput from "../../../../examples/tour/lessons/currying-from-code/exercise.stdout.txt?raw"
-import lesson21Diagnostic from "../../../../examples/tour/lessons/currying-from-code/diagnostic.ssrg?raw"
-import lesson21DiagnosticOutput from "../../../../examples/tour/lessons/currying-from-code/diagnostic.txt?raw"
-
-import lesson22Source from "../../../../examples/tour/lessons/partial-application/main.ssrg?raw"
-import lesson22Output from "../../../../examples/tour/lessons/partial-application/stdout.txt?raw"
-import lesson22Exercise from "../../../../examples/tour/lessons/partial-application/exercise.ssrg?raw"
-import lesson22ExerciseOutput from "../../../../examples/tour/lessons/partial-application/exercise.stdout.txt?raw"
-import lesson22Diagnostic from "../../../../examples/tour/lessons/partial-application/diagnostic.ssrg?raw"
-import lesson22DiagnosticOutput from "../../../../examples/tour/lessons/partial-application/diagnostic.txt?raw"
-
-import lesson23Source from "../../../../examples/tour/lessons/application-grouping/main.ssrg?raw"
-import lesson23Output from "../../../../examples/tour/lessons/application-grouping/stdout.txt?raw"
-import lesson23Exercise from "../../../../examples/tour/lessons/application-grouping/exercise.ssrg?raw"
-import lesson23ExerciseOutput from "../../../../examples/tour/lessons/application-grouping/exercise.stdout.txt?raw"
-import lesson23Diagnostic from "../../../../examples/tour/lessons/application-grouping/diagnostic.ssrg?raw"
-import lesson23DiagnosticOutput from "../../../../examples/tour/lessons/application-grouping/diagnostic.txt?raw"
-
-import lesson24Source from "../../../../examples/tour/lessons/dollar-application/main.ssrg?raw"
-import lesson24Output from "../../../../examples/tour/lessons/dollar-application/stdout.txt?raw"
-import lesson24Exercise from "../../../../examples/tour/lessons/dollar-application/exercise.ssrg?raw"
-import lesson24ExerciseOutput from "../../../../examples/tour/lessons/dollar-application/exercise.stdout.txt?raw"
-import lesson24Diagnostic from "../../../../examples/tour/lessons/dollar-application/diagnostic.ssrg?raw"
-import lesson24DiagnosticOutput from "../../../../examples/tour/lessons/dollar-application/diagnostic.txt?raw"
-
-import lesson25Source from "../../../../examples/tour/lessons/pipeline-application/main.ssrg?raw"
-import lesson25Output from "../../../../examples/tour/lessons/pipeline-application/stdout.txt?raw"
-import lesson25Exercise from "../../../../examples/tour/lessons/pipeline-application/exercise.ssrg?raw"
-import lesson25ExerciseOutput from "../../../../examples/tour/lessons/pipeline-application/exercise.stdout.txt?raw"
-import lesson25Diagnostic from "../../../../examples/tour/lessons/pipeline-application/diagnostic.ssrg?raw"
-import lesson25DiagnosticOutput from "../../../../examples/tour/lessons/pipeline-application/diagnostic.txt?raw"
-
-import lesson26Source from "../../../../examples/tour/lessons/mixed-application/main.ssrg?raw"
-import lesson26Output from "../../../../examples/tour/lessons/mixed-application/stdout.txt?raw"
-import lesson26Exercise from "../../../../examples/tour/lessons/mixed-application/exercise.ssrg?raw"
-import lesson26ExerciseOutput from "../../../../examples/tour/lessons/mixed-application/exercise.stdout.txt?raw"
-import lesson26Diagnostic from "../../../../examples/tour/lessons/mixed-application/diagnostic.ssrg?raw"
-import lesson26DiagnosticOutput from "../../../../examples/tour/lessons/mixed-application/diagnostic.txt?raw"
-
-import lesson27Source from "../../../../examples/tour/lessons/05-pipelines/main.ssrg?raw"
-import lesson27Output from "../../../../examples/tour/lessons/05-pipelines/stdout.txt?raw"
-import lesson27Exercise from "../../../../examples/tour/lessons/05-pipelines/exercise.ssrg?raw"
-import lesson27ExerciseOutput from "../../../../examples/tour/lessons/05-pipelines/exercise.stdout.txt?raw"
-import lesson27Diagnostic from "../../../../examples/tour/lessons/05-pipelines/diagnostic.ssrg?raw"
-import lesson27DiagnosticOutput from "../../../../examples/tour/lessons/05-pipelines/diagnostic.txt?raw"
-
-import lesson28Source from "../../../../examples/tour/lessons/tuple-values/main.ssrg?raw"
-import lesson28Output from "../../../../examples/tour/lessons/tuple-values/stdout.txt?raw"
-import lesson28Exercise from "../../../../examples/tour/lessons/tuple-values/exercise.ssrg?raw"
-import lesson28ExerciseOutput from "../../../../examples/tour/lessons/tuple-values/exercise.stdout.txt?raw"
-import lesson28Diagnostic from "../../../../examples/tour/lessons/tuple-values/diagnostic.ssrg?raw"
-import lesson28DiagnosticOutput from "../../../../examples/tour/lessons/tuple-values/diagnostic.txt?raw"
-
-import lesson29Source from "../../../../examples/tour/lessons/tuple-pattern-binding/main.ssrg?raw"
-import lesson29Output from "../../../../examples/tour/lessons/tuple-pattern-binding/stdout.txt?raw"
-import lesson29Exercise from "../../../../examples/tour/lessons/tuple-pattern-binding/exercise.ssrg?raw"
-import lesson29ExerciseOutput from "../../../../examples/tour/lessons/tuple-pattern-binding/exercise.stdout.txt?raw"
-import lesson29Diagnostic from "../../../../examples/tour/lessons/tuple-pattern-binding/diagnostic.ssrg?raw"
-import lesson29DiagnosticOutput from "../../../../examples/tour/lessons/tuple-pattern-binding/diagnostic.txt?raw"
-
-import lesson30Source from "../../../../examples/tour/lessons/record-values/main.ssrg?raw"
-import lesson30Output from "../../../../examples/tour/lessons/record-values/stdout.txt?raw"
-import lesson30Exercise from "../../../../examples/tour/lessons/record-values/exercise.ssrg?raw"
-import lesson30ExerciseOutput from "../../../../examples/tour/lessons/record-values/exercise.stdout.txt?raw"
-import lesson30Diagnostic from "../../../../examples/tour/lessons/record-values/diagnostic.ssrg?raw"
-import lesson30DiagnosticOutput from "../../../../examples/tour/lessons/record-values/diagnostic.txt?raw"
-
-import lesson31Source from "../../../../examples/tour/lessons/record-access-update/main.ssrg?raw"
-import lesson31Output from "../../../../examples/tour/lessons/record-access-update/stdout.txt?raw"
-import lesson31Exercise from "../../../../examples/tour/lessons/record-access-update/exercise.ssrg?raw"
-import lesson31ExerciseOutput from "../../../../examples/tour/lessons/record-access-update/exercise.stdout.txt?raw"
-import lesson31Diagnostic from "../../../../examples/tour/lessons/record-access-update/diagnostic.ssrg?raw"
-import lesson31DiagnosticOutput from "../../../../examples/tour/lessons/record-access-update/diagnostic.txt?raw"
-
-import lesson32Source from "../../../../examples/tour/lessons/06-records-and-structs/main.ssrg?raw"
-import lesson32Output from "../../../../examples/tour/lessons/06-records-and-structs/stdout.txt?raw"
-import lesson32Exercise from "../../../../examples/tour/lessons/06-records-and-structs/exercise.ssrg?raw"
-import lesson32ExerciseOutput from "../../../../examples/tour/lessons/06-records-and-structs/exercise.stdout.txt?raw"
-import lesson32Diagnostic from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.ssrg?raw"
-import lesson32DiagnosticOutput from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.txt?raw"
-
-import lesson33Source from "../../../../examples/tour/lessons/struct-field-access/main.ssrg?raw"
-import lesson33Output from "../../../../examples/tour/lessons/struct-field-access/stdout.txt?raw"
-import lesson33Exercise from "../../../../examples/tour/lessons/struct-field-access/exercise.ssrg?raw"
-import lesson33ExerciseOutput from "../../../../examples/tour/lessons/struct-field-access/exercise.stdout.txt?raw"
-import lesson33Diagnostic from "../../../../examples/tour/lessons/struct-field-access/diagnostic.ssrg?raw"
-import lesson33DiagnosticOutput from "../../../../examples/tour/lessons/struct-field-access/diagnostic.txt?raw"
-
-import lesson34Source from "../../../../examples/tour/lessons/simple-adt/main.ssrg?raw"
-import lesson34Output from "../../../../examples/tour/lessons/simple-adt/stdout.txt?raw"
-import lesson34Exercise from "../../../../examples/tour/lessons/simple-adt/exercise.ssrg?raw"
-import lesson34ExerciseOutput from "../../../../examples/tour/lessons/simple-adt/exercise.stdout.txt?raw"
-import lesson34Diagnostic from "../../../../examples/tour/lessons/simple-adt/diagnostic.ssrg?raw"
-import lesson34DiagnosticOutput from "../../../../examples/tour/lessons/simple-adt/diagnostic.txt?raw"
-
-import lesson35Source from "../../../../examples/tour/lessons/payload-adt/main.ssrg?raw"
-import lesson35Output from "../../../../examples/tour/lessons/payload-adt/stdout.txt?raw"
-import lesson35Exercise from "../../../../examples/tour/lessons/payload-adt/exercise.ssrg?raw"
-import lesson35ExerciseOutput from "../../../../examples/tour/lessons/payload-adt/exercise.stdout.txt?raw"
-import lesson35Diagnostic from "../../../../examples/tour/lessons/payload-adt/diagnostic.ssrg?raw"
-import lesson35DiagnosticOutput from "../../../../examples/tour/lessons/payload-adt/diagnostic.txt?raw"
-
-import lesson36Source from "../../../../examples/tour/lessons/single-constructor-match/main.ssrg?raw"
-import lesson36Output from "../../../../examples/tour/lessons/single-constructor-match/stdout.txt?raw"
-import lesson36Exercise from "../../../../examples/tour/lessons/single-constructor-match/exercise.ssrg?raw"
-import lesson36ExerciseOutput from "../../../../examples/tour/lessons/single-constructor-match/exercise.stdout.txt?raw"
-import lesson36Diagnostic from "../../../../examples/tour/lessons/single-constructor-match/diagnostic.ssrg?raw"
-import lesson36DiagnosticOutput from "../../../../examples/tour/lessons/single-constructor-match/diagnostic.txt?raw"
-
-import lesson37Source from "../../../../examples/tour/lessons/07-adts-and-patterns/main.ssrg?raw"
-import lesson37Output from "../../../../examples/tour/lessons/07-adts-and-patterns/stdout.txt?raw"
-import lesson37Exercise from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.ssrg?raw"
-import lesson37ExerciseOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.stdout.txt?raw"
-import lesson37Diagnostic from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.ssrg?raw"
-import lesson37DiagnosticOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.txt?raw"
-
-import lesson38Source from "../../../../examples/tour/lessons/payload-pattern-binding/main.ssrg?raw"
-import lesson38Output from "../../../../examples/tour/lessons/payload-pattern-binding/stdout.txt?raw"
-import lesson38Exercise from "../../../../examples/tour/lessons/payload-pattern-binding/exercise.ssrg?raw"
-import lesson38ExerciseOutput from "../../../../examples/tour/lessons/payload-pattern-binding/exercise.stdout.txt?raw"
-import lesson38Diagnostic from "../../../../examples/tour/lessons/payload-pattern-binding/diagnostic.ssrg?raw"
-import lesson38DiagnosticOutput from "../../../../examples/tour/lessons/payload-pattern-binding/diagnostic.txt?raw"
-
-import lesson39Source from "../../../../examples/tour/lessons/nested-pattern-wildcard/main.ssrg?raw"
-import lesson39Output from "../../../../examples/tour/lessons/nested-pattern-wildcard/stdout.txt?raw"
-import lesson39Exercise from "../../../../examples/tour/lessons/nested-pattern-wildcard/exercise.ssrg?raw"
-import lesson39ExerciseOutput from "../../../../examples/tour/lessons/nested-pattern-wildcard/exercise.stdout.txt?raw"
-import lesson39Diagnostic from "../../../../examples/tour/lessons/nested-pattern-wildcard/diagnostic.ssrg?raw"
-import lesson39DiagnosticOutput from "../../../../examples/tour/lessons/nested-pattern-wildcard/diagnostic.txt?raw"
-
-import lesson40Source from "../../../../examples/tour/lessons/exhaustive-match/main.ssrg?raw"
-import lesson40Output from "../../../../examples/tour/lessons/exhaustive-match/stdout.txt?raw"
-import lesson40Exercise from "../../../../examples/tour/lessons/exhaustive-match/exercise.ssrg?raw"
-import lesson40ExerciseOutput from "../../../../examples/tour/lessons/exhaustive-match/exercise.stdout.txt?raw"
-import lesson40Diagnostic from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.ssrg?raw"
-import lesson40DiagnosticOutput from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.txt?raw"
-
-import lesson41Source from "../../../../examples/tour/lessons/data-shape-selection/main.ssrg?raw"
-import lesson41Output from "../../../../examples/tour/lessons/data-shape-selection/stdout.txt?raw"
-import lesson41Exercise from "../../../../examples/tour/lessons/data-shape-selection/exercise.ssrg?raw"
-import lesson41ExerciseOutput from "../../../../examples/tour/lessons/data-shape-selection/exercise.stdout.txt?raw"
-import lesson41Diagnostic from "../../../../examples/tour/lessons/data-shape-selection/diagnostic.ssrg?raw"
-import lesson41DiagnosticOutput from "../../../../examples/tour/lessons/data-shape-selection/diagnostic.txt?raw"
-
-import lesson42Source from "../../../../examples/tour/lessons/array-values/main.ssrg?raw"
-import lesson42Output from "../../../../examples/tour/lessons/array-values/stdout.txt?raw"
-import lesson42Exercise from "../../../../examples/tour/lessons/array-values/exercise.ssrg?raw"
-import lesson42ExerciseOutput from "../../../../examples/tour/lessons/array-values/exercise.stdout.txt?raw"
-import lesson42Diagnostic from "../../../../examples/tour/lessons/array-values/diagnostic.ssrg?raw"
-import lesson42DiagnosticOutput from "../../../../examples/tour/lessons/array-values/diagnostic.txt?raw"
-
-import lesson43Source from "../../../../examples/tour/lessons/array-access/main.ssrg?raw"
-import lesson43Output from "../../../../examples/tour/lessons/array-access/stdout.txt?raw"
-import lesson43Exercise from "../../../../examples/tour/lessons/array-access/exercise.ssrg?raw"
-import lesson43ExerciseOutput from "../../../../examples/tour/lessons/array-access/exercise.stdout.txt?raw"
-import lesson43Diagnostic from "../../../../examples/tour/lessons/array-access/diagnostic.ssrg?raw"
-import lesson43DiagnosticOutput from "../../../../examples/tour/lessons/array-access/diagnostic.txt?raw"
-
-import lesson44Source from "../../../../examples/tour/lessons/list-values/main.ssrg?raw"
-import lesson44Output from "../../../../examples/tour/lessons/list-values/stdout.txt?raw"
-import lesson44Exercise from "../../../../examples/tour/lessons/list-values/exercise.ssrg?raw"
-import lesson44ExerciseOutput from "../../../../examples/tour/lessons/list-values/exercise.stdout.txt?raw"
-import lesson44Diagnostic from "../../../../examples/tour/lessons/list-values/diagnostic.ssrg?raw"
-import lesson44DiagnosticOutput from "../../../../examples/tour/lessons/list-values/diagnostic.txt?raw"
-
-import lesson45Source from "../../../../examples/tour/lessons/list-decomposition/main.ssrg?raw"
-import lesson45Output from "../../../../examples/tour/lessons/list-decomposition/stdout.txt?raw"
-import lesson45Exercise from "../../../../examples/tour/lessons/list-decomposition/exercise.ssrg?raw"
-import lesson45ExerciseOutput from "../../../../examples/tour/lessons/list-decomposition/exercise.stdout.txt?raw"
-import lesson45Diagnostic from "../../../../examples/tour/lessons/list-decomposition/diagnostic.ssrg?raw"
-import lesson45DiagnosticOutput from "../../../../examples/tour/lessons/list-decomposition/diagnostic.txt?raw"
-
-import lesson46Source from "../../../../examples/tour/lessons/range-values/main.ssrg?raw"
-import lesson46Output from "../../../../examples/tour/lessons/range-values/stdout.txt?raw"
-import lesson46Exercise from "../../../../examples/tour/lessons/range-values/exercise.ssrg?raw"
-import lesson46ExerciseOutput from "../../../../examples/tour/lessons/range-values/exercise.stdout.txt?raw"
-import lesson46Diagnostic from "../../../../examples/tour/lessons/range-values/diagnostic.ssrg?raw"
-import lesson46DiagnosticOutput from "../../../../examples/tour/lessons/range-values/diagnostic.txt?raw"
-
-import lesson47Source from "../../../../examples/tour/lessons/collection-map/main.ssrg?raw"
-import lesson47Output from "../../../../examples/tour/lessons/collection-map/stdout.txt?raw"
-import lesson47Exercise from "../../../../examples/tour/lessons/collection-map/exercise.ssrg?raw"
-import lesson47ExerciseOutput from "../../../../examples/tour/lessons/collection-map/exercise.stdout.txt?raw"
-import lesson47Diagnostic from "../../../../examples/tour/lessons/collection-map/diagnostic.ssrg?raw"
-import lesson47DiagnosticOutput from "../../../../examples/tour/lessons/collection-map/diagnostic.txt?raw"
-
-import lesson48Source from "../../../../examples/tour/lessons/collection-filter/main.ssrg?raw"
-import lesson48Output from "../../../../examples/tour/lessons/collection-filter/stdout.txt?raw"
-import lesson48Exercise from "../../../../examples/tour/lessons/collection-filter/exercise.ssrg?raw"
-import lesson48ExerciseOutput from "../../../../examples/tour/lessons/collection-filter/exercise.stdout.txt?raw"
-import lesson48Diagnostic from "../../../../examples/tour/lessons/collection-filter/diagnostic.ssrg?raw"
-import lesson48DiagnosticOutput from "../../../../examples/tour/lessons/collection-filter/diagnostic.txt?raw"
-
-import lesson49Source from "../../../../examples/tour/lessons/collection-reduce-step/main.ssrg?raw"
-import lesson49Output from "../../../../examples/tour/lessons/collection-reduce-step/stdout.txt?raw"
-import lesson49Exercise from "../../../../examples/tour/lessons/collection-reduce-step/exercise.ssrg?raw"
-import lesson49ExerciseOutput from "../../../../examples/tour/lessons/collection-reduce-step/exercise.stdout.txt?raw"
-import lesson49Diagnostic from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.ssrg?raw"
-import lesson49DiagnosticOutput from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.txt?raw"
-
-import lesson50Source from "../../../../examples/tour/lessons/collection-reduce/main.ssrg?raw"
-import lesson50Output from "../../../../examples/tour/lessons/collection-reduce/stdout.txt?raw"
-import lesson50Exercise from "../../../../examples/tour/lessons/collection-reduce/exercise.ssrg?raw"
-import lesson50ExerciseOutput from "../../../../examples/tour/lessons/collection-reduce/exercise.stdout.txt?raw"
-import lesson50Diagnostic from "../../../../examples/tour/lessons/collection-reduce/diagnostic.ssrg?raw"
-import lesson50DiagnosticOutput from "../../../../examples/tour/lessons/collection-reduce/diagnostic.txt?raw"
-
-import lesson51Source from "../../../../examples/tour/lessons/collection-append-concat/main.ssrg?raw"
-import lesson51Output from "../../../../examples/tour/lessons/collection-append-concat/stdout.txt?raw"
-import lesson51Exercise from "../../../../examples/tour/lessons/collection-append-concat/exercise.ssrg?raw"
-import lesson51ExerciseOutput from "../../../../examples/tour/lessons/collection-append-concat/exercise.stdout.txt?raw"
-import lesson51Diagnostic from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.ssrg?raw"
-import lesson51DiagnosticOutput from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.txt?raw"
-
-import lesson52Source from "../../../../examples/tour/lessons/collection-comprehension/main.ssrg?raw"
-import lesson52Output from "../../../../examples/tour/lessons/collection-comprehension/stdout.txt?raw"
-import lesson52Exercise from "../../../../examples/tour/lessons/collection-comprehension/exercise.ssrg?raw"
-import lesson52ExerciseOutput from "../../../../examples/tour/lessons/collection-comprehension/exercise.stdout.txt?raw"
-import lesson52Diagnostic from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.ssrg?raw"
-import lesson52DiagnosticOutput from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.txt?raw"
-
-import lesson53Source from "../../../../examples/tour/lessons/collection-pipeline/main.ssrg?raw"
-import lesson53Output from "../../../../examples/tour/lessons/collection-pipeline/stdout.txt?raw"
-import lesson53Exercise from "../../../../examples/tour/lessons/collection-pipeline/exercise.ssrg?raw"
-import lesson53ExerciseOutput from "../../../../examples/tour/lessons/collection-pipeline/exercise.stdout.txt?raw"
-import lesson53Diagnostic from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.ssrg?raw"
-import lesson53DiagnosticOutput from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.txt?raw"
-
-import lesson54Source from "../../../../examples/tour/lessons/empty-collections/main.ssrg?raw"
-import lesson54Output from "../../../../examples/tour/lessons/empty-collections/stdout.txt?raw"
-import lesson54Exercise from "../../../../examples/tour/lessons/empty-collections/exercise.ssrg?raw"
-import lesson54ExerciseOutput from "../../../../examples/tour/lessons/empty-collections/exercise.stdout.txt?raw"
-import lesson54Diagnostic from "../../../../examples/tour/lessons/empty-collections/diagnostic.ssrg?raw"
-import lesson54DiagnosticOutput from "../../../../examples/tour/lessons/empty-collections/diagnostic.txt?raw"
-
-import lesson55Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
-import lesson55Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
-import lesson55Exercise from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.ssrg?raw"
-import lesson55ExerciseOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.stdout.txt?raw"
-import lesson55Diagnostic from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.ssrg?raw"
-import lesson55DiagnosticOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.txt?raw"
-
-import lesson56Source from "../../../../examples/tour/lessons/maybe-role/main.ssrg?raw"
-import lesson56Output from "../../../../examples/tour/lessons/maybe-role/stdout.txt?raw"
-import lesson56Exercise from "../../../../examples/tour/lessons/maybe-role/exercise.ssrg?raw"
-import lesson56ExerciseOutput from "../../../../examples/tour/lessons/maybe-role/exercise.stdout.txt?raw"
-import lesson56Diagnostic from "../../../../examples/tour/lessons/maybe-role/diagnostic.ssrg?raw"
-import lesson56DiagnosticOutput from "../../../../examples/tour/lessons/maybe-role/diagnostic.txt?raw"
-
-import lesson57Source from "../../../../examples/tour/lessons/maybe-constructors/main.ssrg?raw"
-import lesson57Output from "../../../../examples/tour/lessons/maybe-constructors/stdout.txt?raw"
-import lesson57Exercise from "../../../../examples/tour/lessons/maybe-constructors/exercise.ssrg?raw"
-import lesson57ExerciseOutput from "../../../../examples/tour/lessons/maybe-constructors/exercise.stdout.txt?raw"
-import lesson57Diagnostic from "../../../../examples/tour/lessons/maybe-constructors/diagnostic.ssrg?raw"
-import lesson57DiagnosticOutput from "../../../../examples/tour/lessons/maybe-constructors/diagnostic.txt?raw"
-
-import lesson58Source from "../../../../examples/tour/lessons/maybe-match/main.ssrg?raw"
-import lesson58Output from "../../../../examples/tour/lessons/maybe-match/stdout.txt?raw"
-import lesson58Exercise from "../../../../examples/tour/lessons/maybe-match/exercise.ssrg?raw"
-import lesson58ExerciseOutput from "../../../../examples/tour/lessons/maybe-match/exercise.stdout.txt?raw"
-import lesson58Diagnostic from "../../../../examples/tour/lessons/maybe-match/diagnostic.ssrg?raw"
-import lesson58DiagnosticOutput from "../../../../examples/tour/lessons/maybe-match/diagnostic.txt?raw"
-
-import lesson59Source from "../../../../examples/tour/lessons/maybe-default/main.ssrg?raw"
-import lesson59Output from "../../../../examples/tour/lessons/maybe-default/stdout.txt?raw"
-import lesson59Exercise from "../../../../examples/tour/lessons/maybe-default/exercise.ssrg?raw"
-import lesson59ExerciseOutput from "../../../../examples/tour/lessons/maybe-default/exercise.stdout.txt?raw"
-import lesson59Diagnostic from "../../../../examples/tour/lessons/maybe-default/diagnostic.ssrg?raw"
-import lesson59DiagnosticOutput from "../../../../examples/tour/lessons/maybe-default/diagnostic.txt?raw"
-
-import lesson60Source from "../../../../examples/tour/lessons/maybe-map/main.ssrg?raw"
-import lesson60Output from "../../../../examples/tour/lessons/maybe-map/stdout.txt?raw"
-import lesson60Exercise from "../../../../examples/tour/lessons/maybe-map/exercise.ssrg?raw"
-import lesson60ExerciseOutput from "../../../../examples/tour/lessons/maybe-map/exercise.stdout.txt?raw"
-import lesson60Diagnostic from "../../../../examples/tour/lessons/maybe-map/diagnostic.ssrg?raw"
-import lesson60DiagnosticOutput from "../../../../examples/tour/lessons/maybe-map/diagnostic.txt?raw"
-
-import lesson61Source from "../../../../examples/tour/lessons/maybe-combine/main.ssrg?raw"
-import lesson61Output from "../../../../examples/tour/lessons/maybe-combine/stdout.txt?raw"
-import lesson61Exercise from "../../../../examples/tour/lessons/maybe-combine/exercise.ssrg?raw"
-import lesson61ExerciseOutput from "../../../../examples/tour/lessons/maybe-combine/exercise.stdout.txt?raw"
-import lesson61Diagnostic from "../../../../examples/tour/lessons/maybe-combine/diagnostic.ssrg?raw"
-import lesson61DiagnosticOutput from "../../../../examples/tour/lessons/maybe-combine/diagnostic.txt?raw"
-
-import lesson62Source from "../../../../examples/tour/lessons/maybe-short-circuit/main.ssrg?raw"
-import lesson62Output from "../../../../examples/tour/lessons/maybe-short-circuit/stdout.txt?raw"
-import lesson62Exercise from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.ssrg?raw"
-import lesson62ExerciseOutput from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.stdout.txt?raw"
-import lesson62Diagnostic from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.ssrg?raw"
-import lesson62DiagnosticOutput from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.txt?raw"
-
-import lesson63Source from "../../../../examples/tour/lessons/either-role/main.ssrg?raw"
-import lesson63Output from "../../../../examples/tour/lessons/either-role/stdout.txt?raw"
-import lesson63Exercise from "../../../../examples/tour/lessons/either-role/exercise.ssrg?raw"
-import lesson63ExerciseOutput from "../../../../examples/tour/lessons/either-role/exercise.stdout.txt?raw"
-import lesson63Diagnostic from "../../../../examples/tour/lessons/either-role/diagnostic.ssrg?raw"
-import lesson63DiagnosticOutput from "../../../../examples/tour/lessons/either-role/diagnostic.txt?raw"
-
-import lesson64Source from "../../../../examples/tour/lessons/either-constructors/main.ssrg?raw"
-import lesson64Output from "../../../../examples/tour/lessons/either-constructors/stdout.txt?raw"
-import lesson64Exercise from "../../../../examples/tour/lessons/either-constructors/exercise.ssrg?raw"
-import lesson64ExerciseOutput from "../../../../examples/tour/lessons/either-constructors/exercise.stdout.txt?raw"
-import lesson64Diagnostic from "../../../../examples/tour/lessons/either-constructors/diagnostic.ssrg?raw"
-import lesson64DiagnosticOutput from "../../../../examples/tour/lessons/either-constructors/diagnostic.txt?raw"
-
-import lesson65Source from "../../../../examples/tour/lessons/either-match/main.ssrg?raw"
-import lesson65Output from "../../../../examples/tour/lessons/either-match/stdout.txt?raw"
-import lesson65Exercise from "../../../../examples/tour/lessons/either-match/exercise.ssrg?raw"
-import lesson65ExerciseOutput from "../../../../examples/tour/lessons/either-match/exercise.stdout.txt?raw"
-import lesson65Diagnostic from "../../../../examples/tour/lessons/either-match/diagnostic.ssrg?raw"
-import lesson65DiagnosticOutput from "../../../../examples/tour/lessons/either-match/diagnostic.txt?raw"
-
-import lesson66Source from "../../../../examples/tour/lessons/either-map-error/main.ssrg?raw"
-import lesson66Output from "../../../../examples/tour/lessons/either-map-error/stdout.txt?raw"
-import lesson66Exercise from "../../../../examples/tour/lessons/either-map-error/exercise.ssrg?raw"
-import lesson66ExerciseOutput from "../../../../examples/tour/lessons/either-map-error/exercise.stdout.txt?raw"
-import lesson66Diagnostic from "../../../../examples/tour/lessons/either-map-error/diagnostic.ssrg?raw"
-import lesson66DiagnosticOutput from "../../../../examples/tour/lessons/either-map-error/diagnostic.txt?raw"
-
-import lesson67Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
-import lesson67Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
-import lesson67Exercise from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.ssrg?raw"
-import lesson67ExerciseOutput from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.stdout.txt?raw"
-import lesson67Diagnostic from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.ssrg?raw"
-import lesson67DiagnosticOutput from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.txt?raw"
-
-import lesson68Source from "../../../../examples/tour/lessons/effect-failure-bridge/main.ssrg?raw"
-import lesson68Output from "../../../../examples/tour/lessons/effect-failure-bridge/stdout.txt?raw"
-import lesson68Exercise from "../../../../examples/tour/lessons/effect-failure-bridge/exercise.ssrg?raw"
-import lesson68ExerciseOutput from "../../../../examples/tour/lessons/effect-failure-bridge/exercise.stdout.txt?raw"
-import lesson68Diagnostic from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.ssrg?raw"
-import lesson68DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.txt?raw"
-
-import lesson69Source from "../../../../examples/tour/lessons/effect-pure-vs-effect/main.ssrg?raw"
-import lesson69Output from "../../../../examples/tour/lessons/effect-pure-vs-effect/stdout.txt?raw"
-import lesson69Exercise from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.ssrg?raw"
-import lesson69ExerciseOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.stdout.txt?raw"
-import lesson69Diagnostic from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.ssrg?raw"
-import lesson69DiagnosticOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.txt?raw"
-
-import lesson70Source from "../../../../examples/tour/lessons/effect-single-operation/main.ssrg?raw"
-import lesson70Output from "../../../../examples/tour/lessons/effect-single-operation/stdout.txt?raw"
-import lesson70Exercise from "../../../../examples/tour/lessons/effect-single-operation/exercise.ssrg?raw"
-import lesson70ExerciseOutput from "../../../../examples/tour/lessons/effect-single-operation/exercise.stdout.txt?raw"
-import lesson70Diagnostic from "../../../../examples/tour/lessons/effect-single-operation/diagnostic.ssrg?raw"
-import lesson70DiagnosticOutput from "../../../../examples/tour/lessons/effect-single-operation/diagnostic.txt?raw"
-
-import lesson71Source from "../../../../examples/tour/lessons/effect-do-block/main.ssrg?raw"
-import lesson71Output from "../../../../examples/tour/lessons/effect-do-block/stdout.txt?raw"
-import lesson71Exercise from "../../../../examples/tour/lessons/effect-do-block/exercise.ssrg?raw"
-import lesson71ExerciseOutput from "../../../../examples/tour/lessons/effect-do-block/exercise.stdout.txt?raw"
-import lesson71Diagnostic from "../../../../examples/tour/lessons/effect-do-block/diagnostic.ssrg?raw"
-import lesson71DiagnosticOutput from "../../../../examples/tour/lessons/effect-do-block/diagnostic.txt?raw"
-
-import lesson72Source from "../../../../examples/tour/lessons/effect-sequence/main.ssrg?raw"
-import lesson72Output from "../../../../examples/tour/lessons/effect-sequence/stdout.txt?raw"
-import lesson72Exercise from "../../../../examples/tour/lessons/effect-sequence/exercise.ssrg?raw"
-import lesson72ExerciseOutput from "../../../../examples/tour/lessons/effect-sequence/exercise.stdout.txt?raw"
-import lesson72Diagnostic from "../../../../examples/tour/lessons/effect-sequence/diagnostic.ssrg?raw"
-import lesson72DiagnosticOutput from "../../../../examples/tour/lessons/effect-sequence/diagnostic.txt?raw"
-
-import lesson73Source from "../../../../examples/tour/lessons/effect-bind-success/main.ssrg?raw"
-import lesson73Output from "../../../../examples/tour/lessons/effect-bind-success/stdout.txt?raw"
-import lesson73Exercise from "../../../../examples/tour/lessons/effect-bind-success/exercise.ssrg?raw"
-import lesson73ExerciseOutput from "../../../../examples/tour/lessons/effect-bind-success/exercise.stdout.txt?raw"
-import lesson73Diagnostic from "../../../../examples/tour/lessons/effect-bind-success/diagnostic.ssrg?raw"
-import lesson73DiagnosticOutput from "../../../../examples/tour/lessons/effect-bind-success/diagnostic.txt?raw"
-
-import lesson74Source from "../../../../examples/tour/lessons/effect-succeed-value/main.ssrg?raw"
-import lesson74Output from "../../../../examples/tour/lessons/effect-succeed-value/stdout.txt?raw"
-import lesson74Exercise from "../../../../examples/tour/lessons/effect-succeed-value/exercise.ssrg?raw"
-import lesson74ExerciseOutput from "../../../../examples/tour/lessons/effect-succeed-value/exercise.stdout.txt?raw"
-import lesson74Diagnostic from "../../../../examples/tour/lessons/effect-succeed-value/diagnostic.ssrg?raw"
-import lesson74DiagnosticOutput from "../../../../examples/tour/lessons/effect-succeed-value/diagnostic.txt?raw"
-
-import lesson75Source from "../../../../examples/tour/lessons/effect-failure-short-circuit/main.ssrg?raw"
-import lesson75Output from "../../../../examples/tour/lessons/effect-failure-short-circuit/stdout.txt?raw"
-import lesson75Failure from "../../../../examples/tour/lessons/effect-failure-short-circuit/failure.txt?raw"
-import lesson75Exercise from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.ssrg?raw"
-import lesson75ExerciseOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.stdout.txt?raw"
-import lesson75Diagnostic from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.ssrg?raw"
-import lesson75DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.txt?raw"
-
-import lesson76Source from "../../../../examples/tour/lessons/effect-fails-type/main.ssrg?raw"
-import lesson76Output from "../../../../examples/tour/lessons/effect-fails-type/stdout.txt?raw"
-import lesson76Exercise from "../../../../examples/tour/lessons/effect-fails-type/exercise.ssrg?raw"
-import lesson76ExerciseOutput from "../../../../examples/tour/lessons/effect-fails-type/exercise.stdout.txt?raw"
-import lesson76Diagnostic from "../../../../examples/tour/lessons/effect-fails-type/diagnostic.ssrg?raw"
-import lesson76DiagnosticOutput from "../../../../examples/tour/lessons/effect-fails-type/diagnostic.txt?raw"
-
-import lesson77Source from "../../../../examples/tour/lessons/effect-with-capability/main.ssrg?raw"
-import lesson77Output from "../../../../examples/tour/lessons/effect-with-capability/stdout.txt?raw"
-import lesson77Exercise from "../../../../examples/tour/lessons/effect-with-capability/exercise.ssrg?raw"
-import lesson77ExerciseOutput from "../../../../examples/tour/lessons/effect-with-capability/exercise.stdout.txt?raw"
-import lesson77Diagnostic from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.ssrg?raw"
-import lesson77DiagnosticOutput from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.txt?raw"
-
-import lesson78Source from "../../../../examples/tour/lessons/effect-inferred-contract/main.ssrg?raw"
-import lesson78Output from "../../../../examples/tour/lessons/effect-inferred-contract/stdout.txt?raw"
-import lesson78Exercise from "../../../../examples/tour/lessons/effect-inferred-contract/exercise.ssrg?raw"
-import lesson78ExerciseOutput from "../../../../examples/tour/lessons/effect-inferred-contract/exercise.stdout.txt?raw"
-import lesson78Diagnostic from "../../../../examples/tour/lessons/effect-inferred-contract/diagnostic.ssrg?raw"
-import lesson78DiagnosticOutput from "../../../../examples/tour/lessons/effect-inferred-contract/diagnostic.txt?raw"
-
-import lesson79Source from "../../../../examples/tour/lessons/effect-explicit-contract/main.ssrg?raw"
-import lesson79Output from "../../../../examples/tour/lessons/effect-explicit-contract/stdout.txt?raw"
-import lesson79Exercise from "../../../../examples/tour/lessons/effect-explicit-contract/exercise.ssrg?raw"
-import lesson79ExerciseOutput from "../../../../examples/tour/lessons/effect-explicit-contract/exercise.stdout.txt?raw"
-import lesson79Diagnostic from "../../../../examples/tour/lessons/effect-explicit-contract/diagnostic.ssrg?raw"
-import lesson79DiagnosticOutput from "../../../../examples/tour/lessons/effect-explicit-contract/diagnostic.txt?raw"
-
-import lesson80Source from "../../../../examples/tour/lessons/effect-map-error/main.ssrg?raw"
-import lesson80Failure from "../../../../examples/tour/lessons/effect-map-error/failure.txt?raw"
-import lesson80Exercise from "../../../../examples/tour/lessons/effect-map-error/exercise.ssrg?raw"
-import lesson80ExerciseOutput from "../../../../examples/tour/lessons/effect-map-error/exercise.stdout.txt?raw"
-import lesson80Diagnostic from "../../../../examples/tour/lessons/effect-map-error/diagnostic.ssrg?raw"
-import lesson80DiagnosticOutput from "../../../../examples/tour/lessons/effect-map-error/diagnostic.txt?raw"
-
-import lesson81Source from "../../../../examples/tour/lessons/effect-value-boundary/main.ssrg?raw"
-import lesson81Output from "../../../../examples/tour/lessons/effect-value-boundary/stdout.txt?raw"
-import lesson81Exercise from "../../../../examples/tour/lessons/effect-value-boundary/exercise.ssrg?raw"
-import lesson81ExerciseOutput from "../../../../examples/tour/lessons/effect-value-boundary/exercise.stdout.txt?raw"
-import lesson81Diagnostic from "../../../../examples/tour/lessons/effect-value-boundary/diagnostic.ssrg?raw"
-import lesson81DiagnosticOutput from "../../../../examples/tour/lessons/effect-value-boundary/diagnostic.txt?raw"
-
-import lesson82Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
-import lesson82Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
-import lesson82Exercise from "../../../../examples/tour/lessons/10-effects-and-do/exercise.ssrg?raw"
-import lesson82ExerciseOutput from "../../../../examples/tour/lessons/10-effects-and-do/exercise.stdout.txt?raw"
-import lesson82Diagnostic from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.ssrg?raw"
-import lesson82DiagnosticOutput from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.txt?raw"
-
-import lesson83Source from "../../../../examples/tour/lessons/abstraction-concrete-generic/main.ssrg?raw"
-import lesson83Output from "../../../../examples/tour/lessons/abstraction-concrete-generic/stdout.txt?raw"
-import lesson83Exercise from "../../../../examples/tour/lessons/abstraction-concrete-generic/exercise.ssrg?raw"
-import lesson83ExerciseOutput from "../../../../examples/tour/lessons/abstraction-concrete-generic/exercise.stdout.txt?raw"
-import lesson83Diagnostic from "../../../../examples/tour/lessons/abstraction-concrete-generic/diagnostic.ssrg?raw"
-import lesson83DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-concrete-generic/diagnostic.txt?raw"
-
-import lesson84Source from "../../../../examples/tour/lessons/abstraction-type-parameter/main.ssrg?raw"
-import lesson84Output from "../../../../examples/tour/lessons/abstraction-type-parameter/stdout.txt?raw"
-import lesson84Exercise from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.ssrg?raw"
-import lesson84ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.stdout.txt?raw"
-import lesson84Diagnostic from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.ssrg?raw"
-import lesson84DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.txt?raw"
-
-import lesson85Source from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/main.ssrg?raw"
-import lesson85Output from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/stdout.txt?raw"
-import lesson85Exercise from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/exercise.ssrg?raw"
-import lesson85ExerciseOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/exercise.stdout.txt?raw"
-import lesson85Diagnostic from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/diagnostic.ssrg?raw"
-import lesson85DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/diagnostic.txt?raw"
-
-import lesson86Source from "../../../../examples/tour/lessons/abstraction-generic-adt-use/main.ssrg?raw"
-import lesson86Output from "../../../../examples/tour/lessons/abstraction-generic-adt-use/stdout.txt?raw"
-import lesson86Exercise from "../../../../examples/tour/lessons/abstraction-generic-adt-use/exercise.ssrg?raw"
-import lesson86ExerciseOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-use/exercise.stdout.txt?raw"
-import lesson86Diagnostic from "../../../../examples/tour/lessons/abstraction-generic-adt-use/diagnostic.ssrg?raw"
-import lesson86DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-use/diagnostic.txt?raw"
-
-import lesson87Source from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/main.ssrg?raw"
-import lesson87Output from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/stdout.txt?raw"
-import lesson87Exercise from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/exercise.ssrg?raw"
-import lesson87ExerciseOutput from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/exercise.stdout.txt?raw"
-import lesson87Diagnostic from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/diagnostic.ssrg?raw"
-import lesson87DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/diagnostic.txt?raw"
-
-import lesson88Source from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/main.ssrg?raw"
-import lesson88Output from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/stdout.txt?raw"
-import lesson88Exercise from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/exercise.ssrg?raw"
-import lesson88ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/exercise.stdout.txt?raw"
-import lesson88Diagnostic from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/diagnostic.ssrg?raw"
-import lesson88DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/diagnostic.txt?raw"
-
-import lesson89Source from "../../../../examples/tour/lessons/abstraction-trait-operation/main.ssrg?raw"
-import lesson89Output from "../../../../examples/tour/lessons/abstraction-trait-operation/stdout.txt?raw"
-import lesson89Exercise from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.ssrg?raw"
-import lesson89ExerciseOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.stdout.txt?raw"
-import lesson89Diagnostic from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.ssrg?raw"
-import lesson89DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.txt?raw"
-
-import lesson90Source from "../../../../examples/tour/lessons/abstraction-user-instance/main.ssrg?raw"
-import lesson90Output from "../../../../examples/tour/lessons/abstraction-user-instance/stdout.txt?raw"
-import lesson90Exercise from "../../../../examples/tour/lessons/abstraction-user-instance/exercise.ssrg?raw"
-import lesson90ExerciseOutput from "../../../../examples/tour/lessons/abstraction-user-instance/exercise.stdout.txt?raw"
-import lesson90Diagnostic from "../../../../examples/tour/lessons/abstraction-user-instance/diagnostic.ssrg?raw"
-import lesson90DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-user-instance/diagnostic.txt?raw"
-
-import lesson91Source from "../../../../examples/tour/lessons/abstraction-where-constraint/main.ssrg?raw"
-import lesson91Output from "../../../../examples/tour/lessons/abstraction-where-constraint/stdout.txt?raw"
-import lesson91Exercise from "../../../../examples/tour/lessons/abstraction-where-constraint/exercise.ssrg?raw"
-import lesson91ExerciseOutput from "../../../../examples/tour/lessons/abstraction-where-constraint/exercise.stdout.txt?raw"
-import lesson91Diagnostic from "../../../../examples/tour/lessons/abstraction-where-constraint/diagnostic.ssrg?raw"
-import lesson91DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-where-constraint/diagnostic.txt?raw"
-
-import lesson92Source from "../../../../examples/tour/lessons/abstraction-instance-selection/main.ssrg?raw"
-import lesson92Output from "../../../../examples/tour/lessons/abstraction-instance-selection/stdout.txt?raw"
-import lesson92Exercise from "../../../../examples/tour/lessons/abstraction-instance-selection/exercise.ssrg?raw"
-import lesson92ExerciseOutput from "../../../../examples/tour/lessons/abstraction-instance-selection/exercise.stdout.txt?raw"
-import lesson92Diagnostic from "../../../../examples/tour/lessons/abstraction-instance-selection/diagnostic.ssrg?raw"
-import lesson92DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-instance-selection/diagnostic.txt?raw"
-
-import lesson93Source from "../../../../examples/tour/lessons/abstraction-functor-map/main.ssrg?raw"
-import lesson93Output from "../../../../examples/tour/lessons/abstraction-functor-map/stdout.txt?raw"
-import lesson93Exercise from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.ssrg?raw"
-import lesson93ExerciseOutput from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.stdout.txt?raw"
-import lesson93Diagnostic from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.ssrg?raw"
-import lesson93DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.txt?raw"
-
-import lesson94Source from "../../../../examples/tour/lessons/abstraction-applicative-apply/main.ssrg?raw"
-import lesson94Output from "../../../../examples/tour/lessons/abstraction-applicative-apply/stdout.txt?raw"
-import lesson94Exercise from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.ssrg?raw"
-import lesson94ExerciseOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.stdout.txt?raw"
-import lesson94Diagnostic from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.ssrg?raw"
-import lesson94DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.txt?raw"
-
-import lesson95Source from "../../../../examples/tour/lessons/abstraction-monad-bind/main.ssrg?raw"
-import lesson95Output from "../../../../examples/tour/lessons/abstraction-monad-bind/stdout.txt?raw"
-import lesson95Exercise from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.ssrg?raw"
-import lesson95ExerciseOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.stdout.txt?raw"
-import lesson95Diagnostic from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.ssrg?raw"
-import lesson95DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.txt?raw"
-
-import lesson96Source from "../../../../examples/tour/lessons/abstraction-type-comparison/main.ssrg?raw"
-import lesson96Output from "../../../../examples/tour/lessons/abstraction-type-comparison/stdout.txt?raw"
-import lesson96Exercise from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.ssrg?raw"
-import lesson96ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.stdout.txt?raw"
-import lesson96Diagnostic from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.ssrg?raw"
-import lesson96DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.txt?raw"
-
-import lesson97Source from "../../../../examples/tour/lessons/abstraction-signal-contract/main.ssrg?raw"
-import lesson97Output from "../../../../examples/tour/lessons/abstraction-signal-contract/stdout.txt?raw"
-import lesson97Exercise from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.ssrg?raw"
-import lesson97ExerciseOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.stdout.txt?raw"
-import lesson97Diagnostic from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.ssrg?raw"
-import lesson97DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.txt?raw"
-
-import lesson98Source from "../../../../examples/tour/lessons/abstraction-impl-method/main.ssrg?raw"
-import lesson98Output from "../../../../examples/tour/lessons/abstraction-impl-method/stdout.txt?raw"
-import lesson98Exercise from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.ssrg?raw"
-import lesson98ExerciseOutput from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.stdout.txt?raw"
-import lesson98Diagnostic from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.ssrg?raw"
-import lesson98DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.txt?raw"
-
-import lesson99Source from "../../../../examples/tour/lessons/abstraction-custom-operator/main.ssrg?raw"
-import lesson99Output from "../../../../examples/tour/lessons/abstraction-custom-operator/stdout.txt?raw"
-import lesson99Exercise from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.ssrg?raw"
-import lesson99ExerciseOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.stdout.txt?raw"
-import lesson99Diagnostic from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.ssrg?raw"
-import lesson99DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.txt?raw"
-
-import lesson100Source from "../../../../examples/tour/lessons/signals-value-difference/main.ssrg?raw"
-import lesson100Output from "../../../../examples/tour/lessons/signals-value-difference/stdout.txt?raw"
-import lesson100Exercise from "../../../../examples/tour/lessons/signals-value-difference/exercise.ssrg?raw"
-import lesson100ExerciseOutput from "../../../../examples/tour/lessons/signals-value-difference/exercise.stdout.txt?raw"
-import lesson100Diagnostic from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.ssrg?raw"
-import lesson100DiagnosticOutput from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.txt?raw"
-
-import lesson101Source from "../../../../examples/tour/lessons/signals-make/main.ssrg?raw"
-import lesson101Output from "../../../../examples/tour/lessons/signals-make/stdout.txt?raw"
-import lesson101Exercise from "../../../../examples/tour/lessons/signals-make/exercise.ssrg?raw"
-import lesson101ExerciseOutput from "../../../../examples/tour/lessons/signals-make/exercise.stdout.txt?raw"
-import lesson101Diagnostic from "../../../../examples/tour/lessons/signals-make/diagnostic.ssrg?raw"
-import lesson101DiagnosticOutput from "../../../../examples/tour/lessons/signals-make/diagnostic.txt?raw"
-
-import lesson102Source from "../../../../examples/tour/lessons/signals-readonly-coercion/main.ssrg?raw"
-import lesson102Output from "../../../../examples/tour/lessons/signals-readonly-coercion/stdout.txt?raw"
-import lesson102Exercise from "../../../../examples/tour/lessons/signals-readonly-coercion/exercise.ssrg?raw"
-import lesson102ExerciseOutput from "../../../../examples/tour/lessons/signals-readonly-coercion/exercise.stdout.txt?raw"
-import lesson102Diagnostic from "../../../../examples/tour/lessons/signals-readonly-coercion/diagnostic.ssrg?raw"
-import lesson102DiagnosticOutput from "../../../../examples/tour/lessons/signals-readonly-coercion/diagnostic.txt?raw"
-
-import lesson103Source from "../../../../examples/tour/lessons/signals-read-operator/main.ssrg?raw"
-import lesson103Output from "../../../../examples/tour/lessons/signals-read-operator/stdout.txt?raw"
-import lesson103Exercise from "../../../../examples/tour/lessons/signals-read-operator/exercise.ssrg?raw"
-import lesson103ExerciseOutput from "../../../../examples/tour/lessons/signals-read-operator/exercise.stdout.txt?raw"
-import lesson103Diagnostic from "../../../../examples/tour/lessons/signals-read-operator/diagnostic.ssrg?raw"
-import lesson103DiagnosticOutput from "../../../../examples/tour/lessons/signals-read-operator/diagnostic.txt?raw"
-
-import lesson104Source from "../../../../examples/tour/lessons/signals-set/main.ssrg?raw"
-import lesson104Output from "../../../../examples/tour/lessons/signals-set/stdout.txt?raw"
-import lesson104Exercise from "../../../../examples/tour/lessons/signals-set/exercise.ssrg?raw"
-import lesson104ExerciseOutput from "../../../../examples/tour/lessons/signals-set/exercise.stdout.txt?raw"
-import lesson104Diagnostic from "../../../../examples/tour/lessons/signals-set/diagnostic.ssrg?raw"
-import lesson104DiagnosticOutput from "../../../../examples/tour/lessons/signals-set/diagnostic.txt?raw"
-
-import lesson105Source from "../../../../examples/tour/lessons/signals-write-operator/main.ssrg?raw"
-import lesson105Output from "../../../../examples/tour/lessons/signals-write-operator/stdout.txt?raw"
-import lesson105Exercise from "../../../../examples/tour/lessons/signals-write-operator/exercise.ssrg?raw"
-import lesson105ExerciseOutput from "../../../../examples/tour/lessons/signals-write-operator/exercise.stdout.txt?raw"
-import lesson105Diagnostic from "../../../../examples/tour/lessons/signals-write-operator/diagnostic.ssrg?raw"
-import lesson105DiagnosticOutput from "../../../../examples/tour/lessons/signals-write-operator/diagnostic.txt?raw"
-
-import lesson106Source from "../../../../examples/tour/lessons/signals-observable-update/main.ssrg?raw"
-import lesson106Output from "../../../../examples/tour/lessons/signals-observable-update/stdout.txt?raw"
-import lesson106Exercise from "../../../../examples/tour/lessons/signals-observable-update/exercise.ssrg?raw"
-import lesson106ExerciseOutput from "../../../../examples/tour/lessons/signals-observable-update/exercise.stdout.txt?raw"
-import lesson106Diagnostic from "../../../../examples/tour/lessons/signals-observable-update/diagnostic.ssrg?raw"
-import lesson106DiagnosticOutput from "../../../../examples/tour/lessons/signals-observable-update/diagnostic.txt?raw"
-
-import lesson107Source from "../../../../examples/tour/lessons/signals-map/main.ssrg?raw"
-import lesson107Output from "../../../../examples/tour/lessons/signals-map/stdout.txt?raw"
-import lesson107Exercise from "../../../../examples/tour/lessons/signals-map/exercise.ssrg?raw"
-import lesson107ExerciseOutput from "../../../../examples/tour/lessons/signals-map/exercise.stdout.txt?raw"
-import lesson107Diagnostic from "../../../../examples/tour/lessons/signals-map/diagnostic.ssrg?raw"
-import lesson107DiagnosticOutput from "../../../../examples/tour/lessons/signals-map/diagnostic.txt?raw"
-
-import lesson108Source from "../../../../examples/tour/lessons/signals-functor-operator/main.ssrg?raw"
-import lesson108Output from "../../../../examples/tour/lessons/signals-functor-operator/stdout.txt?raw"
-import lesson108Exercise from "../../../../examples/tour/lessons/signals-functor-operator/exercise.ssrg?raw"
-import lesson108ExerciseOutput from "../../../../examples/tour/lessons/signals-functor-operator/exercise.stdout.txt?raw"
-import lesson108Diagnostic from "../../../../examples/tour/lessons/signals-functor-operator/diagnostic.ssrg?raw"
-import lesson108DiagnosticOutput from "../../../../examples/tour/lessons/signals-functor-operator/diagnostic.txt?raw"
-
-import lesson109Source from "../../../../examples/tour/lessons/signals-constant-pure/main.ssrg?raw"
-import lesson109Output from "../../../../examples/tour/lessons/signals-constant-pure/stdout.txt?raw"
-import lesson109Exercise from "../../../../examples/tour/lessons/signals-constant-pure/exercise.ssrg?raw"
-import lesson109ExerciseOutput from "../../../../examples/tour/lessons/signals-constant-pure/exercise.stdout.txt?raw"
-import lesson109Diagnostic from "../../../../examples/tour/lessons/signals-constant-pure/diagnostic.ssrg?raw"
-import lesson109DiagnosticOutput from "../../../../examples/tour/lessons/signals-constant-pure/diagnostic.txt?raw"
-
-import lesson110Source from "../../../../examples/tour/lessons/signals-combine/main.ssrg?raw"
-import lesson110Output from "../../../../examples/tour/lessons/signals-combine/stdout.txt?raw"
-import lesson110Exercise from "../../../../examples/tour/lessons/signals-combine/exercise.ssrg?raw"
-import lesson110ExerciseOutput from "../../../../examples/tour/lessons/signals-combine/exercise.stdout.txt?raw"
-import lesson110Diagnostic from "../../../../examples/tour/lessons/signals-combine/diagnostic.ssrg?raw"
-import lesson110DiagnosticOutput from "../../../../examples/tour/lessons/signals-combine/diagnostic.txt?raw"
-
-import lesson111Source from "../../../../examples/tour/lessons/signals-applicative-glitch-free/main.ssrg?raw"
-import lesson111Output from "../../../../examples/tour/lessons/signals-applicative-glitch-free/stdout.txt?raw"
-import lesson111Exercise from "../../../../examples/tour/lessons/signals-applicative-glitch-free/exercise.ssrg?raw"
-import lesson111ExerciseOutput from "../../../../examples/tour/lessons/signals-applicative-glitch-free/exercise.stdout.txt?raw"
-import lesson111Diagnostic from "../../../../examples/tour/lessons/signals-applicative-glitch-free/diagnostic.ssrg?raw"
-import lesson111DiagnosticOutput from "../../../../examples/tour/lessons/signals-applicative-glitch-free/diagnostic.txt?raw"
-
-import lesson112Source from "../../../../examples/tour/lessons/signals-monad-boundary/main.ssrg?raw"
-import lesson112Output from "../../../../examples/tour/lessons/signals-monad-boundary/stdout.txt?raw"
-import lesson112Exercise from "../../../../examples/tour/lessons/signals-monad-boundary/exercise.ssrg?raw"
-import lesson112ExerciseOutput from "../../../../examples/tour/lessons/signals-monad-boundary/exercise.stdout.txt?raw"
-import lesson112Diagnostic from "../../../../examples/tour/lessons/signals-monad-boundary/diagnostic.ssrg?raw"
-import lesson112DiagnosticOutput from "../../../../examples/tour/lessons/signals-monad-boundary/diagnostic.txt?raw"
-
-import lesson113Source from "../../../../examples/tour/lessons/signals-switch-map/main.ssrg?raw"
-import lesson113Output from "../../../../examples/tour/lessons/signals-switch-map/stdout.txt?raw"
-import lesson113Exercise from "../../../../examples/tour/lessons/signals-switch-map/exercise.ssrg?raw"
-import lesson113ExerciseOutput from "../../../../examples/tour/lessons/signals-switch-map/exercise.stdout.txt?raw"
-import lesson113Diagnostic from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.ssrg?raw"
-import lesson113DiagnosticOutput from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.txt?raw"
-
-import lesson114Source from "../../../../examples/tour/lessons/signals-handler-boundary/main.ssrg?raw"
-import lesson114Output from "../../../../examples/tour/lessons/signals-handler-boundary/stdout.txt?raw"
-import lesson114Exercise from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.ssrg?raw"
-import lesson114ExerciseOutput from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.stdout.txt?raw"
-import lesson114Diagnostic from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.ssrg?raw"
-import lesson114DiagnosticOutput from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.txt?raw"
-
-import lesson115Source from "../../../../examples/tour/lessons/web-html-value/main.ssrg?raw"
-import lesson115Output from "../../../../examples/tour/lessons/web-html-value/stdout.html?raw"
-import lesson115Exercise from "../../../../examples/tour/lessons/web-html-value/exercise.ssrg?raw"
-import lesson115ExerciseOutput from "../../../../examples/tour/lessons/web-html-value/exercise.stdout.txt?raw"
-import lesson115Diagnostic from "../../../../examples/tour/lessons/web-html-value/diagnostic.ssrg?raw"
-import lesson115DiagnosticOutput from "../../../../examples/tour/lessons/web-html-value/diagnostic.txt?raw"
-
-import lesson116Source from "../../../../examples/tour/lessons/web-text-attributes/main.ssrg?raw"
-import lesson116Output from "../../../../examples/tour/lessons/web-text-attributes/stdout.html?raw"
-import lesson116Exercise from "../../../../examples/tour/lessons/web-text-attributes/exercise.ssrg?raw"
-import lesson116ExerciseOutput from "../../../../examples/tour/lessons/web-text-attributes/exercise.stdout.txt?raw"
-import lesson116Diagnostic from "../../../../examples/tour/lessons/web-text-attributes/diagnostic.ssrg?raw"
-import lesson116DiagnosticOutput from "../../../../examples/tour/lessons/web-text-attributes/diagnostic.txt?raw"
-
-import lesson117Source from "../../../../examples/tour/lessons/web-style-class/main.ssrg?raw"
-import lesson117Output from "../../../../examples/tour/lessons/web-style-class/stdout.html?raw"
-import lesson117Exercise from "../../../../examples/tour/lessons/web-style-class/exercise.ssrg?raw"
-import lesson117ExerciseOutput from "../../../../examples/tour/lessons/web-style-class/exercise.stdout.txt?raw"
-import lesson117Diagnostic from "../../../../examples/tour/lessons/web-style-class/diagnostic.ssrg?raw"
-import lesson117DiagnosticOutput from "../../../../examples/tour/lessons/web-style-class/diagnostic.txt?raw"
-
-import lesson118Source from "../../../../examples/tour/lessons/web-tags-children/main.ssrg?raw"
-import lesson118Output from "../../../../examples/tour/lessons/web-tags-children/stdout.html?raw"
-import lesson118Exercise from "../../../../examples/tour/lessons/web-tags-children/exercise.ssrg?raw"
-import lesson118ExerciseOutput from "../../../../examples/tour/lessons/web-tags-children/exercise.stdout.txt?raw"
-import lesson118Diagnostic from "../../../../examples/tour/lessons/web-tags-children/diagnostic.ssrg?raw"
-import lesson118DiagnosticOutput from "../../../../examples/tour/lessons/web-tags-children/diagnostic.txt?raw"
-
-import lesson119Source from "../../../../examples/tour/lessons/web-component-definition/main.ssrg?raw"
-import lesson119Output from "../../../../examples/tour/lessons/web-component-definition/stdout.html?raw"
-import lesson119Exercise from "../../../../examples/tour/lessons/web-component-definition/exercise.ssrg?raw"
-import lesson119ExerciseOutput from "../../../../examples/tour/lessons/web-component-definition/exercise.stdout.txt?raw"
-import lesson119Diagnostic from "../../../../examples/tour/lessons/web-component-definition/diagnostic.ssrg?raw"
-import lesson119DiagnosticOutput from "../../../../examples/tour/lessons/web-component-definition/diagnostic.txt?raw"
-
-import lesson120Source from "../../../../examples/tour/lessons/web-component-children/main.ssrg?raw"
-import lesson120Output from "../../../../examples/tour/lessons/web-component-children/stdout.html?raw"
-import lesson120Exercise from "../../../../examples/tour/lessons/web-component-children/exercise.ssrg?raw"
-import lesson120ExerciseOutput from "../../../../examples/tour/lessons/web-component-children/exercise.stdout.txt?raw"
-import lesson120Diagnostic from "../../../../examples/tour/lessons/web-component-children/diagnostic.ssrg?raw"
-import lesson120DiagnosticOutput from "../../../../examples/tour/lessons/web-component-children/diagnostic.txt?raw"
-
-import lesson121Source from "../../../../examples/tour/lessons/web-component-props/main.ssrg?raw"
-import lesson121Output from "../../../../examples/tour/lessons/web-component-props/stdout.html?raw"
-import lesson121Exercise from "../../../../examples/tour/lessons/web-component-props/exercise.ssrg?raw"
-import lesson121ExerciseOutput from "../../../../examples/tour/lessons/web-component-props/exercise.stdout.txt?raw"
-import lesson121Diagnostic from "../../../../examples/tour/lessons/web-component-props/diagnostic.ssrg?raw"
-import lesson121DiagnosticOutput from "../../../../examples/tour/lessons/web-component-props/diagnostic.txt?raw"
-
-import lesson122Source from "../../../../examples/tour/lessons/web-link-image/main.ssrg?raw"
-import lesson122Output from "../../../../examples/tour/lessons/web-link-image/stdout.html?raw"
-import lesson122Exercise from "../../../../examples/tour/lessons/web-link-image/exercise.ssrg?raw"
-import lesson122ExerciseOutput from "../../../../examples/tour/lessons/web-link-image/exercise.stdout.txt?raw"
-import lesson122Diagnostic from "../../../../examples/tour/lessons/web-link-image/diagnostic.ssrg?raw"
-import lesson122DiagnosticOutput from "../../../../examples/tour/lessons/web-link-image/diagnostic.txt?raw"
-
-import lesson123Source from "../../../../examples/tour/lessons/web-click-action/main.ssrg?raw"
-import lesson123Output from "../../../../examples/tour/lessons/web-click-action/stdout.html?raw"
-import lesson123Exercise from "../../../../examples/tour/lessons/web-click-action/exercise.ssrg?raw"
-import lesson123ExerciseOutput from "../../../../examples/tour/lessons/web-click-action/exercise.stdout.txt?raw"
-import lesson123Diagnostic from "../../../../examples/tour/lessons/web-click-action/diagnostic.ssrg?raw"
-import lesson123DiagnosticOutput from "../../../../examples/tour/lessons/web-click-action/diagnostic.txt?raw"
-
-import lesson124Source from "../../../../examples/tour/lessons/web-input-action/main.ssrg?raw"
-import lesson124Output from "../../../../examples/tour/lessons/web-input-action/stdout.html?raw"
-import lesson124Exercise from "../../../../examples/tour/lessons/web-input-action/exercise.ssrg?raw"
-import lesson124ExerciseOutput from "../../../../examples/tour/lessons/web-input-action/exercise.stdout.txt?raw"
-import lesson124Diagnostic from "../../../../examples/tour/lessons/web-input-action/diagnostic.ssrg?raw"
-import lesson124DiagnosticOutput from "../../../../examples/tour/lessons/web-input-action/diagnostic.txt?raw"
-
-import lesson125Source from "../../../../examples/tour/lessons/web-change-action/main.ssrg?raw"
-import lesson125Output from "../../../../examples/tour/lessons/web-change-action/stdout.html?raw"
-import lesson125Exercise from "../../../../examples/tour/lessons/web-change-action/exercise.ssrg?raw"
-import lesson125ExerciseOutput from "../../../../examples/tour/lessons/web-change-action/exercise.stdout.txt?raw"
-import lesson125Diagnostic from "../../../../examples/tour/lessons/web-change-action/diagnostic.ssrg?raw"
-import lesson125DiagnosticOutput from "../../../../examples/tour/lessons/web-change-action/diagnostic.txt?raw"
-
-import lesson126Source from "../../../../examples/tour/lessons/web-form-submit/main.ssrg?raw"
-import lesson126Output from "../../../../examples/tour/lessons/web-form-submit/stdout.html?raw"
-import lesson126Exercise from "../../../../examples/tour/lessons/web-form-submit/exercise.ssrg?raw"
-import lesson126ExerciseOutput from "../../../../examples/tour/lessons/web-form-submit/exercise.stdout.txt?raw"
-import lesson126Diagnostic from "../../../../examples/tour/lessons/web-form-submit/diagnostic.ssrg?raw"
-import lesson126DiagnosticOutput from "../../../../examples/tour/lessons/web-form-submit/diagnostic.txt?raw"
-
-import lesson127Source from "../../../../examples/tour/lessons/web-signal-preview/main.ssrg?raw"
-import lesson127Output from "../../../../examples/tour/lessons/web-signal-preview/stdout.html?raw"
-import lesson127Exercise from "../../../../examples/tour/lessons/web-signal-preview/exercise.ssrg?raw"
-import lesson127ExerciseOutput from "../../../../examples/tour/lessons/web-signal-preview/exercise.stdout.txt?raw"
-import lesson127Diagnostic from "../../../../examples/tour/lessons/web-signal-preview/diagnostic.ssrg?raw"
-import lesson127DiagnosticOutput from "../../../../examples/tour/lessons/web-signal-preview/diagnostic.txt?raw"
-
-import lesson128Source from "../../../../examples/tour/lessons/web-dom-run/main.ssrg?raw"
-import lesson128Exercise from "../../../../examples/tour/lessons/web-dom-run/exercise.ssrg?raw"
-import lesson128ExerciseOutput from "../../../../examples/tour/lessons/web-dom-run/exercise.stdout.txt?raw"
-import lesson128Diagnostic from "../../../../examples/tour/lessons/web-dom-run/diagnostic.ssrg?raw"
-import lesson128DiagnosticOutput from "../../../../examples/tour/lessons/web-dom-run/diagnostic.txt?raw"
-
-import lesson129Source from "../../../../examples/tour/lessons/web-typed-action/main.ssrg?raw"
-import lesson129Output from "../../../../examples/tour/lessons/web-typed-action/stdout.html?raw"
-import lesson129Exercise from "../../../../examples/tour/lessons/web-typed-action/exercise.ssrg?raw"
-import lesson129ExerciseOutput from "../../../../examples/tour/lessons/web-typed-action/exercise.stdout.txt?raw"
-import lesson129Diagnostic from "../../../../examples/tour/lessons/web-typed-action/diagnostic.ssrg?raw"
-import lesson129DiagnosticOutput from "../../../../examples/tour/lessons/web-typed-action/diagnostic.txt?raw"
-
-import lesson130Source from "../../../../examples/tour/lessons/web-accessibility-label/main.ssrg?raw"
-import lesson130Output from "../../../../examples/tour/lessons/web-accessibility-label/stdout.html?raw"
-import lesson130Exercise from "../../../../examples/tour/lessons/web-accessibility-label/exercise.ssrg?raw"
-import lesson130ExerciseOutput from "../../../../examples/tour/lessons/web-accessibility-label/exercise.stdout.txt?raw"
-import lesson130Diagnostic from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.ssrg?raw"
-import lesson130DiagnosticOutput from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.txt?raw"
-
-import lesson131Source from "../../../../examples/tour/lessons/web-feature-state/main.ssrg?raw"
-import lesson131Exercise from "../../../../examples/tour/lessons/web-feature-state/exercise.ssrg?raw"
-import lesson131ExerciseOutput from "../../../../examples/tour/lessons/web-feature-state/exercise.stdout.txt?raw"
-import lesson131Diagnostic from "../../../../examples/tour/lessons/web-feature-state/diagnostic.ssrg?raw"
-import lesson131DiagnosticOutput from "../../../../examples/tour/lessons/web-feature-state/diagnostic.txt?raw"
-
-import lesson132Source from "../../../../examples/tour/lessons/applications-console-data/main.ssrg?raw"
-import lesson132Output from "../../../../examples/tour/lessons/applications-console-data/stdout.txt?raw"
-import lesson132Exercise from "../../../../examples/tour/lessons/applications-console-data/exercise.ssrg?raw"
-import lesson132ExerciseOutput from "../../../../examples/tour/lessons/applications-console-data/exercise.stdout.txt?raw"
-import lesson132Diagnostic from "../../../../examples/tour/lessons/applications-console-data/diagnostic.ssrg?raw"
-import lesson132DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-data/diagnostic.txt?raw"
-
-import lesson133Source from "../../../../examples/tour/lessons/applications-console-transform/main.ssrg?raw"
-import lesson133Output from "../../../../examples/tour/lessons/applications-console-transform/stdout.txt?raw"
-import lesson133Exercise from "../../../../examples/tour/lessons/applications-console-transform/exercise.ssrg?raw"
-import lesson133ExerciseOutput from "../../../../examples/tour/lessons/applications-console-transform/exercise.stdout.txt?raw"
-import lesson133Diagnostic from "../../../../examples/tour/lessons/applications-console-transform/diagnostic.ssrg?raw"
-import lesson133DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-transform/diagnostic.txt?raw"
-
-import lesson134Source from "../../../../examples/tour/lessons/applications-console-fallibility/main.ssrg?raw"
-import lesson134Output from "../../../../examples/tour/lessons/applications-console-fallibility/stdout.txt?raw"
-import lesson134Exercise from "../../../../examples/tour/lessons/applications-console-fallibility/exercise.ssrg?raw"
-import lesson134ExerciseOutput from "../../../../examples/tour/lessons/applications-console-fallibility/exercise.stdout.txt?raw"
-import lesson134Diagnostic from "../../../../examples/tour/lessons/applications-console-fallibility/diagnostic.ssrg?raw"
-import lesson134DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-fallibility/diagnostic.txt?raw"
-
-import lesson135Source from "../../../../examples/tour/lessons/applications-console-output/main.ssrg?raw"
-import lesson135Output from "../../../../examples/tour/lessons/applications-console-output/stdout.txt?raw"
-import lesson135Exercise from "../../../../examples/tour/lessons/applications-console-output/exercise.ssrg?raw"
-import lesson135ExerciseOutput from "../../../../examples/tour/lessons/applications-console-output/exercise.stdout.txt?raw"
-import lesson135Diagnostic from "../../../../examples/tour/lessons/applications-console-output/diagnostic.ssrg?raw"
-import lesson135DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-output/diagnostic.txt?raw"
-
-import lesson136Source from "../../../../examples/tour/lessons/applications-web-static/main.ssrg?raw"
-import lesson136Output from "../../../../examples/tour/lessons/applications-web-static/stdout.html?raw"
-import lesson136Exercise from "../../../../examples/tour/lessons/applications-web-static/exercise.ssrg?raw"
-import lesson136ExerciseOutput from "../../../../examples/tour/lessons/applications-web-static/exercise.stdout.html?raw"
-import lesson136Diagnostic from "../../../../examples/tour/lessons/applications-web-static/diagnostic.ssrg?raw"
-import lesson136DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-static/diagnostic.txt?raw"
-
-import lesson137Source from "../../../../examples/tour/lessons/applications-web-component/main.ssrg?raw"
-import lesson137Output from "../../../../examples/tour/lessons/applications-web-component/stdout.html?raw"
-import lesson137Exercise from "../../../../examples/tour/lessons/applications-web-component/exercise.ssrg?raw"
-import lesson137ExerciseOutput from "../../../../examples/tour/lessons/applications-web-component/exercise.stdout.html?raw"
-import lesson137Diagnostic from "../../../../examples/tour/lessons/applications-web-component/diagnostic.ssrg?raw"
-import lesson137DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-component/diagnostic.txt?raw"
-
-import lesson138Source from "../../../../examples/tour/lessons/applications-web-signal/main.ssrg?raw"
-import lesson138Output from "../../../../examples/tour/lessons/applications-web-signal/stdout.html?raw"
-import lesson138Exercise from "../../../../examples/tour/lessons/applications-web-signal/exercise.ssrg?raw"
-import lesson138ExerciseOutput from "../../../../examples/tour/lessons/applications-web-signal/exercise.stdout.html?raw"
-import lesson138Diagnostic from "../../../../examples/tour/lessons/applications-web-signal/diagnostic.ssrg?raw"
-import lesson138DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-signal/diagnostic.txt?raw"
-
-import lesson139Source from "../../../../examples/tour/lessons/applications-web-form-event/main.ssrg?raw"
-import lesson139Output from "../../../../examples/tour/lessons/applications-web-form-event/stdout.html?raw"
-import lesson139Exercise from "../../../../examples/tour/lessons/applications-web-form-event/exercise.ssrg?raw"
-import lesson139ExerciseOutput from "../../../../examples/tour/lessons/applications-web-form-event/exercise.stdout.html?raw"
-import lesson139Diagnostic from "../../../../examples/tour/lessons/applications-web-form-event/diagnostic.ssrg?raw"
-import lesson139DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-form-event/diagnostic.txt?raw"
-
-import lesson140Source from "../../../../examples/tour/lessons/applications-web-action/main.ssrg?raw"
-import lesson140Output from "../../../../examples/tour/lessons/applications-web-action/stdout.html?raw"
-import lesson140Exercise from "../../../../examples/tour/lessons/applications-web-action/exercise.ssrg?raw"
-import lesson140ExerciseOutput from "../../../../examples/tour/lessons/applications-web-action/exercise.stdout.txt?raw"
-import lesson140Diagnostic from "../../../../examples/tour/lessons/applications-web-action/diagnostic.ssrg?raw"
-import lesson140DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-action/diagnostic.txt?raw"
-
-import lesson141Source from "../../../../examples/tour/lessons/applications-web-validation/main.ssrg?raw"
-import lesson141Output from "../../../../examples/tour/lessons/applications-web-validation/stdout.html?raw"
-import lesson141Exercise from "../../../../examples/tour/lessons/applications-web-validation/exercise.ssrg?raw"
-import lesson141ExerciseOutput from "../../../../examples/tour/lessons/applications-web-validation/exercise.stdout.txt?raw"
-import lesson141Diagnostic from "../../../../examples/tour/lessons/applications-web-validation/diagnostic.ssrg?raw"
-import lesson141DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-validation/diagnostic.txt?raw"
-
-import lesson142Source from "../../../../examples/tour/lessons/applications-web-feature-ownership/main.ssrg?raw"
-import lesson142Output from "../../../../examples/tour/lessons/applications-web-feature-ownership/stdout.html?raw"
-import lesson142Exercise from "../../../../examples/tour/lessons/applications-web-feature-ownership/exercise.ssrg?raw"
-import lesson142ExerciseOutput from "../../../../examples/tour/lessons/applications-web-feature-ownership/exercise.stdout.html?raw"
-import lesson142Diagnostic from "../../../../examples/tour/lessons/applications-web-feature-ownership/diagnostic.ssrg?raw"
-import lesson142DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-feature-ownership/diagnostic.txt?raw"
-
-import lesson143Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson143Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
-
-import lesson144Source from "../../../../examples/tour/lessons/design-learning-map/main.ssrg?raw"
-import lesson144Output from "../../../../examples/tour/lessons/design-learning-map/stdout.txt?raw"
-import lesson144Exercise from "../../../../examples/tour/lessons/design-learning-map/exercise.ssrg?raw"
-import lesson144ExerciseOutput from "../../../../examples/tour/lessons/design-learning-map/exercise.stdout.txt?raw"
-import lesson144Diagnostic from "../../../../examples/tour/lessons/design-learning-map/diagnostic.ssrg?raw"
-import lesson144DiagnosticOutput from "../../../../examples/tour/lessons/design-learning-map/diagnostic.txt?raw"
-
-import lesson145Source from "../../../../examples/tour/lessons/design-type-constructor-kinds/main.ssrg?raw"
-import lesson145Output from "../../../../examples/tour/lessons/design-type-constructor-kinds/stdout.txt?raw"
-import lesson145Exercise from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.ssrg?raw"
-import lesson145ExerciseOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.stdout.txt?raw"
-import lesson145Diagnostic from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.ssrg?raw"
-import lesson145DiagnosticOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.txt?raw"
-
-import lesson146Source from "../../../../examples/tour/lessons/design-trait-evidence/main.ssrg?raw"
-import lesson146Output from "../../../../examples/tour/lessons/design-trait-evidence/stdout.txt?raw"
-import lesson146Exercise from "../../../../examples/tour/lessons/design-trait-evidence/exercise.ssrg?raw"
-import lesson146ExerciseOutput from "../../../../examples/tour/lessons/design-trait-evidence/exercise.stdout.txt?raw"
-import lesson146Diagnostic from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.ssrg?raw"
-import lesson146DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.txt?raw"
-
-import lesson147Source from "../../../../examples/tour/lessons/design-abstraction-laws/main.ssrg?raw"
-import lesson147Output from "../../../../examples/tour/lessons/design-abstraction-laws/stdout.txt?raw"
-import lesson147Exercise from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.ssrg?raw"
-import lesson147ExerciseOutput from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.stdout.txt?raw"
-import lesson147Diagnostic from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.ssrg?raw"
-import lesson147DiagnosticOutput from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.txt?raw"
-
-import lesson148Source from "../../../../examples/tour/lessons/design-trait-boundary/main.ssrg?raw"
-import lesson148Output from "../../../../examples/tour/lessons/design-trait-boundary/stdout.txt?raw"
-import lesson148Exercise from "../../../../examples/tour/lessons/design-trait-boundary/exercise.ssrg?raw"
-import lesson148ExerciseOutput from "../../../../examples/tour/lessons/design-trait-boundary/exercise.stdout.txt?raw"
-import lesson148Diagnostic from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.ssrg?raw"
-import lesson148DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.txt?raw"
+import lesson1Source from "../../../../examples/tour/lessons/02-values-and-bindings/main.ssrg?raw"
+import lesson1Output from "../../../../examples/tour/lessons/02-values-and-bindings/stdout.txt?raw"
+import lesson1Exercise from "../../../../examples/tour/lessons/02-values-and-bindings/exercise.ssrg?raw"
+import lesson1ExerciseOutput from "../../../../examples/tour/lessons/02-values-and-bindings/exercise.stdout.txt?raw"
+import lesson1Diagnostic from "../../../../examples/tour/lessons/02-values-and-bindings/diagnostic.ssrg?raw"
+import lesson1DiagnosticOutput from "../../../../examples/tour/lessons/02-values-and-bindings/diagnostic.txt?raw"
+
+import lesson2Source from "../../../../examples/tour/lessons/if-expression/main.ssrg?raw"
+import lesson2Output from "../../../../examples/tour/lessons/if-expression/stdout.txt?raw"
+import lesson2Exercise from "../../../../examples/tour/lessons/if-expression/exercise.ssrg?raw"
+import lesson2ExerciseOutput from "../../../../examples/tour/lessons/if-expression/exercise.stdout.txt?raw"
+import lesson2Diagnostic from "../../../../examples/tour/lessons/if-expression/diagnostic.ssrg?raw"
+import lesson2DiagnosticOutput from "../../../../examples/tour/lessons/if-expression/diagnostic.txt?raw"
+
+import lesson3Source from "../../../../examples/tour/lessons/03-function-definitions/main.ssrg?raw"
+import lesson3Output from "../../../../examples/tour/lessons/03-function-definitions/stdout.txt?raw"
+import lesson3Exercise from "../../../../examples/tour/lessons/03-function-definitions/exercise.ssrg?raw"
+import lesson3ExerciseOutput from "../../../../examples/tour/lessons/03-function-definitions/exercise.stdout.txt?raw"
+import lesson3Diagnostic from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.ssrg?raw"
+import lesson3DiagnosticOutput from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.txt?raw"
+
+import lesson4Source from "../../../../examples/tour/lessons/05-pipelines/main.ssrg?raw"
+import lesson4Output from "../../../../examples/tour/lessons/05-pipelines/stdout.txt?raw"
+import lesson4Exercise from "../../../../examples/tour/lessons/05-pipelines/exercise.ssrg?raw"
+import lesson4ExerciseOutput from "../../../../examples/tour/lessons/05-pipelines/exercise.stdout.txt?raw"
+import lesson4Diagnostic from "../../../../examples/tour/lessons/05-pipelines/diagnostic.ssrg?raw"
+import lesson4DiagnosticOutput from "../../../../examples/tour/lessons/05-pipelines/diagnostic.txt?raw"
+
+import lesson5Source from "../../../../examples/tour/lessons/tuple-and-record/main.ssrg?raw"
+import lesson5Output from "../../../../examples/tour/lessons/tuple-and-record/stdout.txt?raw"
+import lesson5Exercise from "../../../../examples/tour/lessons/tuple-and-record/exercise.ssrg?raw"
+import lesson5ExerciseOutput from "../../../../examples/tour/lessons/tuple-and-record/exercise.stdout.txt?raw"
+import lesson5Diagnostic from "../../../../examples/tour/lessons/tuple-and-record/diagnostic.ssrg?raw"
+import lesson5DiagnosticOutput from "../../../../examples/tour/lessons/tuple-and-record/diagnostic.txt?raw"
+
+import lesson6Source from "../../../../examples/tour/lessons/06-records-and-structs/main.ssrg?raw"
+import lesson6Output from "../../../../examples/tour/lessons/06-records-and-structs/stdout.txt?raw"
+import lesson6Exercise from "../../../../examples/tour/lessons/06-records-and-structs/exercise.ssrg?raw"
+import lesson6ExerciseOutput from "../../../../examples/tour/lessons/06-records-and-structs/exercise.stdout.txt?raw"
+import lesson6Diagnostic from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.ssrg?raw"
+import lesson6DiagnosticOutput from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.txt?raw"
+
+import lesson7Source from "../../../../examples/tour/lessons/adt-definition/main.ssrg?raw"
+import lesson7Output from "../../../../examples/tour/lessons/adt-definition/stdout.txt?raw"
+import lesson7Exercise from "../../../../examples/tour/lessons/adt-definition/exercise.ssrg?raw"
+import lesson7ExerciseOutput from "../../../../examples/tour/lessons/adt-definition/exercise.stdout.txt?raw"
+import lesson7Diagnostic from "../../../../examples/tour/lessons/adt-definition/diagnostic.ssrg?raw"
+import lesson7DiagnosticOutput from "../../../../examples/tour/lessons/adt-definition/diagnostic.txt?raw"
+
+import lesson8Source from "../../../../examples/tour/lessons/07-adts-and-patterns/main.ssrg?raw"
+import lesson8Output from "../../../../examples/tour/lessons/07-adts-and-patterns/stdout.txt?raw"
+import lesson8Exercise from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.ssrg?raw"
+import lesson8ExerciseOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.stdout.txt?raw"
+import lesson8Diagnostic from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.ssrg?raw"
+import lesson8DiagnosticOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.txt?raw"
+
+import lesson9Source from "../../../../examples/tour/lessons/exhaustive-match/main.ssrg?raw"
+import lesson9Output from "../../../../examples/tour/lessons/exhaustive-match/stdout.txt?raw"
+import lesson9Exercise from "../../../../examples/tour/lessons/exhaustive-match/exercise.ssrg?raw"
+import lesson9ExerciseOutput from "../../../../examples/tour/lessons/exhaustive-match/exercise.stdout.txt?raw"
+import lesson9Diagnostic from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.ssrg?raw"
+import lesson9DiagnosticOutput from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.txt?raw"
+
+import lesson10Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
+import lesson10Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
+import lesson10Exercise from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.ssrg?raw"
+import lesson10ExerciseOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.stdout.txt?raw"
+import lesson10Diagnostic from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.ssrg?raw"
+import lesson10DiagnosticOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.txt?raw"
+
+import lesson11Source from "../../../../examples/tour/lessons/collection-pipeline/main.ssrg?raw"
+import lesson11Output from "../../../../examples/tour/lessons/collection-pipeline/stdout.txt?raw"
+import lesson11Exercise from "../../../../examples/tour/lessons/collection-pipeline/exercise.ssrg?raw"
+import lesson11ExerciseOutput from "../../../../examples/tour/lessons/collection-pipeline/exercise.stdout.txt?raw"
+import lesson11Diagnostic from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.ssrg?raw"
+import lesson11DiagnosticOutput from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.txt?raw"
+
+import lesson12Source from "../../../../examples/tour/lessons/maybe-match/main.ssrg?raw"
+import lesson12Output from "../../../../examples/tour/lessons/maybe-match/stdout.txt?raw"
+import lesson12Exercise from "../../../../examples/tour/lessons/maybe-match/exercise.ssrg?raw"
+import lesson12ExerciseOutput from "../../../../examples/tour/lessons/maybe-match/exercise.stdout.txt?raw"
+import lesson12Diagnostic from "../../../../examples/tour/lessons/maybe-match/diagnostic.ssrg?raw"
+import lesson12DiagnosticOutput from "../../../../examples/tour/lessons/maybe-match/diagnostic.txt?raw"
+
+import lesson13Source from "../../../../examples/tour/lessons/maybe-short-circuit/main.ssrg?raw"
+import lesson13Output from "../../../../examples/tour/lessons/maybe-short-circuit/stdout.txt?raw"
+import lesson13Exercise from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.ssrg?raw"
+import lesson13ExerciseOutput from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.stdout.txt?raw"
+import lesson13Diagnostic from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.ssrg?raw"
+import lesson13DiagnosticOutput from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.txt?raw"
+
+import lesson14Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
+import lesson14Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+import lesson14Exercise from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.ssrg?raw"
+import lesson14ExerciseOutput from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.stdout.txt?raw"
+import lesson14Diagnostic from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.ssrg?raw"
+import lesson14DiagnosticOutput from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.txt?raw"
+
+import lesson15Source from "../../../../examples/tour/lessons/either-map-error/main.ssrg?raw"
+import lesson15Output from "../../../../examples/tour/lessons/either-map-error/stdout.txt?raw"
+import lesson15Exercise from "../../../../examples/tour/lessons/either-map-error/exercise.ssrg?raw"
+import lesson15ExerciseOutput from "../../../../examples/tour/lessons/either-map-error/exercise.stdout.txt?raw"
+import lesson15Diagnostic from "../../../../examples/tour/lessons/either-map-error/diagnostic.ssrg?raw"
+import lesson15DiagnosticOutput from "../../../../examples/tour/lessons/either-map-error/diagnostic.txt?raw"
+
+import lesson16Source from "../../../../examples/tour/lessons/effect-pure-vs-effect/main.ssrg?raw"
+import lesson16Output from "../../../../examples/tour/lessons/effect-pure-vs-effect/stdout.txt?raw"
+import lesson16Exercise from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.ssrg?raw"
+import lesson16ExerciseOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.stdout.txt?raw"
+import lesson16Diagnostic from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.ssrg?raw"
+import lesson16DiagnosticOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.txt?raw"
+
+import lesson17Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
+import lesson17Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+import lesson17Exercise from "../../../../examples/tour/lessons/10-effects-and-do/exercise.ssrg?raw"
+import lesson17ExerciseOutput from "../../../../examples/tour/lessons/10-effects-and-do/exercise.stdout.txt?raw"
+import lesson17Diagnostic from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.ssrg?raw"
+import lesson17DiagnosticOutput from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.txt?raw"
+
+import lesson18Source from "../../../../examples/tour/lessons/effect-failure-short-circuit/main.ssrg?raw"
+import lesson18Output from "../../../../examples/tour/lessons/effect-failure-short-circuit/stdout.txt?raw"
+import lesson18Failure from "../../../../examples/tour/lessons/effect-failure-short-circuit/failure.txt?raw"
+import lesson18Exercise from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.ssrg?raw"
+import lesson18ExerciseOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.stdout.txt?raw"
+import lesson18Diagnostic from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.ssrg?raw"
+import lesson18DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.txt?raw"
+
+import lesson19Source from "../../../../examples/tour/lessons/effect-map-error/main.ssrg?raw"
+import lesson19Output from "../../../../examples/tour/lessons/effect-map-error/stdout.txt?raw"
+import lesson19Exercise from "../../../../examples/tour/lessons/effect-map-error/exercise.ssrg?raw"
+import lesson19ExerciseOutput from "../../../../examples/tour/lessons/effect-map-error/exercise.stdout.txt?raw"
+import lesson19Diagnostic from "../../../../examples/tour/lessons/effect-map-error/diagnostic.ssrg?raw"
+import lesson19DiagnosticOutput from "../../../../examples/tour/lessons/effect-map-error/diagnostic.txt?raw"
+
+import lesson20Source from "../../../../examples/tour/lessons/effect-with-capability/main.ssrg?raw"
+import lesson20Output from "../../../../examples/tour/lessons/effect-with-capability/stdout.txt?raw"
+import lesson20Exercise from "../../../../examples/tour/lessons/effect-with-capability/exercise.ssrg?raw"
+import lesson20ExerciseOutput from "../../../../examples/tour/lessons/effect-with-capability/exercise.stdout.txt?raw"
+import lesson20Diagnostic from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.ssrg?raw"
+import lesson20DiagnosticOutput from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.txt?raw"
+
+import lesson21Source from "../../../../examples/tour/lessons/abstraction-type-parameter/main.ssrg?raw"
+import lesson21Output from "../../../../examples/tour/lessons/abstraction-type-parameter/stdout.txt?raw"
+import lesson21Exercise from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.ssrg?raw"
+import lesson21ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.stdout.txt?raw"
+import lesson21Diagnostic from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.ssrg?raw"
+import lesson21DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.txt?raw"
+
+import lesson22Source from "../../../../examples/tour/lessons/abstraction-trait-operation/main.ssrg?raw"
+import lesson22Output from "../../../../examples/tour/lessons/abstraction-trait-operation/stdout.txt?raw"
+import lesson22Exercise from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.ssrg?raw"
+import lesson22ExerciseOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.stdout.txt?raw"
+import lesson22Diagnostic from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.ssrg?raw"
+import lesson22DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.txt?raw"
+
+import lesson23Source from "../../../../examples/tour/lessons/signals-value-difference/main.ssrg?raw"
+import lesson23Output from "../../../../examples/tour/lessons/signals-value-difference/stdout.txt?raw"
+import lesson23Exercise from "../../../../examples/tour/lessons/signals-value-difference/exercise.ssrg?raw"
+import lesson23ExerciseOutput from "../../../../examples/tour/lessons/signals-value-difference/exercise.stdout.txt?raw"
+import lesson23Diagnostic from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.ssrg?raw"
+import lesson23DiagnosticOutput from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.txt?raw"
+
+import lesson24Source from "../../../../examples/tour/lessons/signals-write-operator/main.ssrg?raw"
+import lesson24Output from "../../../../examples/tour/lessons/signals-write-operator/stdout.txt?raw"
+import lesson24Exercise from "../../../../examples/tour/lessons/signals-write-operator/exercise.ssrg?raw"
+import lesson24ExerciseOutput from "../../../../examples/tour/lessons/signals-write-operator/exercise.stdout.txt?raw"
+import lesson24Diagnostic from "../../../../examples/tour/lessons/signals-write-operator/diagnostic.ssrg?raw"
+import lesson24DiagnosticOutput from "../../../../examples/tour/lessons/signals-write-operator/diagnostic.txt?raw"
+
+import lesson25Source from "../../../../examples/tour/lessons/signals-combine/main.ssrg?raw"
+import lesson25Output from "../../../../examples/tour/lessons/signals-combine/stdout.txt?raw"
+import lesson25Exercise from "../../../../examples/tour/lessons/signals-combine/exercise.ssrg?raw"
+import lesson25ExerciseOutput from "../../../../examples/tour/lessons/signals-combine/exercise.stdout.txt?raw"
+import lesson25Diagnostic from "../../../../examples/tour/lessons/signals-combine/diagnostic.ssrg?raw"
+import lesson25DiagnosticOutput from "../../../../examples/tour/lessons/signals-combine/diagnostic.txt?raw"
+
+import lesson26Source from "../../../../examples/tour/lessons/signals-handler-boundary/main.ssrg?raw"
+import lesson26Output from "../../../../examples/tour/lessons/signals-handler-boundary/stdout.txt?raw"
+import lesson26Exercise from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.ssrg?raw"
+import lesson26ExerciseOutput from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.stdout.txt?raw"
+import lesson26Diagnostic from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.ssrg?raw"
+import lesson26DiagnosticOutput from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.txt?raw"
+
+import lesson27Source from "../../../../examples/tour/lessons/web-html-value/main.ssrg?raw"
+import lesson27Output from "../../../../examples/tour/lessons/web-html-value/stdout.html?raw"
+import lesson27Exercise from "../../../../examples/tour/lessons/web-html-value/exercise.ssrg?raw"
+import lesson27ExerciseOutput from "../../../../examples/tour/lessons/web-html-value/exercise.stdout.txt?raw"
+import lesson27Diagnostic from "../../../../examples/tour/lessons/web-html-value/diagnostic.ssrg?raw"
+import lesson27DiagnosticOutput from "../../../../examples/tour/lessons/web-html-value/diagnostic.txt?raw"
+
+import lesson28Source from "../../../../examples/tour/lessons/web-component-props/main.ssrg?raw"
+import lesson28Output from "../../../../examples/tour/lessons/web-component-props/stdout.html?raw"
+import lesson28Exercise from "../../../../examples/tour/lessons/web-component-props/exercise.ssrg?raw"
+import lesson28ExerciseOutput from "../../../../examples/tour/lessons/web-component-props/exercise.stdout.txt?raw"
+import lesson28Diagnostic from "../../../../examples/tour/lessons/web-component-props/diagnostic.ssrg?raw"
+import lesson28DiagnosticOutput from "../../../../examples/tour/lessons/web-component-props/diagnostic.txt?raw"
+
+import lesson29Source from "../../../../examples/tour/lessons/web-typed-action/main.ssrg?raw"
+import lesson29Output from "../../../../examples/tour/lessons/web-typed-action/stdout.html?raw"
+import lesson29Exercise from "../../../../examples/tour/lessons/web-typed-action/exercise.ssrg?raw"
+import lesson29ExerciseOutput from "../../../../examples/tour/lessons/web-typed-action/exercise.stdout.txt?raw"
+import lesson29Diagnostic from "../../../../examples/tour/lessons/web-typed-action/diagnostic.ssrg?raw"
+import lesson29DiagnosticOutput from "../../../../examples/tour/lessons/web-typed-action/diagnostic.txt?raw"
+
+import lesson30Source from "../../../../examples/tour/lessons/web-form-submit/main.ssrg?raw"
+import lesson30Output from "../../../../examples/tour/lessons/web-form-submit/stdout.html?raw"
+import lesson30Exercise from "../../../../examples/tour/lessons/web-form-submit/exercise.ssrg?raw"
+import lesson30ExerciseOutput from "../../../../examples/tour/lessons/web-form-submit/exercise.stdout.txt?raw"
+import lesson30Diagnostic from "../../../../examples/tour/lessons/web-form-submit/diagnostic.ssrg?raw"
+import lesson30DiagnosticOutput from "../../../../examples/tour/lessons/web-form-submit/diagnostic.txt?raw"
+
+import lesson31Source from "../../../../examples/tour/lessons/web-dom-run/main.ssrg?raw"
+import lesson31Exercise from "../../../../examples/tour/lessons/web-dom-run/exercise.ssrg?raw"
+import lesson31ExerciseOutput from "../../../../examples/tour/lessons/web-dom-run/exercise.stdout.txt?raw"
+import lesson31Diagnostic from "../../../../examples/tour/lessons/web-dom-run/diagnostic.ssrg?raw"
+import lesson31DiagnosticOutput from "../../../../examples/tour/lessons/web-dom-run/diagnostic.txt?raw"
+
+import lesson32Source from "../../../../examples/tour/lessons/applications-console-data/main.ssrg?raw"
+import lesson32Output from "../../../../examples/tour/lessons/applications-console-data/stdout.txt?raw"
+import lesson32Exercise from "../../../../examples/tour/lessons/applications-console-data/exercise.ssrg?raw"
+import lesson32ExerciseOutput from "../../../../examples/tour/lessons/applications-console-data/exercise.stdout.txt?raw"
+import lesson32Diagnostic from "../../../../examples/tour/lessons/applications-console-data/diagnostic.ssrg?raw"
+import lesson32DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-data/diagnostic.txt?raw"
+
+import lesson33Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson33Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+
+import lesson34Source from "../../../../examples/tour/lessons/design-learning-map/main.ssrg?raw"
+import lesson34Output from "../../../../examples/tour/lessons/design-learning-map/stdout.txt?raw"
+import lesson34Exercise from "../../../../examples/tour/lessons/design-learning-map/exercise.ssrg?raw"
+import lesson34ExerciseOutput from "../../../../examples/tour/lessons/design-learning-map/exercise.stdout.txt?raw"
+import lesson34Diagnostic from "../../../../examples/tour/lessons/design-learning-map/diagnostic.ssrg?raw"
+import lesson34DiagnosticOutput from "../../../../examples/tour/lessons/design-learning-map/diagnostic.txt?raw"
+
+import lesson35Source from "../../../../examples/tour/lessons/abstraction-functor-map/main.ssrg?raw"
+import lesson35Output from "../../../../examples/tour/lessons/abstraction-functor-map/stdout.txt?raw"
+import lesson35Exercise from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.ssrg?raw"
+import lesson35ExerciseOutput from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.stdout.txt?raw"
+import lesson35Diagnostic from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.ssrg?raw"
+import lesson35DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.txt?raw"
+
+import lesson36Source from "../../../../examples/tour/lessons/abstraction-applicative-apply/main.ssrg?raw"
+import lesson36Output from "../../../../examples/tour/lessons/abstraction-applicative-apply/stdout.txt?raw"
+import lesson36Exercise from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.ssrg?raw"
+import lesson36ExerciseOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.stdout.txt?raw"
+import lesson36Diagnostic from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.ssrg?raw"
+import lesson36DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.txt?raw"
+
+import lesson37Source from "../../../../examples/tour/lessons/abstraction-monad-bind/main.ssrg?raw"
+import lesson37Output from "../../../../examples/tour/lessons/abstraction-monad-bind/stdout.txt?raw"
+import lesson37Exercise from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.ssrg?raw"
+import lesson37ExerciseOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.stdout.txt?raw"
+import lesson37Diagnostic from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.ssrg?raw"
+import lesson37DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.txt?raw"
+
+import lesson38Source from "../../../../examples/tour/lessons/abstraction-type-comparison/main.ssrg?raw"
+import lesson38Output from "../../../../examples/tour/lessons/abstraction-type-comparison/stdout.txt?raw"
+import lesson38Exercise from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.ssrg?raw"
+import lesson38ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.stdout.txt?raw"
+import lesson38Diagnostic from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.ssrg?raw"
+import lesson38DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.txt?raw"
+
+import lesson39Source from "../../../../examples/tour/lessons/abstraction-signal-contract/main.ssrg?raw"
+import lesson39Output from "../../../../examples/tour/lessons/abstraction-signal-contract/stdout.txt?raw"
+import lesson39Exercise from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.ssrg?raw"
+import lesson39ExerciseOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.stdout.txt?raw"
+import lesson39Diagnostic from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.ssrg?raw"
+import lesson39DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.txt?raw"
+
+import lesson40Source from "../../../../examples/tour/lessons/signals-switch-map/main.ssrg?raw"
+import lesson40Output from "../../../../examples/tour/lessons/signals-switch-map/stdout.txt?raw"
+import lesson40Exercise from "../../../../examples/tour/lessons/signals-switch-map/exercise.ssrg?raw"
+import lesson40ExerciseOutput from "../../../../examples/tour/lessons/signals-switch-map/exercise.stdout.txt?raw"
+import lesson40Diagnostic from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.ssrg?raw"
+import lesson40DiagnosticOutput from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.txt?raw"
+
+import lesson41Source from "../../../../examples/tour/lessons/abstraction-impl-method/main.ssrg?raw"
+import lesson41Output from "../../../../examples/tour/lessons/abstraction-impl-method/stdout.txt?raw"
+import lesson41Exercise from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.ssrg?raw"
+import lesson41ExerciseOutput from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.stdout.txt?raw"
+import lesson41Diagnostic from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.ssrg?raw"
+import lesson41DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.txt?raw"
+
+import lesson42Source from "../../../../examples/tour/lessons/abstraction-custom-operator/main.ssrg?raw"
+import lesson42Output from "../../../../examples/tour/lessons/abstraction-custom-operator/stdout.txt?raw"
+import lesson42Exercise from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.ssrg?raw"
+import lesson42ExerciseOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.stdout.txt?raw"
+import lesson42Diagnostic from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.ssrg?raw"
+import lesson42DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.txt?raw"
+
+import lesson43Source from "../../../../examples/tour/lessons/design-type-constructor-kinds/main.ssrg?raw"
+import lesson43Output from "../../../../examples/tour/lessons/design-type-constructor-kinds/stdout.txt?raw"
+import lesson43Exercise from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.ssrg?raw"
+import lesson43ExerciseOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.stdout.txt?raw"
+import lesson43Diagnostic from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.ssrg?raw"
+import lesson43DiagnosticOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.txt?raw"
+
+import lesson44Source from "../../../../examples/tour/lessons/design-trait-evidence/main.ssrg?raw"
+import lesson44Output from "../../../../examples/tour/lessons/design-trait-evidence/stdout.txt?raw"
+import lesson44Exercise from "../../../../examples/tour/lessons/design-trait-evidence/exercise.ssrg?raw"
+import lesson44ExerciseOutput from "../../../../examples/tour/lessons/design-trait-evidence/exercise.stdout.txt?raw"
+import lesson44Diagnostic from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.ssrg?raw"
+import lesson44DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.txt?raw"
+
+import lesson45Source from "../../../../examples/tour/lessons/design-abstraction-laws/main.ssrg?raw"
+import lesson45Output from "../../../../examples/tour/lessons/design-abstraction-laws/stdout.txt?raw"
+import lesson45Exercise from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.ssrg?raw"
+import lesson45ExerciseOutput from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.stdout.txt?raw"
+import lesson45Diagnostic from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.ssrg?raw"
+import lesson45DiagnosticOutput from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.txt?raw"
+
+import lesson46Source from "../../../../examples/tour/lessons/design-trait-boundary/main.ssrg?raw"
+import lesson46Output from "../../../../examples/tour/lessons/design-trait-boundary/stdout.txt?raw"
+import lesson46Exercise from "../../../../examples/tour/lessons/design-trait-boundary/exercise.ssrg?raw"
+import lesson46ExerciseOutput from "../../../../examples/tour/lessons/design-trait-boundary/exercise.stdout.txt?raw"
+import lesson46Diagnostic from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.ssrg?raw"
+import lesson46DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.txt?raw"
+
+import lesson47Source from "../../../../examples/tour/lessons/web-link-image/main.ssrg?raw"
+import lesson47Output from "../../../../examples/tour/lessons/web-link-image/stdout.html?raw"
+import lesson47Exercise from "../../../../examples/tour/lessons/web-link-image/exercise.ssrg?raw"
+import lesson47ExerciseOutput from "../../../../examples/tour/lessons/web-link-image/exercise.stdout.txt?raw"
+import lesson47Diagnostic from "../../../../examples/tour/lessons/web-link-image/diagnostic.ssrg?raw"
+import lesson47DiagnosticOutput from "../../../../examples/tour/lessons/web-link-image/diagnostic.txt?raw"
+
+import lesson48Source from "../../../../examples/tour/lessons/web-accessibility-label/main.ssrg?raw"
+import lesson48Output from "../../../../examples/tour/lessons/web-accessibility-label/stdout.html?raw"
+import lesson48Exercise from "../../../../examples/tour/lessons/web-accessibility-label/exercise.ssrg?raw"
+import lesson48ExerciseOutput from "../../../../examples/tour/lessons/web-accessibility-label/exercise.stdout.txt?raw"
+import lesson48Diagnostic from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.ssrg?raw"
+import lesson48DiagnosticOutput from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.txt?raw"
+
+import lesson49Source from "../../../../examples/tour/lessons/web-feature-state/main.ssrg?raw"
+import lesson49Exercise from "../../../../examples/tour/lessons/web-feature-state/exercise.ssrg?raw"
+import lesson49ExerciseOutput from "../../../../examples/tour/lessons/web-feature-state/exercise.stdout.txt?raw"
+import lesson49Diagnostic from "../../../../examples/tour/lessons/web-feature-state/diagnostic.ssrg?raw"
+import lesson49DiagnosticOutput from "../../../../examples/tour/lessons/web-feature-state/diagnostic.txt?raw"
+
+import lesson50Source from "../../../../examples/tour/lessons/list-values/main.ssrg?raw"
+import lesson50Output from "../../../../examples/tour/lessons/list-values/stdout.txt?raw"
+import lesson50Exercise from "../../../../examples/tour/lessons/list-values/exercise.ssrg?raw"
+import lesson50ExerciseOutput from "../../../../examples/tour/lessons/list-values/exercise.stdout.txt?raw"
+import lesson50Diagnostic from "../../../../examples/tour/lessons/list-values/diagnostic.ssrg?raw"
+import lesson50DiagnosticOutput from "../../../../examples/tour/lessons/list-values/diagnostic.txt?raw"
+
+import lesson51Source from "../../../../examples/tour/lessons/list-decomposition/main.ssrg?raw"
+import lesson51Output from "../../../../examples/tour/lessons/list-decomposition/stdout.txt?raw"
+import lesson51Exercise from "../../../../examples/tour/lessons/list-decomposition/exercise.ssrg?raw"
+import lesson51ExerciseOutput from "../../../../examples/tour/lessons/list-decomposition/exercise.stdout.txt?raw"
+import lesson51Diagnostic from "../../../../examples/tour/lessons/list-decomposition/diagnostic.ssrg?raw"
+import lesson51DiagnosticOutput from "../../../../examples/tour/lessons/list-decomposition/diagnostic.txt?raw"
+
+import lesson52Source from "../../../../examples/tour/lessons/collection-reduce-step/main.ssrg?raw"
+import lesson52Output from "../../../../examples/tour/lessons/collection-reduce-step/stdout.txt?raw"
+import lesson52Exercise from "../../../../examples/tour/lessons/collection-reduce-step/exercise.ssrg?raw"
+import lesson52ExerciseOutput from "../../../../examples/tour/lessons/collection-reduce-step/exercise.stdout.txt?raw"
+import lesson52Diagnostic from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.ssrg?raw"
+import lesson52DiagnosticOutput from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.txt?raw"
+
+import lesson53Source from "../../../../examples/tour/lessons/collection-append-concat/main.ssrg?raw"
+import lesson53Output from "../../../../examples/tour/lessons/collection-append-concat/stdout.txt?raw"
+import lesson53Exercise from "../../../../examples/tour/lessons/collection-append-concat/exercise.ssrg?raw"
+import lesson53ExerciseOutput from "../../../../examples/tour/lessons/collection-append-concat/exercise.stdout.txt?raw"
+import lesson53Diagnostic from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.ssrg?raw"
+import lesson53DiagnosticOutput from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.txt?raw"
+
+import lesson54Source from "../../../../examples/tour/lessons/collection-comprehension/main.ssrg?raw"
+import lesson54Output from "../../../../examples/tour/lessons/collection-comprehension/stdout.txt?raw"
+import lesson54Exercise from "../../../../examples/tour/lessons/collection-comprehension/exercise.ssrg?raw"
+import lesson54ExerciseOutput from "../../../../examples/tour/lessons/collection-comprehension/exercise.stdout.txt?raw"
+import lesson54Diagnostic from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.ssrg?raw"
+import lesson54DiagnosticOutput from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.txt?raw"
+
+import lesson55Source from "../../../../examples/tour/lessons/empty-collections/main.ssrg?raw"
+import lesson55Output from "../../../../examples/tour/lessons/empty-collections/stdout.txt?raw"
+import lesson55Exercise from "../../../../examples/tour/lessons/empty-collections/exercise.ssrg?raw"
+import lesson55ExerciseOutput from "../../../../examples/tour/lessons/empty-collections/exercise.stdout.txt?raw"
+import lesson55Diagnostic from "../../../../examples/tour/lessons/empty-collections/diagnostic.ssrg?raw"
+import lesson55DiagnosticOutput from "../../../../examples/tour/lessons/empty-collections/diagnostic.txt?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -1052,43 +401,63 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     expectedOutput: (lesson0Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "最初のlessonです。sourceの文法は次のlessonから一つずつ読みます。ここではEditor、Run、Outputの位置だけに集中します。",
+      "prerequisite": "最初のレッスンです。まずは画面のコードを実行して、`Run` と `Output` のつながりを確かめます。",
       "walkthrough": [
         {
-          "heading": "完成済みの一行をRunする",
-          "body": "Editorのsourceはそのままで動く最小programです。Runを押すとcompilerとruntimeを通り、結果がOutputへ一行表示されます。",
+          "heading": "コメントと名前の定義",
+          "body": "1 行目の `//` から行末まではコメントです。プログラムの動きには影響せず、メモを残せます。2 行目では文字列 `\"Seseragi\"` に `name` という名前を付けています。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "プログラムの入口と出力",
+          "body": "実行すると `pub effect fn main` から動き始めます。`println` は `Output` へ 1 行出力する命令で、バッククォートで囲んだ `` `Hello, ${name}!` `` の `${name}` には `name` の値が入ります。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 4
           }
         }
       ],
       "introduced": [
         {
           "kind": "api",
-          "name": "Run → Output",
-          "body": "Runは現在のsourceをcompileして実行し、programが出力したtextをOutputへ表示します。"
+          "name": "println",
+          "body": "受け取った文字列を `Output` へ 1 行出力します。"
+        },
+        {
+          "kind": "syntax",
+          "name": "テンプレート文字列",
+          "body": "`` `...${式}...` `` の形でバッククォートで囲むと、文字列の中に変数や式の値を埋め込めます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "コメント",
+          "body": "`//` から行末まではコンパイラに無視されるコメントになります。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceを開いてRunし、Outputが`Hello, Tour!`へ変わることだけを確認してください。",
+        "instruction": "エディターの `\"Seseragi\"` を `\"Tour\"` に書き換えて `Run` し、`Output` が `Hello, Tour!` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "型が一致しないsourceを開く",
-        "body": "Stringと書いた場所へ数値を置いたsourceをRunすると、実行前にcompiler diagnosticが表示されます。今は内容を直す必要はなく、Outputとの違いを見ます。"
+        "heading": "文字列の場所に数値を書いてみる",
+        "body": "失敗例では `String` と書いた場所に数値 `42` を置いています。実行前にコンパイラが型の違いを見つけ、`Problems` にエラー表示を出します。"
       },
       "recap": [
-        "RunはEditorにあるsourceをcompileして実行する。",
-        "成功したprogramの出力はOutputへ表示される。",
-        "compileできないsourceでは実行結果の代わりにdiagnosticが表示される。"
+        "`Run` を押すとエディターのコードがコンパイル・実行され、結果が `Output` に表示されます。",
+        "`pub effect fn main` がプログラムの入口で、`println` とテンプレート文字列で出力できます。",
+        "`//` でメモ用のコメントを残せます。",
+        "コンパイルできないときは実行結果の代わりにエラー表示が出ます。"
       ],
       "next": {
-        "lessonId": "program-entry",
-        "body": "次は、Runしたときにどこからprogramが始まるのかを`main`という名前から読みます。"
+        "lessonId": "02-values-and-bindings",
+        "body": "次は `let` を使っていろいろな型の値に名前を付け、型推論や簡単な計算・比較を確かめます。"
       },
       "notes": [
-        "最初のsourceに含まれる構文は暗記しません。後続lessonで一つずつ説明します。"
+        "コードのインデントや空白を整えたいときはツールバーの `Format` を、編集した内容をこのレッスンの初期コードへ戻したいときは `Reset` を使えます。",
+        "最初のコードに含まれる細かなキーワードはここで暗記する必要はありません。後のレッスンで順番に説明します。"
       ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson0Exercise,
@@ -1097,50 +466,72 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson0DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "program-entry",
+    id: "02-values-and-bindings",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/program-entry/main.ssrg",
+    sourcePath: "examples/tour/lessons/02-values-and-bindings/main.ssrg",
     source: lesson1Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson1Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "RunとOutputの対応だけを確認しました。ここから最小programの一行を部分ごとに読みます。",
+      "prerequisite": "最初のレッスンで `let` と文字列の出力、そして `Run` と `Output` の使い方を確かめました。ここでは数値・真偽値・値がないことを表す型をまとめます。",
       "walkthrough": [
         {
-          "heading": "Runが呼ぶ入口を見つける",
-          "body": "`main`はprogramの入口です。`pub`は外から見えること、`effect fn`はOutputのように外部へ作用するfunctionであることを表します。",
+          "heading": "型注釈・型推論と演算・比較",
+          "body": "1 行目の `let total: Int = 20 + 22` は `: Int` と型注釈を付けながら `+` で整数を計算します。2 行目の `1.5`（`Float`）や 3 行目の `42 > 40`（`Bool`）は型注釈を省略しても右辺から型が推論され、`42 > 40` の結果は `True` になります。4 行目の `()` は値がないことを表す `Unit` 型です。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 4
+          }
+        },
+        {
+          "heading": "変更できない束縛を参照する",
+          "body": "`let` で付けた名前は後から値を上書きできない変更できない束縛です。`main` の中では名前をそのまま参照し、`Output` へ 4 つの型の値をまとめて表示しています。",
+          "sourceRange": {
+            "startLine": 6,
+            "endLine": 7
           }
         }
       ],
       "introduced": [
         {
           "kind": "syntax",
-          "name": "pub effect fn main",
-          "body": "外部から実行でき、作用を持つprogram entryを宣言します。Runはこの`main`を探します。"
+          "name": "let と型注釈・型推論",
+          "body": "`let 名前: 型 = 式` のように型注釈を書けます。右辺から型が決まるときは `: 型` を省略してもコンパイラが型推論します。"
+        },
+        {
+          "kind": "type",
+          "name": "Int・Float・Bool・Unit",
+          "body": "`Int` は整数、`Float` は小数、`Bool` は `True` または `False`、`Unit` は意味のある値がないことを表す `()` の型です。"
+        },
+        {
+          "kind": "syntax",
+          "name": "演算子 + と比較 >",
+          "body": "`+` で同じ数値型同士を足し算し、`>`・`<`・`>=`・`<=`・`==` で値を比べて `Bool` を得ます。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceをRunし、同じ`main`から`Entry ready!`が出力されることを確認してください。",
+        "instruction": "3 行目の `42 > 40` を `42 > 50` に書き換えて `Run` し、`Output` の `Bool: True` が `Bool: False` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "mainを二つ宣言する",
-        "body": "program entryは一つに決まる必要があります。同じ名前の`main`を二度宣言したdiagnosticを確認します。"
+        "heading": "同じ名前をもう一度宣言してみる",
+        "body": "Seseragi の `let` は変更できない束縛です。失敗例のように同じスコープで `total` を二度宣言すると名前が重複し、コンパイル前に `Problems` へエラー表示が出ます。"
       },
       "recap": [
-        "`main`がRunで呼ばれるprogram entryになる。",
-        "`pub effect fn`は外部へ作用できる公開functionを宣言する。"
+        "`let` は値に名前を付ける変更できない束縛を作り、型注釈がなくても型推論で型が決まります。",
+        "主な基本型として `Int`・`Float`・`Bool`・`Unit` があり、`+` や `>` などの演算で計算・比較できます。",
+        "同じスコープ内で同じ名前を宣言し直すことはできません。"
       ],
       "next": {
-        "lessonId": "string-literal",
-        "body": "次は`println`の右側にある二重引用符のvalueだけを取り出して学びます。"
-      }
+        "lessonId": "if-expression",
+        "body": "次は `Bool` の比較結果を使って値を選び分ける `if` 式を学びます。"
+      },
+      "notes": [
+        "式の中だけで一時的な名前を使いたいときは、波括弧のブロック内で `let` を書くこともできます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson1Exercise,
     exerciseExpectedOutput: (lesson1ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1148,55 +539,62 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson1DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "string-literal",
+    id: "if-expression",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/string-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/if-expression/main.ssrg",
     source: lesson2Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson2Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "`pub effect fn main`がprogram entryだと分かりました。ここでは右辺のString valueと出力APIだけを読みます。",
+      "prerequisite": "ここまでで `let` 束縛、型推論、そして `>=` などの比較から `Bool` を得る方法を学びました。",
       "walkthrough": [
         {
-          "heading": "二重引用符でStringを作る",
-          "body": "`\"Hello, Seseragi!\"`はString literalです。`println`へ渡すとtextと改行がOutputへ書き込まれます。",
+          "heading": "値を返す式としての if",
+          "body": "2 行目の `if score >= 80 then \"pass\" else \"retry\"` は命令文ではなく、選んだ側の値をそのまま返す式です。条件 `score >= 80` が `True` なので `label` には `\"pass\"` が入ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "else が必須で、式の一部にも書ける",
+          "body": "3 行目の `if` 式は `Int` 型の `5` または `0` を返し、5 行目の `score + bonus` の計算にそのまま使われています。`then` と `else` の両方を必ず書くのは、どちらの分岐でも 1 つの値を返す必要があるためです。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 5
           }
         }
       ],
       "introduced": [
         {
-          "kind": "type",
-          "name": "String literal",
-          "body": "二重引用符の間に書いたtextからString valueを作ります。"
-        },
-        {
-          "kind": "api",
-          "name": "println",
-          "body": "String valueをOutputへ書き込み、最後に改行します。"
+          "kind": "syntax",
+          "name": "if ... then ... else",
+          "body": "条件（`Bool`）が `True` なら `then` 側、`False` なら `else` 側の式を評価してその値を返します。`else` は省略できず、両分岐は同じ型でなければなりません。"
         }
       ],
       "exercise": {
-        "instruction": "String literalの中身だけを`Hello, Tour!`へ変更した課題sourceをRunしてください。",
+        "instruction": "1 行目の `85` を `70` に書き換えて `Run` し、`Output` が `label: retry, total: 70` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "使えないescapeを書く",
-        "body": "String中のbackslashはescapeの開始です。存在しない`\\q`をcompilerがsource位置付きで拒否します。"
+        "heading": "then と else で違う型を返す",
+        "body": "失敗例では `then` 側が `String`（`\"pass\"`）なのに、`else` 側へ `Int`（`0`）を書いています。`if` 式は両方の分岐で同じ型を返す必要があるため、`Problems` に型不一致のエラー表示が出ます。"
       },
       "recap": [
-        "二重引用符でString literalを作れる。",
-        "`println`はStringを一行出力する。"
+        "Seseragi の `if ... then ... else ...` は文ではなく値を返す式です。",
+        "どちらの分岐を通っても値を返す必要があるため、`else` は省略できません。",
+        "`then` と `else` の結果は必ず同じ型に揃える必要があります。"
       ],
       "next": {
-        "lessonId": "string-template",
-        "body": "次は固定textの中へ別のvalueを埋め込めるtemplate literalへ進みます。"
-      }
+        "lessonId": "03-function-definitions",
+        "body": "次は繰り返し使う計算に名前を付けて呼び出す関数（`fn`）と部分適用を学びます。"
+      },
+      "notes": [
+        "条件をさらに重ねたいときは `else if 条件 then ... else ...` のように続けて書けます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson2Exercise,
     exerciseExpectedOutput: (lesson2ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1204,50 +602,81 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson2DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "string-template",
+    id: "03-function-definitions",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/string-template/main.ssrg",
+    sourcePath: "examples/tour/lessons/03-function-definitions/main.ssrg",
     source: lesson3Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson3Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "二重引用符で一つのStringを作り、`println`へ渡せます。",
+      "prerequisite": "ここまでで `let` 束縛、型注釈、`if` 式を使った値の組み立て方を学びました。",
       "walkthrough": [
         {
-          "heading": "固定textへvalueを埋め込む",
-          "body": "backtickで囲むtemplate literalでは、`${...}`の中のvalueがString表示へ変換されて同じtextへ入ります。",
+          "heading": "fn で関数を定義し、引数と戻り型を読む",
+          "body": "1 行目の `fn add` は副作用を持たない純粋な関数を定義します。`left: Int -> right: Int -> Int` は、`Int` 型の引数 `left` と `right` を受け取り、最後の `->` の後にある `Int` 型を返すという意味です。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 1
+          }
+        },
+        {
+          "heading": "空白区切りの呼び出しと部分適用",
+          "body": "4 行目の `add 10 20` のように、関数名と引数を空白で並べて呼び出します。3 行目の `add 10` のように 1 つ目の引数だけを渡すと、残りの引数を受け取る関数 `add10` ができ、5 行目で `add10 22` のように呼び出せます。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "計算した結果を出力する",
+          "body": "純粋な関数 `add` が返した値（`30` と `32`）を、`main` の中でテンプレート文字列に埋め込んで `Output` へ出力しています。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 7
           }
         }
       ],
       "introduced": [
         {
           "kind": "syntax",
-          "name": "template literal",
-          "body": "backtickでtextを作り、`${expression}`でvalueの表示を埋め込みます。"
+          "name": "fn と引数・戻り型",
+          "body": "`fn 名前 引数1: 型 -> 引数2: 型 -> 戻り型 = 式` で関数を定義します。`->` で区切った最後が戻り型で、`=` の右側の式がそのまま戻り値になります。"
+        },
+        {
+          "kind": "syntax",
+          "name": "括弧なしの関数呼び出し",
+          "body": "`add 10 20` のように関数と引数を空白で区切って渡します。式を引数に渡したいときだけ `(add 1 2)` のように括弧でまとめます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "部分適用",
+          "body": "複数引数の関数に先頭の一部の引数だけを渡すと、残りの引数を受け取る関数値が得られます。"
         }
       ],
       "exercise": {
-        "instruction": "埋め込むString literalだけを`Tour`へ変更し、固定textを残したままRunしてください。",
+        "instruction": "3 行目の `let add10 = add 10` を `let add20 = add 20` に、5 行目の `add10 22` を `add20 22` に書き換えて `Run` し、`second: 42` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "templateで使えないescapeを書く",
-        "body": "template textでもbackslash escapeは検証されます。存在しないescapeの位置を確認します。"
+        "heading": "括弧とカンマで引数を渡してしまう",
+        "body": "失敗例では `add(10, 20)` と書いています。この `(10, 20)` は 2 つの引数ではなく 1 つのタプルとして渡るため、`Int` を受け取る 1 番目の引数と型が合いません。"
       },
       "recap": [
-        "backtickでtemplate literalを作れる。",
-        "`${...}`へvalueを埋め込める。"
+        "`fn` で関数を定義し、`引数: 型 -> ... -> 戻り型` の順で型を読みます。",
+        "関数呼び出しは `add 10 20` のように括弧を使わず空白で引数を並べます。",
+        "1 つ目の引数だけを渡して `let add10 = add 10` のように専用の関数を作れます（部分適用）。"
       ],
       "next": {
-        "lessonId": "int-literal",
-        "body": "次はStringではなく、最初の数値型Intをtemplateへ埋め込みます。"
-      }
+        "lessonId": "05-pipelines",
+        "body": "次は関数同士をつないでデータの流れをわかりやすく書く演算子 `|>` と `$` を学びます。"
+      },
+      "notes": [
+        "引数を 1 つも取らない関数を定義したいときは `fn greeting -> String = \"Hello\"` のように書き、呼び出すときは `greeting ()` のように `Unit` を渡します。",
+        "入出力などの副作用を伴う `main` のような処理には Effectを返す関数（`effect fn`）を使いますが、ふだんの計算は副作用のない `fn` で書きます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson3Exercise,
     exerciseExpectedOutput: (lesson3ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1255,50 +684,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson3DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "int-literal",
+    id: "05-pipelines",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/int-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/05-pipelines/main.ssrg",
     source: lesson4Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson4Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "templateの`${...}`へString valueを埋め込めます。",
+      "prerequisite": "前のレッスンで `fn` による関数定義、空白区切りの呼び出し、部分適用を学びました。ここでは複数の関数をつなげて読みやすく書く方法を学びます。",
       "walkthrough": [
         {
-          "heading": "小数点のない数値を書く",
-          "body": "`42`はInt literalです。引用符がないためStringではなく、整数のvalueとして型付けされます。",
+          "heading": "小さな変換関数を用意する",
+          "body": "1〜5 行目では `greeting`・`wrap`・`addLabel` という 1 つずつ小さな役割を持つ関数を定義しています。`wrap` と `addLabel` は最後に対象の `value: String` を受け取る形にしておくと、部分適用でパイプラインに並べやすくなります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "パイプライン |> で上から下へ流す",
+          "body": "7〜11 行目の `|>` は左の値を次の関数の最後の引数として渡します。`name` が `greeting` を通り、`wrap \"**\"` を通り、`addLabel \"Welcome\"` を通る流れを、行を分けて上から下へ読めます。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 11
+          }
+        },
+        {
+          "heading": "$ で右側の計算結果をまとめて渡す",
+          "body": "13 行目の `$` は右側全体 `buildMessage \"Seseragi\"` を先に計算し、その 1 つの結果を左側の `println` へ渡します。`println (buildMessage \"Seseragi\")` のように括弧で囲むのと同じ意味です。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 13
           }
         }
       ],
       "introduced": [
         {
-          "kind": "type",
-          "name": "Int",
-          "body": "安全な整数範囲のvalueを表す型です。小数点なしの数値literalから作ります。"
+          "kind": "syntax",
+          "name": "|>",
+          "body": "左側の値を右側の関数へ渡します。複数段つなげて書くときは改行して `|>` を揃えるとデータの流れが読みやすくなります。"
+        },
+        {
+          "kind": "syntax",
+          "name": "$",
+          "body": "右側全体を 1 つの式として先に評価し、左側の関数へ最後の引数として渡します。括弧の入れ子を減らしたいときに便利です。"
         }
       ],
       "exercise": {
-        "instruction": "Int literalを`7`へ一箇所だけ変更し、templateの表示へ反映させてください。",
+        "instruction": "11 行目の次に `|> wrap \"==\"` を 1 段書き足し、13 行目の `\"Seseragi\"` を `\"Tour\"` に書き換えて `Run` し、`Output` が `==Welcome: **Hello, Tour!**==` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "安全なInt範囲を超える",
-        "body": "Int literalはJavaScriptの安全な整数範囲に収まる必要があります。境界を超えたliteralのdiagnosticを読みます。"
+        "heading": "$ や括弧を付けずに別の関数呼び出しを渡す",
+        "body": "失敗例では 13 行目から `$` を外して `println buildMessage \"Seseragi\"` と書いています。この書き方では `println` に `buildMessage` と `\"Seseragi\"` の 2 つの引数を渡そうとしてしまい、引数の数のエラーになります。"
       },
       "recap": [
-        "小数点なしの数値はInt literalになる。",
-        "IntはStringとは異なる型だがtemplateで表示できる。"
+        "`|>` は左側の値を右側の関数へ流し、行を分けてデータの変換を上から順に書けます。",
+        "変換対象の `value` を最後の引数にした関数は、`wrap \"**\"` のような部分適用で `|>` に組み込めます。",
+        "`$` を使うと括弧を書かずに右側の計算結果全体を左側の関数へ渡せます。"
       ],
       "next": {
-        "lessonId": "float-literal",
-        "body": "次は小数点を持つFloat literalとIntの表記を比較します。"
-      }
+        "lessonId": "tuple-and-record",
+        "body": "関数とパイプラインの基礎が揃いました。次は複数の値を 1 つにまとめるタプルとレコードを学びます。"
+      },
+      "notes": [
+        "パイプラインが長いときや `Format` を実行したときは、ここで見たように `|>` ごとに改行して整列したレイアウトへ整形されます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson4Exercise,
     exerciseExpectedOutput: (lesson4ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1306,50 +760,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson4DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "float-literal",
+    id: "tuple-and-record",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/float-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/tuple-and-record/main.ssrg",
     source: lesson5Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson5Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "小数点のないInt literalを作り、templateで表示できました。",
+      "prerequisite": "小さな関数を組み立てて値を受け渡せるようになりました。ここからは複数の値をひとまとめに扱うデータの形を学びます。",
       "walkthrough": [
         {
-          "heading": "小数点を持つ数値を書く",
-          "body": "`2.5`はFloat literalです。小数点があることで`2`というIntとは別の型になります。",
+          "heading": "固定長のタプルを作って分解する",
+          "body": "1行目の `(String, Int)` は `String` と `Int` を順に並べる固定長のタプル型です。2行目の `let (city, stops) = pair` で位置ごとの要素を変数に取り出します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "無名レコードの作成とスプレッド更新",
+          "body": "4行目の `{ city: city, stops: stops, line: \"Rapid\" }` は名前なしの無名レコードです。5行目の `{ ...route, stops: 3 }` は元の `route` を変えずに `stops` だけを更新した新しいレコードを作ります。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 6
+          }
+        },
+        {
+          "heading": "フィールド参照と構造による互換性",
+          "body": "`.city` や `.stops` のようにドットでフィールドを取り出せます。`summarize` が要求する型は `city` と `stops` の 2 つだけなので、余分な `line` がある `route` も、最小限の `express` も同じ関数に渡せます。",
+          "sourceRange": {
+            "startLine": 8,
+            "endLine": 12
           }
         }
       ],
       "introduced": [
         {
           "kind": "type",
-          "name": "Float",
-          "body": "小数を含むbinary64の数値型です。表示ではFloatだと分かる小数表記を保ちます。"
+          "name": "タプルと無名レコード",
+          "body": "`(A, B)` は位置で要素をまとめる固定長タプル、`{ field: value }` は名前付きフィールドで値をまとめる無名レコードです。"
+        },
+        {
+          "kind": "syntax",
+          "name": "タプル分解とスプレッド更新",
+          "body": "`let (a, b) = pair` でタプルを位置ごとに分解でき、`{ ...record, field: newValue }` で元の値を変えずに一部を更新したレコードを作れます。"
         }
       ],
       "exercise": {
-        "instruction": "Float literalを`3.25`へ変更し、Outputの小数表記を確認してください。",
+        "instruction": "エディターの1行目にある `(\"Osaka\", 2)` を `(\"Kobe\", 4)` に、5行目の `stops: 3` を `stops: 5` に書き換えて `Run` し、`Output` の1行目と2行目が `Rapid: Kobe (4)` と `Updated: Kobe (5)` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Float annotationへStringを入れる",
-        "body": "FloatとStringは別の型です。Floatを期待するbindingへStringを置いたときの型差分を先取りして読みます。"
+        "heading": "必要なフィールドが足りないレコードを渡す",
+        "body": "無名レコードは必要なフィールドがすべて揃っていれば互換しますが、`stops` を欠いた `{ city: \"Kyoto\" }` を `summarize` に渡すと実行前の診断で不足しているフィールドが示されます。"
       },
       "recap": [
-        "小数点を持つ数値はFloat literalになる。",
-        "FloatとIntは異なる型である。"
+        "固定長のタプルは位置で値をまとめ、`let (a, b) = ...` で各要素を取り出せる。",
+        "無名レコードは `{ ... }` で作り、`.field` で参照し、`{ ...record, field: newValue }` で元の値を保ったまま更新できる。",
+        "関数が要求するフィールドをすべて持っていれば、余分なフィールドの有無にかかわらず同じ関数に渡せる。"
       ],
       "next": {
-        "lessonId": "bool-literal",
-        "body": "次は数値ではなく、二つの状態だけを持つBool valueへ進みます。"
-      }
+        "lessonId": "06-records-and-structs",
+        "body": "次は型に固有の名前を付けて形で混同されないようにする `struct` を学びます。"
+      },
+      "notes": [
+        "スプレッド更新で新しいレコードを作っても元の `route` は書き換わらず、`Output` には変更前の値がそのまま残ります。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson5Exercise,
     exerciseExpectedOutput: (lesson5ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1357,50 +836,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson5DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "bool-literal",
+    id: "06-records-and-structs",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/bool-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/06-records-and-structs/main.ssrg",
     source: lesson6Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson6Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "IntとFloatという二種類の数値型をliteralの表記から区別できました。",
+      "prerequisite": "無名レコードを組み立て、必要なフィールドが揃えば同じ関数に渡せることを確認しました。ここでは型名で区別される名前付きデータ `struct` を学びます。",
       "walkthrough": [
         {
-          "heading": "二つのBool valueから選ぶ",
-          "body": "`True`と`False`はBoolの二つのconstructorです。このsourceでは`True`をtemplateへ埋め込みます。",
+          "heading": "名前付きの型 struct を宣言する",
+          "body": "`struct Customer` と `struct Staff` は同じ `name` と `plan` フィールドを持ちますが、型名が異なる別の型として扱われます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 3
+          }
+        },
+        {
+          "heading": "特定の struct 型だけを受け取る関数",
+          "body": "`formatCustomer` は `Customer` 型を引数に取ります。無名レコードと違い、フィールドの形が同じでも `Staff` 型の値は受け取りません。フィールドの読み取りは同じく `.name` のように書きます。",
+          "sourceRange": {
+            "startLine": 5,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "型名を明示して値を組み立てる",
+          "body": "`Customer { ... }` のように宣言した型名を先頭に書いて値を作ります。宣言にあるすべてのフィールドが揃っていなければ作成できません。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 8
           }
         }
       ],
       "introduced": [
         {
           "kind": "type",
-          "name": "Bool",
-          "body": "`True`または`False`の二つのvalueだけを持ちます。先頭は大文字です。"
+          "name": "struct による名前付きデータ",
+          "body": "`struct` は型名によって区別されるデータ型です。フィールド構成が同じでも異なる型名同士は互換しません。"
+        },
+        {
+          "kind": "syntax",
+          "name": "struct の宣言と生成",
+          "body": "`struct Name { field: Type }` で型を定義し、`Name { field: value }` で値を組み立てます。参照は `.field` を使います。"
         }
       ],
       "exercise": {
-        "instruction": "`True`を`False`へ変更し、二つ目のBool valueを表示してください。",
+        "instruction": "エディターの7行目にある `name: \"Mio\", plan: \"Pro\"` を `name: \"Ren\", plan: \"Team\"` に書き換えて `Run` し、`Output` の1行目が `Customer -> Ren: Team` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "小文字のtrueを書く",
-        "body": "SeseragiのBool constructorは`True`と`False`です。小文字名が未定義だと分かるdiagnosticを読みます。"
+        "heading": "フィールドが同じでも別の struct 型は渡せない",
+        "body": "失敗例では同じ `name` と `plan` を持つ `Staff` 型の `staff` を `formatCustomer` に渡しています。無名レコードなら形で通りますが、`struct` では型名の違いをコンパイラが実行前に防ぎます。"
       },
       "recap": [
-        "Boolには`True`と`False`がある。",
-        "constructor名は大文字で始まる。"
+        "同じフィールド構成でも別のデータとして区別したいときは `struct` を使い、形で柔軟に受けたいときは無名レコードを使う。",
+        "`struct` の値を作るときは型名を明示し、宣言されたフィールドをすべて指定する。",
+        "フィールドへのアクセスはどちらも `.field` で同じように書ける。"
       ],
       "next": {
-        "lessonId": "unit-literal",
-        "body": "次は二つではなく、一つだけのvalueを持つUnitを読みます。"
-      }
+        "lessonId": "adt-definition",
+        "body": "次はすべてのフィールドを同時に持つのではなく、いくつかの状態のうちどれか1つになるデータを表す代数的データ型（ADT）を学びます。"
+      },
+      "notes": [
+        "`struct` の構築時に必須フィールドを1つでも書き忘れた場合も、コンパイラが実行前に不足フィールドのエラー表示を出してくれます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson6Exercise,
     exerciseExpectedOutput: (lesson6ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1408,49 +912,71 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson6DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "unit-literal",
+    id: "adt-definition",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/unit-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/adt-definition/main.ssrg",
     source: lesson7Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson7Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Boolが`True`と`False`の二つのvalueを持つことを確認しました。",
+      "prerequisite": "タプル、無名レコード、`struct` で複数の値を同時に持つデータを表現できるようになりました。ここからは取りうるケースを列挙する代数的データ型（ADT）を学びます。",
       "walkthrough": [
         {
-          "heading": "情報を持たないvalueを書く",
-          "body": "`()`はUnit型の唯一のvalueです。返す情報がないことを型として表したい場所で使います。",
+          "heading": "type で取りうるケースを列挙する",
+          "body": "`type Delivery` は配送の状態を `|` で区切って列挙します。`Preparing` は値を持たないコンストラクター、`Shipped String` は配送先、`Delivered (String, Int)` は配送先と経由数のタプルを中身の値として持つコンストラクターです。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 4
+          }
+        },
+        {
+          "heading": "コンストラクターで値を作る",
+          "body": "定義したコンストラクター名をそのまま書いて `Delivery` 型の値を作ります。`Shipped \"Osaka\"` や `Delivered (\"Kyoto\", 2)` のように、コンストラクターごとに必要な型の値を渡します。",
+          "sourceRange": {
+            "startLine": 6,
+            "endLine": 8
+          }
+        },
+        {
+          "heading": "deriving Show で文字列に変換して確かめる",
+          "body": "型定義に付けた `deriving Show` により `show` 関数が自動生成されます。`println (show ...)` で各コンストラクターがどのような値として作られているかを `Output` で確認できます。",
+          "sourceRange": {
+            "startLine": 10,
+            "endLine": 14
           }
         }
       ],
       "introduced": [
         {
           "kind": "type",
-          "name": "Unit",
-          "body": "唯一のvalue`()`を持つ型です。表示もsourceと同じ`()`になります。"
+          "name": "type による代数的データ型（ADT）",
+          "body": "`type` と `|` を使って、値がいずれか1つのコンストラクターになる型を定義します。コンストラクターごとに中身の値を持たせることもできます。"
+        },
+        {
+          "kind": "api",
+          "name": "deriving Show と show",
+          "body": "型宣言に `deriving Show` を添えると、値を `show` で表示用文字列に変換できるようになります。"
         }
       ],
       "exercise": {
-        "instruction": "固定textを`Unit value`へ変更し、埋め込んだ`()`はそのままでRunしてください。",
+        "instruction": "エディターの7行目にある `Shipped \"Osaka\"` を `Shipped \"Kobe\"` に書き換えて `Run` し、`Output` の2行目が `Shipped Kobe` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "UnitへIntを入れる",
-        "body": "UnitとIntは別の型です。Unitを期待するbindingへ`42`を置いたときの型差分を先取りして読みます。"
+        "heading": "コンストラクターの中身の型を取り違える",
+        "body": "失敗例では `String` を保持するはずの `Shipped` に `Int` の `2` を渡しています。コンストラクター定義で宣言した型と実際に渡す値の型を確認してください。"
       },
       "recap": [
-        "Unitのvalueは`()`一つだけである。",
-        "Unitは情報を返さないことを型で表せる。"
+        "`type` と `|` で、値がいずれか1つになるケースをコンストラクターとして列挙できる。",
+        "`Shipped String` のようにコンストラクターごとに異なる型の中身の値を持たせられる。",
+        "`deriving Show` を付けると `show` でコンストラクターの表現を `Output` に出力できる。"
       ],
       "next": {
-        "lessonId": "02-values-and-bindings",
-        "body": "次は作ったvalueへ`let`で名前を付け、同じvalueを参照します。"
+        "lessonId": "07-adts-and-patterns",
+        "body": "次は定義した代数的データ型を `match` でケースごとに分け、中身の値を取り出す方法を学びます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson7Exercise,
@@ -1459,59 +985,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson7DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "02-values-and-bindings",
+    id: "07-adts-and-patterns",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/02-values-and-bindings/main.ssrg",
+    sourcePath: "examples/tour/lessons/07-adts-and-patterns/main.ssrg",
     source: lesson8Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson8Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "String、Int、Float、Bool、Unitのliteralを一つずつ作りました。ここではString valueだけへ名前を付けます。",
+      "prerequisite": "`type` を使って複数のケースと中身の値を持つ代数的データ型を定義できるようになりました。ここでは `match` で中身を取り出して分岐します。",
       "walkthrough": [
         {
-          "heading": "Top-level valueへ名前を付ける",
-          "body": "`let language = \"Seseragi\"`はString valueを`language`へ結び付けます。programのどこからでも同じ名前で参照できます。",
+          "heading": "match でコンストラクターごとに分岐する",
+          "body": "`match delivery { ... }` は受け取った `Delivery` がどのコンストラクターかを見分け、一致した行の式を評価します。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 6,
+            "endLine": 10
           }
         },
         {
-          "heading": "名前でvalueを参照する",
-          "body": "`println language`はliteralを書き直さず、`language`が指すString valueを渡します。",
+          "heading": "パターン束縛で中身の値を取り出して使う",
+          "body": "`Shipped city` と書くと、`Shipped \"Osaka\"` に含まれる文字列が `city` に束縛されます。右辺の `` `Shipped to ${city}` `` のように、取り出した変数は必ず処理の中で使います。",
           "sourceRange": {
-            "startLine": 3,
-            "endLine": 3
+            "startLine": 8,
+            "endLine": 8
+          }
+        },
+        {
+          "heading": "入れ子の分解とワイルドカード",
+          "body": "`Delivered (city, _)` のようにタプルを入れ子で同時に分解できます。右側の経由数が不要なときは変数名を付けず、ワイルドカード `_` を書いて使わないことを明示します。",
+          "sourceRange": {
+            "startLine": 9,
+            "endLine": 9
           }
         }
       ],
       "introduced": [
         {
           "kind": "syntax",
-          "name": "top-level let",
-          "body": "`let name = value`でimmutableなtop-level bindingを作ります。同じbindingへ別の値を再代入しません。"
+          "name": "match によるパターン分解",
+          "body": "`match` はコンストラクターの種類に応じて処理を分岐し、同時に中身の値へ名前を付けて取り出します。"
+        },
+        {
+          "kind": "syntax",
+          "name": "ワイルドカード _",
+          "body": "パターンの位置に `_` を書くと、どんな値にも一致させつつ変数束縛を作らずに無視する意図を明確に示せます。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceの`language`へ結び付けるStringだけを`Tour`へ変更し、参照側を変えずにRunしてください。",
+        "instruction": "エディターの9行目にある `Delivered (city, _)` を `Delivered (city, stops)` に、同じ行の右辺を `` `Delivered to ${city} in ${stops} stops` `` に書き換えて `Run` し、`Output` の3行目が `Delivered to Kyoto in 2 stops` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "同じ名前を二度宣言する",
-        "body": "同じscopeに同名のtop-level bindingを二つ置くと、どちらを参照するか曖昧になるためcompilerが拒否します。"
+        "heading": "分岐ごとに異なる型を返してしまう",
+        "body": "失敗例では `Delivered (_, stops)` の結果として `Int` 型の `stops` をそのまま返しています。`match` のすべての分岐は関数が宣言した戻り型（ここでは `String`）と揃える必要があります。"
       },
       "recap": [
-        "`let`でvalueへ名前を付けられる。",
-        "bindingはimmutableで、参照側は名前を使う。",
-        "top-level bindingはmodule全体から参照できる。"
+        "`match` でコンストラクターを判別し、中身の値を変数に束縛して利用できる。",
+        "パターンで束縛した変数は右辺で必ず使い、不要な位置には `_` を書く。",
+        "タプルなどを入れ子にしたパターンでも一度に値を取り出せる。"
       ],
       "next": {
-        "lessonId": "local-let",
-        "body": "次は、blockの外へ漏らさない一時的な名前をlocal `let`で作ります。"
-      }
+        "lessonId": "exhaustive-match",
+        "body": "次は `match` がすべてのケースを漏れなく扱っているかをコンパイラが実行前に確かめる仕組みを見ます。"
+      },
+      "notes": [
+        "すべての分岐は同じ型の値を返す必要があります。どれか1つの分岐だけ別の型を返すと実行前にエラー表示が出ます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson8Exercise,
     exerciseExpectedOutput: (lesson8ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1519,50 +1061,62 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson8DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "local-let",
+    id: "exhaustive-match",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/local-let/main.ssrg",
+    sourcePath: "examples/tour/lessons/exhaustive-match/main.ssrg",
     source: lesson9Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson9Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "top-level `let`でmodule全体から参照できる名前を作りました。",
+      "prerequisite": "`match` を使って複数のコンストラクターに分岐できるようになりました。ここでは書き漏らしを防ぐ網羅性チェックを確認します。",
       "walkthrough": [
         {
-          "heading": "Blockの内側だけで名前を使う",
-          "body": "波括弧のpure blockではlocal `let`を順に置けます。`adjective`はblockの最後のtemplateから参照され、blockの外には出ません。",
+          "heading": "取りうるケースをすべて並べる",
+          "body": "`Choice` には `One`、`Two`、`Three` の3つのコンストラクターがあります。`choose` の `match` はその3つすべてを並べているため、どの `Choice` が渡されても必ず `Int` の結果が決まります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 10
+          }
+        },
+        {
+          "heading": "新しいケースを増やしても漏れに気付ける",
+          "body": "あとから `Choice` に新しいコンストラクターを追加したときも、対応し忘れた `match` をコンパイラがすべて検出してくれるため、実行時の取りこぼしを心配せずに変更できます。",
+          "sourceRange": {
+            "startLine": 12,
+            "endLine": 15
           }
         }
       ],
       "introduced": [
         {
-          "kind": "syntax",
-          "name": "pure blockとlocal let",
-          "body": "`{ let name = value; result }`は中間valueをlocal scopeへ置き、最後のexpressionをblockの結果にします。"
+          "kind": "type",
+          "name": "網羅性チェック",
+          "body": "`match` が対象となる型のすべてのコンストラクターを扱っているかをコンパイラが実行前に検証する仕組みです。"
         }
       ],
       "exercise": {
-        "instruction": "local bindingのStringを`small`へ変更し、blockの最終結果だけが変わることを確認してください。",
+        "instruction": "エディターの14行目にある `choose Two` を `choose Three` に書き換えて `Run` し、`Output` の2行目が `3` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Local nameをblock外から参照する",
-        "body": "local bindingは宣言されたblock内だけで有効です。外側のbindingから参照したときのunknown name diagnosticを読みます。"
+        "heading": "ケースを1つ書き忘れる",
+        "body": "失敗例では `One` と `Two` だけを書き、`Three` の分岐を省略しています。`match` が全ケースを網羅していないため実行前にエラーとなり、不足している `Three` が示されます。"
       },
       "recap": [
-        "local `let`はblock内だけで参照できる。",
-        "pure blockの最後のexpressionがblock全体のvalueになる。"
+        "`match` は対象型のすべてのコンストラクターを網羅して書く。",
+        "ケースを1つでも書き忘れると、実行前にコンパイラが未処理のコンストラクターを教えてくれる。",
+        "型に新しいケースを追加しても、漏れのある箇所をエラー表示からすぐに見つけられる。"
       ],
       "next": {
-        "lessonId": "type-annotations",
-        "body": "次はbindingへ期待する型を明記し、compilerと約束を作ります。"
-      }
+        "lessonId": "08-collections-and-ranges",
+        "body": "データ型とパターン分岐の基礎はここまでです。次は複数の値を並べて扱うコレクションへ進みます。"
+      },
+      "notes": [
+        "コードから `Three -> 3` の行を消してみると、エディターの波線と出力側の `Problems` タブに未処理のパターン（`missing patterns: Three`）と修正のヒント（`Help`）が表示されます。確認後は `Reset` で元のコードに戻せます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson9Exercise,
     exerciseExpectedOutput: (lesson9ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1570,50 +1124,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson9DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "type-annotations",
+    id: "08-collections-and-ranges",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/type-annotations/main.ssrg",
+    sourcePath: "examples/tour/lessons/08-collections-and-ranges/main.ssrg",
     source: lesson10Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson10Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "top-levelとlocalの`let`でvalueへ名前を付けられます。Int literalも既に作りました。",
+      "prerequisite": "ADT とパターンマッチで値の種類を判別できるようになりました。ここからは同じ型の値を複数まとめて扱います。",
       "walkthrough": [
         {
-          "heading": "Bindingの期待型を明記する",
-          "body": "`answer: Int = 42`ではcolonの後ろが型注釈です。右辺がIntであることをcompilerが照合します。",
+          "heading": "Array と Range を作る",
+          "body": "`[10, 20, 30]` は同じ型の要素を順に並べる `Array` リテラル、`1 ..= 5` は開始と終端を含む整数範囲 `Range` です。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 3,
+            "endLine": 4
+          }
+        },
+        {
+          "heading": "境界チェック付きで要素を取り出す",
+          "body": "`arrays.length scores` で要素数を調べ、`arrays.get 1 scores` で先頭から 2 番目の要素を取り出します。存在する位置なら `Just 20`、範囲外の `3` なら `Nothing` の `Maybe` 値が返ります。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 9
+          }
+        },
+        {
+          "heading": "Range をそのまま集計に渡す",
+          "body": "`Range` はすべての要素を配列へ展開しなくても、`sum numbers` のような集計関数へそのまま渡せます。",
+          "sourceRange": {
+            "startLine": 10,
+            "endLine": 10
           }
         }
       ],
       "introduced": [
         {
-          "kind": "syntax",
-          "name": "type annotation",
-          "body": "`name: Type = value`でbindingが受け入れる型を明示します。型は値ではなくcompile時の契約です。"
+          "kind": "type",
+          "name": "Array と Range",
+          "body": "`Array<A>` は同じ型の要素を順序付きで持つ配列、`Range<Int>` は開始と終端で整数の範囲を表す型です。"
+        },
+        {
+          "kind": "api",
+          "name": "arrays.get と Maybe",
+          "body": "`arrays.get index array` は境界チェック付きの添字アクセスを行い、範囲内なら `Just 値`、範囲外なら `Nothing` を返します。"
         }
       ],
       "exercise": {
-        "instruction": "Int型注釈を残したまま右辺を`7`へ変更し、契約を満たす別のIntとしてRunしてください。",
+        "instruction": "エディターの `scores` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の長さと `arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Int annotationへStringを入れる",
-        "body": "宣言したIntと右辺のStringが一致しないため、compilerがexpectedとactualを分けて表示します。"
+        "heading": "配列に異なる型の値を混ぜる",
+        "body": "失敗例では `Array<Int>` に `String` の `\"twenty\"` を混ぜています。`Array` のすべての要素は同じ型に揃える必要があります。"
       },
       "recap": [
-        "colonの後ろへbindingの型注釈を書く。",
-        "annotationと右辺の型が違うとcompile時に分かる。"
+        "`Array` リテラルは `[10, 20, 30]` のように書き、すべての要素を同じ型に揃える。",
+        "`arrays.get` による添字アクセスは 0 から数え、結果は `Just` または `Nothing` の `Maybe` になる。",
+        "`1 ..= 5` は終端を含む `Range` を作り、そのまま `sum` などの集計に渡せる。"
       ],
       "next": {
-        "lessonId": "type-inference",
-        "body": "次は同じbindingからannotationを外し、compilerが右辺から型を決める様子を見ます。"
-      }
+        "lessonId": "collection-pipeline",
+        "body": "次は `map`・`filter`・`reduce` をパイプラインでつないで配列を集計します。"
+      },
+      "notes": [
+        "`1 .. 5` のように `=` を省くと、終端の `5` を含まない `Range`（`1` から `4` まで）になります。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson10Exercise,
     exerciseExpectedOutput: (lesson10ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1621,49 +1200,71 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson10DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "type-inference",
+    id: "collection-pipeline",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/type-inference/main.ssrg",
+    sourcePath: "examples/tour/lessons/collection-pipeline/main.ssrg",
     source: lesson11Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson11Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "`answer: Int = 42`でbindingの期待型を明示し、不一致のdiagnosticを読みました。",
+      "prerequisite": "`Array` と `Range` の作り方や、`arrays.get` による安全な要素の取り出し方を学びました。ここでは複数の処理をパイプラインでつないで集計します。",
       "walkthrough": [
         {
-          "heading": "右辺からIntを推論する",
-          "body": "`answer = 42`には型注釈がありません。それでもInt literalの型から`answer`もIntだとcompilerが決めます。",
+          "heading": "絞り込み、変換、集計をパイプラインでつなぐ",
+          "body": "`values` は `|>` に沿って上から順に流れます。`arrays.filter even` で偶数だけを残し、`map double` でそれぞれ 2 倍にして、`reduce 0 (+)` で合計します。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 6,
+            "endLine": 10
+          }
+        },
+        {
+          "heading": "処理関数を先に渡し、配列を最後に流す",
+          "body": "`arrays.filter`・`map`・`reduce` は判定や変換の関数を先に受け取り、対象の配列を最後の引数で受け取るため、部分適用のまま `|>` に並べられます。",
+          "sourceRange": {
+            "startLine": 8,
+            "endLine": 10
+          }
+        },
+        {
+          "heading": "演算子表記でも各要素を変換できる",
+          "body": "`double <$> numbers` は `map double numbers` と同じ要素変換です。演算子の左に関数、右に配列を置いて書けます。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 13
           }
         }
       ],
       "introduced": [
         {
-          "kind": "type",
-          "name": "type inference",
-          "body": "明示された型がない場所で、expressionと利用箇所からcompilerが型を決めます。runtimeで推測する動作ではありません。"
+          "kind": "api",
+          "name": "filter、map、reduce の連携",
+          "body": "配列を最後の引数に取る関数へ条件や変換の関数を先に渡し、`|>` で絞り込み・変換・集計を順に組み合わせます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "演算子 <$>",
+          "body": "`f <$> values` は `map f values` と同じ意味の演算子表記で、配列の各要素に関数 `f` を適用します。"
         }
       ],
       "exercise": {
-        "instruction": "annotationのない右辺を`100`へ変え、引き続きIntとして表示できることを確認してください。",
+        "instruction": "エディターの `numbers` を `[1, 2, 3, 4]` に、`reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "推論されたStringをIntとして加算する",
-        "body": "annotationがなくても`\"40\"`はStringだと決まります。Intとの加算に使うと型の不一致を検出できます。"
+        "heading": "パイプラインの途中で要素の型が合わない",
+        "body": "失敗例では `map label` で要素を `String` に変えた後で、`Int -> Bool` を受け取る `arrays.filter even` をつないでいます。各段が返す型と次の段が受け取る型を揃えてください。"
       },
       "recap": [
-        "annotationがなくてもliteralからbindingの型を推論できる。",
-        "推論はcompile時に行われ、その後も型の不一致を検出する。"
+        "配列を最後の引数に取る `arrays.filter`・`map`・`reduce` は、`|>` で縦に並べて自然につなげる。",
+        "`f <$> values` は `map f values` と同じ要素変換を表す演算子表記である。",
+        "パイプラインの各段が出力する型と、次の段が受け取る型を一致させる必要がある。"
       ],
       "next": {
-        "lessonId": "primitive-arithmetic",
-        "body": "次は二つのIntへ`+`を使い、新しいInt valueを作ります。"
+        "lessonId": "maybe-match",
+        "body": "配列の作成と集計の流れが身につきました。次は `arrays.get` でも現れた「値があるかないか」を表す `Maybe` 型を詳しく学びます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson11Exercise,
@@ -1672,50 +1273,80 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson11DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "primitive-arithmetic",
+    id: "maybe-match",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/primitive-arithmetic/main.ssrg",
+    sourcePath: "examples/tour/lessons/maybe-match/main.ssrg",
     source: lesson12Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson12Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Int literalと`let`を使い、annotationなしでもInt型を推論できました。",
+      "prerequisite": "コレクションの添字アクセスで、`Just` と `Nothing` を持つ `Maybe` 型に出会いました。ここでは `Maybe` を自分で作り、安全に値を取り出す方法を学びます。",
       "walkthrough": [
         {
-          "heading": "二つのIntを加算する",
-          "body": "`20 + 22`は左と右のIntを受け取り、新しいInt value `42`を作ります。元のliteralは変化しません。",
+          "heading": "Just と Nothing で値の有無を表す",
+          "body": "6〜7 行目の `Maybe<String>` は、`String` 型の値があるかないかを表す型です。値があるときは `Just \"Mio\"`、ないときは `Nothing` で表します。",
+          "sourceRange": {
+            "startLine": 6,
+            "endLine": 7
+          }
+        },
+        {
+          "heading": "match でケースごとに値を取り出す",
+          "body": "1〜4 行目の `match` では、`Nothing` と `Just name` の両方を分岐します。取り出した変数 `name` は右側の文字列の中で使います。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 4
+          }
+        },
+        {
+          "heading": "演算子 ?? で既定値を設定する",
+          "body": "8〜9 行目の `??` は、左側の `Maybe` が `Just` なら中身を取り出し、`Nothing` なら右側の `\"Guest\"` を既定値として返します。",
+          "sourceRange": {
+            "startLine": 8,
+            "endLine": 9
           }
         }
       ],
       "introduced": [
         {
+          "kind": "type",
+          "name": "Maybe<A>",
+          "body": "型引数 `A` の値があるかないかを一つの型で表します。値があるときは `Just`、ないときは `Nothing` のコンストラクターで作ります。"
+        },
+        {
           "kind": "syntax",
-          "name": "primitive arithmetic",
-          "body": "数値の`+`、`-`、`*`、`/`は同じ数値型のvalueを計算します。このlessonではInt加算だけを扱います。"
+          "name": "Maybe の match",
+          "body": "`Nothing` と `Just` の両方を書いて分岐すると、値がない場合の処理忘れをコンパイラが実行前に防いでくれます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "既定値演算子 ??",
+          "body": "`値 ?? 既定値` の形で書き、値がないときだけ右側の既定値を返します。"
         }
       ],
       "exercise": {
-        "instruction": "右側のIntを`2`から`3`へ変更し、合計が`43`になることを確認してください。",
+        "instruction": "エディターの 6 行目にある `Just \"Mio\"` を `Nothing` に書き換えて `Run` し、`Output` の 1 行目が `user: none` に、3 行目の `active` の値が `Guest` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "IntとStringを加算する",
-        "body": "primitive加算の左右は同じ数値型が必要です。Stringを渡した位置と型差分を読みます。"
+        "heading": "Nothing の分岐を書き忘れる",
+        "body": "失敗例では `Just name` の分岐だけを書き、`Nothing` の分岐を省略しています。`match` はすべてのケースを網羅する必要があるため、実行前にエラー表示が出ます。"
       },
       "recap": [
-        "`+`は二つのIntから新しいIntを作る。",
-        "左右のvalueには演算が要求する型がある。"
+        "`Maybe<A>` は「値がある（`Just`）か、ない（`Nothing`）か」を型で明示します。",
+        "`match` で `Nothing` と `Just` を分岐すると、値がないケースの取りこぼしを実行前に防げます。",
+        "ただ既定値へ切り替えたいだけなら `??` 演算子で簡潔に書けます。"
       ],
       "next": {
-        "lessonId": "primitive-comparison",
-        "body": "次はIntを計算する代わりに大小を比較し、Bool resultを作ります。"
-      }
+        "lessonId": "maybe-short-circuit",
+        "body": "次は `Maybe` の値を取り出さずに、欠如を保ったまま次の変換へつなぐ `map` と `flatMap` を学びます。"
+      },
+      "notes": [
+        "標準モジュール `std/maybe` の `maybe.withDefault` 関数でも既定値を設定できますが、`??` 演算子は必要なときだけ右側を計算する便利な構文です。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson12Exercise,
     exerciseExpectedOutput: (lesson12ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1723,50 +1354,80 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson12DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "primitive-comparison",
+    id: "maybe-short-circuit",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/primitive-comparison/main.ssrg",
+    sourcePath: "examples/tour/lessons/maybe-short-circuit/main.ssrg",
     source: lesson13Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson13Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "二つのIntを`+`で計算し、Int resultを作りました。Boolの二つのvalueも既知です。",
+      "prerequisite": "`Just` と `Nothing` を `match` や `??` で扱う方法を学びました。ここでは中身を取り出さずに変換やつなぎ合わせを行います。",
       "walkthrough": [
         {
-          "heading": "大小からBoolを作る",
-          "body": "`42 > 40`は二つのIntを比較します。resultは数値ではなく、条件が成立したことを示すBoolの`True`です。",
+          "heading": "map で中身だけを変換する",
+          "body": "6〜7 行目の `map` と `<$>` は、値があるときだけ `double` を適用します。中身が `Nothing` のときは関数を呼ばず `Nothing` のまま保ちます。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 6,
+            "endLine": 7
+          }
+        },
+        {
+          "heading": "apply で複数の値を組み合わせる",
+          "body": "9〜10 行目では `apply` と `<*>` を使い、2 つの独立した `Maybe` の中身を `add` で足し合わせています。どちらか一方が `Nothing` なら結果も `Nothing` になります。",
+          "sourceRange": {
+            "startLine": 9,
+            "endLine": 10
+          }
+        },
+        {
+          "heading": "flatMap で欠如の短絡をつなぐ",
+          "body": "12〜18 行目では `flatMap` と `>>=` を使い、次の `Maybe` を返す関数 `next` をつなぎます。`input` が `Just 41` なら `Just 42` へ進み、`missing` のように `Nothing` なら後続を呼ばず途中中断して `Nothing` になります。",
+          "sourceRange": {
+            "startLine": 12,
+            "endLine": 18
           }
         }
       ],
       "introduced": [
         {
-          "kind": "syntax",
-          "name": "comparison",
-          "body": "`<`、`<=`、`>`、`>=`は大小を比較し、Bool valueを返します。このlessonでは同じInt型の二つのvalueを`>`で比較します。"
+          "kind": "api",
+          "name": "Maybe の map",
+          "body": "`map f x` と `f <$> x` は、`Just` の中身だけを関数 `f` で変換し、`Nothing` はそのまま保ちます。"
+        },
+        {
+          "kind": "api",
+          "name": "Maybe の apply",
+          "body": "`apply` と `<*>` は、別々の `Maybe` に入った関数と値を組み合わせて 1 つの `Maybe` にまとめます。"
+        },
+        {
+          "kind": "api",
+          "name": "Maybe の flatMap",
+          "body": "`flatMap f x` と `x >>= f` は、`Maybe` を返す次の処理をつなぎます。途中に `Nothing` があれば以降の処理を呼ばず短絡します。"
         }
       ],
       "exercise": {
-        "instruction": "右辺を`50`へ変え、同じ比較が`False`になることを確認してください。",
+        "instruction": "エディターの 12 行目にある `Just 41` を `Just 0` に書き換えて `Run` し、`Output` の 3 行目が `flatMap: Nothing` と `>>=: Nothing` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "IntとStringを比較する",
-        "body": "この比較では左辺のIntと右辺のStringが一致していません。右辺を指すdiagnosticを読み、左右を同じInt型へ揃えます。"
+        "heading": "flatMap や >>= に普通の値を返す関数を渡す",
+        "body": "失敗例では `Maybe<Int>` ではなく通常の `Int` を返す `addOne` を `>>=` の右側に渡しています。普通の関数には `map` を使い、`Maybe` を返す関数に `flatMap` や `>>=` を使います。"
       },
       "recap": [
-        "大小比較はBool resultを返す。",
-        "比較する左右のvalueにも型の契約がある。"
+        "`map` や `<$>` を使うと、`Maybe` に包まれた値だけを `match` なしで変換できます。",
+        "`apply` や `<*>` は複数の独立した `Maybe` を 1 つの処理に組み合わせます。",
+        "`flatMap` や `>>=` は次の `Maybe` を返す処理をつなぎ、`Nothing` の時点で後続を短絡します。"
       ],
       "next": {
-        "lessonId": "comments-and-tools",
-        "body": "次はここまでのsourceを安全に試すため、comment、Format、Reset、diagnosticの操作をまとめます。"
-      }
+        "lessonId": "09-maybe-and-either",
+        "body": "次は「値がない理由」まで持てる `Either` 型と、`Maybe` との使い分けを学びます。"
+      },
+      "notes": [
+        "前の段階が `Just` でも、`next` の結果が `Nothing` になればそこで値がなくなります。これをそのまま次の `>>=` へ渡しても、以降の処理は安全に飛ばされます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson13Exercise,
     exerciseExpectedOutput: (lesson13ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1774,74 +1435,80 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson13DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "comments-and-tools",
+    id: "09-maybe-and-either",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/comments-and-tools/main.ssrg",
+    sourcePath: "examples/tour/lessons/09-maybe-and-either/main.ssrg",
     source: lesson14Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson14Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "literal、binding、型注釈、型推論、Int加算、比較までを一箇所ずつ変更してきました。",
+      "prerequisite": "`Maybe` で「値があるかないか」を扱えるようになりました。ここでは「なぜ失敗したのか」という理由も表せる `Either` を学びます。",
       "walkthrough": [
         {
-          "heading": "Commentをprogramから除外する",
-          "body": "`//`から行末まではcommentです。人へ意図を残せますが、valueや実行結果にはなりません。",
+          "heading": "Left と Right で失敗理由と成功値を表す",
+          "body": "12〜13 行目の `Either<String, Int>` は、左側に失敗理由の型（`String`）、右側に成功値の型（`Int`）を持ちます。成功は `Right`、失敗は理由付きの `Left` で作ります。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
+            "startLine": 12,
+            "endLine": 13
           }
         },
         {
-          "heading": "変更・整形・復元を使い分ける",
-          "body": "Formatは意味を変えず整形し、Resetはlessonのcanonical sourceへ戻します。失敗例ではdiagnosticからsource位置と型差分を読みます。",
+          "heading": "match で失敗と成功の両方を取り出す",
+          "body": "6〜9 行目の `match` で `Left reason` と `Right count` を分けて処理します。パターンで束縛した `reason` や `count` はそれぞれの結果の中で必ず使います。",
           "sourceRange": {
-            "startLine": 2,
-            "endLine": 4
+            "startLine": 6,
+            "endLine": 9
+          }
+        },
+        {
+          "heading": "理由の要・不要で Maybe と Either を使い分ける",
+          "body": "11 行目の `note` のように「あるかないか」だけを表すなら `Maybe`、注文数の不正のように理由を伝えたいなら `Either` を選びます。",
+          "sourceRange": {
+            "startLine": 11,
+            "endLine": 13
           }
         }
       ],
       "introduced": [
         {
+          "kind": "type",
+          "name": "Either<E, A>",
+          "body": "左側の型引数 `E` に失敗理由、右側の型引数 `A` に成功値を持つ型です。理由不要の欠如には `Maybe`、理由を残す失敗には `Either` を使います。"
+        },
+        {
           "kind": "syntax",
-          "name": "line comment",
-          "body": "`//`から行末までをcompilerがprogramとして評価しないtextにします。"
+          "name": "Left と Right",
+          "body": "`Left` は失敗理由を、`Right` は成功値を包む `Either` のコンストラクターです。"
         },
         {
-          "kind": "api",
-          "name": "Format",
-          "body": "現在のsourceをSeseragi formatterで整形します。programの意味は変えません。"
-        },
-        {
-          "kind": "api",
-          "name": "Reset",
-          "body": "編集・課題・失敗例から、現在lessonのcanonical sourceへ戻します。"
-        },
-        {
-          "kind": "api",
-          "name": "compiler diagnostic",
-          "body": "compileできない理由をsource位置、expected type、actual typeなどの構造で示します。"
+          "kind": "syntax",
+          "name": "Either の match",
+          "body": "`Left` と `Right` の両方を `match` で網羅的に分岐し、取り出した値を使って結果を返します。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceを開き、FormatしてからRunしてください。その後Resetでcanonical sourceへ戻ることも確認してください。",
+        "instruction": "エディターの 12 行目にある `Right 3` を `Left \"out of stock\"` に書き換えて `Run` し、`Output` の 2 行目が `error: out of stock` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "String annotationへIntを入れる",
-        "body": "失敗例を開いてRunし、source位置とexpected String、actual Intを確認してからResetしてください。"
+        "heading": "Maybe 型に Either の Left を入れる",
+        "body": "失敗例では `Maybe<Int>` 型の変数へ理由付きの `Left` を入れようとしています。失敗理由を持たせたいときは型を `Either<String, Int>` にします。"
       },
       "recap": [
-        "`//`で実行されない説明を残せる。",
-        "Formatは整形、Resetはcanonical sourceへの復元を行う。",
-        "diagnosticから失敗位置と型差分を読める。"
+        "`Either<E, A>` は失敗理由の型 `E` と成功値の型 `A` を一つの値として表せます。",
+        "理由が不要な欠如には `Maybe`、失敗理由を伝えたいときは `Either` を使います。",
+        "`match` では `Left` と `Right` を両方扱い、束縛した変数は分岐の中で必ず使います。"
       ],
       "next": {
-        "lessonId": "03-function-definitions",
-        "body": "基礎のvalueと型を読めるようになりました。次は処理へ名前とparameterを与えるfunction定義へ進みます。"
-      }
+        "lessonId": "either-map-error",
+        "body": "次は `Either` の成功値や失敗理由をそれぞれ別の関数で変換し、次の `Effect` 層へ渡す前にエラーの型を揃える方法を学びます。"
+      },
+      "notes": [
+        "複数の変換をつなぐときも、`|>` の位置を揃えて改行して書くと読みやすくなります。また、`Either` の `match` でも片方の分岐を書き忘れると実行前にエラー表示が出ます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson14Exercise,
     exerciseExpectedOutput: (lesson14ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1849,64 +1516,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson14DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "03-function-definitions",
+    id: "either-map-error",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/03-function-definitions/main.ssrg",
+    sourcePath: "examples/tour/lessons/either-map-error/main.ssrg",
     source: lesson15Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson15Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "値、型注釈、型推論、primitive演算、Playgroundの基本操作までを学びました。",
+      "prerequisite": "`Either` で失敗理由と成功値を表し、`match` で分岐できるようになりました。ここでは値を保ったまま成功値や失敗理由の形を変換します。",
       "walkthrough": [
         {
-          "heading": "fnでpure functionへ名前を付ける",
-          "body": "`fn greeting`は計算へ名前を付けます。parameterを書かない関数は、呼ぶときにUnit valueを一つ受け取る関数として扱われます。",
+          "heading": "map と <$> で成功値だけを変換する",
+          "body": "16〜18 行目の `map` と `<$>` は、`Right` の値だけに `increment` を適用します。`Left` の場合は関数を呼ばず、元の失敗理由をそのまま保ちます。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 16,
+            "endLine": 18
           }
         },
         {
-          "heading": "このlessonでは定義だけに集中する",
-          "body": "mainは関数の型を文字列として表示します。関数へ値を渡すsyntaxは後続lessonで一段ずつ学びます。",
+          "heading": "either.mapLeft で失敗理由の型を揃える",
+          "body": "19〜20 行目の `either.mapLeft` は、`Right` には触れず `Left` の失敗理由だけを `toErrorInfo` で `ErrorInfo` 型に変換します。",
           "sourceRange": {
-            "startLine": 3,
-            "endLine": 3
+            "startLine": 19,
+            "endLine": 20
+          }
+        },
+        {
+          "heading": "純粋な値のうちにエラーの形を統一する",
+          "body": "ここではまだ `Effect` を実行せず、純粋な値の段階でエラー型を `ErrorInfo` に揃えて `render` へ渡しています。",
+          "sourceRange": {
+            "startLine": 8,
+            "endLine": 11
           }
         }
       ],
       "introduced": [
         {
-          "kind": "syntax",
-          "name": "fn",
-          "body": "`fn`は副作用を持たないpure functionを定義します。"
+          "kind": "api",
+          "name": "Either の map と <$>",
+          "body": "`Either` に `map` や `<$>` を適用すると `Right` の成功値だけが変換され、`Left` の失敗理由はそのまま残ります。"
         },
         {
-          "kind": "type",
-          "name": "pure function",
-          "body": "pure functionは同じ引数から同じ結果を作り、ConsoleなどのEffectを直接実行しません。"
+          "kind": "api",
+          "name": "either.mapLeft",
+          "body": "標準モジュール `std/either` の `either.mapLeft` は、`Left` の失敗理由だけを別の型へ変換します。次章の `Effect` では `mapError` が同じ役割を担います。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceで`greeting`が返すStringを変え、定義が引き続きcompileできることを確かめてください。",
+        "instruction": "エディターの 14 行目にある `Left \"invalid\"` を `Left \"empty input\"` に書き換えて `Run` し、`Output` の 3 行目が `Left empty input` に、5 行目が `error: empty input` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "宣言したString以外を返す",
-        "body": "失敗例では`greeting`の本文をIntにしています。関数定義の戻り型と本文の型差分を確認してください。"
+        "heading": "失敗理由の型を揃えずに渡してしまう",
+        "body": "失敗例では失敗理由が `String` のままの値を、`ErrorInfo` を期待する `render` へ渡しています。異なるエラー型は `either.mapLeft` で型を揃えてから渡します。"
       },
       "recap": [
-        "`fn`でpure functionを定義できる。",
-        "parameterなしの関数はUnitを受け取る関数として扱われる。",
-        "この段階では関数の呼び方をまだ導入していない。"
+        "`Either` の `map` と `<$>` は `Right` の成功値だけを変換し、`Left` はそのまま保ちます。",
+        "`either.mapLeft` を使うと、成功値を変えずに失敗理由の型だけを別の型へ揃えられます。",
+        "`Either` は副作用を実行しない純粋な値であり、次章の `Effect` へ進む前にデータとしてのエラー形を整えられます。"
       ],
       "next": {
-        "lessonId": "one-parameter-function",
-        "body": "次は関数名の後ろへ一つのparameterを追加します。"
-      }
+        "lessonId": "effect-pure-vs-effect",
+        "body": "値としての欠如と失敗はここまでです。次は副作用を表す `Effect` と、`fn` と `effect fn` の違いを学びます。"
+      },
+      "notes": [
+        "次章で学ぶ `Effect` 層では、`std/effect` の `mapError` を使って実行時の失敗型を同じように変換します。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson15Exercise,
     exerciseExpectedOutput: (lesson15ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1914,59 +1592,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson15DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "one-parameter-function",
+    id: "effect-pure-vs-effect",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/one-parameter-function/main.ssrg",
+    sourcePath: "examples/tour/lessons/effect-pure-vs-effect/main.ssrg",
     source: lesson16Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson16Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "`fn`でparameterなしのpure functionを定義できるようになりました。",
+      "prerequisite": "ここまでで `Maybe` や `Either` を使い、欠如や失敗理由を通常の値として表す方法を学びました。ここからは入出力などの副作用を扱う `Effect` へ進みます。",
       "walkthrough": [
         {
-          "heading": "関数名の後ろへparameterを書く",
-          "body": "`name: String`は、この関数がString valueを一つ受け取ることを示します。`name`は関数本文の中で使える名前です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        },
-        {
-          "heading": "受け取った値を本文で使う",
-          "body": "templateの`${name}`はparameterへ渡されたStringを埋め込みます。このlessonでは定義だけを行い、適用は後で扱います。",
+          "heading": "純粋な fn と effect fn の違い",
+          "body": "1 行目の `formatTag` は引数から `String` を組み立てる純粋な関数です。3 行目の `announce` は `println` で画面へ出力する処理を表すため、Effectを返す関数として `effect fn` で宣言します。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 3
+          }
+        },
+        {
+          "heading": "Effect は作っただけでは実行されない",
+          "body": "5・6 行目では `announce` を呼んで `Effect` 型の値を `second` と `first` に束縛しています。この時点では手順を表す値を作っただけであり、まだ `Output` には何も出力されません。",
+          "sourceRange": {
+            "startLine": 5,
+            "endLine": 6
+          }
+        },
+        {
+          "heading": "main で使われて初めて実行される",
+          "body": "実行したときに動き出すのは `main` の `do` ブロックです。並び順に `first`・`second`・`first` が実行されるため、2 回使った `first` は 2 回とも出力されます。",
+          "sourceRange": {
+            "startLine": 8,
+            "endLine": 12
           }
         }
       ],
       "introduced": [
         {
+          "kind": "type",
+          "name": "Effect と構築・実行の分離",
+          "body": "`Effect` は「これから行う処理」を表す値です。関数を呼んで値を作っただけでは動かず、`main` などの実行境界へ渡されて初めて動きます。"
+        },
+        {
           "kind": "syntax",
-          "name": "parameter",
-          "body": "関数名の後ろに`name: Type`を書くと、その型の値を受け取るparameterになります。"
+          "name": "effect fn",
+          "body": "Effectを返す関数を宣言する構文です。`println` のような副作用を扱う処理は通常の `fn` ではなく `effect fn` の中で組み立てます。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceでparameter名とtemplate内の参照を一緒に変え、compileできることを確かめてください。",
+        "instruction": "エディターの 11 行目にある `first` を `second` に書き換えて `Run` し、`Output` の 3 行目が `step: second` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "StringへIntを加算する",
-        "body": "失敗例ではString parameterへIntを加えています。operatorが要求する型とparameterの型を確認してください。"
+        "heading": "純粋な fn の中に println を書く",
+        "body": "失敗例では `fn` で宣言した関数の本体に `println` を置いています。`println` は `Unit` ではなく `Effect` 値を返すため、実行前に `Problems` へ型の不一致が表示されます。"
       },
       "recap": [
-        "`name: String`で一つのString parameterを宣言できる。",
-        "parameter名は関数本文でvalueとして参照できる。",
-        "parameterの型が本文の演算にも使われる。"
+        "通常の `fn` は計算結果の値そのものを返し、`effect fn` は実行すべき処理を表す `Effect` 値を返します。",
+        "`Effect` は作っただけでは動かず、`main` の `do` ブロックに置かれて初めて実行されます。",
+        "同じ `Effect` 値を 2 回使えば、その副作用も 2 回実行されます。"
       ],
       "next": {
-        "lessonId": "function-return-type",
-        "body": "次は矢印の右側にある関数全体の戻り型を読み分けます。"
-      }
+        "lessonId": "10-effects-and-do",
+        "body": "次は `do` ブロックと `<-` を使って複数の `Effect` を上から順に実行し、成功値を受け渡す方法を学びます。"
+      },
+      "notes": [
+        "純粋な関数（`fn`）の内部から `println` のような `Effect` を暗黙に実行することはできません。計算と入出力を分けることで、テストや再利用がしやすくなります。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson16Exercise,
     exerciseExpectedOutput: (lesson16ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1974,59 +1668,81 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson16DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "function-return-type",
+    id: "10-effects-and-do",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/function-return-type/main.ssrg",
+    sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
     source: lesson17Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson17Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "一つのString parameterを持つ関数定義を読めるようになりました。",
+      "prerequisite": "前のレッスンで `Effect` は作っただけでは動かず、`main` で使われて初めて実行されることを学びました。ここでは複数の `Effect` を順番につなぐ書き方を学びます。",
       "walkthrough": [
         {
-          "heading": "最後の矢印の右を戻り型として読む",
-          "body": "`label: String -> Int`ではStringがparameterの型、最後のIntが関数全体の戻り型です。",
+          "heading": "succeed で通常の値を成功値として返す",
+          "body": "`succeed 21` は外部環境を使わず失敗もしない `Effect` を作り、成功値 `21` を返します。5 行目の `double` は受け取った `Int` を 2 倍にして `succeed` で返す関数です。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 5
           }
         },
         {
-          "heading": "本文の型を戻り型へ合わせる",
-          "body": "本文の`8`はIntなので、宣言した戻り型Intと一致します。parameterを使わない場合でも型の契約は変わりません。",
+          "heading": "do の中の <- と let の使い分け",
+          "body": "`do` ブロック内の `value <- source` は `Effect` を実行して成功値を取り出します。一方、`let doubled` は純粋な値に名前を付けるだけで、最後に `succeed doubled` で再び `Effect` として返します。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
+            "startLine": 9,
+            "endLine": 13
+          }
+        },
+        {
+          "heading": "flatMap と >>= と do は同じ合成",
+          "body": "7 行目の `flatMap` 呼び出し、8 行目の `>>=` 演算子、9 行目の `do` ブロックはいずれも同じ処理を表します。`main` の `do` では上から順に実行され、3 行とも `42` が出力されます。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 22
           }
         }
       ],
       "introduced": [
         {
-          "kind": "type",
-          "name": "return type",
-          "body": "関数signatureの最後にある型は、関数本文が返さなければならないvalueの型です。"
+          "kind": "syntax",
+          "name": "do と <-",
+          "body": "`do { ... }` は `Effect` を上から順に実行します。`x <- eff` で右側の `Effect` の成功値を受け取って次の行で使えます。"
+        },
+        {
+          "kind": "api",
+          "name": "succeed",
+          "body": "純粋な値を受け取り、失敗せずにその成功値で完了する `Effect` を作ります。"
+        },
+        {
+          "kind": "syntax",
+          "name": "do 内の let",
+          "body": "`Effect` を実行するのではなく、すでに取り出した通常の値を使って純粋な計算に名前を付けるときに使います。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceのInt valueを別のIntへ変え、戻り型の契約を保ってcompileしてください。",
+        "instruction": "エディターの 3 行目にある `succeed 21` を `succeed 15` に書き換えて `Run` し、`Output` の 3 行がすべて `30` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Intを返す関数からStringを返す",
-        "body": "失敗例では宣言したIntと本文のStringが一致しません。expectedとactualの型を確認してください。"
+        "heading": "Effect ではない値に <- を使う",
+        "body": "失敗例では `Int` 型の `42` に `<-` を使っています。`<-` の右側に置けるのは `Effect` だけであり、通常の値に名前を付けたいときは `let` を使ってください。"
       },
       "recap": [
-        "parameterの型はparameter名の直後に書く。",
-        "最後の矢印の右側が関数全体の戻り型になる。",
-        "関数本文の型は戻り型と一致する必要がある。"
+        "`do` ブロックは書かれた順番どおりに `Effect` を 1 つずつ実行します。",
+        "`Effect` から成功値を取り出すときは `<-`、純粋な値に名前を付けるときは `let` を使います。",
+        "`succeed` で純粋な値を `Effect` の成功値として返せます。",
+        "`flatMap`・`>>=`・`do` はどれも前の成功値を使って次の `Effect` をつなぐ同じ合成です。"
       ],
       "next": {
-        "lessonId": "04-function-calls",
-        "body": "定義の読み方がそろいました。次は関数名と値を空白で並べて適用します。"
-      }
+        "lessonId": "effect-failure-short-circuit",
+        "body": "次は `Effect` が途中で失敗したときに後続の処理がどう止まるかと、失敗型の表し方を学びます。"
+      },
+      "notes": [
+        "`Maybe` や `Either` で学んだ `flatMap` と `>>=` と同じく、`Effect` でも成功値の依存関係がある処理を連鎖できます。複数行で名前を付けたいときは `do` が読みやすくなります。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson17Exercise,
     exerciseExpectedOutput: (lesson17ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -2034,59 +1750,81 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson17DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "04-function-calls",
+    id: "effect-failure-short-circuit",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/04-function-calls/main.ssrg",
+    sourcePath: "examples/tour/lessons/effect-failure-short-circuit/main.ssrg",
     source: lesson18Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson18Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    expectedFailure: (lesson18Failure).replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "一parameter関数の定義と、最後の矢印の右側にある戻り型を読めます。",
+      "prerequisite": "`do` と `<-` で成功値を受け取りながら順番に処理を進められるようになりました。ここからは `Effect` が途中で失敗したときの動きを学びます。",
       "walkthrough": [
         {
-          "heading": "関数名と値を空白で並べる",
-          "body": "`greeting \"Mio\"`はgreeting関数へString valueを一つ渡します。Seseragiではこの空白がfunction applicationを表します。",
+          "heading": "fails で失敗の型を宣言する",
+          "body": "`requirePositive` は失敗する可能性があるため、シグネチャに `fails StepError` と書きます。`count > 0` でないときは `fail Rejected` で `StepError` 型の失敗値を返します。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
+            "startLine": 8,
+            "endLine": 9
           }
         },
         {
-          "heading": "適用結果を通常のvalueとして使う",
-          "body": "関数の戻り型はStringなので、`message`もStringです。mainはそのvalueをprintlnへ渡します。",
+          "heading": "fromEither で Either から Effect へ橋渡しする",
+          "body": "`parseCount` は純粋な `Either` 値を返します。13 行目の `fromEither` を使うと、`Right` の値は成功値として `count` に入り、`Left` の値はそのまま `Effect` の失敗値になります。",
           "sourceRange": {
-            "startLine": 3,
-            "endLine": 5
+            "startLine": 5,
+            "endLine": 13
+          }
+        },
+        {
+          "heading": "fail が起きると後続は実行されない",
+          "body": "12 行目で `before` が出力されたあと、14 行目の `requirePositive` が `Rejected` で失敗します。そのため 15 行目の `println` は実行されず、途中中断して終了します。",
+          "sourceRange": {
+            "startLine": 11,
+            "endLine": 16
           }
         }
       ],
       "introduced": [
         {
           "kind": "syntax",
-          "name": "function application",
-          "body": "関数の右へ空白を置いてvalueを書くと、そのvalueを一つの引数として関数へ渡します。"
+          "name": "fails",
+          "body": "`effect fn` のシグネチャで、その処理が起こしうる回復可能な失敗の型を `fails 型名` の形で宣言します。"
+        },
+        {
+          "kind": "api",
+          "name": "fail",
+          "body": "指定したエラー値で `Effect` を失敗させます。実行中に `fail` に到達すると、同じ `do` ブロックの後続行は実行されません。"
+        },
+        {
+          "kind": "api",
+          "name": "fromEither",
+          "body": "純粋な `Either` 値を `Effect` へ変換します。`Right` は成功値、`Left` は `Effect` の失敗値になります。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceで`greeting`へ渡す名前を変え、Outputが対応して変わることを確認してください。",
+        "instruction": "エディターの 13 行目にある `parseCount \"0\"` の `\"0\"` を `\"3\"` に書き換えて `Run` し、`Output` に `before` と `accepted: 3` の両方が表示されることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "String parameterへIntを渡す",
-        "body": "失敗例では`greeting 42`としています。関数が要求するparameter型と引数の型を確認してください。"
+        "heading": "fails を書かずに fail を返す",
+        "body": "失敗例では戻り値型 `-> Int` だけを書いて `fails StepError` を省いています。戻り値型を書く形式で `fails` を省略すると失敗しない `Never` 扱いになるため、`fail Rejected` と型が合わず実行前にエラー表示が出ます。"
       },
       "recap": [
-        "関数名と引数を空白で並べるとfunction applicationになる。",
-        "一parameter関数へは一つのvalueを渡す。",
-        "適用結果は戻り型を持つ通常のvalueとして使える。"
+        "`fails ErrorType` は `Effect` が返しうる回復可能な失敗の型を宣言します。",
+        "`fail` で失敗すると `do` ブロックの残り行は実行されずに途中中断します。",
+        "`fromEither` を使うと、純粋な `Either` の `Left` と `Right` を `Effect` の失敗と成功へそのまま橋渡しできます。"
       ],
       "next": {
-        "lessonId": "multiple-parameter-function",
-        "body": "次はparameterを増やし、値が左からどの順に対応するか確かめます。"
-      }
+        "lessonId": "effect-map-error",
+        "body": "次は失敗した `Effect` から `recover` で立て直す方法と、`mapError` でエラー型を揃える方法を学びます。"
+      },
+      "notes": [
+        "12・15 行目の `mapError OutputFailure` は、`println` の `ConsoleError` を `StepError` に揃えて同じ `do` ブロックに並べるために使っています。詳しくは次のレッスンで学びます。",
+        "13 行目の `\"0\"` を `\"bad\"` に変えると、`parseCount` が `Left Rejected` を返し、`fromEither` の時点で途中中断することも試せます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson18Exercise,
     exerciseExpectedOutput: (lesson18ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -2094,59 +1832,76 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson18DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "multiple-parameter-function",
+    id: "effect-map-error",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/multiple-parameter-function/main.ssrg",
+    sourcePath: "examples/tour/lessons/effect-map-error/main.ssrg",
     source: lesson19Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson19Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "空白で一parameter関数へ一つの値を渡せるようになりました。",
+      "prerequisite": "前のレッスンで `fail` による途中中断と `fails` による失敗型の宣言を学びました。ここでは異なるエラー型を揃え、失敗から立て直す方法を学びます。",
       "walkthrough": [
         {
-          "heading": "parameterを矢印で続ける",
-          "body": "`surround`はleft、right、valueの三parameterを持ちます。各parameterはStringで、最後のStringが戻り型です。",
+          "heading": "mapError で部品ごとの失敗型を揃える",
+          "body": "`parseCount` は `ParseError`、`checkStock` は `StockError` で失敗します。同じ `do` ブロックでは失敗型を揃える必要があるため、それぞれ `mapError` で `OrderError` へ変換しています。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
+            "startLine": 19,
+            "endLine": 25
           }
         },
         {
-          "heading": "引数を左から対応させる",
-          "body": "`surround \"[\" \"]\" \"Seseragi\"`では三つの値がleft、right、valueへ左から順に渡されます。",
+          "heading": "recover で失敗を別の Effect に立て直す",
+          "body": "`recoverOrder` は受け取った `OrderError` を `match` で判別し、`succeed` で既定の文字列を返します。失敗した場合だけ呼ばれ、失敗値を成功値へ置き換えて処理を立て直します。",
           "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
+            "startLine": 27,
+            "endLine": 30
+          }
+        },
+        {
+          "heading": "通常経路と回復経路を実行する",
+          "body": "1 つ目の `prepareOrder` は成功して `tea x2` を返します。2 つ目は `OutOfStock` で失敗しますが、`recover recoverOrder` で回復されるため中断せず、2 行とも `Output` に表示されます。",
+          "sourceRange": {
+            "startLine": 32,
+            "endLine": 37
           }
         }
       ],
       "introduced": [
         {
-          "kind": "syntax",
-          "name": "multiple parameters",
-          "body": "`name: Type ->`を続けると複数parameterを宣言でき、適用する値は左から対応します。"
+          "kind": "api",
+          "name": "mapError",
+          "body": "`Effect` の成功型は保ったまま、失敗側の値だけを別のエラー型へ変換します。小さな部品のエラー型をアプリ側のエラー型へ揃えるときに使います。"
+        },
+        {
+          "kind": "api",
+          "name": "recover",
+          "body": "`Effect` が失敗したときに関数を呼び、代替の `Effect` で立て直します。回復すれば後続の `do` を続けられます。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceのleftとrightへ別のStringを渡し、Outputで引数の順序を確認してください。",
+        "instruction": "エディターの 34 行目にある `\"2\"`（`\"coffee\"` の前）を `\"bad\"` に書き換えて `Run` し、`Output` の 2 行目が `bad count: bad` を含む表示に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "二番目のString parameterへIntを渡す",
-        "body": "失敗例ではrightへIntを渡しています。二番目のparameter位置に対する型差分を確認してください。"
+        "heading": "異なる失敗型を変換せずに同じ do へ並べる",
+        "body": "失敗例では `ParseError` を返す `parseCount` と `StockError` を返す `checkStock` を `mapError` なしで同じ `do` ブロックに置いています。異なる失敗型が混ざるため実行前にエラー表示が出ます。"
       },
       "recap": [
-        "複数parameterは矢印で左から右へ宣言する。",
-        "複数の引数も空白で左から順に渡す。",
-        "最後の矢印の右側だけが関数全体の戻り型になる。"
+        "`mapError` を使うと、部品ごとに異なる失敗型をアプリ側のエラー型（例では `OrderError`）へ揃えられます。",
+        "`recover` を使うと、失敗を `match` などで受け止めて既定値や別処理へ立て直せます。",
+        "失敗から回復した `Effect` は成功値を持つため、`main` を途中で止めずに後続処理を続けられます。"
       ],
       "next": {
-        "lessonId": "function-value",
-        "body": "次は三つすべてを渡さず、途中で止めた適用結果を観察します。"
-      }
+        "lessonId": "effect-with-capability",
+        "body": "次は `Effect` が必要とする `Console` などの環境を型で表す `with` と、その型推論を学びます。"
+      },
+      "notes": [
+        "`recover` は `std/effect` モジュールから `import` して使います。",
+        "パイプラインの `|>` を複数段つなげて `Format` すると、各段が縦に整列して処理の流れを上から順に追えます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson19Exercise,
     exerciseExpectedOutput: (lesson19ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -2154,59 +1909,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson19DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "function-value",
+    id: "effect-with-capability",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/function-value/main.ssrg",
+    sourcePath: "examples/tour/lessons/effect-with-capability/main.ssrg",
     source: lesson20Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson20Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "三parameter関数へ三つのvalueを左から順に渡せます。",
+      "prerequisite": "ここまでで `Effect` の構築・逐次実行・失敗と回復を学びました。最後に `Effect` が必要とする外部環境（`with`）と型推論の仕組みを学びます。",
       "walkthrough": [
         {
-          "heading": "二つだけ値を渡して止める",
-          "body": "`surround \"[\" \"]\"`はleftとrightだけを受け取り、valueをまだ待っている関数になります。その関数値へ`bracket`という名前を付けます。",
+          "heading": "with で必要な環境機能を明示する",
+          "body": "`announce` は `Unit` の後ろに `with` で `Console`、`fails` で `ConsoleError` を指定しています。外部出力に必要な環境機能と起こりうる失敗型をシグネチャに固定する書き方（明示形）です。",
           "sourceRange": {
             "startLine": 1,
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "省略形では本体から環境と失敗型が推論される",
+          "body": "`reportPair` では `->`・`with`・`fails` を省略しています（推論形）。本体の `announce` と `println` から、必要な `Console` 環境機能と `ConsoleError` が上位の関数へ自動で推論されます。",
+          "sourceRange": {
+            "startLine": 4,
             "endLine": 7
           }
         },
         {
-          "heading": "残りの一つを後から渡す",
-          "body": "`bracket \"Seseragi\"`で最後のvalueを渡すと、初めてString resultが作られます。",
+          "heading": "呼び出し元の main でも同じ環境が伝わる",
+          "body": "`main` も推論形で書かれており、`reportPair` が必要とする `Console` 環境を受け継いで実行されます。",
           "sourceRange": {
-            "startLine": 7,
-            "endLine": 7
+            "startLine": 9,
+            "endLine": 9
           }
         }
       ],
       "introduced": [
         {
-          "kind": "type",
-          "name": "function value",
-          "body": "すべての引数を受け取る前の適用結果も、残りの引数を待つ型を持ったvalueです。"
+          "kind": "syntax",
+          "name": "with による環境機能の宣言",
+          "body": "`with` の後ろに `Console` のように書くことで、その `Effect` が実行時に必要とする外部環境を型として表します。"
+        },
+        {
+          "kind": "syntax",
+          "name": "推論形と明示形の effect fn",
+          "body": "`->` や `with`・`fails` をすべて省くと本体から推論され、戻り値の型や `with`・`fails` を書くと明示形として型を固定できます。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceで二つの引数を固定した`angle`関数値を実行し、残りの値だけを後から渡してください。",
+        "instruction": "エディターの 4 行目にある `reportPair` の引数を `->` でつなぎ、続けて `-> Unit`・`with Console`・`fails ConsoleError` を書いて明示形にし、9 行目の `\"inferred\"` を `\"explicit\"` に書き換えて `Run` し、`Output` の 2 行目が `caller: explicit` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "関数値をStringとして注釈する",
-        "body": "失敗例では残りの引数を待つ`bracket`をStringと宣言しています。function typeとStringの差分を確認してください。"
+        "heading": "明示形で with を書き忘れる",
+        "body": "失敗例では `-> Unit` と `fails ConsoleError` を書いた明示形から `with Console` だけを省いています。明示形で `with` を省くと環境なし（`{}`）の意味になるため、`println` と合わず実行前にエラー表示が出ます。"
       },
       "recap": [
-        "すべての引数を一度に渡す必要はない。",
-        "途中の適用結果は残りの引数を待つfunction valueになる。",
-        "function valueへ後から残りのvalueを渡せる。"
+        "`with Console` などの指定で、`Effect` が実行に必要とする環境機能を型に表せます。",
+        "`->`・`with`・`fails` をすべて省略した推論形では、本体が使う環境と失敗型が呼び出し元へ自動で推論されます。",
+        "公開関数や境界では明示形で環境と失敗型を固定でき、省略した `with` は環境なしとして検査されます。"
       ],
       "next": {
-        "lessonId": "currying-from-code",
-        "body": "次は同じ適用を一引数ずつ完全に分け、curryingという名前へ結び付けます。"
-      }
+        "lessonId": "abstraction-type-parameter",
+        "body": "`Effect` の基本が揃いました。次は型パラメーター `A` を使って、さまざまな型で共通に使える関数をまとめる方法を学びます。"
+      },
+      "notes": [
+        "明示形では `with` を省略すると環境なし（`{}`）、`fails` を省略すると失敗なし（`Never`）を意味します。推論させたいときは `->` ごとすべて省略してください。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson20Exercise,
     exerciseExpectedOutput: (lesson20ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -2214,59 +1985,76 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson20DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "currying-from-code",
+    id: "abstraction-type-parameter",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/currying-from-code/main.ssrg",
+    sourcePath: "examples/tour/lessons/abstraction-type-parameter/main.ssrg",
     source: lesson21Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson21Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "途中まで適用した結果が、残りの引数を待つfunction valueになることをcodeで確認しました。",
+      "prerequisite": "代数的データ型や関数、`Maybe` と `Either` を使って値を受け渡せるようになりました。ここでは特定の型に固定しない汎用的な関数とデータ型の書き方を学びます。",
       "walkthrough": [
         {
-          "heading": "一つ渡すたびに次の関数を得る",
-          "body": "`surround \"[\"`はrightとvalueを待つ関数、`withLeft \"]\"`はvalueだけを待つ関数になります。",
+          "heading": "型パラメーターで汎用データ型を定義する",
+          "body": "`Box<A>` は中身となる値の型を `A` として後から決められる代数的データ型です。`Pair<A, B>` のように `<A, B>` と複数並べると、1 番目と 2 番目に異なる型を入れられます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 8
+            "endLine": 6
           }
         },
         {
-          "heading": "観察した現象をcurryingと呼ぶ",
-          "body": "複数parameterの関数を、一引数を受け取って次の関数を返す形として扱うことがcurryingです。最後の適用でStringになります。",
+          "heading": "1 つの汎用関数を複数の型で使い回す",
+          "body": "`unwrapOr<A>` は `String` 用と `Int` 用を別々に書かずに 1 つで済みます。ただし 1 回の呼び出しでは、同じ型パラメーター `A` はすべて同じ具体的な型に揃える必要があります。`swap<A, B>` は 2 つの型を入れ替えた `Pair<B, A>` を返します。",
           "sourceRange": {
             "startLine": 8,
-            "endLine": 8
+            "endLine": 15
+          }
+        },
+        {
+          "heading": "呼び出し時の引数から型が決まる",
+          "body": "18 行目の `unwrapOr` では `A` が `String` に、19 行目の `Empty` を渡す呼び出しでは `A` が `Int` に決まります。20 行目の `swap` によって `count` には `22`、`tag` には `\"Tour\"` が入ります。",
+          "sourceRange": {
+            "startLine": 17,
+            "endLine": 23
           }
         }
       ],
       "introduced": [
         {
           "kind": "type",
-          "name": "currying",
-          "body": "複数の引数を、一引数ごとに次のfunction valueを返す連続した適用として扱う仕組みです。"
+          "name": "型パラメーターと汎用データ型",
+          "body": "`type Box<A>` や `type Pair<A, B>` のように `<...>` で型パラメーターを宣言すると、中身の型を呼び出し側で差し替えられる汎用データ型を定義できます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "汎用関数",
+          "body": "`fn unwrapOr<A>` のように関数名の後ろに `<A>` を書くと、特定の型に依存しない処理を 1 度だけ定義できます。同じ名前の型パラメーターは 1 回の呼び出しで同じ具体的な型を表します。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceの三段階を上から実行し、left、right、valueが一つずつ固定されることをOutputで確認してください。",
+        "instruction": "エディターの 19 行目にある `Empty` を `(Box 42)` に、20 行目の `\"Tour\"` を `\"Step\"` に書き換えて `Run` し、`Output` が `Seseragi: 42` と `22 / Step` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "最後の引数を待つ関数をStringにする",
-        "body": "失敗例では`withSides`へ最後のvalueを渡さずString注釈を付けています。残っているfunction typeを確認してください。"
+        "heading": "同じ型パラメーターに異なる型を渡す",
+        "body": "失敗例では `unwrapOr` の第 1 引数に `String` の `\"none\"` を、第 2 引数に `Box<Int>` の `(Box 42)` を渡しています。同じ型パラメーター `A` が 1 回の呼び出しで `String` と `Int` の両方にはなれないため、実行前にエラー表示が出ます。"
       },
       "recap": [
-        "一つの引数を渡すたびに残りを待つ関数が得られる。",
-        "この連続した一引数適用をcurryingと呼ぶ。",
-        "最後の引数を渡した時点で戻り値のStringになる。"
+        "`fn 名前<A>` や `type 名前<A>` で型パラメーターを宣言すると、複数の具体的な型で同じ仕組みを再利用できる。",
+        "1 回の呼び出しの中で同じ名前の型パラメーター `A` はすべて同じ型になる。",
+        "`<A, B>` のように複数の型パラメーターを並べると、それぞれ独立した型を持たせられる。"
       ],
       "next": {
-        "lessonId": "partial-application",
-        "body": "次は途中のfunction valueを再利用し、partial applicationの用途を確かめます。"
-      }
+        "lessonId": "abstraction-trait-operation",
+        "body": "型に依存しない汎用処理を 1 つにまとめられました。次は型ごとに振る舞いを切り替えられる型クラス（`trait`・`instance`・`where`）を学びます。"
+      },
+      "notes": [
+        "`Maybe<Int>` のように型引数を 1 つ受け取る `Maybe` や `Box` 自体は「型コンストラクター」と呼ばれます。型コンストラクター自体をパラメーター `F<_>` として扱う高度な抽象化は、補足トラックの `Functor` などで詳しく扱います。",
+        "型パラメーターだけで書かれた汎用関数の中では、その型に固有の演算（たとえば `+`）は使えません。必要な操作を制約として求める方法は次のレッスンで学びます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson21Exercise,
     exerciseExpectedOutput: (lesson21ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -2274,59 +2062,80 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson21DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "partial-application",
+    id: "abstraction-trait-operation",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/partial-application/main.ssrg",
+    sourcePath: "examples/tour/lessons/abstraction-trait-operation/main.ssrg",
     source: lesson22Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson22Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "curryingによって一引数ずつfunction valueが得られることを確認しました。",
+      "prerequisite": "前のレッスンで型パラメーター `<A>` を使った汎用関数と汎用データ型を学びました。ここでは型ごとに異なる実装を持ちながら共通の操作で扱える型クラスを学びます。",
       "walkthrough": [
         {
-          "heading": "共通の引数を先に固定する",
-          "body": "`bracket`と`quote`はsurroundのleftとrightを先に固定し、valueだけを待つ専用関数です。",
+          "heading": "deriving で Eq と Show を自動導出する",
+          "body": "`deriving Eq, Show` を付けると、自作の型でも等値比較の `==` と文字列化の `show` が自動で使えるようになります。手書きで比較関数や変換関数を用意する必要はありません。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 7
+            "endLine": 5
           }
         },
         {
-          "heading": "専用関数を何度でも使う",
-          "body": "すべての引数を渡さず途中のfunction valueを利用することをpartial applicationと呼びます。mainでは残りの値だけを渡します。",
+          "heading": "trait で共通操作を宣言し instance で実装する",
+          "body": "`trait Label<A>` は `label` という操作の契約を宣言し、`instance Label<Status>` と `instance Label<Task>` が型ごとの具体的な実装を与えます。型クラスは継承ではなく、型ごとに一意な実装を紐づける仕組みです。",
           "sourceRange": {
             "startLine": 7,
-            "endLine": 7
+            "endLine": 21
+          }
+        },
+        {
+          "heading": "where 制約付き関数と実装の自動選択",
+          "body": "`fn formatTag<A>` は `where Label<A>` によって `Label` を実装した型だけを受け取る制約を宣言し、本体で `label value` を呼び出します。`main` では渡した値の型に応じて `Status` 用と `Task` 用の `instance` が自動で選ばれ、`==` や `show` も同じ仕組みで動きます。",
+          "sourceRange": {
+            "startLine": 23,
+            "endLine": 31
           }
         }
       ],
       "introduced": [
         {
-          "kind": "type",
-          "name": "partial application",
-          "body": "複数parameterの一部だけへ引数を渡し、残りを待つ専用function valueを作る使い方です。"
+          "kind": "syntax",
+          "name": "trait と instance",
+          "body": "`trait` は型が満たすべき共通操作の型シグネチャを宣言し、`instance` は特定の型に対するその操作の実装を定義します。"
+        },
+        {
+          "kind": "syntax",
+          "name": "where 制約",
+          "body": "`where Label<A>` のように汎用関数の後ろに制約を書くと、その型クラスを実装した型だけを受け取り、関数本体で対応する操作を呼べます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "deriving Eq, Show",
+          "body": "型宣言に `deriving Eq, Show` を添えると、`==` による比較（`Eq`）と `show` による文字列化（`Show`）の実装をコンパイラが自動生成します。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceでleftとrightを固定した二種類の専用関数を使い、Outputの囲み方を確認してください。",
+        "instruction": "エディターの 26 行目にある `Ready` を `Draft` に、27 行目の `done: True` を `done: False` に書き換えて `Run` し、`Output` の 3 行が `Draft` と `done: False` の結果に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "専用関数へ型の違う値を渡す",
-        "body": "失敗例ではStringを待つ`bracket`へIntを渡しています。固定済み引数ではなく残りのparameter型を確認してください。"
+        "heading": "instance のない型を制約付き関数に渡す",
+        "body": "失敗例では `Label` の `instance` を実装していない `Device` 型を `formatTag` へ渡しています。`where Label<A>` の制約を満たす実装が見つからないため、実行前に `Problems` へ不足エラーが表示されます。"
       },
       "recap": [
-        "共通の引数を先に固定した専用関数を作れる。",
-        "一部だけ適用する使い方をpartial applicationと呼ぶ。",
-        "専用関数も元の残りparameter型を守る。"
+        "`trait` で共通操作の契約を宣言し、`instance` で型ごとの実装を与える。",
+        "`where` 制約を付けた汎用関数は、呼び出し側の型に応じた `instance` をコンパイル時に選択して実行する。",
+        "`deriving Eq, Show` を付けると `==` と `show` を自動導出でき、標準的な比較や表示としてそのまま使える。"
       ],
       "next": {
-        "lessonId": "application-grouping",
-        "body": "次は関数適用を入れ子にし、どちらを先に計算するか括弧で示します。"
-      }
+        "lessonId": "signals-value-difference",
+        "body": "ジェネリクスと型クラスまでの中心となる仕組みが揃いました。次の章では、時間の経過とともに値が変化する `Signal` を学びます。"
+      },
+      "notes": [
+        "`Functor`・`Applicative`・`Monad` といった標準型クラスの詳しい設計や、`impl` メソッド・独自演算子の定義は、補足トラック「抽象と型クラスの設計」で学べます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson22Exercise,
     exerciseExpectedOutput: (lesson22ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -2334,59 +2143,80 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson22DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "application-grouping",
+    id: "signals-value-difference",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/application-grouping/main.ssrg",
+    sourcePath: "examples/tour/lessons/signals-value-difference/main.ssrg",
     source: lesson23Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson23Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "複数引数のcurryingとpartial applicationをcode上のfunction valueとして説明できます。",
+      "prerequisite": "前の章までで、変わらない値や汎用的な `trait` を扱えるようになりました。ここからは、時間とともに現在値が変化しうる `Signal` の仕組みと読み取り方を学びます。",
       "walkthrough": [
         {
-          "heading": "内側の適用を括弧で囲む",
-          "body": "`(surround \"<\" \">\" \"Seseragi\")`を先に計算すると、`<Seseragi>`という一つのString valueになります。",
+          "heading": "signals.make で更新できる Signal を作る",
+          "body": "5 行目の `signals.make 42` は、初期値 `42` を持つ `MutableSignal<Int>` を作る `Effect` を返し、`<-` で取り出します。通常の `Int` とは異なり、あとから現在値を書き換えられます。",
           "sourceRange": {
-            "startLine": 1,
+            "startLine": 5,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "Signal 型の読み取り専用として受け取る",
+          "body": "6 行目の `view` は `MutableSignal<Int>` を `Signal<Int>` 型として受け取っています。書き換え権限を隠して、読み取り専用として他の処理へ渡したいときに使います。",
+          "sourceRange": {
+            "startLine": 6,
             "endLine": 6
           }
         },
         {
-          "heading": "内側の結果を外側へ渡す",
-          "body": "内側で作ったStringを外側の`surround \"[\" \"]\"`へ渡します。括弧が適用順を明示しています。",
+          "heading": "signals.read と前置の * で現在値を読む",
+          "body": "7〜9 行目の `signals.read view` と `*view`・`*state` は、どちらも現在値を取り出す `Task<Int>` を返します。取り出した値は通常の `Int` として出力できます。",
           "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
+            "startLine": 7,
+            "endLine": 12
           }
         }
       ],
       "introduced": [
         {
+          "kind": "type",
+          "name": "Signal と MutableSignal",
+          "body": "`Signal<A>` は時間とともに変化する `A` の読み取り専用型、`MutableSignal<A>` は現在値を更新できる元の型です。`MutableSignal<A>` はそのまま `Signal<A>` として渡せます。"
+        },
+        {
+          "kind": "api",
+          "name": "signals.make",
+          "body": "初期値を受け取り、更新できる `MutableSignal<A>` を作る `Task` を返します。`do` ブロックの中で `<-` を使って作成します。"
+        },
+        {
           "kind": "syntax",
-          "name": "application grouping",
-          "body": "括弧で囲んだ内側のfunction applicationを先に計算し、そのresultを外側へ渡します。"
+          "name": "signals.read と前置 *",
+          "body": "`signals.read` と前置演算子 `*` はどちらも `Signal` や `MutableSignal` の現在値を読み取る `Task<A>` を返します。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceで内側と外側の囲みを入れ替え、Outputが適用順どおり変わることを確認してください。",
+        "instruction": "エディターの 5 行目にある `signals.make 42` の `42` を `100` に書き換えて `Run` し、`Output` の 3 行がすべて `100` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "内側からIntを渡す",
-        "body": "失敗例では括弧内の加算結果IntをString parameterへ渡しています。内側resultの型を確認してください。"
+        "heading": "通常の Int を signals.read に渡す",
+        "body": "失敗例では `Signal` ではなく通常の `Int` である `42` を `signals.read` に渡しています。`signals.read` が受け取れるのは `Signal` だけなので、実行前に `Problems` へエラー表示が出ます。修正するには `signals.make 42` や `signals.constant 42` で `Signal<Int>` を作り、`do` の中で読み取ってください。"
       },
       "recap": [
-        "括弧内のfunction applicationが先に計算される。",
-        "内側のresultが外側の一引数になる。",
-        "括弧で複数の適用順を明示できる。"
+        "`Signal<A>` は時間変化する現在値を表し、通常の値 `A` とは型で区別される。",
+        "`signals.make` で更新できる `MutableSignal<A>` を作り、読み取り専用の `Signal<A>` としてもそのまま渡せる。",
+        "`signals.read` と `*` はどちらも現在値を `Task<A>` として読み取る。"
       ],
       "next": {
-        "lessonId": "dollar-application",
-        "body": "次は同じ内外の適用順を、低優先順位の`$`で表します。"
-      }
+        "lessonId": "signals-write-operator",
+        "body": "次は `signals.set`・`:=`・`signals.update` を使って、`MutableSignal` の現在値を書き換える方法を学びます。"
+      },
+      "notes": [
+        "読み取り専用の `Signal<A>` から更新できる `MutableSignal<A>` へ戻すことはできません。関数の引数を `Signal<A>` にしておくと、読み取りしか許さない約束を型で表せます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson23Exercise,
     exerciseExpectedOutput: (lesson23ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -2394,58 +2224,76 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson23DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "dollar-application",
+    id: "signals-write-operator",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/dollar-application/main.ssrg",
+    sourcePath: "examples/tour/lessons/signals-write-operator/main.ssrg",
     source: lesson24Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson24Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "括弧で内側のfunction applicationを先に計算し、そのresultを外側へ渡せます。",
+      "prerequisite": "前のレッスンで `signals.make` による作成と、`signals.read`・`*` による現在値の読み取りを学びました。ここでは `MutableSignal` の値を書き換える方法と、更新前後の変化を確かめます。",
       "walkthrough": [
         {
-          "heading": "$の右側全体を先に計算する",
-          "body": "`$`は優先順位の低いfunction applicationです。右側の`surround \"<\" \">\" \"Seseragi\"`全体が一つのStringになります。",
+          "heading": "signals.set と := で現在値を置き換える",
+          "body": "5 行目で更新前の `10` を読んだあと、6 行目の `signals.set` と 8 行目の `state := 30` で現在値を置き換えています。`:=` は `signals.set` と同じ書き換えを行う演算子で、左辺に `MutableSignal` を書きます。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
+            "startLine": 4,
+            "endLine": 9
           }
         },
         {
-          "heading": "右側resultを左の関数へ渡す",
-          "body": "右側の`<Seseragi>`を左側の`surround \"[\" \"]\"`へ渡します。直前lessonの括弧と同じ適用順です。",
+          "heading": "signals.update で現在の値をもとに更新する",
+          "body": "10 行目の `signals.update` は、現在の値を受け取って次の値を返す関数で更新します。今の値をもとに計算したいときは、`*state` と `:=` を分けずに `signals.update` を使うと安全にまとめられます。",
           "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
+            "startLine": 10,
+            "endLine": 11
+          }
+        },
+        {
+          "heading": "do の実行順に沿って変化を観測する",
+          "body": "`do` ブロックは上から順に実行されるため、書き換えの前後に `*state` を挟むとその時点の現在値（`10`・`20`・`30`・`42`）を順番に観測できます。",
+          "sourceRange": {
+            "startLine": 12,
+            "endLine": 15
           }
         }
       ],
       "introduced": [
         {
+          "kind": "api",
+          "name": "signals.set",
+          "body": "新しい値と `MutableSignal<A>` をこの順で受け取り、現在値を置き換える `Task<Unit>` を返します。"
+        },
+        {
           "kind": "syntax",
-          "name": "$",
-          "body": "`function $ expression`は右側expression全体を一つのvalueとして左のfunctionへ渡します。"
+          "name": "書き換え演算子 :=",
+          "body": "`state := value` は `signals.set` と同じ `Task<Unit>` を作る書き方です。通常の変数への再代入ではなく、`MutableSignal` 専用の操作です。"
+        },
+        {
+          "kind": "api",
+          "name": "signals.update",
+          "body": "現在の値から次の値を計算する関数 `A -> A` を受け取り、`MutableSignal<A>` を安全に更新する `Task<Unit>` を返します。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceで`$`の左右にある囲みを入れ替え、括弧版と同じ適用順になることを確認してください。",
+        "instruction": "エディターの 8 行目にある `state := 30` を `state := 50` に書き換えて `Run` し、`Output` の `afterOp` が `50`、`afterUpdate` が `62` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "$の右側からIntを渡す",
-        "body": "失敗例ではStringを待つ左の関数へIntを渡します。`$`が右側全体を引数にすることを型差分から確認してください。"
+        "heading": "読み取り専用の Signal に := で書き込む",
+        "body": "失敗例では読み取り専用の `Signal<Int>` である `view` へ `:=` を使っています。`:=` の左側には `MutableSignal` が必要なため、実行前に `Problems` へエラー表示が出ます。値を更新したい関数には `MutableSignal<Int>` を受け取るように書いてください。"
       },
       "recap": [
-        "`$`は右側全体を一つの引数として扱う。",
-        "`$`の右側を先に計算してから左のfunctionへ渡す。",
-        "括弧の入れ子と同じ順序を短く書ける。"
+        "`signals.set` と `:=` はどちらも `MutableSignal` の現在値を置き換える `Task<Unit>` を作る。",
+        "現在の値をもとに新しい値へ更新したいときは、読み取りと書き込みを分けず `signals.update` を使う。",
+        "`do` ブロックの実行順に沿って書き換え前後の `*state` を読むと、現在値の変化を順に確認できる。"
       ],
       "next": {
-        "lessonId": "pipeline-application",
-        "body": "次はvalueを左に置き、右のfunctionへ流す`|>`を学びます。"
+        "lessonId": "signals-combine",
+        "body": "次は元の `MutableSignal` を直接書き換えるのではなく、値の変化に連動して計算結果を更新する派生 `Signal` の作り方を学びます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson24Exercise,
@@ -2454,4481 +2302,40 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson24DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "pipeline-application",
+    id: "signals-combine",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/pipeline-application/main.ssrg",
+    sourcePath: "examples/tour/lessons/signals-combine/main.ssrg",
     source: lesson25Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson25Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "`$`で右側expression全体を左のfunctionへ一つの引数として渡せます。",
+      "prerequisite": "前のレッスンで `MutableSignal` の現在値を書き換える方法を学びました。ここでは元の `Signal` の変化に合わせて自動計算される派生 `Signal` の作り方を学びます。",
       "walkthrough": [
         {
-          "heading": "valueから読み始める",
-          "body": "`|>`は左側の`\"Seseragi\"`を右側の`surround \"[\" \"]\"`へ最後の引数として渡します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        },
-        {
-          "heading": "resultを次のfunctionへ渡す",
-          "body": "一段目の`[Seseragi]`が次の`println`へ渡されます。pipelineは左から右、上から下へvalueを追えます。",
-          "sourceRange": {
-            "startLine": 4,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "|>",
-          "body": "`value |> function`は左のvalueを右のfunctionが待つ最後の引数へ渡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでpartial application側のleftとrightを変え、同じvalueが新しい囲みへ流れることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "IntをString用pipelineへ流す",
-        "body": "失敗例ではIntをString parameterへ流します。pipelineの左側valueがどのparameterへ渡るか確認してください。"
-      },
-      "recap": [
-        "`|>`は左のvalueを右のfunctionへ渡す。",
-        "partial application済みのfunctionでは残りの最後のparameterへ入る。",
-        "pipeline chainは左から右、上から下へresultを追える。"
-      ],
-      "next": {
-        "lessonId": "mixed-application",
-        "body": "次は`$`の右側へpipeline chainを置き、二つの優先順位を一緒に読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson25Exercise,
-    exerciseExpectedOutput: (lesson25ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson25Diagnostic,
-    diagnosticOutput: (lesson25DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "mixed-application",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/mixed-application/main.ssrg",
-    source: lesson26Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson26Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "`$`は右側全体を引数にし、`|>`は左のvalueを右のfunctionへ渡すと説明できます。",
-      "walkthrough": [
-        {
-          "heading": "右側のpipelineを先に読む",
-          "body": "`\"Seseragi\" |> greeting |> emphasize`は左から順に進み、最後に`**Hello, Seseragi!**`というStringを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "$でpipeline全体をprintlnへ渡す",
-          "body": "`$`は`|>`より優先順位が低いため、右側のpipeline result全体がprintlnの一引数になります。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "mixed $ and |>",
-          "body": "`function $ value |> next`ではpipelineを先に計算し、そのresult全体を`$`左側のfunctionへ渡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの最初のvalueと二つのfunction本文を変え、pipeline全体がprintlnへ渡ることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "String pipelineの途中へInt関数を置く",
-        "body": "失敗例ではgreetingのString resultをInt用addOneへ渡します。`$`より先にpipeline内で型が合わなくなる位置を確認してください。"
-      },
-      "recap": [
-        "`|>`のchainは左から順にresultを作る。",
-        "`$`は右側のpipeline全体より後に適用される。",
-        "二つを混ぜてもvalueとfunctionの型を順に追えば読める。"
-      ],
-      "next": {
-        "lessonId": "05-pipelines",
-        "body": "最後に小さな関数を一つの処理として組み合わせます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson26Exercise,
-    exerciseExpectedOutput: (lesson26ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson26Diagnostic,
-    diagnosticOutput: (lesson26DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "05-pipelines",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/05-pipelines/main.ssrg",
-    source: lesson27Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson27Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "関数定義、空白による適用、currying、partial application、括弧、`$`、`|>`を別々に確認しました。",
-      "walkthrough": [
-        {
-          "heading": "一つの仕事を持つ関数を用意する",
-          "body": "`greeting`は挨拶を作り、`emphasize`は受け取ったStringを強調します。それぞれの戻り型が次の関数のparameter型と一致します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        },
-        {
-          "heading": "小さな関数をmessageへ組み合わせる",
-          "body": "`message`はgreeting resultを`$`でemphasizeへ渡します。mainは名前をmessageへ流し、そのresultをprintlnへ流します。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "function composition",
-          "body": "小さなfunctionの戻り値を次のfunctionへ渡し、複数の一段処理から一つの処理を組み立てます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで最初の名前と二つの小さな関数を変え、同じ接続で新しいmessageが出ることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "関数同士の接続型をずらす",
-        "body": "失敗例ではemphasizeがIntを返すと宣言しながらStringを作ります。小さな関数の境界にある型差分を確認してください。"
-      },
-      "recap": [
-        "小さなpure functionへ一つずつ仕事を分けられる。",
-        "戻り型と次のparameter型を合わせてfunctionをつなげられる。",
-        "`$`と`|>`でvalueが進む順を明示できる。"
-      ],
-      "next": {
-        "lessonId": "tuple-values",
-        "body": "関数の段階学習は完了です。次は複数のvalueを一つのtupleへまとめます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson27Exercise,
-    exerciseExpectedOutput: (lesson27ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson27Diagnostic,
-    diagnosticOutput: (lesson27DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "tuple-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/tuple-values/main.ssrg",
-    source: lesson28Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson28Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "複数のvalueを関数へ流せるようになりました。ここからはvalue自体の形を学びます。",
-      "walkthrough": [
-        {
-          "heading": "位置でvalueをまとめる",
-          "body": "`(String, Int)`は一番目がString、二番目がIntのtuple typeです。literalも同じ順番で書きます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "tuple",
-          "body": "`(A, B)`は位置ごとに型を持つ一つのvalueです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでcityとstop数を変え、tuple typeを保ったままRunしてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "二番目の型を取り違える",
-        "body": "失敗例ではIntの位置へStringを置いています。tuple typeとliteralを位置ごとに比較してください。"
-      },
-      "recap": [
-        "tupleは複数のvalueを位置でまとめる。",
-        "tuple typeとliteralは同じ順序で対応する。"
-      ],
-      "next": {
-        "lessonId": "tuple-pattern-binding",
-        "body": "次はtupleをpatternで二つの名前へ分解します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson28Exercise,
-    exerciseExpectedOutput: (lesson28ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson28Diagnostic,
-    diagnosticOutput: (lesson28DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "tuple-pattern-binding",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/tuple-pattern-binding/main.ssrg",
-    source: lesson29Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson29Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "tuple typeとtuple literalで位置付きのvalueを作れるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Tupleの位置へ名前を付ける",
-          "body": "`let (city, stops) = route`は二つの位置を同時に分解し、それぞれを通常のvalueとして使えるようにします。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "tuple pattern",
-          "body": "tupleと同じ形のpatternで各位置へ名前を束縛します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのtupleを別のcityとstop数へ変え、分解後の出力を確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Patternの要素数を増やす",
-        "body": "失敗例では二要素tupleを三つの名前へ分解します。valueとpatternの形を揃えてください。"
-      },
-      "recap": [
-        "tuple patternは位置ごとに名前を束縛する。",
-        "patternの形はvalueの形と一致させる。"
-      ],
-      "next": {
-        "lessonId": "record-values",
-        "body": "次は位置ではなくfield名でdataを組み立てます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson29Exercise,
-    exerciseExpectedOutput: (lesson29ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson29Diagnostic,
-    diagnosticOutput: (lesson29DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "record-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/record-values/main.ssrg",
-    source: lesson30Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson30Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "tupleを位置で組み立て、patternで分解できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Field名でvalueをまとめる",
-          "body": "Record literalは`name`と`role`のようなfield名をvalueへ結び付けます。宣言済みの型名は不要です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Record",
-          "body": "Recordはfield名と型の組み合わせで決まる構造的なvalueです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでRecordのnameとroleを変え、同じfield構造のvalueを作ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Fieldの型を取り違える",
-        "body": "失敗例ではString fieldへIntを置いています。annotationと各field valueを比較してください。"
-      },
-      "recap": [
-        "Recordはfield名でvalueをまとめる。",
-        "同じfield構造なら事前の型宣言なしで使える。"
-      ],
-      "next": {
-        "lessonId": "record-access-update",
-        "body": "次はRecordのfieldを読み、spreadで新しいRecordを作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson30Exercise,
-    exerciseExpectedOutput: (lesson30ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson30Diagnostic,
-    diagnosticOutput: (lesson30DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "record-access-update",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/record-access-update/main.ssrg",
-    source: lesson31Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson31Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "field名を持つRecord literalを組み立てられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Fieldを読み、spreadで更新する",
-          "body": "`profile.name`はfield accessです。`{ ...profile, name: \"Aoi\" }`は元のRecordを変えず、nameだけ違う新しいRecordを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "field access",
-          "body": "dotの後ろにfield名を書いてRecordのvalueを選びます。"
-        },
-        {
-          "kind": "syntax",
-          "name": "record spread",
-          "body": "`...record`で既存fieldを引き継ぎ、後ろのfieldでimmutableに上書きします。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで更新後のnameを変え、元と更新後の両方を出力してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "存在しないfieldを読む",
-        "body": "失敗例ではRecordにないageを選びます。利用できるfield名をdiagnosticで確認してください。"
-      },
-      "recap": [
-        "dotでRecord fieldを読める。",
-        "spread更新は元のRecordを変更しない。"
-      ],
-      "next": {
-        "lessonId": "06-records-and-structs",
-        "body": "次は型名を先に宣言するStructを組み立てます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson31Exercise,
-    exerciseExpectedOutput: (lesson31ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson31Diagnostic,
-    diagnosticOutput: (lesson31DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "06-records-and-structs",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/06-records-and-structs/main.ssrg",
-    source: lesson32Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson32Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Recordをfield構造だけで作り、immutableに更新できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "型名のある構造を宣言する",
-          "body": "`struct Profile`はnameとroleを持つ新しい型を宣言します。`Profile { ... }`だけがその型のvalueを構築します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Struct",
-          "body": "Structは宣言した型名で区別されるnamed data typeです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでProfileのfield valueを変え、同じStruct型のvalueを構築してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "必要なfieldを省く",
-        "body": "失敗例ではProfileのroleを省略しています。Struct declarationが要求するfieldを確認してください。"
-      },
-      "recap": [
-        "Structは型名とfieldを先に宣言する。",
-        "Struct valueは同じ型名のconstructorで組み立てる。"
-      ],
-      "next": {
-        "lessonId": "struct-field-access",
-        "body": "次は構築したStructからfieldを読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson32Exercise,
-    exerciseExpectedOutput: (lesson32ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson32Diagnostic,
-    diagnosticOutput: (lesson32DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "struct-field-access",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/struct-field-access/main.ssrg",
-    source: lesson33Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson33Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Structを宣言し、その型名でvalueを構築できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Structのfieldを選ぶ",
-          "body": "Struct valueもdotでfieldを読めます。field集合はProfile declarationから決まります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Struct field access",
-          "body": "Struct declarationにあるfieldをdotで選びます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで別のProfileを構築し、nameとroleをfield accessで表示してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "宣言にないfieldを読む",
-        "body": "失敗例ではProfileにないcityを選びます。Struct declarationのfield一覧を確認してください。"
-      },
-      "recap": [
-        "Struct fieldもdotで読める。",
-        "利用できるfieldはStruct declarationで固定される。"
-      ],
-      "next": {
-        "lessonId": "simple-adt",
-        "body": "次は同時に持つfieldではなく、取りうる状態を型へ列挙します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson33Exercise,
-    exerciseExpectedOutput: (lesson33ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson33Diagnostic,
-    diagnosticOutput: (lesson33DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "simple-adt",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/simple-adt/main.ssrg",
-    source: lesson34Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson34Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Tuple、Record、Structで同時に持つdataを組み立てられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "取りうる状態を列挙する",
-          "body": "`Delivery`はPreparingまたはShippedのどちらかです。このlessonのconstructorは追加dataを持ちません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "ADT",
-          "body": "ADTは`|`で並べたconstructorのうち一つをvalueとして持つ型です。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでDelivery valueをShippedへ変え、simple ADTの別状態を作ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "ADTへStringを代入する",
-        "body": "失敗例ではDeliveryにconstructorではないStringを置いています。型名とconstructor名を区別してください。"
-      },
-      "recap": [
-        "ADTは取りうる状態をconstructorで列挙する。",
-        "payloadなしのconstructorはその名前だけでvalueになる。"
-      ],
-      "next": {
-        "lessonId": "payload-adt",
-        "body": "次は状態と一緒にcityを保持するconstructorを作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson34Exercise,
-    exerciseExpectedOutput: (lesson34ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson34Diagnostic,
-    diagnosticOutput: (lesson34DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "payload-adt",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/payload-adt/main.ssrg",
-    source: lesson35Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson35Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "payloadを持たないconstructorでADTの状態を表せるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "状態と一緒にvalueを保持する",
-          "body": "`Shipped String`はShipped状態へcityを一つ保持します。`Shipped \"Osaka\"`でDelivery valueを構築します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "payload constructor",
-          "body": "constructor名の後ろへ型を書き、適用時にその型のvalueを渡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでShippedへ別のcityを渡し、payloadを持つvalueを作ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Payloadの型を取り違える",
-        "body": "失敗例ではString payloadへIntを渡しています。constructor declarationの型を確認してください。"
-      },
-      "recap": [
-        "constructorは状態とpayloadを一つのvalueへまとめられる。",
-        "payloadの型はADT declarationに書く。"
-      ],
-      "next": {
-        "lessonId": "single-constructor-match",
-        "body": "次は一種類だけのADTをmatchで分解します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson35Exercise,
-    exerciseExpectedOutput: (lesson35ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson35Diagnostic,
-    diagnosticOutput: (lesson35DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "single-constructor-match",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/single-constructor-match/main.ssrg",
-    source: lesson36Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson36Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "payload constructorで状態とStringを一つのADT valueへまとめられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "一つの形をpatternで受ける",
-          "body": "`match`はvalueのconstructorをpatternと比較します。TicketはReadyだけなのでarmは一つです。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "match",
-          "body": "`match value { pattern -> result }`でvalueの形に応じたresultを作ります。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでReadyのpayloadを変え、同じ一つのarmから表示してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Payload patternを省く",
-        "body": "失敗例ではpayloadを持つReadyを名前だけでpatternにしています。constructorの形とpatternを揃えてください。"
-      },
-      "recap": [
-        "matchはvalueをpatternと比較する。",
-        "一種類だけのADTなら一つのarmで網羅できる。"
-      ],
-      "next": {
-        "lessonId": "07-adts-and-patterns",
-        "body": "次は二つのconstructorから別々のarmを選びます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson36Exercise,
-    exerciseExpectedOutput: (lesson36ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson36Diagnostic,
-    diagnosticOutput: (lesson36DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "07-adts-and-patterns",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/07-adts-and-patterns/main.ssrg",
-    source: lesson37Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson37Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "一種類のconstructorをmatch armで判別できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "状態ごとにarmを分ける",
-          "body": "DeliveryにはPreparingとShippedがあります。上からpatternを比較し、一致したarmだけがresultを返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "multi-constructor match",
-          "body": "ADTのconstructorごとにarmを並べ、状態ごとのresultを選びます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceをPreparingへ変え、別のmatch armが選ばれることを確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Armのresult型をずらす",
-        "body": "失敗例では一方のarmだけIntを返します。すべてのarmが同じresult型になるよう確認してください。"
-      },
-      "recap": [
-        "複数のconstructorは別々のarmで扱える。",
-        "選ばれるarmはvalueのconstructorで決まる。"
-      ],
-      "next": {
-        "lessonId": "payload-pattern-binding",
-        "body": "次はShippedのpayloadへ名前を付けてarm内で使います。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson37Exercise,
-    exerciseExpectedOutput: (lesson37ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson37Diagnostic,
-    diagnosticOutput: (lesson37DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "payload-pattern-binding",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/payload-pattern-binding/main.ssrg",
-    source: lesson38Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson38Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "複数のconstructorを別々のmatch armへ分けられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Payloadへ名前を付ける",
-          "body": "`Shipped city`のcityはconstructor payloadへ束縛され、選ばれたarmの中でString valueとして使えます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "payload pattern binding",
-          "body": "constructor patternの内側へ名前を書き、payloadをarm内へ取り出します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでcityを変え、pattern bindingを通じて出力へ反映してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Bound valueを違う型で使う",
-        "body": "失敗例ではStringのcityをInt演算へ渡します。payload declarationから束縛名の型を追ってください。"
-      },
-      "recap": [
-        "constructor patternはpayloadへ名前を束縛できる。",
-        "束縛したvalueの型はpayload declarationから決まる。"
-      ],
-      "next": {
-        "lessonId": "nested-pattern-wildcard",
-        "body": "次はpayload内のtupleをさらに分解し、不要な位置を無視します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson38Exercise,
-    exerciseExpectedOutput: (lesson38ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson38Diagnostic,
-    diagnosticOutput: (lesson38DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "nested-pattern-wildcard",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/nested-pattern-wildcard/main.ssrg",
-    source: lesson39Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson39Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "constructor patternから一つのpayloadへ名前を束縛できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "内側のtupleまでpatternで分解する",
-          "body": "`Delivered (city, _)`はconstructorの内側にあるtupleへ同じ形のpatternを重ねます。`_`は使わないstop数を束縛しません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "nested pattern",
-          "body": "外側と内側のdata shapeを重ねて一度に分解します。"
-        },
-        {
-          "kind": "syntax",
-          "name": "wildcard pattern",
-          "body": "`_`はその位置に何があっても一致し、名前を作りません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでwildcardの位置を入れ替え、stop数だけを表示してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Nested patternの形をずらす",
-        "body": "失敗例では二要素tupleを三要素patternで受けます。constructor payloadの内側まで形を揃えてください。"
-      },
-      "recap": [
-        "nested patternは内側のdataも一度に分解する。",
-        "wildcardは不要なvalueを束縛せずに一致する。"
-      ],
-      "next": {
-        "lessonId": "exhaustive-match",
-        "body": "次はすべてのconstructorを扱う網羅性を確認します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson39Exercise,
-    exerciseExpectedOutput: (lesson39ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson39Diagnostic,
-    diagnosticOutput: (lesson39DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "exhaustive-match",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/exhaustive-match/main.ssrg",
-    source: lesson40Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson40Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "constructor pattern、payload binding、nested pattern、wildcardを使えるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "すべてのconstructorをarmへ並べる",
-          "body": "ChoiceはOneまたはTwoです。両方のarmがあるため、どのChoice valueにもresultが決まります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "exhaustive match",
-          "body": "ADTが取りうるすべてのconstructorを扱うmatchです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでChoice valueをTwoへ変え、二つ目のarmが選ばれることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Two armを省く",
-        "body": "失敗例はOneだけを扱います。compilerが示すmissing constructorを追加してください。"
-      },
-      "recap": [
-        "網羅的なmatchはすべてのconstructorを扱う。",
-        "missing armはcompiler diagnosticから確認できる。"
-      ],
-      "next": {
-        "lessonId": "data-shape-selection",
-        "body": "最後にTuple、Record、Struct、ADTの選び方を比較します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson40Exercise,
-    exerciseExpectedOutput: (lesson40ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson40Diagnostic,
-    diagnosticOutput: (lesson40DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "data-shape-selection",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/data-shape-selection/main.ssrg",
-    source: lesson41Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson41Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Tuple、Record、Struct、ADTを組み立て、patternで分解できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "目的からdata shapeを選ぶ",
-          "body": "位置だけならtuple、field名ならRecord、固有の型名ならStruct、取りうる状態ならADTを選びます。このsourceは四つを隣に置いて比較します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "data shape selection",
-          "body": "dataの意味が位置、field、型名、状態のどこにあるかで表現を選びます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのroute、profile、account、deliveryを変更し、四つのdata shapeを同じ出力で比較してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Structの契約にfieldが足りない",
-        "body": "失敗例ではAccountが要求するplan fieldを省いています。自由に組み立てるRecordと宣言済みStructのfield契約を比較してください。"
-      },
-      "recap": [
-        "Tupleは位置、Recordはfield構造を表す。",
-        "Structは固有の型名、ADTは取りうる状態を表す。"
-      ],
-      "next": {
-        "lessonId": "array-values",
-        "body": "data shapeの基礎は完了です。次は複数の同種valueをArrayへ並べます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson41Exercise,
-    exerciseExpectedOutput: (lesson41ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson41Diagnostic,
-    diagnosticOutput: (lesson41DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "array-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/array-values/main.ssrg",
-    source: lesson42Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson42Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "dataの形を選べるようになりました。ここから同じ型のvalueを複数扱います。",
-      "walkthrough": [
-        {
-          "heading": "角括弧へ同じ型のvalueを並べる",
-          "body": "`Array<Int>`は順序付きのInt collectionです。`[10, 20, 30]`で三要素を作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Array",
-          "body": "Arrayは同じ型のvalueを順序付きで保持するindexed collectionです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの要素を変え、同じArray typeのvalueを作ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "異なる型を混ぜる",
-        "body": "失敗例ではArray<Int>へStringを混ぜています。要素型を揃えてください。"
-      },
-      "recap": [
-        "Array literalは角括弧で書く。",
-        "すべての要素は同じ型になる。"
-      ],
-      "next": {
-        "lessonId": "array-access",
-        "body": "次はArrayのlengthと先頭要素を読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson42Exercise,
-    exerciseExpectedOutput: (lesson42ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson42Diagnostic,
-    diagnosticOutput: (lesson42DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "array-access",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/array-access/main.ssrg",
-    source: lesson43Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson43Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Array literalとArray typeを書けるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "添字からMaybeを受け取る",
-          "body": "`values[1]`は0から数えた2番目の要素をJustで返します。負の添字や範囲外はNothingです。`arrays.length`は要素数です。",
-          "sourceRange": {
-            "startLine": 4,
-            "endLine": 8
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "array[index]",
-          "body": "ArrayのInt添字アクセスはMaybeを返します。Listは添字アクセスを持ちません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "配列を4要素に増やすとvalues[3]がどう変わるか実行して確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "添字はInt",
-        "body": "Stringの添字は使えません。0から数えるIntを指定します。"
-      },
-      "recap": [
-        "Arrayの添字は0から始まり、結果はMaybeになる。",
-        "負の添字と範囲外はNothing。",
-        "Listの要素は次のlessonでpatternから読む。"
-      ],
-      "next": {
-        "lessonId": "list-values",
-        "body": "次はpersistentなList literalを作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson43Exercise,
-    exerciseExpectedOutput: (lesson43ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson43Diagnostic,
-    diagnosticOutput: (lesson43DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "list-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/list-values/main.ssrg",
-    source: lesson44Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson44Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "contiguousなArrayを作り、読み取れるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Backtick付き角括弧でListを作る",
-          "body": "`List<Int>`のliteralは`` `[1, 2, 3] ``です。Arrayと別の型として区別されます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "List",
-          "body": "Listは先頭と残りを共有しやすいpersistent collectionです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのList要素を変え、List typeを保ってRunしてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "ArrayをListへ代入する",
-        "body": "失敗例では角括弧だけのArrayをList annotationへ置きます。literalの違いを確認してください。"
-      },
-      "recap": [
-        "List literalはbacktick付き角括弧で書く。",
-        "ListとArrayは異なるcollection typeである。"
-      ],
-      "next": {
-        "lessonId": "list-decomposition",
-        "body": "次はListをheadとtailへ分解します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson44Exercise,
-    exerciseExpectedOutput: (lesson44ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson44Diagnostic,
-    diagnosticOutput: (lesson44DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "list-decomposition",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/list-decomposition/main.ssrg",
-    source: lesson45Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson45Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "List literalとList typeを書けるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "空とconsの二つの形をmatchする",
-          "body": "`` `[head, ...tail] ``は先頭と残り、`` `[] ``は空Listへ一致します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "List decomposition",
-          "body": "List patternでemptyまたはheadとtailへ安全に分解します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの先頭を変え、head bindingの出力を確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Array patternでListを受ける",
-        "body": "失敗例はList valueへArray patternを使います。collectionとpatternの形を揃えてください。"
-      },
-      "recap": [
-        "Listはemptyとconsのpatternで分解できる。",
-        "tailは元と同じList typeになる。"
-      ],
-      "next": {
-        "lessonId": "range-values",
-        "body": "次は要素列ではなく開始と終端で範囲を表します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson45Exercise,
-    exerciseExpectedOutput: (lesson45ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson45Diagnostic,
-    diagnosticOutput: (lesson45DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "range-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/range-values/main.ssrg",
-    source: lesson46Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson46Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "ArrayとListをliteralで列挙できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "開始と終端だけを持つ",
-          "body": "`1..4`は4を含まず、`1..=4`は4を含みます。Rangeは要素を先にArrayへ展開しません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Range",
-          "body": "Range<Int>は開始と終端から必要時にIntを反復するcollectionです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの終端を変え、exclusiveとinclusiveの違いを保ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "終端へStringを置く",
-        "body": "失敗例ではInt Rangeの終端へStringを置いています。endpoint型を揃えてください。"
-      },
-      "recap": [
-        "`..`は終端を含まず、`..=`は含む。",
-        "Rangeは開始と終端で遅延的な範囲を表す。"
-      ],
-      "next": {
-        "lessonId": "collection-map",
-        "body": "次は各要素をcallbackで変換します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson46Exercise,
-    exerciseExpectedOutput: (lesson46ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson46Diagnostic,
-    diagnosticOutput: (lesson46DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-map",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-map/main.ssrg",
-    source: lesson47Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson47Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "ArrayとListを別のdata shapeとして組み立てられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Named mapでArrayとListを変換する",
-          "body": "`map double value`はcallbackを先、collectionを後に受け取り、ArrayとListそれぞれのshapeを保ちます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "同じ変換を<$>へ書き換える",
-          "body": "`double <$> value`は同じmap operationのinfix表記です。Named形とoperator形で結果のshapeは変わりません。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "二つのshapeを実行結果で比べる",
-          "body": "Arrayは`[...]`、persistent Listは`` `[...] ``の表示を保ったまま、どちらも2倍になります。",
-          "sourceRange": {
-            "startLine": 7,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "mapと<$>",
-          "body": "`map f value`と`f <$> value`は同じ要素変換です。ArrayでもListでもcontainerのshapeを保ちます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのtripleまたは要素を変え、ArrayとListのnamed形・operator形が一致することを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Callbackの入力型をずらす",
-        "body": "失敗例ではString callbackをArray<Int>へ適用します。callback parameterと要素型を揃えてください。"
-      },
-      "recap": [
-        "mapと<$>は同じ要素変換である。",
-        "ArrayとListは同じ表記を使ってもそれぞれのshapeを保つ。"
-      ],
-      "next": {
-        "lessonId": "collection-filter",
-        "body": "次はBool callbackで残す要素を選びます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson47Exercise,
-    exerciseExpectedOutput: (lesson47ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson47Diagnostic,
-    diagnosticOutput: (lesson47DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-filter",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-filter/main.ssrg",
-    source: lesson48Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson48Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "mapのcallbackとcollectionの引数位置を読めるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "PredicateがTrueにする要素だけ残す",
-          "body": "`arrays.filter even values`は順序を変えず、evenがTrueを返すIntだけの新しいArrayを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "filter",
-          "body": "filterはBool predicateを先、collectionを最後に受け取ります。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのpredicateを3より大きい条件へ変えてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "PredicateがIntを返す",
-        "body": "失敗例のcallbackはBoolではなくIntを返します。filterのcallback戻り型を確認してください。"
-      },
-      "recap": [
-        "filterはTrueになった要素だけ残す。",
-        "入力collectionは変更しない。"
-      ],
-      "next": {
-        "lessonId": "collection-reduce-step",
-        "body": "次は複数要素を一つへ集約するstepを書きます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson48Exercise,
-    exerciseExpectedOutput: (lesson48ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson48Diagnostic,
-    diagnosticOutput: (lesson48DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-reduce-step",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-reduce-step/main.ssrg",
-    source: lesson49Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson49Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "各要素を変換し、条件で残す操作を分けて書けるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Accumulatorと次の要素を受け取る",
-          "body": "`add total value`は現在のtotalと次のvalueから新しいtotalを返すpure functionです。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "reducer step",
-          "body": "reducer stepはaccumulatorを先、次の要素を後に受け取り、新しいaccumulatorを返します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのstepを加算から乗算へ変え、二parameterの役割を保ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "戻り型を変える",
-        "body": "失敗例ではInt accumulatorにStringを返します。stepの入力と戻り型を揃えてください。"
-      },
-      "recap": [
-        "stepはaccumulatorと次の要素を受け取る。",
-        "stepのresultが次のaccumulatorになる。"
-      ],
-      "next": {
-        "lessonId": "collection-reduce",
-        "body": "次はinitial value、step、collectionをreduceへ渡します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson49Exercise,
-    exerciseExpectedOutput: (lesson49ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson49Diagnostic,
-    diagnosticOutput: (lesson49DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-reduce",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-reduce/main.ssrg",
-    source: lesson50Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson50Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "accumulatorを更新する二parameterのstepを書けるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Initial valueからsource順に集約する",
-          "body": "`reduce 0 add values`は0から始め、各要素へaddを順番に適用して一つのIntを返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "reduce",
-          "body": "reduceはinitial、step、collectionの順で一つのresultへ集約します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのArrayとinitial valueを変え、集約resultを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Initial valueの型をずらす",
-        "body": "失敗例ではInt stepへString initialを渡します。accumulator型を一貫させてください。"
-      },
-      "recap": [
-        "reduceはinitial valueから始める。",
-        "stepをsource順に適用し一つのresultを返す。"
-      ],
-      "next": {
-        "lessonId": "collection-append-concat",
-        "body": "次はcollection同士をつなぎます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson50Exercise,
-    exerciseExpectedOutput: (lesson50ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson50Diagnostic,
-    diagnosticOutput: (lesson50DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-append-concat",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-append-concat/main.ssrg",
-    source: lesson51Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson51Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "collectionを一つのresultへ集約できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Suffixまたはnested collectionをつなぐ",
-          "body": "appendはsuffixを既存collectionへ足し、concatはcollection of collectionsを一段平らにします。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "append and concat",
-          "body": "appendは二collection、concatはnested collectionを入力として新しいcollectionを返します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのsuffixとnested Arrayを変え、順序を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "要素をsuffixとして渡す",
-        "body": "失敗例はappendへArrayではなくIntを渡します。suffixのcollection型を確認してください。"
-      },
-      "recap": [
-        "appendはsuffixをつなぐ。",
-        "concatは一段nestedなcollectionを平らにつなぐ。"
-      ],
-      "next": {
-        "lessonId": "collection-comprehension",
-        "body": "次はsource、条件、resultを一つのcomprehensionで読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson51Exercise,
-    exerciseExpectedOutput: (lesson51ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson51Diagnostic,
-    diagnosticOutput: (lesson51DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-comprehension",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-comprehension/main.ssrg",
-    source: lesson52Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson52Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "map、filter、Rangeを別々に使えるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Result、source、条件の順を読む",
-          "body": "`[value * value | value <- 1..=4, value % 2 == 0]`はRangeからeven valueを選びsquare Arrayを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "collection comprehension",
-          "body": "comprehensionはresult expression、generator、optional filterを一つのcollection literalへ書きます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのRange終端と条件を変え、生成されるArrayを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "反復できないsourceを使う",
-        "body": "失敗例ではIntそのものをgenerator sourceにします。Iterableなcollectionを渡してください。"
-      },
-      "recap": [
-        "generatorはsourceからbindingを作る。",
-        "条件を通ったbindingだけresult expressionへ進む。"
-      ],
-      "next": {
-        "lessonId": "collection-pipeline",
-        "body": "次はdata-last APIをpipelineへ並べます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson52Exercise,
-    exerciseExpectedOutput: (lesson52ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson52Diagnostic,
-    diagnosticOutput: (lesson52DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-pipeline",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-pipeline/main.ssrg",
-    source: lesson53Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson53Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "filter、map、reduceを個別に使い、引数位置を説明できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Collection本体を最後のparameterへ流す",
-          "body": "Arrayはfilter、map、reduceへ左から右へ流れます。各functionはcallbackやinitialだけを先に受け取ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "collection pipeline",
-          "body": "data-last collection APIをpartial applicationし、`|>`で同じvalueを順に流します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのpredicate、変換、initialを一つずつ変えてresultを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Pipelineの途中で型を変えすぎる",
-        "body": "失敗例ではStringへmapした後にInt predicateを適用します。各段の出力型と次の入力型を合わせてください。"
-      },
-      "recap": [
-        "data-last APIはpipelineへ自然につながる。",
-        "各段のresult型が次のcollection要素型になる。"
-      ],
-      "next": {
-        "lessonId": "empty-collections",
-        "body": "次は要素がない場合のtotal operationを確認します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson53Exercise,
-    exerciseExpectedOutput: (lesson53ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson53Diagnostic,
-    diagnosticOutput: (lesson53DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "empty-collections",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/empty-collections/main.ssrg",
-    source: lesson54Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson54Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "collection pipelineで変換から集約までつなげられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Emptyでもresultが決まるoperationを使う",
-          "body": "empty Arrayのlengthは0です。reduceは要素がなければinitial valueをそのまま返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "empty collection",
-          "body": "空collectionではlengthやinitial付きreduceのように常にresultが決まるoperationを使えます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのreduce initialを変え、空Arrayではその値がresultになることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "型を推論できないempty literal",
-        "body": "失敗例では型情報なしのempty Arrayだけを定義します。annotationまたは利用文脈を追加してください。"
-      },
-      "recap": [
-        "empty collectionのlengthは0になる。",
-        "initial付きreduceはemptyでもtotalである。"
-      ],
-      "next": {
-        "lessonId": "08-collections-and-ranges",
-        "body": "最後にArray、List、Rangeの用途を比較します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson54Exercise,
-    exerciseExpectedOutput: (lesson54ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson54Diagnostic,
-    diagnosticOutput: (lesson54DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "08-collections-and-ranges",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/08-collections-and-ranges/main.ssrg",
-    source: lesson55Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson55Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Array、List、Rangeの作成、変換、絞り込み、集約を段階的に確認しました。",
-      "walkthrough": [
-        {
-          "heading": "用途でcollectionを選ぶ",
-          "body": "index中心ならArray、head/tail共有ならList、連続Intを遅延反復するならRangeを選びます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "collection selection",
-          "body": "access patternと生成方法からArray、List、Rangeを選びます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの三collectionを変え、それぞれのresultを同じ出力で比較してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "ArrayとListを取り違える",
-        "body": "失敗例ではList annotationへArray literalを置きます。用途だけでなく型とliteralも揃えてください。"
-      },
-      "recap": [
-        "Arrayはindexed sequence、Listはpersistent linked sequenceである。",
-        "Rangeは連続Intを開始と終端から遅延反復する。"
-      ],
-      "next": {
-        "lessonId": "maybe-role",
-        "body": "collectionの基礎は完了です。次は値がない場合をMaybe型で表します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson55Exercise,
-    exerciseExpectedOutput: (lesson55ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson55Diagnostic,
-    diagnosticOutput: (lesson55DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "maybe-role",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/maybe-role/main.ssrg",
-    source: lesson56Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson56Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "collectionのshapeとempty caseを扱えるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "値がない可能性を型へ残す",
-          "body": "`Maybe<Int>`のIntは値がある場合のpayload型です。値がない場合も同じ型のvalueとして表します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Maybe",
-          "body": "Maybe<A>はAがある場合とない場合を一つの型で表す標準ADTです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのMaybe payload型をStringへ変え、型名のAに相当する部分を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Payload型を取り違える",
-        "body": "失敗例ではMaybe<Int>へString payloadを置きます。generic parameterとpayload型を揃えてください。"
-      },
-      "recap": [
-        "Maybe<A>はAの有無を表す。",
-        "値がない場合も型から消えない。"
-      ],
-      "next": {
-        "lessonId": "maybe-constructors",
-        "body": "次は値ありと値なしをconstructorで作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson56Exercise,
-    exerciseExpectedOutput: (lesson56ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson56Diagnostic,
-    diagnosticOutput: (lesson56DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "maybe-constructors",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/maybe-constructors/main.ssrg",
-    source: lesson57Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson57Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Maybe<A>が値の有無を表す型だと分かりました。",
-      "walkthrough": [
-        {
-          "heading": "JustとNothingを作る",
-          "body": "`Just 42`はInt payloadを持ち、`Nothing`はpayloadを持ちません。どちらもMaybe<Int>です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Just and Nothing",
-          "body": "Justはpayloadあり、NothingはpayloadなしのMaybe constructorです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのJust payloadとNothing側のannotationを同じ型のまま変更してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Justのpayload型をずらす",
-        "body": "失敗例ではMaybe<Int>のJustへStringを渡します。"
-      },
-      "recap": [
-        "Justはpayloadを一つ持つ。",
-        "Nothingは同じMaybe型の値なしcaseである。"
-      ],
-      "next": {
-        "lessonId": "maybe-match",
-        "body": "次は二constructorをmatchで取り出します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson57Exercise,
-    exerciseExpectedOutput: (lesson57ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson57Diagnostic,
-    diagnosticOutput: (lesson57DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "maybe-match",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/maybe-match/main.ssrg",
-    source: lesson58Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson58Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "JustとNothingのMaybe valueを作れるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "二constructorを網羅する",
-          "body": "Nothing armはfallbackを返し、Just nameはpayloadをStringとして取り出します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Maybe match",
-          "body": "NothingとJust payloadの両armでMaybeを網羅的に分解します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceをNothingへ変え、別armの出力を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Nothing armを省く",
-        "body": "失敗例はJustだけを扱います。missing constructor diagnosticを確認してください。"
-      },
-      "recap": [
-        "Maybe matchはNothingとJustを扱う。",
-        "Just patternでpayloadへ名前を付ける。"
-      ],
-      "next": {
-        "lessonId": "maybe-default",
-        "body": "次はmatchを書かずdefault valueへ変換します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson58Exercise,
-    exerciseExpectedOutput: (lesson58ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson58Diagnostic,
-    diagnosticOutput: (lesson58DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "maybe-default",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/maybe-default/main.ssrg",
-    source: lesson59Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson59Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Maybeをmatchして通常値へ変換できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "withDefault helperでfallbackを指定する",
-          "body": "pureな`withDefault`はJust payloadを返し、Nothingならfallbackを返します。callbackやEffectは必要ありません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Maybe default",
-          "body": "withDefault shapeはfallbackを先、Maybe valueを最後に受け取り通常値を返します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceをJustへ変え、fallbackではなくpayloadが出ることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Fallback型をずらす",
-        "body": "失敗例ではString helperへInt fallbackを指定します。payloadとfallbackのresult型を揃えてください。"
-      },
-      "recap": [
-        "default変換はJust payloadまたはfallbackを返す。",
-        "fallback型はpayload型と一致する。"
-      ],
-      "next": {
-        "lessonId": "maybe-map",
-        "body": "次はMaybeの形を保ったままpayloadだけ変換します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson59Exercise,
-    exerciseExpectedOutput: (lesson59ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson59Diagnostic,
-    diagnosticOutput: (lesson59DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "maybe-map",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/maybe-map/main.ssrg",
-    source: lesson60Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson60Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Collectionで`map f value`と`f <$> value`を相互に書き換えました。",
-      "walkthrough": [
-        {
-          "heading": "Named mapでJust payloadを変換する",
-          "body": "`map double (Just 21)`はJustのIntだけを変換し、Maybeのshapeを保ちます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        },
-        {
-          "heading": "Maybeでも<$>へ書き換える",
-          "body": "`double <$> Just 21`は同じMaybe mapです。Nothingではcallbackを呼ばずNothingを保ちます。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 4
-          }
-        },
-        {
-          "heading": "Named形とoperator形を並べる",
-          "body": "出力で`map`と`<$>`が同じJust 42になり、Nothingもshapeを保つことを確認します。",
-          "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Maybe mapと<$>",
-          "body": "Maybeの`map`と`<$>`は値の有無を保ち、Just payloadだけを変換します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのtripleまたはJust payloadを変え、mapと<$>が同じresultになることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Callback入力型をずらす",
-        "body": "失敗例ではString callbackをMaybe<Int>へ適用します。"
-      },
-      "recap": [
-        "Maybeでもmapと<$>は同じoperationである。",
-        "Justだけを変換し、NothingはNothingのまま残る。"
-      ],
-      "next": {
-        "lessonId": "maybe-combine",
-        "body": "次は二つの独立したMaybeをapplyと<*>で組み合わせます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson60Exercise,
-    exerciseExpectedOutput: (lesson60ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson60Diagnostic,
-    diagnosticOutput: (lesson60DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "maybe-combine",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/maybe-combine/main.ssrg",
-    source: lesson61Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson61Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Maybeのmapと<$>で一つのpayloadを変換しました。",
-      "walkthrough": [
-        {
-          "heading": "Curried addをMaybeへmapする",
-          "body": "`map add left`は一つ目のIntだけを受け取り、途中型`Maybe<Int -> Int>`を作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "Named applyで二つ目を渡す",
-          "body": "`apply partial right`はMaybeに包まれた関数と値を組み合わせ、`Maybe<Int>`を返します。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 6
-          }
-        },
-        {
-          "heading": "同じ途中型を<$>と<*>で追う",
-          "body": "`add <$> left`も`Maybe<Int -> Int>`です。続く`<*> right`でnamed applyと同じJust 42になります。",
+          "heading": "signals.map と <$> で 1 つの Signal を変換する",
+          "body": "7〜8 行目の `signals.map` と `<$>` は、元の `price` を変更せずに、現在値を 2 倍にした新しい `Signal` を作ります。どちらの書き方でも最初の値は同じ `200` になります。",
           "sourceRange": {
             "startLine": 7,
             "endLine": 8
           }
         },
         {
-          "heading": "二つの表記を実行比較する",
-          "body": "Named形とoperator形を同じ出力へ並べ、独立した二つのMaybeが同じresultになることを確認します。",
+          "heading": "signals.combine で 2 つの Signal を合成する",
+          "body": "9 行目の `signals.combine` は 2 引数関数と 2 つの `Signal` を受け取り、両方の現在値を組み合わせた `total` を作ります。ここでは単価 `price` と個数 `count` を掛け合わせた `200` が求まります。",
           "sourceRange": {
-            "startLine": 10,
-            "endLine": 10
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Maybe applyと<*>",
-          "body": "`apply`と`<*>`は`Maybe<A -> B>`と`Maybe<A>`を組み合わせます。`<$>`でcurried関数を持ち上げると途中型を作れます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの6か7を変え、applyと<*>が同じ積になることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "通常値を関数containerとして使う",
-        "body": "失敗例は`Maybe<Int>`を`<*>`の左へ置きます。左側には`Maybe<Int -> Int>`が必要です。"
-      },
-      "recap": [
-        "mapしたcurried関数の途中型はMaybe<Int -> Int>になる。",
-        "applyと<*>は二つの独立したMaybeを同じように組み合わせる。"
-      ],
-      "next": {
-        "lessonId": "maybe-short-circuit",
-        "body": "次はflatMapと>>=で前のpayloadから次のMaybeを選び、Nothingの短絡を確認します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson61Exercise,
-    exerciseExpectedOutput: (lesson61ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson61Diagnostic,
-    diagnosticOutput: (lesson61DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "maybe-short-circuit",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/maybe-short-circuit/main.ssrg",
-    source: lesson62Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson62Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "独立した二つのMaybeをapplyと<*>で組み合わせました。",
-      "walkthrough": [
-        {
-          "heading": "Callbackは次のMaybeを返す",
-          "body": "`next`はpayloadから通常値ではなく次の`Maybe<Int>`を返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 9,
+            "endLine": 15
           }
         },
         {
-          "heading": "Named flatMapで次のMaybeを選ぶ",
-          "body": "`flatMap next source`はJust payloadをnextへ渡しますが、sourceがNothingならcallbackを呼びません。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 4
-          }
-        },
-        {
-          "heading": "Value >>= callbackへ書き換える",
-          "body": "`source >>= next`は同じMonad bindのvalue-first表記です。Nothingではnamed形と同じ位置で短絡します。",
-          "sourceRange": {
-            "startLine": 4,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "二つの表記の短絡結果を比べる",
-          "body": "flatMapと>>=の両方がNothingを返し、後続へpayloadを渡さないことを確認します。",
-          "sourceRange": {
-            "startLine": 7,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Maybe flatMapと>>=",
-          "body": "`flatMap f value`と`value >>= f`は同じ依存合成です。callbackは次のMaybeを返し、Nothingは後続を短絡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceをNothingへ変え、flatMapと>>=が同じ位置で短絡することを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "CallbackがMaybeを返さない",
-        "body": "失敗例の>>= callbackは通常のIntを返します。右側は次のMaybeを返す必要があります。"
-      },
-      "recap": [
-        "flatMapと>>=は同じMaybe bindである。",
-        "Nothingは後続callbackを呼ばず、Justだけがpayloadを次へ渡す。"
-      ],
-      "next": {
-        "lessonId": "either-role",
-        "body": "次は失敗理由も値へ残すEitherを学びます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson62Exercise,
-    exerciseExpectedOutput: (lesson62ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson62Diagnostic,
-    diagnosticOutput: (lesson62DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "either-role",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/either-role/main.ssrg",
-    source: lesson63Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson63Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Maybeで値の有無とNothing短絡を扱えるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Error型とsuccess型を両方残す",
-          "body": "`Either<String, Int>`は失敗理由がString、成功値がIntであることを型へ保持します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Either",
-          "body": "Either<E, A>はerror Eまたはsuccess Aの一方を持つ標準ADTです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのerror型とsuccess型を変え、二parameterの役割を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Success型を取り違える",
-        "body": "失敗例ではEither<String, Int>のsuccessへStringを置きます。"
-      },
-      "recap": [
-        "Either<E, A>はerror型とsuccess型を持つ。",
-        "失敗理由を捨てず通常valueとして扱える。"
-      ],
-      "next": {
-        "lessonId": "either-constructors",
-        "body": "次はLeftとRightで両caseを作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson63Exercise,
-    exerciseExpectedOutput: (lesson63ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson63Diagnostic,
-    diagnosticOutput: (lesson63DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "either-constructors",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/either-constructors/main.ssrg",
-    source: lesson64Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson64Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Eitherの二parameterがerrorとsuccessを表すと分かりました。",
-      "walkthrough": [
-        {
-          "heading": "LeftとRightを作る",
-          "body": "Leftはerror payload、Rightはsuccess payloadを持ちます。どちらも同じEither<String, Int>です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Left and Right",
-          "body": "Leftはfailure case、Rightはsuccess caseのEither constructorです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのLeft理由とRight値を変え、型を保ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Leftのerror型をずらす",
-        "body": "失敗例ではString errorへIntを渡します。"
-      },
-      "recap": [
-        "Leftはerror payloadを持つ。",
-        "Rightはsuccess payloadを持つ。"
-      ],
-      "next": {
-        "lessonId": "either-match",
-        "body": "次はLeftとRightをmatchで取り出します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson64Exercise,
-    exerciseExpectedOutput: (lesson64ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson64Diagnostic,
-    diagnosticOutput: (lesson64DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "either-match",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/either-match/main.ssrg",
-    source: lesson65Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson65Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "LeftとRightのEither valueを作れるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Failureとsuccessを別armへ分ける",
-          "body": "Left errorは理由を、Right numberは成功値をbindingし、両armを同じString resultへします。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Either match",
-          "body": "LeftとRightの両armでEitherを網羅的に分解します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceをLeftへ変え、error armの出力を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Right armを省く",
-        "body": "失敗例はLeftだけを扱います。missing constructor diagnosticを確認してください。"
-      },
-      "recap": [
-        "Either matchはLeftとRightを扱う。",
-        "両armのresult型を揃える。"
-      ],
-      "next": {
-        "lessonId": "either-map-error",
-        "body": "次はsuccessを保ったままerror型を変換します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson65Exercise,
-    exerciseExpectedOutput: (lesson65ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson65Diagnostic,
-    diagnosticOutput: (lesson65DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "either-map-error",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/either-map-error/main.ssrg",
-    source: lesson66Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson66Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "EitherをmatchしてLeftとRightを取り出せるようになりました。Maybeではmapと<$>がsuccess payloadだけを変換しました。",
-      "walkthrough": [
-        {
-          "heading": "Right payloadをnamed mapする",
-          "body": "`map increment success`はRight 41だけをRight 42へ変換し、Eitherのerror型とshapeを保ちます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        },
-        {
-          "heading": "Eitherでも<$>へ書き換える",
-          "body": "`increment <$> success`は同じFunctor operationです。failureへ適用するとLeft理由を変更せず保ちます。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "Error側は明示的に別変換する",
-          "body": "tagErrorはLeft StringだけをErrorInfoへ変え、Right Intをそのまま保ちます。success mapとerror mapの対象を混ぜません。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 3
-          }
-        },
-        {
-          "heading": "Right変換とLeft保持を出力で比べる",
-          "body": "Named形とoperator形はRight 42で一致し、Leftは変換されず、明示したtagErrorだけがerror型を変えます。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 8
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Either success mapと<$>",
-          "body": "Eitherのmapと<$>はRight payloadだけを変換し、Leftを保ちます。Error側の変換は別の明示operationです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのdoubleまたはRight payloadを変え、mapと<$>が一致し、tagErrorだけがLeft理由を変えることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Right valueをerror型へ混ぜる",
-        "body": "失敗例ではRight armへErrorInfoを返します。success型を保ってください。"
-      },
-      "recap": [
-        "Eitherのmapと<$>はRight payloadだけを変換する。",
-        "Leftはそのまま保たれ、error型の変換は明示的に分ける。"
-      ],
-      "next": {
-        "lessonId": "09-maybe-and-either",
-        "body": "次はMaybeとEitherを情報量で使い分けます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson66Exercise,
-    exerciseExpectedOutput: (lesson66ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson66Diagnostic,
-    diagnosticOutput: (lesson66DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "09-maybe-and-either",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/09-maybe-and-either/main.ssrg",
-    source: lesson67Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson67Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "MaybeとEitherを構築し、matchし、payloadを変換できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "欠如か理由付き失敗かで選ぶ",
-          "body": "検索結果の不在にはMaybe、入力検証の失敗理由を呼び出し元へ残すならEitherを使います。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "fallibility selection",
-          "body": "理由を必要としない欠如はMaybe、error情報を保持する失敗はEitherで表します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのMaybeとEitherを別caseへ変え、残る情報の違いを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Maybeへerror理由を直接入れる",
-        "body": "失敗例ではMaybe<String>へLeftを置きます。欠如と理由付き失敗の型を区別してください。"
-      },
-      "recap": [
-        "Maybeは値の有無を表す。",
-        "Eitherは失敗理由と成功値を表す。"
-      ],
-      "next": {
-        "lessonId": "effect-failure-bridge",
-        "body": "次はvalueとしての失敗と実行中のfailureの境界を整理します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson67Exercise,
-    exerciseExpectedOutput: (lesson67ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson67Diagnostic,
-    diagnosticOutput: (lesson67DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-failure-bridge",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-failure-bridge/main.ssrg",
-    source: lesson68Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson68Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "MaybeとEitherを通常のpure valueとして使い分けられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Valueと実行failureを分ける",
-          "body": "Eitherはその場でinspectできるvalueです。次章ではConsoleなど実行時operationのfailureをEffect型へ残します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Effect failure bridge",
-          "body": "pureなEither valueと、次章で扱うeffectful operationのfailure channelは別の役割です。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの説明用labelを変え、pure valueだけでRunできることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Eitherを通常のStringとして使う",
-        "body": "失敗例ではEither valueを直接Stringへ代入します。matchしてvalueを取り出してください。"
-      },
-      "recap": [
-        "Eitherはpureな通常valueである。",
-        "実行operationのfailureは次章のEffectで扱う。"
-      ],
-      "next": {
-        "lessonId": "effect-pure-vs-effect",
-        "body": "次はpure関数とeffect fnの役割を分けます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson68Exercise,
-    exerciseExpectedOutput: (lesson68ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson68Diagnostic,
-    diagnosticOutput: (lesson68DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-pure-vs-effect",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-pure-vs-effect/main.ssrg",
-    source: lesson69Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson69Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Either valueとEffect failureの役割差を整理しました。",
-      "walkthrough": [
-        {
-          "heading": "計算と処理を分ける",
-          "body": "pureなlabelはStringを返し、effect fn mainはprintlnするEffectを返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "pure and effect function",
-          "body": "fnはpure value、effect fnは実行時の処理を表すEffectを返します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのproject名を変え、pureなlabel結果が実行時出力へ渡ることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Pure関数からEffectを返す",
-        "body": "失敗例は通常のfnへprintlnを置きます。Effectを返す関数はeffect fnで宣言してください。"
-      },
-      "recap": [
-        "pure関数は通常値を返す。",
-        "effect fnは実行する処理をEffectとして返す。"
-      ],
-      "next": {
-        "lessonId": "effect-single-operation",
-        "body": "次は一つのEffect operationを実行します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson69Exercise,
-    exerciseExpectedOutput: (lesson69ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson69Diagnostic,
-    diagnosticOutput: (lesson69DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-single-operation",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-single-operation/main.ssrg",
-    source: lesson70Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson70Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "pure関数とeffect fnの戻り値の違いが分かりました。",
-      "walkthrough": [
-        {
-          "heading": "一つのoperationを実行する",
-          "body": "mainが返すprintln Effectをhostの実行境界が一度だけ実行します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "single Effect operation",
-          "body": "printlnはConsoleを使い値を一行出力するEffectです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのmessageを変えて一つのEffectを再実行してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Operation名を間違える",
-        "body": "失敗例は存在しないprintlineを呼びます。compilerの候補からprintlnへ直してください。"
-      },
-      "recap": [
-        "Effectはmainの実行境界で走る。",
-        "println一つもEffect valueである。"
-      ],
-      "next": {
-        "lessonId": "effect-do-block",
-        "body": "次は複数Effectを置けるdo blockを読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson70Exercise,
-    exerciseExpectedOutput: (lesson70ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson70Diagnostic,
-    diagnosticOutput: (lesson70DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-do-block",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-do-block/main.ssrg",
-    source: lesson71Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson71Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "一つのEffect operationを実行できました。",
-      "walkthrough": [
-        {
-          "heading": "doを上から読む",
-          "body": "doの各行は別々のEffectで、block全体が一つのEffectになります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Effect do block",
-          "body": "doは複数のEffectを一つの逐次Effectへ合成します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの二行を変え、上から順に出ることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "doの最後へ通常値を置く",
-        "body": "失敗例はEffectが必要なdo resultへIntを置きます。"
-      },
-      "recap": [
-        "do block全体もEffectである。",
-        "各行は上から順に読む。"
-      ],
-      "next": {
-        "lessonId": "effect-sequence",
-        "body": "次は実行順を出力で固定します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson71Exercise,
-    exerciseExpectedOutput: (lesson71ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson71Diagnostic,
-    diagnosticOutput: (lesson71DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-sequence",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-sequence/main.ssrg",
-    source: lesson72Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson72Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "do blockの各行がEffectだと分かりました。",
-      "walkthrough": [
-        {
-          "heading": "Source順を出力で追う",
-          "body": "三つのprintlnはfirst、second、thirdの順で実行され、自動で並列化されません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "sequential Effect composition",
-          "body": "doはEffectをsource順に一つずつ完了させます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの行順を入れ替え、出力順も変わることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "途中へ非Effectを置く",
-        "body": "失敗例はdo statementへ通常のIntを置きます。"
-      },
-      "recap": [
-        "doは逐次実行する。",
-        "出力順はsource順と一致する。"
-      ],
-      "next": {
-        "lessonId": "effect-bind-success",
-        "body": "次はEffectの成功値を受け取ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson72Exercise,
-    exerciseExpectedOutput: (lesson72ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson72Diagnostic,
-    diagnosticOutput: (lesson72DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-bind-success",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-bind-success/main.ssrg",
-    source: lesson73Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson73Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "複数Effectがsource順に実行されると確認しました。",
-      "walkthrough": [
-        {
-          "heading": "成功値を名前へbindする",
-          "body": "succeed 42が成功すると、value <- の左側へInt 42が入り、次のprintlnで使えます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Effect bind",
-          "body": "pattern <- effectは成功値をpatternへbindして次の行へ進みます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの成功値を変え、bind後の出力へ反映してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "通常値をbindする",
-        "body": "失敗例はEffectではないIntへ<-を使います。"
-      },
-      "recap": [
-        "<-の右側はEffectである。",
-        "成功値だけが左側へbindされる。"
-      ],
-      "next": {
-        "lessonId": "effect-succeed-value",
-        "body": "次は通常値を成功Effectへ持ち上げます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson73Exercise,
-    exerciseExpectedOutput: (lesson73ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson73Diagnostic,
-    diagnosticOutput: (lesson73DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-succeed-value",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-succeed-value/main.ssrg",
-    source: lesson74Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson74Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "<-でEffectの成功値を受け取れるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "通常値を成功Effectにする",
-          "body": "succeed 42は環境もfailureも持たず、Int 42で成功するEffectです。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "succeed",
-          "body": "succeedはpureな通常値を失敗しないEffectのsuccess channelへ持ち上げます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの成功値を変え、<-で受け取る値を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "明示した成功型をずらす",
-        "body": "失敗例はIntで成功すると宣言した関数からStringをsucceedします。"
-      },
-      "recap": [
-        "succeedは通常値をEffectにする。",
-        "succeed自体はfailureを作らない。"
-      ],
-      "next": {
-        "lessonId": "effect-failure-short-circuit",
-        "body": "次はEffectが失敗した場合を実行します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson74Exercise,
-    exerciseExpectedOutput: (lesson74ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson74Diagnostic,
-    diagnosticOutput: (lesson74DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-failure-short-circuit",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-failure-short-circuit/main.ssrg",
-    source: lesson75Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson75Output).replace(/\r?\n$/u, ""),
-    expectedFailure: (lesson75Failure).replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "succeedでEffectのsuccess valueを作れるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Failureで後続を止める",
-          "body": "beforeを出した後にfail Rejectedで失敗し、後ろのunreachableは出力されません。mapErrorはConsole failureを同じAppErrorへ揃える境界で、後のlessonで詳しく扱います。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Effect failure short circuit",
-          "body": "failはtyped failureを作り、doの後続Effectを実行しません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのsucceedをfailへ戻し、continuedが出なくなる違いを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Pure関数からfailする",
-        "body": "失敗例は通常のfnからfailure Effectを返します。Effect functionとして宣言してください。"
-      },
-      "recap": [
-        "failはtyped failureでEffectを終了する。",
-        "failure後のdo statementは実行されない。"
-      ],
-      "next": {
-        "lessonId": "effect-fails-type",
-        "body": "次はfailure型をcontractとして読みます。"
-      },
-      "notes": [
-        "このlessonのmapErrorはfailure型を一つへ揃えるためだけに使い、変換規則はeffect-map-errorで説明します。"
-      ]
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson75Exercise,
-    exerciseExpectedOutput: (lesson75ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson75Diagnostic,
-    diagnosticOutput: (lesson75DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-fails-type",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-fails-type/main.ssrg",
-    source: lesson76Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson76Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "failがdoの後続を止めることを実行しました。",
-      "walkthrough": [
-        {
-          "heading": "Failure型を宣言する",
-          "body": "fails StepErrorはrejectが回復可能なStepErrorで失敗しうる公開contractを表します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "fails contract",
-          "body": "fails EはEffectの回復可能なfailure型Eを明示します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのerror型名とconstructor名を揃えて変更してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "宣言とbodyのfailureをずらす",
-        "body": "失敗例はfails Neverと宣言しながらStepErrorでfailします。"
-      },
-      "recap": [
-        "failsはfailure channelの型を表す。",
-        "bodyのfailure型は宣言と一致させる。"
-      ],
-      "next": {
-        "lessonId": "effect-with-capability",
-        "body": "次はEffectが必要とするcapabilityを読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson76Exercise,
-    exerciseExpectedOutput: (lesson76ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson76Diagnostic,
-    diagnosticOutput: (lesson76DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-with-capability",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-with-capability/main.ssrg",
-    source: lesson77Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson77Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "failsがEffectのfailure型を表すと分かりました。",
-      "walkthrough": [
-        {
-          "heading": "必要なserviceを宣言する",
-          "body": "with Consoleはannounceがconsole capabilityを実行環境へ要求することを表します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "with capability",
-          "body": "with ServiceはEffectのenvironment requirementへcanonical service fieldを追加します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのmessageを変え、同じConsole capabilityで実行してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "必要なcapabilityを省く",
-        "body": "失敗例はprintlnを使いながら明示contractのwith Consoleを省きます。"
-      },
-      "recap": [
-        "withは必要な実行serviceを表す。",
-        "Console capabilityがprintlnを提供する。"
-      ],
-      "next": {
-        "lessonId": "effect-inferred-contract",
-        "body": "次はbodyからcontractを推論させます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson77Exercise,
-    exerciseExpectedOutput: (lesson77ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson77Diagnostic,
-    diagnosticOutput: (lesson77DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-inferred-contract",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-inferred-contract/main.ssrg",
-    source: lesson78Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson78Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "with Consoleがenvironment requirementだと分かりました。",
-      "walkthrough": [
-        {
-          "heading": "Compact formで推論する",
-          "body": "戻り型、with、failsを書かないmainはprintlnからConsole、ConsoleError、Unitを推論します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "inferred Effect contract",
-          "body": "compact effect fnはbodyのEffectからenvironment、failure、successを推論します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのmessageだけを変え、contract推論を保って実行してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Compact formへwithだけを書く",
-        "body": "失敗例はsuccess型なしでwithを混ぜます。推論するならcontract clauseをすべて省きます。"
-      },
-      "recap": [
-        "compact formはbodyからcontractを推論する。",
-        "推論結果もtyped interfaceには残る。"
-      ],
-      "next": {
-        "lessonId": "effect-explicit-contract",
-        "body": "次は同じEffect contractをsourceへ明示します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson78Exercise,
-    exerciseExpectedOutput: (lesson78ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson78Diagnostic,
-    diagnosticOutput: (lesson78DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-explicit-contract",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-explicit-contract/main.ssrg",
-    source: lesson79Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson79Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Compact effect fnがcontractを推論すると分かりました。",
-      "walkthrough": [
-        {
-          "heading": "Contract formで固定する",
-          "body": "-> Unit、with Console、fails ConsoleErrorは推論版と同じEffect型をsourceへ固定します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "explicit Effect contract",
-          "body": "contract formはsuccess、environment、failureをsourceへ明示します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのmessageを変え、明示contractを保って実行してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "成功型をずらす",
-        "body": "失敗例はprintlnのUnit successに対してIntを宣言します。"
-      },
-      "recap": [
-        "明示contractはpublic APIをsourceで固定する。",
-        "推論版と実行意味は同じである。"
-      ],
-      "next": {
-        "lessonId": "effect-map-error",
-        "body": "次は異なるfailure型をapplication errorへ揃えます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson79Exercise,
-    exerciseExpectedOutput: (lesson79ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson79Diagnostic,
-    diagnosticOutput: (lesson79DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-map-error",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-map-error/main.ssrg",
-    source: lesson80Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: ("").replace(/\r?\n$/u, ""),
-    expectedFailure: (lesson80Failure).replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Effect contractの推論と明示を使い分けられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Failureをapplication型へ写す",
-          "body": "mapError InvalidInputFailureはInputError failureだけをAppErrorへ変え、success型は保ちます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Effect mapError",
-          "body": "mapErrorはEffectのfailure payloadを別型へ変換します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの成功mainを実行し、mapError関数定義を保ったまま通常処理を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "mapErrorへEffectを渡さない",
-        "body": "失敗例はmapperだけを渡し、変換元Effectを省きます。"
-      },
-      "recap": [
-        "mapErrorはfailure型だけを変える。",
-        "application error ADTへ依存failureを揃えられる。"
-      ],
-      "next": {
-        "lessonId": "effect-value-boundary",
-        "body": "次はEither valueをEffect failureへ変換します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson80Exercise,
-    exerciseExpectedOutput: (lesson80ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson80Diagnostic,
-    diagnosticOutput: (lesson80DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "effect-value-boundary",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/effect-value-boundary/main.ssrg",
-    source: lesson81Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson81Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "mapErrorでEffect failure型をapplication errorへ揃えました。",
-      "walkthrough": [
-        {
-          "heading": "EitherをEffectへ変換する",
-          "body": "toEitherはMaybeをpureなEitherへ変え、fromEitherがLeftをEffect failure、Rightをsuccessへ移します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "fromEither boundary",
-          "body": "fromEitherは既存Either valueをcoldなEffectのfailureまたはsuccessへ変換します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのJust payloadを変え、Rightからsuccessへ渡る値を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Maybeを直接fromEitherへ渡す",
-        "body": "失敗例はEitherを要求するfromEitherへMaybeを渡します。"
-      },
-      "recap": [
-        "MaybeとEitherはpure valueである。",
-        "fromEitherがvalueとEffect channelの境界になる。"
-      ],
-      "next": {
-        "lessonId": "10-effects-and-do",
-        "body": "最後に小さなEffect関数を一つのprogramへ組み合わせます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson81Exercise,
-    exerciseExpectedOutput: (lesson81ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson81Diagnostic,
-    diagnosticOutput: (lesson81DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "10-effects-and-do",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
-    source: lesson82Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson82Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "MaybeでflatMapと>>=を相互に書き換え、Effectではdoと<-でsuccess valueを受け取りました。",
-      "walkthrough": [
-        {
-          "heading": "Effectを返すcallbackを用意する",
-          "body": "doubleはIntを受け取り、通常のIntではなく次の`Effect<{}, Never, Int>`を返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        },
-        {
-          "heading": "Named flatMapでEffectを合成する",
-          "body": "`flatMap double source`はsourceのsuccess valueをdoubleへ渡し、nested Effectを作らず次のEffectへ進みます。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "Effectでも>>=へ書き換える",
-          "body": "`source >>= double`はMaybeで学んだものと同じvalue-firstのMonad bindです。Effectではsuccess valueだけが次へ渡ります。",
-          "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
-          }
-        },
-        {
-          "heading": "Doは同じbindへ名前を付ける",
-          "body": "doの`value <- source`はsuccess valueへ名前を付け、続くpureへ渡します。三つのsource形は同じ42を返します。",
-          "sourceRange": {
-            "startLine": 6,
-            "endLine": 9
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "EffectのflatMap・>>=・do",
-          "body": "EffectでもflatMap、>>=、doは同じsuccess-dependent compositionです。doは複数stepへ名前を付ける読みやすい表記です。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの7またはtripleを変え、flatMap・>>=・doの三結果が一致することを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Success contractをずらす",
-        "body": "失敗例はInt successを宣言したvalidateからStringをsucceedします。"
-      },
-      "recap": [
-        "EffectのflatMapと>>=もsuccess valueから次のEffectを選ぶ。",
-        "doの<-は同じbindを複数stepで読みやすく表す。"
-      ],
-      "next": {
-        "lessonId": "abstraction-concrete-generic",
-        "body": "次は具体型で使ったoperationを共通Traitとして回収する準備をします。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson82Exercise,
-    exerciseExpectedOutput: (lesson82ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson82Diagnostic,
-    diagnosticOutput: (lesson82DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-concrete-generic",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-concrete-generic/main.ssrg",
-    source: lesson83Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson83Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "concrete型の関数を定義して呼び出せます。",
-      "walkthrough": [
-        {
-          "heading": "型だけが違う処理をまとめる",
-          "body": "`keepInt`と`keepString`は型だけが違います。`keep<A>`は同じ処理を一度だけ定義します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "generic function",
-          "body": "`fn keep<A>`のように型parameterを宣言すると、複数の具体型へ同じ実装を使えます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの`keepInt`と`keepString`を一つの`keep<A>`へ書き換え、同じ二行を出力してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "型固有の操作を仮定する",
-        "body": "失敗例では制約のない`A`へ`+`を使います。generic本体が要求する契約をdiagnosticで確認します。"
-      },
-      "recap": [
-        "concrete版で型だけが違う処理はgenericへまとめられる。",
-        "generic本体は宣言していない型固有operationを仮定しない。"
-      ],
-      "next": {
-        "lessonId": "abstraction-type-parameter",
-        "body": "次はsignature内の`A`がどこで同じ型を表すか読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson83Exercise,
-    exerciseExpectedOutput: (lesson83ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson83Diagnostic,
-    diagnosticOutput: (lesson83DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-type-parameter",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-type-parameter/main.ssrg",
-    source: lesson84Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson84Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "型だけが違うconcrete関数をgenericへまとめました。",
-      "walkthrough": [
-        {
-          "heading": "同じAを同じ具体型へ揃える",
-          "body": "`chooseFirst<A>`の二つのparameterと戻り値にある`A`は、一回の呼び出しでは同じ具体型です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "A type parameter",
-          "body": "`A`は特定の型名ではなく、呼び出しごとに決まる一つの型を表します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "二つのStringを変更し、戻り値も同じString型になることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "一つのAへ異なる型を渡す",
-        "body": "失敗例は同じ`A`の位置へIntとStringを渡します。どのparameterで型が食い違うか確認します。"
-      },
-      "recap": [
-        "同じ名前のtype parameterは一回の呼び出しで同じ型になる。",
-        "Aは値ではなく型のplaceholderである。"
-      ],
-      "next": {
-        "lessonId": "abstraction-generic-adt-definition",
-        "body": "次はtype parameterをdataのpayloadへ使います。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson84Exercise,
-    exerciseExpectedOutput: (lesson84ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson84Diagnostic,
-    diagnosticOutput: (lesson84DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-generic-adt-definition",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-generic-adt-definition/main.ssrg",
-    source: lesson85Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson85Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "generic signatureのtype parameterを読めます。",
-      "walkthrough": [
-        {
-          "heading": "Payload型をparameterにする",
-          "body": "`Box<A>`はconstructorのpayload型を`A`として受け取ります。`Box<Int>`ではpayloadがIntになります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "generic ADT",
-          "body": "generic ADTはdataのshapeを一度定義し、payload型を差し替えられます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでは`Box<String>`をconstructします。String値を変更して実行してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Payload型を取り違える",
-        "body": "失敗例では`Box<Int>`へString payloadを入れます。annotationとconstructor argumentの差を確認します。"
-      },
-      "recap": [
-        "`Box<A>`のAはconstructor payloadの型を表す。",
-        "具体化した`Box<Int>`ではpayloadもIntである。"
-      ],
-      "next": {
-        "lessonId": "abstraction-generic-adt-use",
-        "body": "次はBoxの具体型に依存せずpayloadを取り出します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson85Exercise,
-    exerciseExpectedOutput: (lesson85ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson85Diagnostic,
-    diagnosticOutput: (lesson85DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-generic-adt-use",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-generic-adt-use/main.ssrg",
-    source: lesson86Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson86Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "type parameterを持つBox ADTを定義しました。",
-      "walkthrough": [
-        {
-          "heading": "Shapeを保ってpayloadを扱う",
-          "body": "`unwrap<A>`は`Box<A>`をmatchし、具体型を知らなくても同じ`A`を返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "generic ADT use",
-          "body": "generic関数はADTのshapeだけを使い、payloadの具体型を呼び出し側へ保ちます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのInt payloadを変更し、`unwrap`の実装を変えずに出力してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "取り出した型を別の型へ置く",
-        "body": "失敗例はStringを入れたBoxから取り出した値をIntとしてannotationします。"
-      },
-      "recap": [
-        "generic ADTはconstructとmatchの両方でtype parameterを保つ。",
-        "`Box<A> -> A`はpayloadの具体型を失わない。"
-      ],
-      "next": {
-        "lessonId": "abstraction-multiple-type-parameters",
-        "body": "次はfailureとsuccessを別々のparameterで表します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson86Exercise,
-    exerciseExpectedOutput: (lesson86ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson86Diagnostic,
-    diagnosticOutput: (lesson86DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-multiple-type-parameters",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-multiple-type-parameters/main.ssrg",
-    source: lesson87Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson87Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "一つのpayload型を持つgeneric ADTを利用しました。",
-      "walkthrough": [
-        {
-          "heading": "EとAの役割を分ける",
-          "body": "`Outcome<E, A>`ではEがfailure payload、Aがsuccess payloadです。二つは独立した型です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "multiple type parameters",
-          "body": "複数のtype parameterは宣言順と型内の位置によって別々の役割を持ちます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのfailure Stringを変更し、E側だけが使われるbranchを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Success側のparameterを取り違える",
-        "body": "失敗例は`Outcome<String, Int>`のsuccess payloadへStringを渡します。"
-      },
-      "recap": [
-        "EとAは同じgeneric型の中でも独立したparameterである。",
-        "constructorごとに使うparameterが異なっても型全体は両方を保持する。"
-      ],
-      "next": {
-        "lessonId": "abstraction-type-constructor-parameter",
-        "body": "次はpayload型ではなくcontainerの形をparameterにします。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson87Exercise,
-    exerciseExpectedOutput: (lesson87ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson87Diagnostic,
-    diagnosticOutput: (lesson87DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-type-constructor-parameter",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-type-constructor-parameter/main.ssrg",
-    source: lesson88Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson88Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "複数のpayload type parameterを使いました。",
-      "walkthrough": [
-        {
-          "heading": "Containerの形と中身を分ける",
-          "body": "`F<_>`は一つ型を受け取る型constructor、`A`はその中身です。`Maybe`がF、IntがAになります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "F<_> type-constructor parameter",
-          "body": "underscoreの数は型constructorが後から受け取る型argumentの数を表します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのMaybe payloadを変更し、containerの形が保たれることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "通常の型parameterを適用する",
-        "body": "失敗例では`F`を通常の型として宣言したまま`F<A>`と適用します。kindの違いを確認します。"
-      },
-      "recap": [
-        "`A`は完成した型、`F<_>`は型を一つ受け取る型constructorである。",
-        "FとAを分けるとcontainerの形を保つsignatureを書ける。"
-      ],
-      "next": {
-        "lessonId": "abstraction-trait-operation",
-        "body": "次は型が提供すべきoperationをTraitとして宣言します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson88Exercise,
-    exerciseExpectedOutput: (lesson88ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson88Diagnostic,
-    diagnosticOutput: (lesson88DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-trait-operation",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-trait-operation/main.ssrg",
-    source: lesson89Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson89Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "payload型とtype constructor parameterを区別できます。",
-      "walkthrough": [
-        {
-          "heading": "必要なoperationをsignatureで宣言する",
-          "body": "`trait Label<A>`は`A -> String`の`label`を提供する契約です。このlessonではまだinstanceを定義しません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 12
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Trait operation",
-          "body": "Traitは継承用objectではなく、型ごとに提供すべきoperationの型を宣言します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの出力を読み、Traitが要求するparameter型と戻り型を言葉で確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "存在しない戻り型を書く",
-        "body": "失敗例はTrait operationの戻り型に未定義の型を使います。契約も通常の型検査を受けます。"
-      },
-      "recap": [
-        "Traitは型が満たすoperationの契約を宣言する。",
-        "method signatureのAはTrait parameterと対応する。"
-      ],
-      "next": {
-        "lessonId": "abstraction-user-instance",
-        "body": "次はBadge型へLabelの実装を与えます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson89Exercise,
-    exerciseExpectedOutput: (lesson89ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson89Diagnostic,
-    diagnosticOutput: (lesson89DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-user-instance",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-user-instance/main.ssrg",
-    source: lesson90Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson90Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Trait declarationから必要なoperationを読めます。",
-      "walkthrough": [
-        {
-          "heading": "Concrete型へ実装を与える",
-          "body": "`instance Label<Badge>`はBadge用の`label`を実装します。呼び出し側ではBadge型からこのinstanceが選ばれます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 14
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "userland instance",
-          "body": "instanceはTraitの各operationを特定の型へ一意に実装します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのLabel実装が返すStringを変更し、同じ`label Active`呼び出しで確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "要求されたmethodを実装しない",
-        "body": "失敗例は`label`の代わりに`wrong`を定義します。missingとunexpected methodを確認します。"
-      },
-      "recap": [
-        "Traitは要求、instanceはconcrete型向けの実装である。",
-        "instance選択は値の型とTrait identityに基づく。"
-      ],
-      "next": {
-        "lessonId": "abstraction-where-constraint",
-        "body": "次はinstanceを必要とするgeneric関数を書きます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson90Exercise,
-    exerciseExpectedOutput: (lesson90ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson90Diagnostic,
-    diagnosticOutput: (lesson90DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-where-constraint",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-where-constraint/main.ssrg",
-    source: lesson91Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson91Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "concrete型へuserland instanceを定義しました。",
-      "walkthrough": [
-        {
-          "heading": "Generic関数の必要条件を書く",
-          "body": "`where Label<A>`は`describe`が任意のAではなく、Label instanceを持つAで使えることを示します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 14
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "where constraint",
-          "body": "where節はgeneric本体で利用するTrait evidenceをsignatureへ明示します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのprefixを変更し、constraintを保ったまま同じLabel operationを利用してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Constraintを書かずにTrait methodを呼ぶ",
-        "body": "失敗例はgenericなAで`label`を使いますが`where Label<A>`がありません。"
-      },
-      "recap": [
-        "where constraintはgeneric関数が要求するinstanceを公開する。",
-        "関数本体はconstraintで許可されたoperationだけを利用できる。"
-      ],
-      "next": {
-        "lessonId": "abstraction-instance-selection",
-        "body": "次はinstanceがある型とない型を同じ関数へ渡して比べます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson91Exercise,
-    exerciseExpectedOutput: (lesson91ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson91Diagnostic,
-    diagnosticOutput: (lesson91DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-instance-selection",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-instance-selection/main.ssrg",
-    source: lesson92Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson92Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "where constraintを持つgeneric関数を書きました。",
-      "walkthrough": [
-        {
-          "heading": "値の型からinstanceを選ぶ",
-          "body": "`describe Active`はLabel<Badge>、`describe Online`はLabel<Device>を選びます。関数本体は共通です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 23
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "instance selection",
-          "body": "call siteの具体型に一致するTrait instanceが型検査時に選ばれます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのLabel実装を変更し、Badge用instanceが選ばれることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Instanceがない型を渡す",
-        "body": "失敗例はLabel<Device>を定義せず`describe Offline`を呼びます。SES-T0201の不足契約を確認します。"
-      },
-      "recap": [
-        "同じgeneric関数でもcall siteの型ごとに別instanceが選ばれる。",
-        "一致するinstanceがなければ型検査で具体的なdiagnosticになる。"
-      ],
-      "next": {
-        "lessonId": "abstraction-functor-map",
-        "body": "次はcontainerの形を保つ標準Trait Functorへ進みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson92Exercise,
-    exerciseExpectedOutput: (lesson92ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson92Diagnostic,
-    diagnosticOutput: (lesson92DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-functor-map",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-functor-map/main.ssrg",
-    source: lesson93Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson93Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Array・List・Maybe・Eitherでnamed `map`を`<$>`へ書き換え、Traitのinstance選択も確認しました。",
-      "walkthrough": [
-        {
-          "heading": "具体型で使った同じ形を思い出す",
-          "body": "Collectionとfallibility章では、型ごとに`map f value`と`f <$> value`が同じ結果を作りました。ここではMaybe sourceでその形を再確認します。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "型名をFへ置き換える",
-          "body": "`label`は`A -> B`、sourceは`F<A>`、resultは`F<B>`です。Maybe・Either・Array・Listで変わるのはFだけです。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "Instanceが型ごとのshapeを決める",
-          "body": "同じmap contractを呼んでも、選ばれたFunctor instanceがNothingやLeft、Array、Listそれぞれのshapeを保ちます。",
-          "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
-          }
-        },
-        {
-          "heading": "Named形とoperator形は共通contractを共有する",
-          "body": "`map`と`<$>`は新しい別operationではありません。具体型で既に使った二表記をFunctorという一つのTrait contractで回収します。",
-          "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Functor共通contract",
-          "body": "Functorは具体型で使った`map` / `<$>`を`(A -> B) -> F<A> -> F<B>`として統一し、instanceがFごとのshapeを保ちます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの`rank`またはMaybe payloadを変更し、共通contractでもmapと<$>が同じ結果になることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Functor instanceのない値をmapする",
-        "body": "失敗例はIntへ`<$>`を使います。右側にFunctor instanceを持つ`F<A>`が必要だとdiagnosticで確認します。"
-      },
-      "recap": [
-        "具体型で使ったmapと<$>はFunctorの同じoperationである。",
-        "共通型は(A -> B)・F<A>・F<B>で、instanceが型ごとのshapeを決める。"
-      ],
-      "next": {
-        "lessonId": "abstraction-applicative-apply",
-        "body": "次はMaybeで使ったapplyと<*>の途中型をApplicative contractとして回収します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson93Exercise,
-    exerciseExpectedOutput: (lesson93ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson93Diagnostic,
-    diagnosticOutput: (lesson93DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-applicative-apply",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-applicative-apply/main.ssrg",
-    source: lesson94Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson94Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Maybeで`map add left`の途中型を作り、named `apply`を`<*>`へ書き換えました。",
-      "walkthrough": [
-        {
-          "heading": "具体型で追った途中型を再確認する",
-          "body": "`left`と`right`は独立したMaybeです。curried addを一つ目へmapすると`Maybe<Int -> Int>`が残ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
-          }
-        },
-        {
-          "heading": "MaybeをFへ置き換える",
-          "body": "途中型を`F<A -> B>`、二つ目を`F<A>`、結果を`F<B>`と書くと、Maybe以外にも共通するapply contractになります。",
-          "sourceRange": {
-            "startLine": 8,
-            "endLine": 8
-          }
-        },
-        {
-          "heading": "Named形とoperator形を同じcontractへ戻す",
-          "body": "`apply partial right`と`operatorPartial <*> right`は具体型で既に使った同じoperationです。ここではApplicativeというTrait名とinstance選択を結びます。",
-          "sourceRange": {
-            "startLine": 8,
-            "endLine": 10
-          }
-        },
-        {
-          "heading": "Semanticsはinstanceごとに異なる",
-          "body": "共通type schemeは同じでも、MaybeはNothingを保ち、ArrayやListはCartesian product、Validationはerror蓄積という別semanticsを持ちます。",
-          "sourceRange": {
-            "startLine": 8,
-            "endLine": 10
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Applicative共通contract",
-          "body": "Applicativeは具体型で使った`apply` / `<*>`を`F<A -> B> -> F<A> -> F<B>`として統一します。組み合わせ方は各instanceが決めます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの6か7を変更し、共通contractでもapplyと<*>が同じ結果になることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "値を関数として適用する",
-        "body": "失敗例は`Just 42`を左辺の関数containerとして使います。左側が`Maybe<Int -> Int>`である必要を確認します。"
-      },
-      "recap": [
-        "具体型のapplyと<*>はApplicativeの同じoperationである。",
-        "共通type schemeは同じでも組み合わせsemanticsはinstanceごとに異なる。"
-      ],
-      "next": {
-        "lessonId": "abstraction-monad-bind",
-        "body": "次はMaybeとEffectで使ったflatMap・>>=・doをMonad contractとして回収します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson94Exercise,
-    exerciseExpectedOutput: (lesson94ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson94Diagnostic,
-    diagnosticOutput: (lesson94DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-monad-bind",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-monad-bind/main.ssrg",
-    source: lesson95Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson95Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "MaybeとEffectの両方でflatMap・>>=・doを使い、success-dependent compositionを実行しました。",
-      "walkthrough": [
-        {
-          "heading": "具体型で使ったcallback形を再確認する",
-          "body": "Maybeのcallbackは次のMaybeを、Effectのcallbackは次のEffectを返しました。どちらも通常値ではなく次のcontextを返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "型名をMへ置き換える",
-          "body": "bindの共通型は`M<A>`と`A -> M<B>`から`M<B>`を作ります。MaybeとEffectで変わるのはMと短絡channelです。",
-          "sourceRange": {
-            "startLine": 13,
-            "endLine": 13
-          }
-        },
-        {
-          "heading": "Named・operator・doを同じcontractへ戻す",
-          "body": "flatMapはcallback-first、>>=はvalue-first、doはsuccess bindingへ名前を付ける表記です。具体型で学んだ三形は同じMonad bindです。",
-          "sourceRange": {
-            "startLine": 19,
-            "endLine": 27
-          }
-        },
-        {
-          "heading": "Monadを持つ型と持たない型を分ける",
-          "body": "Maybe・Either・Array・List・EffectはMonadを持ちます。SignalとValidationはApplicativeまでで、依存する次のcontextを選ぶ>>=を提供しません。",
-          "sourceRange": {
-            "startLine": 15,
-            "endLine": 17
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Monad共通contract",
-          "body": "Monadは具体型で使ったflatMap・>>=・doを`M<A>`と`A -> M<B>`から`M<B>`を作るbindとして統一します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの44を51または奇数へ変え、共通contractでもflatMap・>>=・doが同じ位置で短絡することを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Callbackがcontainerを返さない",
-        "body": "失敗例の`>>=` callbackはIntを返します。右側が`Int -> Maybe<B>`である必要をdiagnosticで確認します。"
-      },
-      "recap": [
-        "具体型のflatMap・>>=・doはMonadの同じbindである。",
-        "Mごとにshort-circuit semanticsが異なり、SignalとValidationはMonadを持たない。"
-      ],
-      "next": {
-        "lessonId": "abstraction-type-comparison",
-        "body": "次は同じFunctor operationが複数の標準containerへ広がることを実行比較します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson95Exercise,
-    exerciseExpectedOutput: (lesson95ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson95Diagnostic,
-    diagnosticOutput: (lesson95DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-type-comparison",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-type-comparison/main.ssrg",
-    source: lesson96Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson96Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Functor、Applicative、MonadをMaybeで使いました。",
-      "walkthrough": [
-        {
-          "heading": "同じmapを異なるshapeへ使う",
-          "body": "同じ`increment <$> value`がMaybe・Either・Array・List・Effectそれぞれのshapeを保ちます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 11
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "cross-type abstraction comparison",
-          "body": "Trait operationは型ごとのinstanceを通して同じsource表現を異なるdata shapeへ適用します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの変換またはMaybe payloadを変え、shapeとpayloadのどちらが変わるか確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Instanceのない型へFunctor operationを使う",
-        "body": "失敗例はcontainerではないIntをmapします。instanceがある型との差を確認します。"
-      },
-      "recap": [
-        "同じFunctor operationでも各instanceが保つshapeは異なる。",
-        "Maybe・Either・Array・List・Effectは同じ抽象表現で比較できる。"
-      ],
-      "next": {
-        "lessonId": "abstraction-signal-contract",
-        "body": "次はSignalが持つFunctor・Applicativeと持たないMonadを区別します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson96Exercise,
-    exerciseExpectedOutput: (lesson96ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson96Diagnostic,
-    diagnosticOutput: (lesson96DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-signal-contract",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-signal-contract/main.ssrg",
-    source: lesson97Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson97Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "複数の標準型でFunctor operationを比較しました。",
-      "walkthrough": [
-        {
-          "heading": "SignalのFunctorとApplicativeを使う",
-          "body": "Signalは`<$>`でderived valueを作り、`<*>`で独立したSignalを組み合わせます。時間変化するshapeを保ちます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 10
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Signal is not Monad",
-          "body": "SignalはFunctorとApplicativeのinstanceを持ちますが、前の値から次のSignalを選ぶMonad instanceは持ちません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの初期値か関数を変更し、`<*>`で導出した現在値を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Signalへ>>=を使う",
-        "body": "失敗例はSignalをMonadとしてbindします。Monad<Signal>が存在しないdiagnosticを確認します。"
-      },
-      "recap": [
-        "Signalの`<$>`と`<*>`は依存関係を保つderived Signalを作る。",
-        "SignalにはMonad instanceがなく、`>>=`で動的に次のSignalを選ばない。"
-      ],
-      "next": {
-        "lessonId": "abstraction-impl-method",
-        "body": "次はgeneric nominal型へinherent methodを追加します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson97Exercise,
-    exerciseExpectedOutput: (lesson97ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson97Diagnostic,
-    diagnosticOutput: (lesson97DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-impl-method",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-impl-method/main.ssrg",
-    source: lesson98Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson98Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "generic dataとTraitによる外部contractを学びました。",
-      "walkthrough": [
-        {
-          "heading": "Nominal型自身のoperationを定義する",
-          "body": "`impl<A> Box<A>`はBoxへ`map`と`get`を追加します。Trait選択なしでmethod syntaxから呼び出します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 8
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "inherent impl method",
-          "body": "impl blockはnominal型へself parameterを持つmethodを定義します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのBox payloadを変更し、`.get`が同じ型を返すことを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Self parameterを省く",
-        "body": "失敗例はinherent methodに`self` parameterを宣言しません。method contractのdiagnosticを確認します。"
-      },
-      "recap": [
-        "impl methodはnominal型へ直接operationを追加する。",
-        "generic implはBoxのpayload型をmethod signatureへ保つ。"
-      ],
-      "next": {
-        "lessonId": "abstraction-custom-operator",
-        "body": "次は通常関数と同じ型を持つcustom operatorを定義します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson98Exercise,
-    exerciseExpectedOutput: (lesson98ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson98Diagnostic,
-    diagnosticOutput: (lesson98DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "abstraction-custom-operator",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/abstraction-custom-operator/main.ssrg",
-    source: lesson99Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson99Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "impl methodを通常のfunction signatureとして読みました。",
-      "walkthrough": [
-        {
-          "heading": "Infixと関数値を同じ定義から使う",
-          "body": "`<+>`はfixityとprecedenceを持ちますが、`(<+>)`として通常のcurried関数値にもなります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 9
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "custom operator",
-          "body": "custom operatorはfixityを宣言した関数で、infix適用とgrouped function valueの両方を提供します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの左右のStringを変更し、右結合operatorの結果を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "宣言した戻り型と実装をずらす",
-        "body": "失敗例はIntを返すoperatorとして宣言しながらStringの`append`を返します。"
-      },
-      "recap": [
-        "custom operatorもparameter型と戻り型を持つ通常関数である。",
-        "fixityはinfix chainの読み方を決め、`(<+>)`は関数値として使える。"
-      ],
-      "next": {
-        "lessonId": "signals-value-difference",
-        "body": "次は通常の値と時間変化するSignalを区別します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson99Exercise,
-    exerciseExpectedOutput: (lesson99ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson99Diagnostic,
-    diagnosticOutput: (lesson99DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-value-difference",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-value-difference/main.ssrg",
-    source: lesson100Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson100Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "FunctorとApplicativeを含む抽象化を段階的に学びました。",
-      "walkthrough": [
-        {
-          "heading": "値と時間変化する値を並べる",
-          "body": "`fixed`はその場で決まるIntです。`Signal<Int>`は現在値を持つため、Effect内で`signals.read`してIntを取り出します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Signal<A>",
-          "body": "Signal<A>は時間とともに変化し得るAの現在値です。Aそのものとは区別されます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "固定値とSignalの現在値を変更し、二つが別の値として出力されることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "SignalをIntとして使う",
-        "body": "失敗例はSignal<Int>をreadせずIntへ代入します。型の違いをdiagnosticで確認します。"
-      },
-      "recap": [
-        "通常の値はその場のAで、Signal<A>は時間変化するAの現在値を表す。",
-        "Signalの現在値はEffect内でreadする。"
-      ],
-      "next": {
-        "lessonId": "signals-make",
-        "body": "次は更新可能なMutableSignalを作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson100Exercise,
-    exerciseExpectedOutput: (lesson100ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson100Diagnostic,
-    diagnosticOutput: (lesson100DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-make",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-make/main.ssrg",
-    source: lesson101Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson101Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "通常の値とSignalの現在値を区別しました。",
-      "walkthrough": [
-        {
-          "heading": "Effect内で更新可能なSignalを作る",
-          "body": "`signals.make`は初期値を受け取り、EffectとしてMutableSignal<Int>を生成します。`<-`で実行してから現在値を読みます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "signals.make",
-          "body": "signals.makeは初期値から更新可能なMutableSignal<A>をEffect内に作ります。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの初期値を変更し、最初の現在値を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Effectを実行せず代入する",
-        "body": "失敗例はsignals.makeのEffectをMutableSignalそのものとして扱います。"
-      },
-      "recap": [
-        "signals.makeはEffectとしてMutableSignalを作る。",
-        "生成結果はdo内の`<-`で受け取る。"
-      ],
-      "next": {
-        "lessonId": "signals-readonly-coercion",
-        "body": "次は更新権限を隠してSignalとして渡します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson101Exercise,
-    exerciseExpectedOutput: (lesson101ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson101Diagnostic,
-    diagnosticOutput: (lesson101DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-readonly-coercion",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-readonly-coercion/main.ssrg",
-    source: lesson102Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson102Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "signals.makeでMutableSignalを生成しました。",
-      "walkthrough": [
-        {
-          "heading": "更新権限を渡さず観測する",
-          "body": "`observe`はSignal<Int>だけを受け取ります。MutableSignal<Int>はSignal<Int>へcoerceできるため、呼び出し側はそのまま渡せます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "MutableSignal<A> to Signal<A>",
-          "body": "MutableSignalはread-onlyなSignalとして渡せますが、Signalから更新権限を取り戻すことはできません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "StringのMutableSignalをread-onlyな関数へ渡し、同じcoercionを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Read-only Signalを更新する",
-        "body": "失敗例はSignal引数をsignals.setのtargetへ渡します。更新にはMutableSignalが必要です。"
-      },
-      "recap": [
-        "MutableSignal<A>はSignal<A>として安全に観測できる。",
-        "APIの引数をSignalにすると更新権限を隠せる。"
-      ],
-      "next": {
-        "lessonId": "signals-read-operator",
-        "body": "次はsignals.readをprefix *へ書き換えます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson102Exercise,
-    exerciseExpectedOutput: (lesson102ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson102Diagnostic,
-    diagnosticOutput: (lesson102DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-read-operator",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-read-operator/main.ssrg",
-    source: lesson103Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson103Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "`signals.read source`でSignalとMutableSignalの現在値をEffectとして読みました。",
-      "walkthrough": [
-        {
-          "heading": "Named APIでread-only viewを読む",
-          "body": "`view`は`Signal<Int>`です。既知の`signals.read view`を実行すると、その時点の現在値をTaskから受け取ります。",
-          "sourceRange": {
-            "startLine": 4,
-            "endLine": 4
-          }
-        },
-        {
-          "heading": "Prefix operatorへ書き換える",
-          "body": "`operator <- *view`は`named <- signals.read view`と同じEffectful readです。`*view`だけでpureなIntを取り出すわけではありません。",
-          "sourceRange": {
-            "startLine": 4,
-            "endLine": 4
-          }
-        },
-        {
-          "heading": "MutableSignalにも同じoperatorを使う",
-          "body": "`MutableSignal<Int>`の`state`にも`*state`を使えます。read-onlyなSignalと更新可能なMutableSignalは、どちらも同じTask<Int>を返します。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 8
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Signal read operator *",
-          "body": "Prefix `*source`は`signals.read source`と同じ`Task<A>`を返します。pure dereferenceではなく、`do`内の`<-`等で実行するEffectful readです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの初期値を変え、`signals.read view`と`*view`が同じStringを返すことを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Effectful readをpure値として返す",
-        "body": "失敗例は`*source`をIntとして返します。read operatorも`Task<Int>`なので、Effectとして実行する必要があります。"
-      },
-      "recap": [
-        "`signals.read source`と`*source`は同じEffectful readである。",
-        "`*`はSignal<A>にもMutableSignal<A>にも使え、どちらもTask<A>を返す。",
-        "named形は明示的APIやpipelineへ、operator形は現在値の読取を短く示すcodeへ使える。"
-      ],
-      "next": {
-        "lessonId": "signals-set",
-        "body": "次はnamed APIのsignals.setでMutableSignalを更新します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson103Exercise,
-    exerciseExpectedOutput: (lesson103ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson103Diagnostic,
-    diagnosticOutput: (lesson103DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-set",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-set/main.ssrg",
-    source: lesson104Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson104Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "MutableSignalをread-onlyなSignalとして渡し、signals.readとprefix *を対応付けました。",
-      "walkthrough": [
-        {
-          "heading": "現在値を置き換える",
-          "body": "`signals.set value target`はMutableSignalの現在値をEffectとして置き換えます。更新後にreadすると新しい値を得ます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "signals.set",
-          "body": "signals.setは新しい値とMutableSignalを受け取り、Task<Unit>として更新します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Stringの初期値と更新値を変え、更新後の現在値を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "異なる型の値をsetする",
-        "body": "失敗例はMutableSignal<Int>へStringをsetします。valueとtargetの型は一致する必要があります。"
-      },
-      "recap": [
-        "signals.setは`value`、`target`の順で受け取る。",
-        "更新はEffectなのでdo内で実行する。"
-      ],
-      "next": {
-        "lessonId": "signals-write-operator",
-        "body": "次はsignals.setをMutableSignal専用の:=へ書き換えます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson104Exercise,
-    exerciseExpectedOutput: (lesson104ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson104Diagnostic,
-    diagnosticOutput: (lesson104DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-write-operator",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-write-operator/main.ssrg",
-    source: lesson105Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson105Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "`signals.set value state`でMutableSignalの現在値をEffectとして置き換えました。",
-      "walkthrough": [
-        {
-          "heading": "Named APIで値を置き換える",
-          "body": "既知の`signals.set 21 state`はvalueを先、MutableSignalを後に受け取り、更新をTaskとして実行します。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 3
-          }
-        },
-        {
-          "heading": "Assignment operatorへ書き換える",
-          "body": "`state := 42`は`signals.set 42 state`と同じEffectful writeです。左側は通常のbindingやfieldではなくMutableSignalです。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 4
-          }
-        },
-        {
-          "heading": "二つのcanonical形を結果で比べる",
-          "body": "named形とoperator形の直後に現在値を読み、どちらも同じMutableSignalを置き換えたことを確認します。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "MutableSignal write operator :=",
-          "body": "`state := value`は`signals.set value state`と同じ`Task<Unit>`です。MutableSignal専用であり、通常の代入構文ではありません。現在値に基づくatomic updateには`signals.update`を使い、`*state`の後に`state := ...`とするread-modify-writeは避けます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのnamed/operator更新値を変え、`signals.set value state`と`state := value`の引数対応を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Read-only Signalへ書き込む",
-        "body": "失敗例は`Signal<Int>`のviewへ`:=`を使います。write operatorの左側にはMutableSignal<A>が必要です。"
-      },
-      "recap": [
-        "`signals.set value state`と`state := value`は同じEffectful writeである。",
-        "`:=`の左側はMutableSignal専用で、通常のbindingやfield代入ではない。",
-        "現在値からatomicに更新するときはread後の`:=`ではなく`signals.update`を使う。"
-      ],
-      "next": {
-        "lessonId": "signals-observable-update",
-        "body": "次はreadとwriteを並べ、Effectの実行順で更新前後を観測します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson105Exercise,
-    exerciseExpectedOutput: (lesson105ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson105Diagnostic,
-    diagnosticOutput: (lesson105DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-observable-update",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-observable-update/main.ssrg",
-    source: lesson106Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson106Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "signals.setと:=でMutableSignalの値を置き換えました。",
-      "walkthrough": [
-        {
-          "heading": "Effectの順序でbeforeとafterを読む",
-          "body": "最初のreadは更新前の1、set後のreadは42を返します。Signalの観測と更新順序を出力で確認できます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "observable update",
-          "body": "Signalの現在値はreadを実行した時点の値です。setの前後で別々にreadできます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "初期値と更新値を入れ替え、beforeとafterの実行順を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "readをpureなIntとして返す",
-        "body": "失敗例はEffectであるsignals.readを実行せずIntとして返します。"
-      },
-      "recap": [
-        "readは呼び出した時点の現在値をEffectとして返す。",
-        "doの実行順が更新前後の観測順になる。"
-      ],
-      "next": {
-        "lessonId": "signals-map",
-        "body": "次は元のstateを変えず表示用Signalを導出します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson106Exercise,
-    exerciseExpectedOutput: (lesson106ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson106Diagnostic,
-    diagnosticOutput: (lesson106DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-map",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-map/main.ssrg",
-    source: lesson107Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson107Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "setの前後でSignalの現在値を観測しました。",
-      "walkthrough": [
-        {
-          "heading": "Sourceを保ったままderived Signalを作る",
-          "body": "`signals.map`はpure関数をSignalの現在値へ適用し、変換後の値を追跡する新しいSignalを返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
+          "heading": "元の Signal を更新すると派生 Signal も自動で変わる",
+          "body": "16 行目で `count := 3` と元の値だけを書き換えたあと、17 行目で `*total` を読むと `300` に変わっています。派生 `Signal` は依存関係を保ったまま、常に最新の計算結果を返します。",
+          "sourceRange": {
+            "startLine": 16,
+            "endLine": 18
           }
         }
       ],
@@ -6936,1040 +2343,159 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         {
           "kind": "api",
           "name": "signals.map",
-          "body": "signals.mapは(A -> B)とSignal<A>からSignal<B>を導出します。元のSignalは変更しません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "変換関数を変更し、derived Signalの現在値を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Sourceと合わない関数をmapする",
-        "body": "失敗例はSignal<Int>へStringを受け取る関数をmapします。"
-      },
-      "recap": [
-        "signals.mapは元のSignalを変更せずderived Signalを作る。",
-        "変換関数の入力型はsourceの値型と一致する。"
-      ],
-      "next": {
-        "lessonId": "signals-functor-operator",
-        "body": "次はsignals.mapと<$>を対応付けます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson107Exercise,
-    exerciseExpectedOutput: (lesson107ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson107Diagnostic,
-    diagnosticOutput: (lesson107DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-functor-operator",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-functor-operator/main.ssrg",
-    source: lesson108Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson108Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "signals.mapでderived Signalを作りました。",
-      "walkthrough": [
-        {
-          "heading": "Named APIとoperatorを並べる",
-          "body": "`signals.map double source`と`double <$> source`は同じSignal Functor operationです。両方の現在値が42になります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 9
-          }
-        }
-      ],
-      "introduced": [
+          "body": "純粋な関数 `A -> B` と `Signal<A>` を受け取り、元の値が変わるたびに変換後の値を保つ派生 `Signal<B>` を返します。"
+        },
         {
           "kind": "syntax",
-          "name": "Signal <$> ",
-          "body": "Signalの`<$>`はsignals.mapと同じく、pure関数からderived Signalを作ります。"
-        }
-      ],
-      "exercise": {
-        "instruction": "同じ関数をsignals.mapと<$>で適用し、出力が一致することを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Signalではない値へ<$>を使う",
-        "body": "失敗例はIntをFunctorとしてmapします。Functor instanceを持つshapeが必要です。"
-      },
-      "recap": [
-        "signals.mapと<$>は同じSignal Functor operationである。",
-        "好みの表記を選んでもderived dependencyは同じである。"
-      ],
-      "next": {
-        "lessonId": "signals-constant-pure",
-        "body": "次は固定値をSignalのshapeへ持ち上げます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson108Exercise,
-    exerciseExpectedOutput: (lesson108ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson108Diagnostic,
-    diagnosticOutput: (lesson108DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-constant-pure",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-constant-pure/main.ssrg",
-    source: lesson109Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson109Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "signals.mapと<$>を同じFunctor operationとして使いました。",
-      "walkthrough": [
-        {
-          "heading": "固定値をSignalへ持ち上げる",
-          "body": "`signals.constant`は明示的なAPIです。戻り型がSignalと決まる場所ではApplicativeの`pure`も同じ固定Signalを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "signals.constant and pure",
-          "body": "constantとSignal文脈のpureは、変化しない値をSignalのshapeへ持ち上げます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "StringをconstantとpureでSignalへ持ち上げ、現在値を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "pureでMutableSignalを作る",
-        "body": "失敗例はpureの結果を更新可能なMutableSignalとして要求します。更新可能なstateはsignals.makeで作ります。"
-      },
-      "recap": [
-        "signals.constantは固定Signalを明示的に作る。",
-        "Signal文脈のpureはApplicativeとして同じ持ち上げを行う。"
-      ],
-      "next": {
-        "lessonId": "signals-combine",
-        "body": "次は二つのSignalを一つへ合成します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson109Exercise,
-    exerciseExpectedOutput: (lesson109ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson109Diagnostic,
-    diagnosticOutput: (lesson109DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-combine",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-combine/main.ssrg",
-    source: lesson110Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson110Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "constantとpureで固定値をSignalへ持ち上げました。",
-      "walkthrough": [
-        {
-          "heading": "二つのdependencyを合成する",
-          "body": "`signals.combine add left right`は左右の現在値へcurried関数を適用し、合計を追跡するderived Signalを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
+          "name": "Signal の <$>",
+          "body": "`f <$> s` は `signals.map f s` と同じ `Functor` の演算子です。変換関数と `Signal` を並べて書けます。"
+        },
         {
           "kind": "api",
           "name": "signals.combine",
-          "body": "signals.combineは(A -> B -> C)と二つのSignalからSignal<C>を導出します。"
+          "body": "2 引数関数 `A -> B -> C` と 2 つの `Signal` から、両方の現在値を組み合わせた派生 `Signal<C>` を作ります。"
         }
       ],
       "exercise": {
-        "instruction": "加算を乗算へ変え、二つのSignalが一つへ合成されることを確認してください。",
+        "instruction": "エディターの 16 行目にある `count := 3` を `count := 5` に書き換えて `Run` し、`Output` の `after update` が `500` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Combinerの入力型をずらす",
-        "body": "失敗例はSignal<Int>二つへString用のcombinerを渡します。"
+        "heading": "signals.combine に渡す関数の型が合わない",
+        "body": "失敗例では `MutableSignal<Int>` 同士を合成しようとしながら、`String` を受け取る `join` を渡しています。関数の引数の型と `Signal` の中身の型が一致しないため、実行前に `Problems` へエラー表示が出ます。"
       },
       "recap": [
-        "signals.combineは二つのSignal dependencyを一つへまとめる。",
-        "combinerはcurriedな二引数関数として渡す。"
-      ],
-      "next": {
-        "lessonId": "signals-applicative-glitch-free",
-        "body": "次は<*>とtransactionで複数更新をまとめます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson110Exercise,
-    exerciseExpectedOutput: (lesson110ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson110Diagnostic,
-    diagnosticOutput: (lesson110DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-applicative-glitch-free",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-applicative-glitch-free/main.ssrg",
-    source: lesson111Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson111Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "signals.combineで二つのdependencyを合成しました。",
-      "walkthrough": [
-        {
-          "heading": "Applicativeでdependency graphを作る",
-          "body": "固定Signal内のcurried関数へ左右のSignalを`<*>`で適用し、合計を追跡します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        },
-        {
-          "heading": "複数更新を一度に公開する",
-          "body": "planSetをtransactionへ渡すと、observerは片側だけ更新された途中値ではなくcommit後の42を受け取ります。",
-          "sourceRange": {
-            "startLine": 7,
-            "endLine": 12
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "glitch-free Signal transaction",
-          "body": "transactionは複数のSignalChangeを一度にcommitし、derived graphの中間状態をobserverへ公開しません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "乗算する二つのstateをtransactionで6と7へ更新し、observerが42を受け取ることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Taskをtransactionへ入れる",
-        "body": "失敗例はSignalChangeを作るplanSetではなく、即時実行するsignals.setを配列へ入れます。"
-      },
-      "recap": [
-        "Signalの<*>は独立したdependencyを保ってderived Signalを作る。",
-        "transactionはSignalChangeをまとめ、途中状態をobserverへ見せない。"
-      ],
-      "next": {
-        "lessonId": "signals-monad-boundary",
-        "body": "次はSignalをMonadとして扱わない理由を確認します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson111Exercise,
-    exerciseExpectedOutput: (lesson111ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson111Diagnostic,
-    diagnosticOutput: (lesson111DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-monad-boundary",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-monad-boundary/main.ssrg",
-    source: lesson112Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson112Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "<*>とtransactionでglitch-freeな合成を確認しました。",
-      "walkthrough": [
-        {
-          "heading": "依存関係が見える合成を保つ",
-          "body": "mapと<*>はsourceと関数のdependency graphを静的に保ちます。SignalにはMonad instanceがないため、値ごとに次のSignalをbindしません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Signal is not Monad",
-          "body": "Signalの動的な切替を汎用`>>=`へ隠さず、依存関係が明示されるFunctor、Applicative、専用APIを使います。"
-        }
-      ],
-      "exercise": {
-        "instruction": "固定関数とsourceの値を変え、<*>による明示的な合成を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Signalへ>>=を使う",
-        "body": "失敗例はSignalをMonadとしてbindします。Monad<Signal>が存在しないdiagnosticを確認します。"
-      },
-      "recap": [
-        "Signalのmapと<*>は依存graphを保つ。",
-        "SignalにはMonad instanceがなく、汎用>>=で切替を表さない。"
-      ],
-      "next": {
-        "lessonId": "signals-switch-map",
-        "body": "次は動的な切替を専用APIで明示します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson112Exercise,
-    exerciseExpectedOutput: (lesson112ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson112Diagnostic,
-    diagnosticOutput: (lesson112DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "signals-switch-map",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/signals-switch-map/main.ssrg",
-    source: lesson113Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson113Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "SignalへMonadの>>=を使わない境界を確認しました。",
-      "walkthrough": [
-        {
-          "heading": "選択先のSignalを専用APIで返す",
-          "body": "switchMapのcallbackは現在値から次に追跡するSignalを返します。source更新後は新しい選択先の42が通知されます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "signals.switchMap",
-          "body": "switchMapはsource値ごとに追跡先Signalを明示的に切り替える専用operationです。汎用Monad bindではありません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "切替先の計算を乗算へ変え、source更新後の現在値を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Signalではない値を選択先にする",
-        "body": "失敗例のcallbackはIntを返します。switchMapのcallbackはSignalを返す必要があります。"
-      },
-      "recap": [
-        "switchMapは動的dependency切替を名前付きAPIで表す。",
-        "callbackは通常値ではなく次に追跡するSignalを返す。"
+        "`signals.map` と `<$>` は、元の `Signal` を変更せずに値を変換した派生 `Signal` を作る。",
+        "`signals.combine` は 2 つの `Signal` の現在値を 1 つの派生 `Signal` へまとめる。",
+        "元の `Signal` が更新されると、依存関係を持つ派生 `Signal` の現在値も自動で最新の計算結果になる。"
       ],
       "next": {
         "lessonId": "signals-handler-boundary",
-        "body": "最後に更新権限をhandlerの内側へ閉じます。"
-      }
+        "body": "次は複数の更新を途中状態が見えないようにまとめて反映する `signals.transaction` と、更新権限をハンドラーに閉じ込める設計を学びます。"
+      },
+      "notes": [
+        "変化しない固定値を派生 `Signal` の計算へ混ぜたいときは、`signals.constant` や `Applicative` 文脈の `pure` を使って `Signal` の形へ持ち上げられます。",
+        "`<$>` は `Signal` の `Functor` 演算子として定義されているため、`MutableSignal` に使うときは 8 行目のように `Signal<Int>` の型注釈で読み取り専用として扱うことを示します。"
+      ]
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson113Exercise,
-    exerciseExpectedOutput: (lesson113ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson113Diagnostic,
-    diagnosticOutput: (lesson113DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson25Exercise,
+    exerciseExpectedOutput: (lesson25ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson25Diagnostic,
+    diagnosticOutput: (lesson25DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-handler-boundary",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-handler-boundary/main.ssrg",
-    source: lesson114Source,
+    source: lesson26Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson114Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson26Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "switchMapで動的dependency切替を明示しました。",
+      "prerequisite": "前のレッスンで派生 `Signal` の作り方を学びました。ここでは複数の更新をまとめて反映する方法と、更新権限をハンドラーの内側に閉じる型設計を学びます。",
       "walkthrough": [
         {
-          "heading": "更新権限をhandlerへ閉じる",
-          "body": "`handle`だけがMutableSignalを受け取り、更新を実行します。表示側には`expose`でSignalだけを渡します。",
+          "heading": "applyBatch に MutableSignal を渡してまとめて更新する",
+          "body": "9〜13 行目の `applyBatch` は `MutableSignal<Int>` を受け取る更新ハンドラーです。`signals.transaction` の中に `signals.planSet` を並べることで、2 つの更新を 1 つのまとまった更新として反映できます。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 9
+            "startLine": 9,
+            "endLine": 13
+          }
+        },
+        {
+          "heading": "Applicative の <*> で読み取り専用の合計を組み立てる",
+          "body": "20 行目の `total` は `<$>` と `<*>` で `left` と `right` を組み合わせた読み取り専用の `Signal<Int>` です。更新権限を持たない `Signal` として扱うため、表示や購読の側から元の値を書き換えることはできません。",
+          "sourceRange": {
+            "startLine": 20,
+            "endLine": 20
+          }
+        },
+        {
+          "heading": "subscribe で途中状態が出ないことを確かめる",
+          "body": "21〜26 行目で `total` を購読した状態で `applyBatch` を呼び、最後に `signals.unsubscribe` で解除します。片方だけが変わった `22` のような途中状態は通知されず、初期値 `3` から確定後の `42` へ直接移ります。",
+          "sourceRange": {
+            "startLine": 21,
+            "endLine": 30
           }
         }
       ],
       "introduced": [
         {
+          "kind": "api",
+          "name": "signals.transaction と planSet",
+          "body": "`signals.planSet` で予定した複数の更新を配列にまとめ、`signals.transaction` で一度に反映します。途中状態を見せずにまとめて更新できます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "Signal の <*>",
+          "body": "`Applicative` の演算子 `<*>` を使うと、複数の独立した `Signal` を静的な依存関係を保ったまま組み合わせられます。"
+        },
+        {
           "kind": "type",
-          "name": "mutable handler boundary",
-          "body": "MutableSignalは更新handlerの境界内に保ち、consumerへはread-onlyなSignalを公開します。"
+          "name": "ハンドラー境界の設計",
+          "body": "`MutableSignal` を更新ハンドラーの内側だけに渡し、観測側や表示側へは読み取り専用の `Signal` を公開することで、予期しない書き換えを型で防げます。"
         }
       ],
       "exercise": {
-        "instruction": "handlerの更新関数を乗算へ変え、read-only viewへ結果が反映されることを確認してください。",
+        "instruction": "エディターの 11 行目と 12 行目にある `20` と `22` をそれぞれ `30` と `15` に書き換えて `Run` し、`Output` が `total: 45` と `observed: 3 -> 45` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Viewから更新する",
-        "body": "失敗例はread-onlyなSignalをsignals.setへ渡します。表示側には更新権限がありません。"
+        "heading": "読み取り専用の Signal を signals.planSet に渡す",
+        "body": "失敗例では読み取り専用の `Signal<Int>` である `view` を `signals.planSet` へ渡しています。更新を予約できるのは `MutableSignal` だけなので、実行前に `Problems` へエラー表示が出ます。更新ハンドラーの引数型は `MutableSignal<Int>` にしてください。"
       },
       "recap": [
-        "MutableSignalは更新するhandlerだけへ渡す。",
-        "表示やconsumerへはSignalとして公開し、権限を型で分離する。"
+        "`signals.transaction` と `signals.planSet` を組み合わせると、複数の更新を途中状態を見せずにまとめて反映できる。",
+        "`<$>` と `<*>` は複数の `Signal` を静的な依存関係を保ったまま合成する。",
+        "更新用ハンドラーには `MutableSignal`、観測側には読み取り専用の `Signal` を渡して役割を型で分ける。"
       ],
       "next": {
         "lessonId": "web-html-value",
-        "body": "次はSignalの更新境界を保ったままpureなHtml valueを作ります。"
-      }
+        "body": "時間変化する `Signal` の仕組みと更新境界が揃いました。次の章からは、この `Signal` と組み合わせてブラウザ UI を作る純粋な `Html` の表現を学びます。"
+      },
+      "notes": [
+        "`Signal` は `Functor` と `Applicative` を持ちますが、前の値に応じて動的に別の `Signal` へ切り替える `Monad` の `>>=` は持ちません。その理由と `signals.switchMap` の使い方は補足トラックで学べます。"
+      ]
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson114Exercise,
-    exerciseExpectedOutput: (lesson114ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson114Diagnostic,
-    diagnosticOutput: (lesson114DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson26Exercise,
+    exerciseExpectedOutput: (lesson26ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson26Diagnostic,
+    diagnosticOutput: (lesson26DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-html-value",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-html-value/main.ssrg",
-    source: lesson115Source,
+    source: lesson27Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson115Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson27Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Signalの更新権限とread-only viewを分離しました。",
+      "prerequisite": "`Signal` の読み取り専用ビューと更新権限の分離までを学びました。ここからはブラウザー向けの画面を純粋な値として組み立てる `Html` を学びます。",
       "walkthrough": [
         {
-          "heading": "PureなHtml valueを作る",
-          "body": "`std/web/html`のnamespaceから`html.main`を呼び、browserを直接変更しないHtml<Action>を作ります。",
+          "heading": "Html 型と html.style で見た目を準備する",
+          "body": "1〜6 行目では `std/web/html` を読み込み、操作を表す `Action` 型と、`html.style` を使ったインラインスタイル値 `accent` を定義しています。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 8
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "html.Html<Action>",
-          "body": "Htmlはtypedなpure tree valueで、PreviewはrenderToStringの結果を隔離して表示します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "tagとtextを変更し、Previewの静的elementを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "HtmlへIntを代入する",
-        "body": "失敗例はHtml<Action>へ通常のIntを代入し、pure treeの型境界を確認します。"
-      },
-      "recap": [
-        "Htmlはbrowser操作ではなくpureなtree valueである。",
-        "html namespaceのtag builderから最小elementを作れる。"
-      ],
-      "next": {
-        "lessonId": "web-text-attributes",
-        "body": "次はtextとattributeを分けて指定します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson115Exercise,
-    exerciseExpectedOutput: (lesson115ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson115Diagnostic,
-    diagnosticOutput: (lesson115DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-text-attributes",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-text-attributes/main.ssrg",
-    source: lesson116Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson116Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "html namespaceから静的elementを作りました。",
-      "walkthrough": [
-        {
-          "heading": "Textとmetadataを分ける",
-          "body": "childrenが表示text、idとtitleがglobal attributeです。typed props recordで同じelementへ指定します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 12
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "text child and global attributes",
-          "body": "childrenは内容、idやtitleはelement metadataとしてescaped HTMLへ変換されます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "text、id、titleを変更し、Previewのattributeを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "IdへIntを渡す",
-        "body": "失敗例はString attributeへIntを渡します。tag propsの型をdiagnosticで確認します。"
-      },
-      "recap": [
-        "Textはchildrenへ置く。",
-        "Attributeはtag builderのtyped propsとして指定する。"
-      ],
-      "next": {
-        "lessonId": "web-style-class",
-        "body": "次はtyped StyleとclassNameを追加します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson116Exercise,
-    exerciseExpectedOutput: (lesson116ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson116Diagnostic,
-    diagnosticOutput: (lesson116DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-style-class",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-style-class/main.ssrg",
-    source: lesson117Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson117Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Textとglobal attributeを指定しました。",
-      "walkthrough": [
-        {
-          "heading": "Reusable Styleとclassを併用する",
-          "body": "html.styleはtyped value、classはhostが提供するclass tokenです。両方を同じpropsへ渡せます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 13
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "html.Style and class",
-          "body": "Styleはtyped inline declaration、classはPreviewの許可済みutilityやcustom classを選びます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Styleの色とtextを変更し、classを保ったPreviewを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "ClassNameへIntを渡す",
-        "body": "失敗例はStringであるclassへIntを渡します。"
-      },
-      "recap": [
-        "html.styleは再利用できるtyped valueである。",
-        "classとStyleは別のpropsとして併用できる。"
-      ],
-      "next": {
-        "lessonId": "web-tags-children",
-        "body": "次は複数tagをchildrenへ並べます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson117Exercise,
-    exerciseExpectedOutput: (lesson117ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson117Diagnostic,
-    diagnosticOutput: (lesson117DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-tags-children",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-tags-children/main.ssrg",
-    source: lesson118Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson118Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "StyleとclassNameをelementへ指定しました。",
-      "walkthrough": [
-        {
-          "heading": "Childrenを上から順に並べる",
-          "body": "mainのchildren配列へh1とpを置くと、その順序を保ったnested document treeになります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 10
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "element children",
-          "body": "childrenはtext、単一Html、または順序付きHtml配列を受け取ります。void elementはchildrenを持ちません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "親tagと二つのchildrenを変更し、順序を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Void elementへchildrenを渡す",
-        "body": "失敗例はimgへchildrenを指定します。tag固有propsが無効な構造を拒否します。"
-      },
-      "recap": [
-        "Children配列はdocument orderを保つ。",
-        "Tagごとに受け取れるpropsとchildrenの契約が異なる。"
-      ],
-      "next": {
-        "lessonId": "web-component-definition",
-        "body": "次はHtml treeをpure関数へ切り出します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson118Exercise,
-    exerciseExpectedOutput: (lesson118ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson118Diagnostic,
-    diagnosticOutput: (lesson118DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-component-definition",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-component-definition/main.ssrg",
-    source: lesson119Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson119Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "複数tagをchildrenでdocument treeへ並べました。",
-      "walkthrough": [
-        {
-          "heading": "Htmlを返すpure関数を定義する",
-          "body": "`heading`は引数なしの通常関数です。Html<Action>を返すだけでFunction componentとして再利用できます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 8
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Function component",
-          "body": "SeseragiのcomponentはHtmlを返すpure functionで、専用classやlifecycle syntaxを必要としません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Function名、tag、textを変更し、pure componentを実行してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "ComponentからStringを返す",
-        "body": "失敗例はHtml<Action>を宣言しながらStringを返します。"
-      },
-      "recap": [
-        "Function componentはHtmlを返す通常のpure関数である。",
-        "専用のcomponent構文は増えない。"
-      ],
-      "next": {
-        "lessonId": "web-component-children",
-        "body": "次はcomponentを親のchildrenから呼び出します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson119Exercise,
-    exerciseExpectedOutput: (lesson119ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson119Diagnostic,
-    diagnosticOutput: (lesson119DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-component-children",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-component-children/main.ssrg",
-    source: lesson120Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson120Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Htmlを返すFunction componentを定義しました。",
-      "walkthrough": [
-        {
-          "heading": "Componentの戻り値をchildrenへ置く",
-          "body": "`heading ()`はHtml valueなので、通常のtagと同じようにmainのchildren配列へ置けます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 10
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "component composition in children",
-          "body": "Function componentの呼び出し結果はHtmlであり、親componentのchildrenへそのまま合成できます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "badge componentのtextを変え、通常textとの並びを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "ChildrenへIntを混ぜる",
-        "body": "失敗例はHtml children配列へ変換できないIntを混ぜます。"
-      },
-      "recap": [
-        "Componentはchildrenから通常関数として呼び出す。",
-        "戻り値がHtmlなのでtag builderと同じ位置へ置ける。"
-      ],
-      "next": {
-        "lessonId": "web-component-props",
-        "body": "次はcomponentへ表示用propsを渡します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson120Exercise,
-    exerciseExpectedOutput: (lesson120ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson120Diagnostic,
-    diagnosticOutput: (lesson120DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-component-props",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-component-props/main.ssrg",
-    source: lesson121Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson121Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Function componentをchildrenから呼び出しました。",
-      "walkthrough": [
-        {
-          "heading": "Parametersをpropsとして受け取る",
-          "body": "`card`はtitleとdetailを通常のString parameterとして受け取り、異なるHtmlを返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 10
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "component props as parameters",
-          "body": "Function componentのpropsは通常のtyped parameterです。呼び出しと部分適用も通常関数と同じです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "二つのpropsを変更し、cardの表示内容を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "String propsへIntを渡す",
-        "body": "失敗例はtitle parameterへIntを渡します。"
-      },
-      "recap": [
-        "Component propsは通常のtyped parameterである。",
-        "Propsからchildrenを組み立ててもcomponentはpureなままである。"
-      ],
-      "next": {
-        "lessonId": "web-link-image",
-        "body": "次はWebUrlをlinkとimageへ渡します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson121Exercise,
-    exerciseExpectedOutput: (lesson121ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson121Diagnostic,
-    diagnosticOutput: (lesson121DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-link-image",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-link-image/main.ssrg",
-    source: lesson122Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson122Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Componentへtyped propsを渡しました。",
-      "walkthrough": [
-        {
-          "heading": "Stringを検証済みWebUrlへ変換する",
-          "body": "parseWebUrlでschemeを検証してから、imageのsrcとlinkのhrefへ渡します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 8
+            "endLine": 6
           }
         },
         {
-          "heading": "Imageとexternal linkを並べる",
-          "body": "imgはaltと寸法を持ち、external linkは新しいtabでopenerを共有しないrelを指定します。",
+          "heading": "属性と子要素をまとめて要素を作る",
+          "body": "8〜16 行目の `html.main` では `id`・`class`・`style` で属性や見た目を指定し、`children` の配列に `html.h1` と `html.p` を並べてツリーを作ります。",
           "sourceRange": {
-            "startLine": 10,
-            "endLine": 25
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "html.WebUrl",
-          "body": "hrefとsrcは任意Stringではなく、検証済みWebUrlを要求します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Link textを変更し、WebUrlを保持したPreviewを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Srcへ生のStringを渡す",
-        "body": "失敗例は検証していないStringをimage srcへ渡します。"
-      },
-      "recap": [
-        "External URLはparseWebUrlでWebUrlへ変換する。",
-        "Imageは意味のあるaltと固定寸法を持たせる。"
-      ],
-      "next": {
-        "lessonId": "web-click-action",
-        "body": "次はbuttonからtyped Actionを送ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson122Exercise,
-    exerciseExpectedOutput: (lesson122ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson122Diagnostic,
-    diagnosticOutput: (lesson122DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-click-action",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-click-action/main.ssrg",
-    source: lesson123Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson123Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Linkとimageへ検証済みWebUrlを渡しました。",
-      "walkthrough": [
-        {
-          "heading": "ClickをAction valueへする",
-          "body": "onClickへIncrement constructorを置くと、browser eventそのものではなくtyped Actionがhandlerへ送られます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 11
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "onClick Action",
-          "body": "onClickはHtml<Action>と同じAction型のvalueを受け取り、DOM runtimeがclick時にdispatchします。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Action constructorとbutton textを変更してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Actionの代わりにStringを渡す",
-        "body": "失敗例はHtml<Increment Action>へString event valueを渡します。"
-      },
-      "recap": [
-        "onClickはbrowser eventをtyped Actionへ変換する。",
-        "SSR outputへevent handlerは漏れない。"
-      ],
-      "next": {
-        "lessonId": "web-input-action",
-        "body": "次はInputEventのvalueをAction payloadへします。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson123Exercise,
-    exerciseExpectedOutput: (lesson123ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson123Diagnostic,
-    diagnosticOutput: (lesson123DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-input-action",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-input-action/main.ssrg",
-    source: lesson124Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson124Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "OnClickからpayloadなしActionを送りました。",
-      "walkthrough": [
-        {
-          "heading": "Input snapshotをActionへ包む",
-          "body": "draftActionはInputEventのvalue snapshotを読み、DraftChanged Stringを返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 15
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "html.InputEvent",
-          "body": "InputEventはhost nodeを渡さず、event時点のvalueをimmutable Stringとして提供します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Action名、field名、初期valueを変更してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "OnInputへChangeEvent handlerを渡す",
-        "body": "失敗例はInputEventを要求するonInputへChangeEvent関数を渡します。"
-      },
-      "recap": [
-        "onInputはInputEvent snapshotを受け取る。",
-        "String payloadをADT Actionへ包んでhandlerへ渡す。"
-      ],
-      "next": {
-        "lessonId": "web-change-action",
-        "body": "次はcheckboxのchecked snapshotを受け取ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson124Exercise,
-    exerciseExpectedOutput: (lesson124ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson124Diagnostic,
-    diagnosticOutput: (lesson124DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-change-action",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-change-action/main.ssrg",
-    source: lesson125Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson125Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "InputEventのvalueをString Actionへ包みました。",
-      "walkthrough": [
-        {
-          "heading": "Checkbox snapshotをActionへ包む",
-          "body": "ChangeEvent.checkedはMaybe<Bool>です。checkboxのJust checkedをActionへ包み、checkedを持たないcontrolのNothingはIgnoredChangeとして扱います。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 19
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "html.ChangeEvent",
-          "body": "ChangeEventはcheckbox等のvalueとchecked snapshotをimmutable dataとして提供します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Action名、field名、初期checkedを変更してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "OnChangeへInputEvent handlerを渡す",
-        "body": "失敗例はChangeEventを要求するonChangeへInputEvent関数を渡します。"
-      },
-      "recap": [
-        "onChangeはChangeEvent snapshotを受け取る。",
-        "checked snapshotはMaybe<Bool>。NothingをFalseと決めつけず、Actionで扱いを分ける。"
-      ],
-      "next": {
-        "lessonId": "web-form-submit",
-        "body": "次はinputをform submitへ接続します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson125Exercise,
-    exerciseExpectedOutput: (lesson125ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson125Diagnostic,
-    diagnosticOutput: (lesson125DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-form-submit",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-form-submit/main.ssrg",
-    source: lesson126Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson126Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Inputとcheckboxからtyped Actionを作りました。",
-      "walkthrough": [
-        {
-          "heading": "Form全体のsubmit Actionを決める",
-          "body": "formのonSubmitへSubmittedを置き、buttonTypeがsubmitのbuttonから同じ経路を起動します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 12
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "form onSubmit",
-          "body": "DOM adapterはonSubmitをActionへdispatchする前にbrowserのdefault navigationを同期的に抑止します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Submit button textを変え、formとの接続を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Submit ActionへStringを渡す",
-        "body": "失敗例はHtml<Action>のonSubmitへ異なるString型を渡します。"
-      },
-      "recap": [
-        "onSubmitはform全体のtyped Actionを送る。",
-        "DOM adapterがdefault navigationを抑止し、SPAのstate更新へ渡す。"
-      ],
-      "next": {
-        "lessonId": "web-signal-preview",
-        "body": "次はform viewをSignal<Html>へ持ち上げます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson126Exercise,
-    exerciseExpectedOutput: (lesson126ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson126Diagnostic,
-    diagnosticOutput: (lesson126DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-signal-preview",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-signal-preview/main.ssrg",
-    source: lesson127Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson127Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Form inputとsubmitをtyped Actionへ接続しました。",
-      "walkthrough": [
-        {
-          "heading": "StateからHtml Signalを導出する",
-          "body": "signals.map view stateは、stateの現在値を追跡するSignal<Html<Action>>を作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 18
+            "startLine": 8,
+            "endLine": 16
           }
         },
         {
-          "heading": "更新後のHtmlをPreviewする",
-          "body": "stateを42へ更新し、derived contentの現在値をrenderToStringでPreviewへ送ります。",
+          "heading": "html.renderToString で文字列化して確認する",
+          "body": "18 行目では `html.renderToString` で `page` を HTML 文字列へ変換し、`println` で出力して `Output` や `Preview` で確かめます。",
           "sourceRange": {
             "startLine": 18,
             "endLine": 18
@@ -7979,943 +2505,424 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "introduced": [
         {
           "kind": "type",
-          "name": "Signal<Html<Action>>",
-          "body": "Stateからpure viewをmapすると、更新に追従するHtml treeのSignalになります。"
+          "name": "Html<Action>",
+          "body": "画面の構造を純粋な値として表す型です。実際の画面を直接書き換えずにツリーを組み立て、文字列化や実行環境への受け渡しに使います。"
+        },
+        {
+          "kind": "type",
+          "name": "Style",
+          "body": "`html.style` で作る型付きのインラインスタイル値です。`class` 属性と組み合わせて要素の見た目を指定できます。"
+        },
+        {
+          "kind": "api",
+          "name": "html.renderToString",
+          "body": "`Html<Action>` の値を HTML 文字列へ変換します。`Output` での文字確認や `Preview` 表示に利用できます。"
         }
       ],
       "exercise": {
-        "instruction": "String stateの更新値を変え、derived Htmlを確認してください。",
+        "instruction": "エディターの 13 行目にある `\"Seseragi Web\"` を `\"Hello HTML\"` に書き換えて `Run` し、`Output` と `Preview` の見出しが変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Html SignalをString Signalとして扱う",
-        "body": "失敗例はSignal<Html<Action>>をSignal<String>として注釈します。"
+        "heading": "子要素の配列に数値を混ぜる",
+        "body": "失敗例では `children` の配列の中に `Html<Action>` ではない数値 `42` を入れています。実行前に型の不一致が見つかり、`Problems` にエラー表示が出ます。"
       },
       "recap": [
-        "Pure viewをSignalへmapしてSignal<Html<Action>>を作る。",
-        "Previewへ渡すHtmlも通常のSignal current valueとして読める。"
+        "`Html<Action>` は画面を直接操作しない純粋な値であり、`html` 名前空間の各タグ関数で要素を組み立てる。",
+        "`id`・`class`・`title` などの属性や `html.style` で作った `Style`、`children` の配列を一つのレコードで指定する。",
+        "`html.renderToString` で HTML 文字列に変換して出力や `Preview` を確かめられる。"
       ],
       "next": {
-        "lessonId": "web-dom-run",
-        "body": "次はSignal<Html>をbrowser runtimeへmountします。"
-      }
+        "lessonId": "web-component-props",
+        "body": "次は `Html` を返す純粋な関数としてコンポーネントを定義し、引数（props）を渡して再利用する方法を学びます。"
+      },
+      "notes": [
+        "`Output` パネルの右上にある `Preview` に切り替えると、生成された HTML の見た目をその場で確認できます。"
+      ]
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson127Exercise,
-    exerciseExpectedOutput: (lesson127ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson127Diagnostic,
-    diagnosticOutput: (lesson127DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson27Exercise,
+    exerciseExpectedOutput: (lesson27ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson27Diagnostic,
+    diagnosticOutput: (lesson27DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "web-dom-run",
+    id: "web-component-props",
     challenge: "",
-    interactive: true,
-    sourcePath: "examples/tour/lessons/web-dom-run/main.ssrg",
-    source: lesson128Source,
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-component-props/main.ssrg",
+    source: lesson28Source,
     guide: "",
     stdin: "",
-    expectedOutput: ("").replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson28Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Signal<Html<Action>>をderived viewとして作りました。",
+      "prerequisite": "`html` 名前空間を使って属性や `Style`、子要素を持つ静的な `Html` ツリーを作れるようになりました。ここでは部品を再利用する関数コンポーネントを学びます。",
       "walkthrough": [
         {
-          "heading": "Runtimeへ渡す四つの値を作る",
-          "body": "options、query済みtarget、Action handler、Signal<Html<Action>>をそれぞれ名前付きvalueとして準備します。",
+          "heading": "Html を返す純粋な関数として定義する",
+          "body": "6〜8 行目の `card` は `title` と `detail` を受け取り、`Html<Action>` を返す通常の純粋な関数です。コンポーネント専用の特別な構文は必要ありません。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 26
+            "startLine": 6,
+            "endLine": 8
           }
         },
         {
-          "heading": "Dom.runでlifetimeを所有する",
-          "body": "dom.runはmount、event dispatch、Signal購読、cleanupを一つのEffect scopeとして実行します。",
+          "heading": "引数（props）を変えて親の子要素から呼び出す",
+          "body": "10 行目の `page` では異なる文字列を渡して `card` を 2 回呼び出し、`html.main` の `children` 配列に並べてから `html.renderToString` で出力します。",
           "sourceRange": {
-            "startLine": 26,
-            "endLine": 26
+            "startLine": 10,
+            "endLine": 12
           }
         }
       ],
       "introduced": [
         {
-          "kind": "api",
-          "name": "dom.run",
-          "body": "dom.runはoptions、DomTarget、Action handler、Signal<Html<Action>>を受け取りbrowser lifetimeを管理します。"
+          "kind": "syntax",
+          "name": "関数コンポーネント",
+          "body": "`Html<Action>` を返す通常の純粋な関数です。戻り値がそのまま `Html` の値なので、親要素の `children` にそのまま並べられます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "引数（props）",
+          "body": "コンポーネントへ渡す表示データも通常の型付き引数として受け取ります。部分適用や型の検査も通常の関数と同じように働きます。"
         }
       ],
       "exercise": {
-        "instruction": "静的exerciseでbutton idかtextを変更し、mount前のHtml contractを確認してください。",
+        "instruction": "エディターの 10 行目にある `\"Welcome\"` を `\"Components\"` に、`\"Seseragi\"` を `\"Reusable UI\"` に書き換えて `Run` し、`Output` と `Preview` の表示が変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Query前のStringをtargetにする",
-        "body": "失敗例はDomTargetの代わりにselector Stringをdom.runへ渡します。"
+        "heading": "文字列の引数（props）に数値を渡す",
+        "body": "失敗例では `String` 型を期待する第 1 引数 `title` に数値 `42` を渡しています。コンポーネントの引数も通常の関数と同様に型が検査され、実行前にエラー表示が出ます。"
       },
       "recap": [
-        "dom.queryでselectorをDomTargetへ解決する。",
-        "dom.runへoptions、target、handler、contentを明示的に渡す。"
+        "関数コンポーネントは `Html<Action>` を返す純粋な関数であり、通常の関数呼び出しとして `children` の中に配置できる。",
+        "コンポーネントの引数（props）は通常の型付き引数として扱われ、型違いは実行前に検出される。"
       ],
       "next": {
         "lessonId": "web-typed-action",
-        "body": "次は複数Actionをmatchしてstateへ反映します。"
+        "body": "次はボタンクリックなどの操作を型付きの `Action` で表し、ハンドラーで `MutableSignal` を更新する方法を学びます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson128Exercise,
-    exerciseExpectedOutput: (lesson128ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson128Diagnostic,
-    diagnosticOutput: (lesson128DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson28Exercise,
+    exerciseExpectedOutput: (lesson28ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson28Diagnostic,
+    diagnosticOutput: (lesson28DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-typed-action",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-typed-action/main.ssrg",
-    source: lesson129Source,
+    source: lesson29Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson129Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson29Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "dom.runへ一つのAction handlerを渡しました。",
+      "prerequisite": "関数コンポーネントで静的な `Html` を組み立てられるようになりました。ここからはユーザーの操作を表す `Action` 型と `MutableSignal` による状態の更新を結びつけます。",
       "walkthrough": [
         {
-          "heading": "Action payloadをmatchする",
-          "body": "handleはDraftChangedのString payloadとClearedを分岐し、更新方法を一箇所へ集めます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 9
-          }
-        },
-        {
-          "heading": "MutableSignalへEffectとして反映する",
-          "body": "Actionを実行してからstateをreadし、pure viewへ渡す経路を上から追えます。",
-          "sourceRange": {
-            "startLine": 14,
-            "endLine": 27
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Typed Action handler",
-          "body": "ADT ActionはUI eventの種類とpayloadを閉じ、handlerのexhaustive matchからMutableSignalを更新します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Action constructorと更新値を変更し、stateへ届く経路を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Read-only Signalをhandlerで更新する",
-        "body": "失敗例はMutableSignalではなくSignalを更新targetにします。"
-      },
-      "recap": [
-        "UI eventはADT Actionへ変換してhandlerでmatchする。",
-        "MutableSignalの更新権限はhandlerへ閉じる。"
-      ],
-      "next": {
-        "lessonId": "web-accessibility-label",
-        "body": "次はformへlabelとARIA状態を追加します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson129Exercise,
-    exerciseExpectedOutput: (lesson129ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson129Diagnostic,
-    diagnosticOutput: (lesson129DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-accessibility-label",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/web-accessibility-label/main.ssrg",
-    source: lesson130Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson130Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Typed ActionをmatchしてMutableSignalへ反映しました。",
-      "walkthrough": [
-        {
-          "heading": "Labelとinputをidで結ぶ",
-          "body": "labelのhtmlForとinputのidを同じ値にし、visible labelから入力へ移動できる関係を作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 9
-          }
-        },
-        {
-          "heading": "状態をroleで伝える",
-          "body": "role=statusのpは、編集可能状態を支援技術へ伝えるlive status surfaceになります。",
-          "sourceRange": {
-            "startLine": 8,
-            "endLine": 11
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "label, htmlFor and role",
-          "body": "Visible label、matching id、状態に合うroleをtyped propsとして明示します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Label textとmatching id/htmlForを一緒に変更してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "HtmlForへIntを渡す",
-        "body": "失敗例はid参照StringへIntを渡します。"
-      },
-      "recap": [
-        "LabelのhtmlForとinput idを一致させる。",
-        "状態messageには意味に合うroleを付ける。"
-      ],
-      "next": {
-        "lessonId": "web-feature-state",
-        "body": "最後にcomponentとstateの所有境界をまとめます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson130Exercise,
-    exerciseExpectedOutput: (lesson130ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson130Diagnostic,
-    diagnosticOutput: (lesson130DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "web-feature-state",
-    challenge: "",
-    interactive: true,
-    sourcePath: "examples/tour/lessons/web-feature-state/main.ssrg",
-    source: lesson131Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: ("").replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Formへlabelとaccessibility statusを追加しました。",
-      "walkthrough": [
-        {
-          "heading": "Feature内へModelとActionを閉じる",
-          "body": "Model、Action、update、form componentは一つのfeature境界で定義され、入力・checkbox・submitをtyped state transitionへします。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 59
-          }
-        },
-        {
-          "heading": "MainだけがMutableSignalを所有する",
-          "body": "mainがstateを作り、handlerへMutableSignal、dom.runへderived Signal<Html<Action>>だけを渡します。",
-          "sourceRange": {
-            "startLine": 61,
-            "endLine": 64
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "component state ownership",
-          "body": "Feature内でMutableSignalの生成・handler・viewを接続し、componentはModelからHtmlを返すpure関数に保ちます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Pureなform componentのtitleとbutton textを変更してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Feature外のSignalから更新する",
-        "body": "失敗例はread-only Signalを更新し、ownership境界を越えようとします。"
-      },
-      "recap": [
-        "ComponentはModelからHtmlを返すpure関数に分ける。",
-        "MutableSignalはfeatureのmainとhandlerへ閉じ、runtimeへSignal<Html>を渡す。"
-      ],
-      "next": {
-        "lessonId": "applications-console-data",
-        "body": "次は既習概念を同じconsole applicationへ一段ずつ統合します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson131Exercise,
-    exerciseExpectedOutput: (lesson131ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson131Diagnostic,
-    diagnosticOutput: (lesson131DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-console-data",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-console-data/main.ssrg",
-    source: lesson132Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson132Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "個別lessonでStruct、Array、map、template、Effect出力を学びました。ここから同じsales reportへ概念を一つずつ足します。",
-      "walkthrough": [
-        {
-          "heading": "Step 1: reportのinput dataを固定する",
-          "body": "最初の差分は`Sale`と`sales`だけです。完成reportへ飛ばず、itemとamountを持つ三件の入力を一つのArrayとして定義します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        },
-        {
-          "heading": "各inputを確認できる形へする",
-          "body": "`render`で一件をStringへ変え、既習のmap・join・printlnで現在のinputをそのまま確認します。次stepはこのsourceへfilterと変換を加えます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "console capstone input step",
-          "body": "到達課題では既習surfaceを一度に詰め込まず、各stepが直前sourceへ加える差分を固定します。このstepの追加概念はapplication input dataだけです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceへSaleを一件追加し、input一覧のexpected outputが一行増えることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Input recordのfieldが足りない",
-        "body": "失敗例はSaleのamountを省略します。到達課題でも途中stepを単独compileし、data shapeの誤りをその場で直します。"
-      },
-      "recap": [
-        "Applicationのinput dataをStructとArrayで固定した。",
-        "このstepは変換やvalidationをまだ加えず、次stepとの差分を小さく保つ。",
-        "Tourは学習順と変更点を示し、Recipeは既習概念の目的別再利用、Showcaseは完成形の探索を担う。"
-      ],
-      "next": {
-        "lessonId": "applications-console-transform",
-        "body": "次は同じsales sourceへcollectionのfilterとmapを追加します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson132Exercise,
-    exerciseExpectedOutput: (lesson132ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson132Diagnostic,
-    diagnosticOutput: (lesson132DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-console-transform",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-console-transform/main.ssrg",
-    source: lesson133Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson133Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Step 1でSale inputとそのままの一覧出力を固定しました。",
-      "walkthrough": [
-        {
-          "heading": "Step 2の追加差分はpredicate",
-          "body": "前stepと同じSaleとsalesへ、amountが正の行だけを残す`completed`を追加します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        },
-        {
-          "heading": "Filterしてから表示へ変換する",
-          "body": "pipelineへ`arrays.filter completed`を一段足し、その後のmap・join・printlnは前stepの流れを保ちます。Cancelledだけがexpected outputから消えます。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "console capstone transformation step",
-          "body": "同じinputへfilterとmapを順に適用し、直前stepから増えたcollection処理をsourceとoutputの両方で確認します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "Predicateを1000以上へ変えた課題sourceをRunし、Bookだけが残ることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Filter predicateがBoolを返さない",
-        "body": "失敗例はIntを返す関数をfilterへ渡します。到達課題で組み合わせても各APIの型契約は変わりません。"
-      },
-      "recap": [
-        "Step 1のinputを保ったままfilterを一段追加した。",
-        "Collection変換の差分はCancelledが出力から消えることで確認できる。"
-      ],
-      "next": {
-        "lessonId": "applications-console-fallibility",
-        "body": "次は欠損をMaybe、validation失敗をEitherで扱います。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson133Exercise,
-    exerciseExpectedOutput: (lesson133ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson133Diagnostic,
-    diagnosticOutput: (lesson133DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-console-fallibility",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-console-fallibility/main.ssrg",
-    source: lesson134Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson134Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Step 2で同じsales inputをfilter・mapして表示しました。",
-      "walkthrough": [
-        {
-          "heading": "Step 3で欠損値をMaybeへする",
-          "body": "Optionalなcampaign名を`Maybe<String>`で保持します。現在はJustですが、Nothingでも同じreport shapeを保てます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        },
-        {
-          "heading": "Invalid inputをEitherへ残す",
-          "body": "amountが正なら`Right Sale`、取消行なら理由を持つ`Left String`を返し、失敗を捨てずreportの一行へします。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        },
-        {
-          "heading": "同じcollection pipelineへ型付き分岐を足す",
-          "body": "前stepのmap pipelineを保ち、campaignとvalidation結果を一つのreportへします。expected outputはMaybeの見出し、success二行、error一行を固定します。",
-          "sourceRange": {
-            "startLine": 7,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "console capstone fallibility step",
-          "body": "Maybeは値の欠損、Eitherはvalidationの成功または理由付き失敗を表し、application pipelineの途中でも型を保ちます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの0を正の値へ変え、Eitherのerror行がsuccess行へ変わることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "MaybeのNothingを扱わない",
-        "body": "失敗例はJustだけをmatchします。applicationへ組み込んだ後もADTの全caseを処理します。"
-      },
-      "recap": [
-        "Optional campaignはMaybeで、validation結果はEitherで保持した。",
-        "失敗行をfilterで捨てず、理由をexpected outputへ残した。"
-      ],
-      "next": {
-        "lessonId": "applications-console-output",
-        "body": "次はreport生成をpure関数へ閉じ、Effect境界で一度だけ出力します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson134Exercise,
-    exerciseExpectedOutput: (lesson134ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson134Diagnostic,
-    diagnosticOutput: (lesson134DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-console-output",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-console-output/main.ssrg",
-    source: lesson135Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson135Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Step 3でsalesの欠損とvalidation失敗をMaybe / Eitherの型に保ちました。",
-      "walkthrough": [
-        {
-          "heading": "Step 4でreport生成をpureに閉じる",
-          "body": "data、validate、renderをEffectから分け、`report`はArray<Sale>からStringを返すpure関数にします。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        },
-        {
-          "heading": "Application境界で一度だけ出力する",
-          "body": "`main`だけがreportをprintlnへ渡します。完成sourceでもpureな変換とEffectful outputの境界を上から追えます。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "console capstone output step",
-          "body": "完成したconsole到達課題はinput、collection変換、typed fallibilityをpure reportへまとめ、最後のmainだけでEffectを実行します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのArrayへ値を追加し、pure reportの結果がEffect境界から一度だけ出力されることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Effectful printlnをpure Stringへ入れる",
-        "body": "失敗例はprintlnのEffectをStringとして扱います。完成applicationでも出力はpure値と区別します。"
-      },
-      "recap": [
-        "四stepでinput、collection変換、typed fallibility、Effect outputを順に追加した。",
-        "各途中sourceは単独でcompile・実行でき、expected outputが差分を示す。",
-        "より目的別の変形はRecipe、統合済み完成例はShowcaseで探索する。"
-      ],
-      "next": {
-        "lessonId": "applications-web-static",
-        "body": "次はWeb UI到達課題をstatic viewからfeature ownershipまで段階的に積み上げます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson135Exercise,
-    exerciseExpectedOutput: (lesson135ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson135Diagnostic,
-    diagnosticOutput: (lesson135DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-web-static",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-web-static/main.ssrg",
-    source: lesson136Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson136Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Console到達課題を四stepで完成させました。Web UI側も同じPlan boardへ差分を一つずつ加えます。",
-      "walkthrough": [
-        {
-          "heading": "Web Step 1: static viewを固定する",
-          "body": "最初はstateやeventを入れず、heading、input、buttonを持つpureなHtml treeだけを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 10
-          }
-        },
-        {
-          "heading": "Expected Previewを単独で確認する",
-          "body": "renderToStringのHTML snapshotがこのstepのPreview契約です。次stepは見た目を変えずformをFunction componentへ分けます。",
-          "sourceRange": {
-            "startLine": 11,
-            "endLine": 11
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Web capstone static step",
-          "body": "Web到達課題も完成sourceを先に見せず、同じ小applicationへstatic viewから一概念ずつ追加します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのheadingを変更し、expected Previewへ反映されることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Void inputへchildrenを渡す",
-        "body": "失敗例はinputへchildrenを指定します。Capstoneでも各Html tagの既習契約を保ちます。"
-      },
-      "recap": [
-        "Plan boardのstatic Html treeとexpected Previewを固定した。",
-        "このstepにはSignal、event、Actionをまだ加えない。"
-      ],
-      "next": {
-        "lessonId": "applications-web-component",
-        "body": "次は同じformをFunction componentへ分割します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson136Exercise,
-    exerciseExpectedOutput: (lesson136ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson136Diagnostic,
-    diagnosticOutput: (lesson136DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-web-component",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-web-component/main.ssrg",
-    source: lesson137Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson137Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Web Step 1でPlan boardのstatic Html treeを固定しました。",
-      "walkthrough": [
-        {
-          "heading": "Web Step 2の差分はFunction component",
-          "body": "前stepのform subtreeを`planForm`へ移し、titleを引数で受け取ります。fieldやbuttonの構造は変えません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 8
-          }
-        },
-        {
-          "heading": "Pageはcomponentを組み立てる",
-          "body": "pageはplanFormの戻り値をchildrenへ置きます。Expected Previewが前stepと同じなので、分割が表示を変えていないことも確認できます。",
-          "sourceRange": {
-            "startLine": 10,
-            "endLine": 10
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Web capstone component step",
-          "body": "Static subtreeをpure functionへ切り出し、直前stepと同じPreviewを保ったままcomponent境界だけを追加します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのcomponent引数を変更し、headingのPreviewだけが変わることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Component propの型を間違える",
-        "body": "失敗例はString propへIntを渡します。Function componentも通常のtyped functionです。"
-      },
-      "recap": [
-        "Static formをplanForm componentへ分けた。",
-        "Component分割の前後でexpected Previewは同じまま保たれる。"
-      ],
-      "next": {
-        "lessonId": "applications-web-signal",
-        "body": "次は同じformのdraftをSignal stateから表示します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson137Exercise,
-    exerciseExpectedOutput: (lesson137ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson137Diagnostic,
-    diagnosticOutput: (lesson137DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-web-signal",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-web-signal/main.ssrg",
-    source: lesson138Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson138Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Web Step 2でstatic formをFunction componentへ分けました。",
-      "walkthrough": [
-        {
-          "heading": "Web Step 3でdraftをcomponent propにする",
-          "body": "planFormとpageへdraft Stringを渡し、input valueだけをstateから変えられる形にします。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 10
-          }
-        },
-        {
-          "heading": "Signal stateからderived Htmlを作る",
-          "body": "mainでMutableSignalを所有し、signals.map page stateでSignal<Html>を導出します。このstepはeventをまだ追加せず、現在値のPreviewだけを固定します。",
-          "sourceRange": {
-            "startLine": 15,
-            "endLine": 15
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Web capstone Signal step",
-          "body": "Componentのpureなviewを保ったまま、mainがSignal stateを所有してderived Htmlを作る差分だけを追加します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの初期draftを変更し、derived Htmlのexpected Previewへ反映されることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Read-only viewからstateを更新する",
-        "body": "失敗例はSignal<String>へsignals.setを使います。更新権限はMutableSignalを所有する境界へ残します。"
-      },
-      "recap": [
-        "Form componentのdraftをSignal stateから渡した。",
-        "State ownershipはmain、表示変換はpure componentへ分けた。"
-      ],
-      "next": {
-        "lessonId": "applications-web-form-event",
-        "body": "次は同じinputへtyped form eventを追加します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson138Exercise,
-    exerciseExpectedOutput: (lesson138ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson138Diagnostic,
-    diagnosticOutput: (lesson138DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-web-form-event",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-web-form-event/main.ssrg",
-    source: lesson139Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson139Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Web Step 3でcomponentをSignal stateから描画しました。",
-      "walkthrough": [
-        {
-          "heading": "Web Step 4の差分はInputEvent",
-          "body": "`DraftChanged String`とdraftActionを追加し、browser eventのvalue snapshotをtyped Actionへ変換します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        },
-        {
-          "heading": "同じinputへonInputだけを足す",
-          "body": "前stepのid、type、valueを保ち、onInputへdraftActionを追加します。Handlerは次stepまで実装せず、eventからActionまでを一段として固定します。",
-          "sourceRange": {
-            "startLine": 9,
-            "endLine": 14
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Web capstone form event step",
-          "body": "Browser eventを直接state mutationへせず、InputEvent snapshotからtyped Actionを作る差分だけを追加します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのinput idを変更し、event handlerを保ったままPreviewへ反映してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "OnInputへChangeEvent handlerを渡す",
-        "body": "失敗例はonInputへChangeEvent callbackを渡します。Event familyはtyped propと一致させます。"
-      },
-      "recap": [
-        "InputEventのvalueをDraftChanged Actionへ変換した。",
-        "このstepはeventを追加し、state handlerは次stepへ分けた。"
-      ],
-      "next": {
-        "lessonId": "applications-web-action",
-        "body": "次はTyped Actionをhandlerでstate更新へ接続します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson139Exercise,
-    exerciseExpectedOutput: (lesson139ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson139Diagnostic,
-    diagnosticOutput: (lesson139DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-web-action",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-web-action/main.ssrg",
-    source: lesson140Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson140Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Web Step 4でInputEventをDraftChanged Actionへ変換しました。",
-      "walkthrough": [
-        {
-          "heading": "Web Step 5でModelとAction transitionを定義する",
-          "body": "DraftChangedとSubmittedをpure updateでModelの次stateへ変換します。Event callbackとstate mutationを直接結びません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "HandlerだけへMutableSignalを渡す",
-          "body": "handleがsignals.updateでpure reducerを実行し、viewはModelからHtmlを返すpure componentのままです。",
+          "heading": "操作の種類を Action 型で表す",
+          "body": "5〜7 行目の `Action` は画面で起こる操作を表す代数的データ型です。文字の更新には文字列付きの `DraftChanged`、消去には値なしの `Cleared` を使います。",
           "sourceRange": {
             "startLine": 5,
-            "endLine": 8
-          }
-        },
-        {
-          "heading": "Action sequenceのPreviewを固定する",
-          "body": "mainで二Actionを順にdispatchし、draftとSaved statusが反映されたexpected Previewを確認します。",
-          "sourceRange": {
-            "startLine": 11,
-            "endLine": 19
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Web capstone Typed Action step",
-          "body": "Eventから作ったActionをpure reducerとeffectful handlerへ分け、state transitionをADTのcaseとして追えるようにします。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのChanged payloadを変え、handler後のSignal値へ反映されることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "存在しないAction caseをmatchする",
-        "body": "失敗例はActionにないMissing constructorを使います。Handlerは定義済みActionだけを処理します。"
-      },
-      "recap": [
-        "Typed Actionをpure updateとeffectful handlerへ接続した。",
-        "MutableSignalはhandlerへ閉じ、viewはModelからHtmlを返すpure関数に保った。"
-      ],
-      "next": {
-        "lessonId": "applications-web-validation",
-        "body": "次はSubmittedへvalidationとfailure表示を追加します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson140Exercise,
-    exerciseExpectedOutput: (lesson140ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson140Diagnostic,
-    diagnosticOutput: (lesson140DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-web-validation",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-web-validation/main.ssrg",
-    source: lesson141Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson141Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Web Step 5でTyped Actionをpure reducerとeffectful handlerへ接続しました。",
-      "walkthrough": [
-        {
-          "heading": "Web Step 6でtyped validationを足す",
-          "body": "Submitted時にvalidateを実行し、failure理由または保存値をEither<String, String>としてstatusTextへ渡します。",
-          "sourceRange": {
-            "startLine": 1,
             "endLine": 7
           }
         },
         {
-          "heading": "Failureとsuccessをstatusへ描画する",
-          "body": "statusTextがLeftとRightを両方処理し、結果をModelのstatusからrole=statusのHtmlへ表示します。Empty draftのexpected Previewはfailure行です。",
+          "heading": "handle で Action を分岐して状態を更新する",
+          "body": "9〜12 行目の `handle` は `MutableSignal` と `Action` を受け取り、`match` で全ケースを分岐して `signals.set` で状態を書き換えます。",
           "sourceRange": {
-            "startLine": 8,
-            "endLine": 13
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "Web capstone validation step",
-          "body": "Validation failureを例外や空文字へせずEitherで処理し、typed resultからaccessible status表示へ変換します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのvalidate引数を空文字へ変え、Saved表示がError表示へ変わることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Eitherのfailure caseを扱わない",
-        "body": "失敗例はRightだけをmatchします。UI failure表示でも全caseを処理します。"
-      },
-      "recap": [
-        "Submittedへtyped validationを追加した。",
-        "Failure理由をstatusへ変換し、role=statusのPreviewへ表示した。"
-      ],
-      "next": {
-        "lessonId": "applications-web-feature-ownership",
-        "body": "最後にfeature単位のstate ownershipと階層合成へ進みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson141Exercise,
-    exerciseExpectedOutput: (lesson141ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson141Diagnostic,
-    diagnosticOutput: (lesson141DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "applications-web-feature-ownership",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/applications-web-feature-ownership/main.ssrg",
-    source: lesson142Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson142Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Web Step 6で一つのformへtyped validationとfailure表示を追加しました。",
-      "walkthrough": [
-        {
-          "heading": "Web Step 7でstate ownershipをfeatureへ閉じる",
-          "body": "createFeatureがMutableSignalを内部で作り、外側へSignal<Html<Action>>だけを返します。PersonalとReleaseは別々のstateを所有します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 16
+            "startLine": 9,
+            "endLine": 12
           }
         },
         {
-          "heading": "Read-only feature outputを階層合成する",
-          "body": "Rootは二つのfeature stateを受け取らず、page <$> personal <*> releaseでSignal<Html>を合成します。",
+          "heading": "onClick と main で操作から描画までをつなぐ",
+          "body": "20 行目のボタンでは `onClick: Cleared` を指定します。24〜29 行目の `main` では `handle` を呼んでから現在値を読み取り、`view` を文字列化して出力します。",
           "sourceRange": {
-            "startLine": 29,
+            "startLine": 14,
             "endLine": 29
           }
         }
       ],
       "introduced": [
         {
+          "kind": "type",
+          "name": "Action 型",
+          "body": "ユーザーの操作を列挙する代数的データ型です。操作ごとに必要なデータだけを持たせ、不要な操作は値なしのコンストラクターで表せます。"
+        },
+        {
           "kind": "api",
-          "name": "Web capstone feature ownership step",
-          "body": "FeatureはMutableSignalを内部に閉じ、親へread-onlyなSignal<Html>を返します。Rootはfeature stateを平坦化せず、表示階層だけをApplicativeに合成します。"
+          "name": "onClick",
+          "body": "要素がクリックされたときに送信する `Action` の値を指定します。ブラウザーのイベントを直接触らずに操作を表せます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "ハンドラー（handle）",
+          "body": "`MutableSignal` と `Action` を受け取り、`match` ですべての操作を網羅的に処理して状態を更新する関数です。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceの二つのchild textを変え、pageの階層と順序が保たれることを確認してください。",
+        "instruction": "エディターの 26 行目にある `(DraftChanged \"Ada\")` を `Cleared` に書き換えて `Run` し、`Output` の段落が `<p>Empty</p>` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Feature外からread-only Signalを更新する",
-        "body": "失敗例は親へ公開したSignalをsignals.setへ渡します。更新権限はfeature ownership境界内に残します。"
+        "heading": "Action の分岐を書き忘れる",
+        "body": "失敗例では `handle` の `match` で `DraftChanged` だけを扱い、`Cleared` の分岐を書いていません。実行前に網羅性チェックが働き、`Problems` に不足ケースのエラー表示が出ます。"
       },
       "recap": [
-        "二つのfeatureがMutableSignalを別々に所有した。",
-        "親はSignal<Html>だけを受け取り、stateを平坦化せず階層合成した。",
-        "Tourは七stepの学習差分、Recipeは目的別の再利用、Showcaseは完成済みmulti-feature appの探索を担う。"
+        "クリックなどの操作は `Action` 型として表し、`onClick` へ対応するコンストラクターを渡す。",
+        "`handle` の `match` ですべての `Action` を網羅的に処理し、状態の更新を一箇所へ集める。",
+        "`MutableSignal` への更新権限はハンドラー側に閉じ、描画関数の `view` は純粋なまま保つ。"
+      ],
+      "next": {
+        "lessonId": "web-form-submit",
+        "body": "次はテキスト入力欄・チェックボックス・フォーム送信といった入力イベントを `Action` へ変換する方法を学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson29Exercise,
+    exerciseExpectedOutput: (lesson29ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson29Diagnostic,
+    diagnosticOutput: (lesson29DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-form-submit",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-form-submit/main.ssrg",
+    source: lesson30Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson30Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "ボタンのクリックを `Action` 型として受け取り、ハンドラーで処理できるようになりました。ここでは入力欄・チェックボックス・フォーム送信を `Action` へ変換します。",
+      "walkthrough": [
+        {
+          "heading": "onInput で入力文字列を Action へ包む",
+          "body": "9 行目の `draftAction` は `InputEvent` の `event.value` を読み取り、`DraftChanged` に包みます。DOM 要素そのものではなく、その時点の文字列だけを受け取れます。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 9
+          }
+        },
+        {
+          "heading": "onChange でチェック状態を安全に取り出す",
+          "body": "11〜14 行目の `pinnedAction` では `ChangeEvent` の `event.checked` を `match` で調べます。`Maybe<Bool>` 型なので、`Nothing` を `IgnoredChange` として安全に分岐できます。",
+          "sourceRange": {
+            "startLine": 11,
+            "endLine": 14
+          }
+        },
+        {
+          "heading": "onSubmit でフォーム送信を受け取る",
+          "body": "16〜28 行目では `html.form` に `onSubmit: Submitted` を指定し、`buttonType: \"submit\"` のボタンを配置します。送信時の既定の画面遷移を抑止して `Submitted` を送ります。",
+          "sourceRange": {
+            "startLine": 16,
+            "endLine": 30
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "onInput と InputEvent",
+          "body": "文字入力のたびに `InputEvent` を受け取る関数を指定します。`event.value` から変更後の文字列を取り出して `Action` を作れます。"
+        },
+        {
+          "kind": "api",
+          "name": "onChange と ChangeEvent",
+          "body": "チェック状態などの変更を受け取ります。`event.checked` は `Maybe<Bool>` 型なので、`match` で有無を確認して `Action` へ変換します。"
+        },
+        {
+          "kind": "api",
+          "name": "onSubmit",
+          "body": "フォーム送信時に発生させる `Action` を指定します。DOM 実行環境は処理の前にブラウザーの既定の画面遷移を抑止します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 26 行目にある送信ボタンの `\"Add\"` を `\"Save\"` に書き換えて `Run` し、`Output` と `Preview` のボタン表示が変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "onInput に別のイベント用ハンドラーを渡す",
+        "body": "失敗例では `InputEvent` を受け取るべき `onInput` に、`ChangeEvent` 用のハンドラー関数を渡しています。イベントの型が合わないため、実行前にエラー表示が出ます。"
+      },
+      "recap": [
+        "`onInput` は `InputEvent` の `event.value`、`onChange` は `ChangeEvent` の `event.checked` を受け取って `Action` に変換する。",
+        "`event.checked` は `Maybe<Bool>` 型のため、チェックボックス以外の変更も `match` で安全に扱える。",
+        "`onSubmit` は既定の画面遷移を抑止し、フォーム全体の送信を型付きの `Action` として扱う。"
+      ],
+      "next": {
+        "lessonId": "web-dom-run",
+        "body": "次は状態から `Signal<Html<Action>>` を導出し、`dom.query` と `dom.run` でブラウザーへマウントして動かします。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson30Exercise,
+    exerciseExpectedOutput: (lesson30ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson30Diagnostic,
+    diagnosticOutput: (lesson30DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-dom-run",
+    challenge: "",
+    interactive: true,
+    sourcePath: "examples/tour/lessons/web-dom-run/main.ssrg",
+    source: lesson31Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "クリックやフォーム送信などの操作を `Action` 型として扱い、ハンドラーで `MutableSignal` を更新する方法を学びました。ここでは画面を表す `Signal<Html<Action>>` を導出し、`dom.run` でブラウザーへマウントします。",
+      "walkthrough": [
+        {
+          "heading": "表示関数 view と更新関数 handle を分ける",
+          "body": "9〜17 行目の `view` は現在の数値から `Html<Action>` を返し、`handle` は `Increment` を受け取って `signals.update` で `state` を 1 増やします。",
+          "sourceRange": {
+            "startLine": 9,
+            "endLine": 17
+          }
+        },
+        {
+          "heading": "Signal<Html<Action>> とマウント先を準備する",
+          "body": "21 行目では `signals.map` に `view` と `state` を渡して画面用の `Signal` を作り、23 行目の `dom.query` で `\"#app\"` 要素を `DomTarget` として取得します。",
+          "sourceRange": {
+            "startLine": 19,
+            "endLine": 23
+          }
+        },
+        {
+          "heading": "dom.run でブラウザーにマウントして動かす",
+          "body": "24〜25 行目の `dom.run` へ設定・マウント先・ハンドラー・表示用 `Signal` を渡すと、`Preview` に描画されてクリックごとに表示が自動で更新されます。",
+          "sourceRange": {
+            "startLine": 24,
+            "endLine": 26
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Signal<Html<Action>>",
+          "body": "状態の `Signal` に純粋な表示関数を `signals.map` で適用して作る値です。元の状態が更新されるたびに最新の `Html` ツリーを表します。"
+        },
+        {
+          "kind": "api",
+          "name": "dom.query",
+          "body": "セレクター文字列からマウント先となる `DomTarget` を探す `Effect` です。要素が見つからない場合は失敗を型で返します。"
+        },
+        {
+          "kind": "api",
+          "name": "dom.run",
+          "body": "設定・`DomTarget`・ハンドラー・`Signal<Html<Action>>` を受け取り、描画・イベント処理・後片付けを 1 つの `Effect` として実行します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "まず `Run` を押し、`Preview` 上のボタンをクリックして `Count: 1` に増えることを試してください。次に下のボタンで静的確認用の課題コードを開き、ボタンの `id` や表示文字を書き換えて `Run` し、`Output` の変化を確かめてください（既定の課題コードでは下の期待結果が出ます）。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "DomTarget ではなく文字列を dom.run に渡す",
+        "body": "失敗例では `dom.query` を通さずに文字列 `\"#app\"` をそのまま `dom.run` に渡しています。マウント先には必ず `DomTarget` 型が必要なため、実行前にエラー表示が出ます。"
+      },
+      "recap": [
+        "`signals.map` で状態の `Signal` を表示用の `Signal<Html<Action>>` へ変換する。",
+        "`dom.query` でセレクター文字列からマウント先の `DomTarget` を安全に取得する。",
+        "`dom.run` に設定・`DomTarget`・ハンドラー・`Signal<Html<Action>>` を渡して対話的な画面を動かす。"
+      ],
+      "next": {
+        "lessonId": "applications-console-data",
+        "body": "次は到達課題へ進み、ここまで学んだデータ型・配列変換・失敗処理・`Effect` を小さなコンソールアプリケーションへ段階的にまとめます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson31Exercise,
+    exerciseExpectedOutput: (lesson31ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson31Diagnostic,
+    diagnosticOutput: (lesson31DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-console-data",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-console-data/main.ssrg",
+    source: lesson32Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson32Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "これまで `struct`・`Array`・パイプライン・`Either`・`Effect` を学んできました。ここではそれらを 1 つのコンソールアプリへ組み上げます。",
+      "walkthrough": [
+        {
+          "heading": "struct と Array で入力データを表す",
+          "body": "`Sale` 型で売上 1 件の構造を決め、3 件のデータを `Array<Sale>` 型の `sales` に並べています。金額が `0` の無効な明細も同じ一覧に含めます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 7
+          }
+        },
+        {
+          "heading": "Either で検証と表示の分岐を型に保つ",
+          "body": "`validate` は金額が正なら `Right`、0 以下なら理由付きの `Left` を返します。`render` は `match` で成功と失敗の両方を文字列へ変換します。",
+          "sourceRange": {
+            "startLine": 9,
+            "endLine": 15
+          }
+        },
+        {
+          "heading": "純粋なパイプラインと Effect 境界を分ける",
+          "body": "`report` は `validate`・`render`・`join` を縦のパイプラインでつなぐ純粋な関数です。最後の `main` だけがその結果を `println` へ渡し、副作用を入口に閉じ込めます。",
+          "sourceRange": {
+            "startLine": 17,
+            "endLine": 23
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "純粋な変換と Effect 境界の分離",
+          "body": "データの検証・整形・結合までを純粋な関数 `report` にまとめ、出力を行う `Effect`（`println`）は `main` だけで実行します。"
+        },
+        {
+          "kind": "api",
+          "name": "縦のパイプラインによる段階的変換",
+          "body": "`values` から `map validate`、`map render`、`join \"\\n\"` へとデータの型が `Sale`、`Either`、`String` の順に変わります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 5 行目にある `Pen` の `amount` を `600` から `900` に書き換えて `Run` し、`Output` の 2 行目が `Pen: 900` に変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "パイプラインの途中で検証を飛ばす",
+        "body": "失敗例では `validate` を通さずに `Array<Sale>` を直接 `map render` へ渡しています。`render` が求める `Either` と型が一致せず、実行前に `Problems` へエラー表示が出ます。"
+      },
+      "recap": [
+        "`struct` と `Array` で入力データの形を定義し、`Either` で検証失敗の理由も型として扱える。",
+        "変換や整形を純粋なパイプラインにまとめ、`Effect` の実行は `main` の境界だけに置ける。",
+        "1 つの機能ごとに試す `Tour` から、実用パターン集の `Recipe` や完成例の `Showcase` へとステップアップする構成になっています。"
       ],
       "next": {
         "lessonId": "14-integrated-app",
-        "body": "最後に既存のcompactなdom.app完成例を比較し、到達課題を終えます。"
+        "body": "次はコンソールからブラウザーへ舞台を移し、状態と操作を `dom.app` へつなぐ総合演習に進みます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson142Exercise,
-    exerciseExpectedOutput: (lesson142ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson142Diagnostic,
-    diagnosticOutput: (lesson142DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson32Exercise,
+    exerciseExpectedOutput: (lesson32ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson32Diagnostic,
+    diagnosticOutput: (lesson32DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "14-integrated-app",
-    challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
+    challenge: "Preview のボタンをクリックしてカウントが増えることを確かめたあと、エディターの 10 行目にある state.count + 1 を state.count + 2 に書き換えてもう一度 Run してください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson143Source,
-    guide: lesson143Guide,
+    source: lesson33Source,
+    guide: lesson33Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
@@ -8929,27 +2936,108 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/design-learning-map/main.ssrg",
-    source: lesson144Source,
+    source: lesson34Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson144Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson34Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Typed Action applicationまでを実行し、Tourのeditor・Run・Output・diagnosticを使いました。",
+      "prerequisite": "コンソールとブラウザーの総合演習まで終え、`Tour` の基本編を一通り学び終えました。ここでは学習を終えた後の広がり方を整理します。",
       "walkthrough": [
         {
-          "heading": "手を動かす教材と設計記事を分ける",
-          "body": "`LearningSurface`はTourとArticleの責務を値として並べます。Tourではcodeを実行し、Articlesでは背景とtrade-offを読みます。",
+          "heading": "3 つの次の進み方を値で表す",
+          "body": "`NextStep` 型は、実例を探す `Discover`、仕様や解説を読む `Docs`、発展編の `SideTrips` という 3 つの進路を並べています。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 8
+            "endLine": 10
           }
         },
         {
-          "heading": "Tourの続きとして抽象設計を学ぶ",
-          "body": "このchapterも通常のTour lessonです。editor・Run・exercise・diagnosticを使い、別のprogress modelは作りません。",
+          "heading": "deriving Show と縦のパイプラインでまとめる",
+          "body": "`deriving Show` を付けた `NextStep` を `show` で文字列にし、`map` と `join` を縦の `|>` でつないで一覧に整形しています。",
           "sourceRange": {
-            "startLine": 10,
+            "startLine": 12,
+            "endLine": 17
+          }
+        },
+        {
+          "heading": "Playground の各画面とドキュメントの役割",
+          "body": "応用例は `Discover` の `Recipe` と `Showcase`、仕様や背景は `seseragi-docs` と `Articles`、追加演習はこの先の 2 つの補足トラックへ分かれています。",
+          "sourceRange": {
+            "startLine": 19,
+            "endLine": 19
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Discover と公式ドキュメントの使い分け",
+          "body": "応用例を試すときは `Discover`（`Recipe`・`Showcase`）を、言語仕様や設計の背景を深く知りたいときは `seseragi-docs` と `Articles` を使います。"
+        },
+        {
+          "kind": "api",
+          "name": "本編の後に続く 2 つの補足トラック",
+          "body": "標準型クラスや抽象の法則を扱う補足トラック 1 と、コレクションやリンク・画像などの細目を扱う補足トラック 2 へ進めます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 7 行目にある `Discover` の説明を `\"Recipe を 1 つ試す\"` に書き換えて `Run` し、`Output` の 1 行目が変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "match で分岐を書き漏らす",
+        "body": "失敗例では `NextStep` の `SideTrips` に対応する分岐を省略しています。すべての選択肢を網羅していないため、実行前に `Problems` へ不足エラーが表示されます。"
+      },
+      "recap": [
+        "目的別の応用例は `Discover` の `Recipe` や `Showcase` からすぐ試せる。",
+        "言語仕様や設計理由の詳しい解説は、公式ドキュメントと `Articles` で読める。",
+        "さらに学びたい内容に合わせて、この先の 2 つの補足トラックへ進める。"
+      ],
+      "next": {
+        "lessonId": "abstraction-functor-map",
+        "body": "ここからは補足トラック 1 に進み、具体型で親しんだ `map` や `<$>` を `Functor` として整理します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson34Exercise,
+    exerciseExpectedOutput: (lesson34ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson34Diagnostic,
+    diagnosticOutput: (lesson34DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-functor-map",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-functor-map/main.ssrg",
+    source: lesson35Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson35Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`Array`・`List`・`Maybe`・`Either` で `map` や `<$>` をそれぞれ使ってきました。ここでは型ごとに共通する `Functor` という契約として整理します。",
+      "walkthrough": [
+        {
+          "heading": "変換関数と表示用ヘルパーを用意する",
+          "body": "`label` は `Int` を受け取り `String` を返す純粋な関数です。`Maybe` の中身を変換するときも、元のコンテナーを保ったままこの関数を適用できます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 6
+          }
+        },
+        {
+          "heading": "map と演算子で同じ変換を行う",
+          "body": "`map label source` と `label <$> source` はどちらも `Functor` が提供する同じ操作です。呼び出し側の型 `Maybe<Int>` から `Functor<Maybe>` の `instance` が選ばれ、`Maybe<String>` が返ります。",
+          "sourceRange": {
+            "startLine": 9,
+            "endLine": 11
+          }
+        },
+        {
+          "heading": "型が変わっても形を保つ仕組み",
+          "body": "`Maybe` が `Nothing` なら `Nothing` のまま、`Array` や `Either` ならそれぞれの構造を保ったまま中身だけが変換されます。`Output` には両方で同じ `Just Score 41` が出ます。",
+          "sourceRange": {
+            "startLine": 12,
             "endLine": 13
           }
         }
@@ -8957,115 +3045,554 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "introduced": [
         {
           "kind": "api",
-          "name": "Tour and Articles learning map",
-          "body": "Tourは実行して学ぶ場所、Articlesは設計理由と内部を読む場所です。"
+          "name": "Functor の共通契約",
+          "body": "`Functor<F<_>>` は `(A -> B) -> F<A> -> F<B>` の型を持つ `map`（演算子 `<$>`）を宣言し、各 `instance` がコンテナーの形を保ったまま中身を変換します。"
         }
       ],
       "exercise": {
-        "instruction": "二つのsurface説明を書き換え、役割を自分の言葉でOutputへ出してください。",
+        "instruction": "エディターの 1 行目にある `Score` を `Rank` に、9 行目の `Just 41` を `Just 7` に書き換えて `Run` し、`Output` の両方が `Just Rank 7` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Contextを要求するoperationへplain valueを渡す",
-        "body": "失敗例は`<$>`が要求するcontainerへIntを直接渡します。ここから先も境界をcompiler diagnosticで確認します。"
+        "heading": "Functor を実装しない値に演算子を使う",
+        "body": "失敗例では `Maybe` などではなく素の `Int` 値 `41` に `<$>` を適用しています。右側には `Functor` を実装した `F<A>` 型の値が必要なため、型の不一致としてエラー表示が出ます。"
       },
       "recap": [
-        "抽象設計の教材も通常のTour lessonとして実行する。",
-        "長文の背景・内部・trade-offはArticlesから関連Tourへ接続する。"
+        "`map f x` と `f <$> x` はどちらも `Functor` 型クラスの同じ操作を呼び出している。",
+        "`F` の部分が `Maybe`・`Either`・`Array`・`List` のどれであっても、対応する `instance` が選ばれる。",
+        "中身だけが変換され、コンテナー自身の形（`Nothing` や要素数など）は保たれる。"
       ],
       "next": {
-        "lessonId": "design-type-constructor-kinds",
-        "body": "次は通常のtype parameterと`F<_>`のkind差を実行します。"
+        "lessonId": "abstraction-applicative-apply",
+        "body": "次は `Maybe` で使った `apply` と `<*>` を、`Applicative` の共通契約として整理します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson144Exercise,
-    exerciseExpectedOutput: (lesson144ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson144Diagnostic,
-    diagnosticOutput: (lesson144DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson35Exercise,
+    exerciseExpectedOutput: (lesson35ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson35Diagnostic,
+    diagnosticOutput: (lesson35DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "design-type-constructor-kinds",
+    id: "abstraction-applicative-apply",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/design-type-constructor-kinds/main.ssrg",
-    source: lesson145Source,
+    sourcePath: "examples/tour/lessons/abstraction-applicative-apply/main.ssrg",
+    source: lesson36Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson145Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson36Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "`A`と`F<_>`を個別に使い、generic containerの形を保てます。",
+      "prerequisite": "`Maybe` で `map add left` の途中型を作り、`apply` を `<*>` に書き換えました。ここではその仕組みを `Applicative` の共通契約として見直します。",
       "walkthrough": [
         {
-          "heading": "完成した型と型constructorを分ける",
-          "body": "`A`はIntのような完成した型、`F<_>`はMaybeのように型を一つ受け取る型constructorです。",
+          "heading": "2 引数関数を 1 つ目の値に部分適用する",
+          "body": "`left` と `right` は互いに独立した `Maybe<Int>` です。カリー化された `add` を `left` へ `map` すると、残りの引数を受け取る関数が入った `Maybe<Int -> Int>` 型の `partial` ができます。",
+          "sourceRange": {
+            "startLine": 9,
+            "endLine": 12
+          }
+        },
+        {
+          "heading": "apply と演算子で 2 つ目の値を渡す",
+          "body": "`apply partial right` も `operatorPartial <*> right` も、箱に入った関数 `F<A -> B>` と箱に入った値 `F<A>` から `F<B>` を作る `Applicative` の操作です。`F` を `Maybe` 以外の型に置き換えても同じ形で書けます。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 15
+          }
+        },
+        {
+          "heading": "組み合わせの振る舞いは型ごとに決まる",
+          "body": "共通の型シグネチャは同じでも、実際の振る舞いは選ばれた `instance` ごとに異なります。`Maybe` はどちらかが `Nothing` なら `Nothing` を返し、`Array` や `List` では全要素の組み合わせが作られます。",
+          "sourceRange": {
+            "startLine": 16,
+            "endLine": 18
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Applicative の共通契約",
+          "body": "`Applicative<F<_>>` は `pure` と `apply`（演算子 `<*>`）を宣言し、独立した複数の `F<A>` 値を組み合わせて `F<B>` を作ります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 9 行目にある `Just 20` を `Just 30` に、10 行目の `Just 22` を `Just 15` に書き換えて `Run` し、3 つの `Output` がすべて `Just 45` に変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "関数ではない値を左辺に渡す",
+        "body": "失敗例では `<*>` の左辺に関数ではなく `Just 42` を置いています。左辺には `Maybe<Int -> Int>` のように関数を包んだ値が必要なため、型の不一致が報告されます。"
+      },
+      "recap": [
+        "`apply` と `<*>` はどちらも `Applicative` の同じ操作を表している。",
+        "カリー化された関数を `<$>` と `<*>` でつなぐと、独立した複数の値を簡潔に組み合わせられる。",
+        "型の枠組みは共通でも、実際の合成規則は型ごとの `instance` が決める。"
+      ],
+      "next": {
+        "lessonId": "abstraction-monad-bind",
+        "body": "次は前の結果に応じて次の処理を選ぶ `flatMap`・`>>=`・`do` を、`Monad` の共通契約として整理します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson36Exercise,
+    exerciseExpectedOutput: (lesson36ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson36Diagnostic,
+    diagnosticOutput: (lesson36DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-monad-bind",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-monad-bind/main.ssrg",
+    source: lesson37Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson37Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`Maybe` と `Effect` の両方で `flatMap`・`>>=`・`do` を使い、前の成功値に応じた連鎖を実行しました。ここではそれらを `Monad` の共通契約としてまとめます。",
+      "walkthrough": [
+        {
+          "heading": "次の文脈を返す関数を用意する",
+          "body": "`halfIfEven` と `decrementIfPositive` はどちらも `Int` を受け取り、普通の値ではなく次の `Maybe<Int>` を返します。前の結果次第で途切れる可能性があるため、`map` ではなく `Monad` の操作でつなぎます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "do ブロックで結果に名前を付けてつなぐ",
+          "body": "`viaDo` の中にある `current <- value` は、成功した値に名前を付けて次の処理へ渡す記法です。途中で `Nothing` になると、その後の行は実行されず全体の答えも `Nothing` になります。",
+          "sourceRange": {
+            "startLine": 12,
+            "endLine": 17
+          }
+        },
+        {
+          "heading": "flatMap と >>= と do は同じ連鎖を表す",
+          "body": "21〜22 行目の `flatMap`、23 行目の `>>=`、24 行目の `viaDo` は表現が違うだけで、どれも `M<A>` と `A -> M<B>` から `M<B>` を作る `Monad` の同じ操作です。`Maybe`・`Either`・`Effect`・`Array`・`List` はこの契約を実装しています。",
+          "sourceRange": {
+            "startLine": 20,
+            "endLine": 27
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Monad の共通契約",
+          "body": "`Monad<M<_>>` は `flatMap`（演算子 `>>=`）を提供し、前のステップの結果に依存して次の `M<B>` を選ぶ処理を連鎖させます。`do` 記法の `<-` もこの操作の読みやすい構文です。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 20 行目にある `Just 84` を `Just 7` に書き換えて `Run` し、`flatMap`・`>>=`・`do` の 3 つがすべて `Nothing` で止まることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "普通の値を返す関数を >>= に渡す",
+        "body": "失敗例では `>>=` の右側の関数が `Maybe<B>` ではなく素の `Int` を返しています。次の計算も失敗や分岐を表せる `Int -> Maybe<B>` 型を返す必要があるため、戻り型の不一致エラーになります。"
+      },
+      "recap": [
+        "`flatMap`・`>>=`・`do` ブロックの `<-` はすべて `Monad` の同じ連鎖操作を表している。",
+        "途中で `Nothing` や失敗（`Left`）が起きると、後続の処理をスキップして短絡する。",
+        "`Signal` のように依存した動的な連鎖を持たない型は `Monad` を実装しない。"
+      ],
+      "next": {
+        "lessonId": "abstraction-type-comparison",
+        "body": "次は同じ `Functor` の操作を `Maybe`・`Either`・`Array`・`List`・`Effect` で並べて実行し、それぞれの違いを比べます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson37Exercise,
+    exerciseExpectedOutput: (lesson37ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson37Diagnostic,
+    diagnosticOutput: (lesson37DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-type-comparison",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-type-comparison/main.ssrg",
+    source: lesson38Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson38Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`Functor`・`Applicative`・`Monad` の共通契約を `Maybe` で確認しました。ここでは同じ `Functor` の操作を 5 つの標準型で並べて実行します。",
+      "walkthrough": [
+        {
+          "heading": "変換関数と表示用ヘルパーを定義する",
+          "body": "`increment` は `Int` を 1 増やすだけの単純な関数です。これを `Maybe`・`Either`・`Array`・`List`・`Effect` のすべてに対してそのまま使い回します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 11
+          }
+        },
+        {
+          "heading": "同じ演算子を 5 種類の型へ並べて適用する",
+          "body": "どの行も同じ `increment <$>` という書き方ですが、渡した値に応じてそれぞれの `Functor` の `instance` が選ばれます。`Array` と `List` は全要素を変換し、`Effect` は実行されたときの成功値だけを変換します。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 24
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "複数型での共通比較",
+          "body": "同じ抽象操作 `<$>` を異なる型に適用しても、各型が持つ固有の形（不在・エラー・列・遅延計算）はそれぞれの `instance` によって正しく保たれます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 1 行目にある `value + 1` を `value * 2` に書き換えて `Run` し、5 つの型すべてで中の数値が 2 倍になりつつそれぞれの形が保たれることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "普通の数値に Functor の演算子を使う",
+        "body": "失敗例ではコンテナーではない `Int` 値の `42` に `<$>` を適用しています。`Functor` の `instance` を持たない型には使えないことがエラー表示からわかります。"
+      },
+      "recap": [
+        "`Maybe`・`Either`・`Array`・`List`・`Effect` はどれも同じ `increment <$>` で中身を変換できる。",
+        "型ごとに異なる `instance` が選ばれるため、それぞれの型の構造や振る舞いは保たれる。"
+      ],
+      "next": {
+        "lessonId": "abstraction-signal-contract",
+        "body": "次は `Signal` が `Functor` と `Applicative` を持つ一方で、`Monad` を持たない理由をコードで確かめます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson38Exercise,
+    exerciseExpectedOutput: (lesson38ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson38Diagnostic,
+    diagnosticOutput: (lesson38DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-signal-contract",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-signal-contract/main.ssrg",
+    source: lesson39Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson39Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "複数の標準型で `Functor` の操作を比べました。ここでは時間の経過で変化する `Signal` がどの型クラスを持ち、どれを持たないのかを確かめます。",
+      "walkthrough": [
+        {
+          "heading": "Signal の Functor と Applicative を使う",
+          "body": "`Signal` は `<$>` で値を変換した派生 `Signal` を作り、`<*>` で独立した複数の `Signal` を組み合わせられます。元の値が変化しても依存関係のグラフを保ったまま再計算されます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 10
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Signal が持たない Monad 契約",
+          "body": "`Signal` は `Functor` と `Applicative` の `instance` を持ちますが、前の値に応じて動的に別の `Signal` に切り替える `Monad` の `instance` は持ちません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 4 行目にある `20` を `10` に、7 行目の `value + 2` を `value + 5` に書き換えて `Run` し、`Output` が `Signal: 25` に変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Signal に >>= を使おうとする",
+        "body": "失敗例では `Signal` を `Monad` として `>>=` でつなごうとしています。`Monad<Signal>` の `instance` が存在しないため、実行前にエラー表示が出ます。"
+      },
+      "recap": [
+        "`Signal` の `<$>` と `<*>` は、時間変化する値の依存関係を保ったまま新しい `Signal` を導出する。",
+        "`Signal` には `Monad` の `instance` がなく、`>>=` で次の `Signal` を動的に選ぶことはできない。"
+      ],
+      "next": {
+        "lessonId": "signals-switch-map",
+        "body": "次は動的な切り替えが必要な場面で `>>=` の代わりに使う専用 API、`signals.switchMap` を学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson39Exercise,
+    exerciseExpectedOutput: (lesson39ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson39Diagnostic,
+    diagnosticOutput: (lesson39DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-switch-map",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-switch-map/main.ssrg",
+    source: lesson40Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson40Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "前のレッスンで、`Signal` が `Monad` の `>>=` を持たない設計上の境界を確かめました。ここでは現在値に応じて別の `Signal` へ明示的に切り替える `signals.switchMap` を学びます。",
+      "walkthrough": [
+        {
+          "heading": "signals.switchMap で切り替え先の Signal を返す",
+          "body": "6 行目の `signals.switchMap` は、元の `source` の現在値を受け取り、次に追跡したい別の `Signal` を返す関数を引数に取ります。汎用的な `>>=` ではなく、名前付きの専用 API として動的な切り替えを明示します。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 6
+          }
+        },
+        {
+          "heading": "元の Signal を更新して新しい切り替え先の結果を読む",
+          "body": "7〜11 行目では `selected` を `mirror` に購読したうえで 8 行目で `source` を `41` に更新し、切り替え後の新しい値 `42` を受け取っています。使い終えたら `signals.unsubscribe` で購読を解除します。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 11
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "signals.switchMap",
+          "body": "元の `Signal<A>` の値に応じて次に追跡する `Signal<B>` を返す関数 `A -> Signal<B>` を受け取り、動的に切り替わる `Signal<B>` を作ります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 8 行目にある `signals.set` の引数 `41` を `99` に書き換えて `Run` し、`Output` が `switchMap: 100` に変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Signal ではなく通常の値を返してしまう",
+        "body": "失敗例では `signals.switchMap` へ渡す関数が `Signal<Int>` ではなく通常の `Int` を返しています。切り替え先の `Signal` を返す必要があるため、実行前に `Problems` へエラー表示が出ます。"
+      },
+      "recap": [
+        "`signals.switchMap` は、元の値に応じて追跡先の `Signal` を動的に切り替える専用の関数である。",
+        "切り替え先を選ぶ関数は通常の値 `B` ではなく、次に追跡する `Signal<B>` を返す必要がある。"
+      ],
+      "next": {
+        "lessonId": "abstraction-impl-method",
+        "body": "次は型クラスではなく、特定の型自身に直接固有のメソッドを追加する `impl` ブロックの使い方を学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson40Exercise,
+    exerciseExpectedOutput: (lesson40ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson40Diagnostic,
+    diagnosticOutput: (lesson40DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-impl-method",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-impl-method/main.ssrg",
+    source: lesson41Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson41Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`signals.switchMap` のような専用の関数や、`trait`・`instance` による共通操作を学びました。ここからは、型クラスではなく特定の型自身に固有のメソッドを直接定義する `impl` を学びます。",
+      "walkthrough": [
+        {
+          "heading": "impl ブロックで固有のメソッドを定義する",
+          "body": "`impl<A> Box<A>` の中では、第 1 引数に `self: Box<A>` を取ってその型専用のメソッドを定義します。`trait` による共通操作とは異なり、特定の型に結びついた操作をまとめられます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        },
+        {
+          "heading": "ドット記法でメソッドを呼び出す",
+          "body": "`(box.map double).get` のように、`値.メソッド名` の形で呼び出せます。メソッド側が型パラメーター `<A>` と `<B>` を持っているため、`Box<Int>` の中身の型を保ったまま変換して取り出せます。",
+          "sourceRange": {
+            "startLine": 11,
+            "endLine": 18
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "impl と固有メソッド",
+          "body": "`impl 型名` ブロック内に第 1 引数が `self` の関数を書くと、その型に対して `.メソッド名` で呼び出せる固有の操作を定義できます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 16 行目にある `value: 21` を `value: 15` に書き換えて `Run` し、`Output` が `30` に変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "第 1 引数に self を書き忘れる",
+        "body": "失敗例では `impl<A> Box<A>` 内のメソッドで第 1 引数名を `self` にしていません。固有メソッドは必ず先頭で `self` を受け取る必要があるため、コンパイル時にエラー表示が出ます。"
+      },
+      "recap": [
+        "`impl` ブロックを使うと、型固有の操作をメソッドとして直接定義できる。",
+        "`impl` 内のメソッドは必ず第 1 引数を `self` とし、`値.メソッド名` で呼び出す。",
+        "型クラス（`trait`）は型をまたぐ共通操作、`impl` は特定の型専用の操作という役割分担になっている。"
+      ],
+      "next": {
+        "lessonId": "abstraction-custom-operator",
+        "body": "次は優先順位と結合性を持つ独自の二項演算子（`operator`）を定義する方法を学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson41Exercise,
+    exerciseExpectedOutput: (lesson41ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson41Diagnostic,
+    diagnosticOutput: (lesson41DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-custom-operator",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-custom-operator/main.ssrg",
+    source: lesson42Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson42Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`impl` による固有メソッドを通常の関数シグネチャとして読めるようになりました。ここでは独自の中置演算子を定義し、関数値としても使う方法を学びます。",
+      "walkthrough": [
+        {
+          "heading": "結合性と優先順位を決めて演算子を定義する",
+          "body": "`operator infixr 4 <+>` は、優先順位 `4`・右結合（`infixr`）の二項演算子 `<+>` を定義します。中身は 2 つの `String` を受け取って `String` を返す通常の関数と同じです。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 1
           }
         },
         {
-          "heading": "Parametricityでshapeを保つ",
-          "body": "`keepShape`はFの中身を観察できないため、受け取った`F<A>`を同じshapeで返します。",
+          "heading": "中置記法と括弧付きの関数値として使う",
+          "body": "10 行目のように `\"Sese\" <+> \"ragi\"` と中置演算子として呼べるだけでなく、11 行目のように `(<+>)` と括弧で囲むと通常の 2 引数関数として `applyJoin` に渡せます。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 12
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "独自演算子と結合性",
+          "body": "`operator` の後ろに `infixl` または `infixr`、優先順位、記号を並べて独自の二項演算子を定義します。定義した演算子は中置適用だけでなく `(記号)` の形で関数値としても扱えます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 10 行目にある `\"Sese\"` を `\"Kamo\"` に、11 行目の `\"Tour\"` を `\"Code\"` に書き換えて `Run` し、`Output` が `Kamoragi` と `Code!` に変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "宣言した戻り型と本体の型が合わない",
+        "body": "失敗例では戻り型を `Int` と宣言しながら、本体で `String` を返す `append` を書いています。独自演算子も通常の関数と同様に、宣言した型と本体の型が厳密に検査されます。"
+      },
+      "recap": [
+        "独自演算子も引数型と戻り型を持つ通常の関数として定義・型検査される。",
+        "`infixl`（左結合）・`infixr`（右結合）と優先順位によって、連続した演算子の解釈が決まる。",
+        "`(<+>)` のように括弧で囲めば、そのまま関数値として高階関数に渡せる。"
+      ],
+      "next": {
+        "lessonId": "design-type-constructor-kinds",
+        "body": "型クラスと演算子の基礎が揃いました。次の補足トラックでは、完成した型 `A` と型コンストラクター `F<_>` の種類の違いを起点に、抽象化の設計原則を掘り下げます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson42Exercise,
+    exerciseExpectedOutput: (lesson42ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson42Diagnostic,
+    diagnosticOutput: (lesson42DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "design-type-constructor-kinds",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/design-type-constructor-kinds/main.ssrg",
+    source: lesson43Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson43Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "これまで型パラメーター `<A>` と `<F<_>>` をそれぞれ使ってきました。ここでは型引数の数（kind）の違いが、どんな制約を作るのかを確かめます。",
+      "walkthrough": [
+        {
+          "heading": "完成した型と型コンストラクターを分ける",
+          "body": "`keepValue` の `A` は `Int` のような完成した型を受け取ります。一方 `keepShape` の `F<_>` は、`Maybe` や `Array` のように型引数を 1 つ取る型コンストラクターを受け取ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 8
+            "endLine": 3
+          }
+        },
+        {
+          "heading": "型パラメーターによる制約が形を保つ",
+          "body": "`keepShape` は `F` や `A` の中身を覗けないため、受け取った `F<A>` の外枠を変えずにそのまま返すことしかできません。`inspectShape` はその結果を縦のパイプラインで文字列化します。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 11
+          }
+        },
+        {
+          "heading": "同じ関数で異なる型の形を保つ",
+          "body": "`main` では `Maybe` と `Array` を同じ `inspectShape` に渡しています。どちらも元の構造が保たれたまま `Output` に出力されます。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 18
           }
         }
       ],
       "introduced": [
         {
           "kind": "type",
-          "name": "type constructor kind",
-          "body": "`F<_>`はkind `Type -> Type`を要求し、完成した型のkind `Type`と区別されます。"
+          "name": "型引数の数（kind）",
+          "body": "完成した型（`Int` など）は引数なしの `Type`、`Maybe` や `Array` のように型を 1 つ取る型コンストラクターは `Type -> Type` として区別されます。"
+        },
+        {
+          "kind": "type",
+          "name": "型パラメーターによる制約",
+          "body": "具体的な型を隠すほど関数に許される操作が減り、外側の形を壊さないという保証が強くなります。"
         }
       ],
       "exercise": {
-        "instruction": "Maybe payloadを変更し、`keepShape`がcontainerの形を保つことを確認してください。",
+        "instruction": "エディターの 16 行目にある `Just 42` を `Just 7` に、17 行目の `[1, 2, 3]` を `[7, 8]` に書き換えて `Run` し、`Output` がそれぞれの形を保ったまま変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "完成した型をtype constructor位置へ置く",
-        "body": "失敗例は`Container<F<_>>`へIntを渡し、kindの違いを示します。"
+        "heading": "型コンストラクターの位置に完成した型を書く",
+        "body": "失敗例では `Container<F<_>>` の `F` の位置に `Int` を渡しています。`Type -> Type` が必要な場所に `Type` を置いたため、型引数の数の不一致として `Problems` にエラー表示が出ます。"
       },
       "recap": [
-        "型parameterのarityはgeneric contractの一部である。",
-        "Parametricな実装は知らないcontainer shapeを勝手に変えられない。"
+        "型引数を受け取る数（kind）は、`A`（`Type`）と `F<_>`（`Type -> Type`）を分ける約束になっている。",
+        "型パラメーターによる制約により、中身を知らない関数は受け取った外側の形を勝手に変えられない。"
       ],
       "next": {
         "lessonId": "design-trait-evidence",
-        "body": "次はwhere制約を満たすTrait evidenceの選択を追います。"
+        "body": "次は `where` 制約を満たす実装の証拠（`instance`）がどのように選ばれ、なぜ一意性が必要なのかを確かめます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson145Exercise,
-    exerciseExpectedOutput: (lesson145ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson145Diagnostic,
-    diagnosticOutput: (lesson145DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson43Exercise,
+    exerciseExpectedOutput: (lesson43ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson43Diagnostic,
+    diagnosticOutput: (lesson43DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "design-trait-evidence",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/design-trait-evidence/main.ssrg",
-    source: lesson146Source,
+    source: lesson44Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson146Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson44Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Trait、instance、where制約を使ってgeneric functionを呼びました。",
+      "prerequisite": "ステップ 23 で `trait`・`instance`・`where` 制約を学びました。ここでは呼び出し側の型からどの実装が選ばれるかを掘り下げます。",
       "walkthrough": [
         {
-          "heading": "whereをevidence要求として読む",
-          "body": "`where Label<A>`はcall siteのAに対応するLabel instanceを選べることを要求します。",
+          "heading": "where 制約は実装の証拠を求める約束",
+          "body": "`describe` に付いた `where Label<A>` は、呼び出し側で型 `A` に対応する `Label` の実装（実装の証拠）が揃っていることを求める約束です。",
           "sourceRange": {
             "startLine": 7,
             "endLine": 19
           }
         },
         {
-          "heading": "Nominal identityでinstanceを選ぶ",
-          "body": "BadgeとDeviceは別のidentityを持つため、同じ`describe`から異なるdictionaryが一意に選ばれます。",
+          "heading": "型ごとの一意な名前で実装を選ぶ",
+          "body": "`Badge` と `Device` は別の型なので、同じ `describe` を呼んでもコンパイラがそれぞれの `instance` を一意に選んで実行します。",
           "sourceRange": {
             "startLine": 21,
             "endLine": 24
@@ -9075,115 +3602,128 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "introduced": [
         {
           "kind": "type",
-          "name": "Trait evidence and coherence",
-          "body": "Traitと型の組へ一つのinstanceを保つことで、generic callの意味を一意にします。"
+          "name": "実装の証拠",
+          "body": "`where` 制約を持つ関数を呼ぶとき、その型に対応する `instance` の実装がコンパイル時に証拠として渡されます。"
+        },
+        {
+          "kind": "type",
+          "name": "実装の一意性（coherence）",
+          "body": "1 つの `trait` と型の組に対して `instance` を 1 つだけに制限することで、どこから呼んでも同じ意味で動くことを保証します。"
         }
       ],
       "exercise": {
-        "instruction": "二つのinstanceのlabelを変更し、同じgeneric functionが別のevidenceを選ぶことを確認してください。",
+        "instruction": "エディターの 12 行目にある `\"badge\"` を `\"badge-ready\"` に、16 行目の `\"device\"` を `\"device-ready\"` に書き換えて `Run` し、同じ `describe` の出力が変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "標準instanceと重なるinstanceを定義する",
-        "body": "失敗例はsealedな`Functor<Maybe>`と重なり、coherence境界で拒否されます。"
+        "heading": "標準の実装と重複する instance を定義する",
+        "body": "失敗例では標準で用意された `Functor<Maybe>` に対して別の `instance` を書こうとしています。実装の一意性（coherence）を壊す重複定義のため、`Problems` にエラー表示が出ます。"
       },
       "recap": [
-        "where制約はgeneric functionが使うevidenceを要求する。",
-        "coherenceは同じTraitと型の組に複数の意味を持たせない。"
+        "`where` 制約は、呼び出し側の型に応じた実装の証拠が揃っていることをコンパイル時に求める。",
+        "実装の一意性（coherence）により、同じ `trait` と型の組に複数の実装が混ざるのを防げる。"
       ],
       "next": {
         "lessonId": "design-abstraction-laws",
-        "body": "次はFunctor・Applicative・Monadをoperationとlawで比較します。"
+        "body": "次は `Functor`・`Applicative`・`Monad` の強さの違いと、実装が守るべき法則をコードで確かめます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson146Exercise,
-    exerciseExpectedOutput: (lesson146ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson146Diagnostic,
-    diagnosticOutput: (lesson146DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson44Exercise,
+    exerciseExpectedOutput: (lesson44ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson44Diagnostic,
+    diagnosticOutput: (lesson44DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "design-abstraction-laws",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/design-abstraction-laws/main.ssrg",
-    source: lesson147Source,
+    source: lesson45Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson147Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson45Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Functorのmap、Applicativeのapply、Monadのbindを具体型で実行しました。",
+      "prerequisite": "`Functor` の `map`、`Applicative` の `apply`、`Monad` の `flatMap` を学びました。ここではそれぞれの強さと、実装が守るべき法則を確かめます。",
       "walkthrough": [
         {
-          "heading": "Operationの強さで抽象を並べる",
-          "body": "Functorはpure変換、Applicativeは独立したcontext、Monadは前の結果に依存する次のcontextを扱います。",
+          "heading": "操作の強さで抽象を選び分ける",
+          "body": "`Functor` は中身の純粋な変換、`Applicative` は独立した複数の値の組み合わせ、`Monad` は前の結果に依存する連鎖を扱います。依存がないなら弱い抽象に留めるのが設計の基本です。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 8
           }
         },
         {
-          "heading": "Lawの両辺を実行する",
-          "body": "identity・composition・homomorphism・associativityの両辺を評価し、同じ結果へ置換できることをOutputで確認します。",
+          "heading": "Eq と Show で一致をそのまま確かめる",
+          "body": "`report` は `Maybe<Int>` の `Eq`（`==`）で左辺と右辺が等しいかを比べ、`Show`（`show`）で値を文字列にして返します。専用の変換関数を手書きする必要はありません。",
           "sourceRange": {
-            "startLine": 19,
-            "endLine": 30
+            "startLine": 10,
+            "endLine": 11
+          }
+        },
+        {
+          "heading": "法則の両辺を並べて実行する",
+          "body": "恒等法則・合成法則・準同型性・結合法則の両辺をそれぞれ評価し、式を書き換えても同じ結果になることを `Output` で確かめています。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 25
           }
         }
       ],
       "introduced": [
         {
           "kind": "api",
-          "name": "Functor Applicative Monad laws",
-          "body": "Lawは同じ意味を保つ書き換えをinstance実装へ要求する契約です。"
+          "name": "Functor・Applicative・Monad の法則",
+          "body": "式の書き換え（合成のまとめ方や `do` 記法の展開など）の前後で結果が変わらないことを `instance` の実装に求める約束です。"
         }
       ],
       "exercise": {
-        "instruction": "入力値を変更し、すべてのlawの両辺が引き続き一致することを確認してください。",
+        "instruction": "エディターの 14〜15 行目にある `Just 20` を `Just 10` に書き換えて `Run` し、`Functor composition` の両辺が引き続き一致して `Just 22` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Monad bindのcallbackがplain valueを返す",
-        "body": "失敗例は`A -> M<B>`ではなく`A -> B`を渡し、desugaring後のcontract差を示します。"
+        "heading": "bind の関数が普通の値を返してしまう",
+        "body": "失敗例では `>>=` の右側の関数が `Maybe<B>` ではなく素の `Int` を返しています。次の計算結果も `Maybe` に包んで返す約束と一致しないため、`Problems` にエラー表示が出ます。"
       },
       "recap": [
-        "必要以上に強い抽象を選ばず、依存がなければApplicativeまでに留める。",
-        "Lawはoperatorやdoを含む書き換えの意味を支える。"
+        "前の結果に依存しない処理は `Functor` や `Applicative` に留め、必要以上に強い抽象を選ばない。",
+        "法則を満たす `instance` は、演算子や `do` 記法へ書き換えても同じ意味を保てる。"
       ],
       "next": {
         "lessonId": "design-trait-boundary",
-        "body": "最後に具体的な重複からTrait境界を切り出す判断を行います。"
+        "body": "次は独自の `trait` を作るときに、どのような境界で最小の操作を切り出すかを考えます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson147Exercise,
-    exerciseExpectedOutput: (lesson147ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson147Diagnostic,
-    diagnosticOutput: (lesson147DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson45Exercise,
+    exerciseExpectedOutput: (lesson45ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson45Diagnostic,
+    diagnosticOutput: (lesson45DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "design-trait-boundary",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/design-trait-boundary/main.ssrg",
-    source: lesson148Source,
+    source: lesson46Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson148Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson46Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Trait evidenceとlawがgeneric codeの置換可能性を支えることを確認しました。",
+      "prerequisite": "実装の証拠と法則が、型パラメーターを使ったコードの置き換えやすさを支えることを確かめました。",
       "walkthrough": [
         {
-          "heading": "Consumerが必要とする最小operationから始める",
-          "body": "`present`が必要とするのはAをStringへする`label`だけです。将来用のoperationをcontractへ足しません。",
+          "heading": "呼び出し側が求める最小の操作から始める",
+          "body": "`present` が必要としているのは、値 `A` を `String` に変える `label` 操作だけです。将来使いそうな余分な操作を `trait` に増やさないのが設計の要点です。",
           "sourceRange": {
             "startLine": 7,
             "endLine": 19
           }
         },
         {
-          "heading": "複数instanceで置換可能性を確かめる",
-          "body": "BadgeとDeviceを同じconsumerへ渡し、Label contractだけで両方を扱えることを実行します。",
+          "heading": "複数の実装で置き換えやすさを確かめる",
+          "body": "`Badge` と `Device` を同じ `present` へ渡し、`Label` の約束だけでどちらの型も問題なく扱えることを確かめています。",
           "sourceRange": {
             "startLine": 21,
             "endLine": 24
@@ -9193,30 +3733,540 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "introduced": [
         {
           "kind": "api",
-          "name": "minimal Trait boundary",
-          "body": "一つのconsumer、複数の具体instance、守るlawを説明できる最小operationだけをTraitへ出します。"
+          "name": "最小の trait 境界",
+          "body": "呼び出し側での共通の用途、複数の具体的な `instance`、守るべき法則を説明できる最小限の操作だけを `trait` に切り出します。"
         }
       ],
       "exercise": {
-        "instruction": "三つ目の型とLabel instanceを追加し、consumerを変更せず扱えることを確認してください。",
+        "instruction": "エディターの 5 行目の後ろに `type Account`（値 `Guest`）、17 行目の後ろにその `Label` 実装（`\"GUEST\"`）、23 行目の後ろに `present Guest` の出力を追加して `Run` し、`present` を変えずに `GUEST` が出ることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "同名methodだけで異なる意味を混ぜる",
-        "body": "失敗例はRenderとDescribeの`present`がambiguousになり、設計判断を省けないことを示します。"
+        "heading": "同じ名前だけで異なる意味を混ぜる",
+        "body": "失敗例では `Render` と `Describe` の両方に同名の `present` があるため、どちらを呼び出すか決まらず `Problems` に曖昧さのエラー表示が出ます。"
       },
       "recap": [
-        "同名methodや似たshapeだけを理由にTraitを作らない。",
-        "Consumer、複数instance、lawを説明できる最小contractを選ぶ。"
+        "メソッド名や形が似ているという理由だけで `trait` にまとめない。",
+        "呼び出し側・複数の `instance`・法則で説明できる最小の操作だけを `trait` の境界に選ぶ。"
+      ],
+      "next": {
+        "lessonId": "web-link-image",
+        "body": "これで抽象と型クラスの補足トラックは完了です。続いてもう 1 つの補足トラックへ進み、検証済み URL を使った画像とリンクの表示を学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson46Exercise,
+    exerciseExpectedOutput: (lesson46ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson46Diagnostic,
+    diagnosticOutput: (lesson46DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-link-image",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-link-image/main.ssrg",
+    source: lesson47Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson47Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "ここからは Web UI に関する補足レッスンです。`Html` の属性やコンポーネントの組み立て方を踏まえて、安全な URL 検証を伴う画像と外部リンクの扱いを学びます。",
+      "walkthrough": [
+        {
+          "heading": "html.parseWebUrl で安全な WebUrl を作る",
+          "body": "6〜12 行目の `parseUrl` は `html.parseWebUrl` で URL 文字列のスキームを検査し、安全な `WebUrl` 型へ変換します。危険な URL はこの段階で失敗として弾かれます。",
+          "sourceRange": {
+            "startLine": 6,
+            "endLine": 12
+          }
+        },
+        {
+          "heading": "html.img と html.a を並べて出力する",
+          "body": "13〜24 行目では `html.img` に代替テキストの `alt` とサイズ（`width`・`height`）を指定し、`html.a` に新しいタブを安全に開く `target` と `rel` を付けて描画します。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 25
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "WebUrl",
+          "body": "`html.parseWebUrl` で検証された安全な URL を表す型です。`html.img` の `src` や `html.a` の `href` には単なる文字列ではなくこの型が必要です。"
+        },
+        {
+          "kind": "api",
+          "name": "html.img と html.a",
+          "body": "画像要素とリンク要素を作ります。`html.img` は子要素を持たず `alt` が必須で、`html.a` には外部遷移の安全性のため `target` や `rel` を指定できます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 20 行目にある `\"Repository\"` を `\"Open Seseragi\"` に書き換えて `Run` し、`Output` のリンク文字が変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "html.img の src に生の文字列を渡す",
+        "body": "失敗例では `html.parseWebUrl` を通さずに、生の `String` を `html.img` の `src` に渡しています。`WebUrl` 型が求められるため、実行前にエラー表示が出ます。"
+      },
+      "recap": [
+        "画像やリンクに使う外部 URL は `html.parseWebUrl` で検証して `WebUrl` 型へ変換する。",
+        "`html.img` には意味の分かる `alt` と寸法を指定し、外部リンクの `html.a` には `rel: \"noopener\"` を添える。"
+      ],
+      "next": {
+        "lessonId": "web-accessibility-label",
+        "body": "次はフォームのラベル関連付けや状態表示など、アクセシビリティを保つ属性の付け方を学びます。"
+      },
+      "notes": [
+        "ツールバーの `•••` メニューから外部画像と通信を許可すると、`Preview` 上で実際の画像表示を確認できます。"
+      ]
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson47Exercise,
+    exerciseExpectedOutput: (lesson47ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson47Diagnostic,
+    diagnosticOutput: (lesson47DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-accessibility-label",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-accessibility-label/main.ssrg",
+    source: lesson48Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson48Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "画像と外部リンクの安全な扱いを学びました。ここではフォームの入力欄とラベルの関連付けや、状態メッセージを伝えるアクセシビリティ属性を学びます。",
+      "walkthrough": [
+        {
+          "heading": "html.label と入力欄を id で結びつける",
+          "body": "10〜11 行目では `html.label` の `htmlFor` と `html.input` の `id` に同じ `\"draft\"` を指定しています。これによりラベルをクリックして入力欄へ移動できるようになります。",
+          "sourceRange": {
+            "startLine": 8,
+            "endLine": 11
+          }
+        },
+        {
+          "heading": "role 属性で状態メッセージの役割を伝える",
+          "body": "12〜16 行目では `html.p` に `role: \"status\"` を付けて現在の状態を表示しています。支援技術が状態変化を読み取りやすくなり、最後は HTML 文字列として出力します。",
+          "sourceRange": {
+            "startLine": 12,
+            "endLine": 16
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "html.label と htmlFor",
+          "body": "入力欄の説明ラベルを作り、`htmlFor` に対象となる入力欄の `id` を指定して結びつけます。出力時には HTML の `for` 属性になります。"
+        },
+        {
+          "kind": "api",
+          "name": "role 属性",
+          "body": "要素が画面上で担う役割を示す属性です。更新結果や状態を知らせる領域には `role: \"status\"` を指定します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの 10〜11 行目にある `\"draft\"` を両方 `\"task\"` に、10 行目の `\"Plan name\"` を `\"Task title\"` に書き換えて `Run` し、`Output` の `for`・`id`・ラベル文字が揃って変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "htmlFor に数値を渡す",
+        "body": "失敗例では要素の `id` を文字列で指定するべき `htmlFor` に数値 `42` を渡しています。属性の型が合わないため、実行前にエラー表示が出ます。"
+      },
+      "recap": [
+        "`html.label` の `htmlFor` と入力欄の `id` を同じ文字列にして、見た目だけでなく構造上も関連付ける。",
+        "状態メッセージの領域には `role: \"status\"` のように役割に合った属性を付ける。"
+      ],
+      "next": {
+        "lessonId": "web-feature-state",
+        "body": "次はここまでのフォーム入力・アクセシビリティ・`Signal` を組み合わせ、機能単位で状態の所有権を閉じる構成を学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson48Exercise,
+    exerciseExpectedOutput: (lesson48ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson48Diagnostic,
+    diagnosticOutput: (lesson48DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-feature-state",
+    challenge: "",
+    interactive: true,
+    sourcePath: "examples/tour/lessons/web-feature-state/main.ssrg",
+    source: lesson49Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "ラベルや `role` 属性を付けたフォームを書けるようになりました。ここでは `Model`・`Action`・表示関数・`MutableSignal` を組み合わせ、機能単位で状態の更新権限を閉じ込めます。",
+      "walkthrough": [
+        {
+          "heading": "状態と純粋な遷移規則を機能単位でまとめる",
+          "body": "6〜21 行目ではフォームが持つ `Model`、操作を表す `Action`、初期値 `initial`、次の状態を計算する純粋な関数 `update` を定義しています。",
+          "sourceRange": {
+            "startLine": 6,
+            "endLine": 21
+          }
+        },
+        {
+          "heading": "画面部品は Model から Html を返す純粋な関数に保つ",
+          "body": "29〜59 行目の `form` と `page` は受け取った `Model` から `Html<Action>` を組み立てるだけで、内部で状態を直接書き換えたり保持したりしません。",
+          "sourceRange": {
+            "startLine": 29,
+            "endLine": 59
+          }
+        },
+        {
+          "heading": "main だけが MutableSignal を持ち、dom.run へ渡す",
+          "body": "61〜70 行目では `main` が `signals.make` で状態を作り、更新権限を `handle` の `signals.update` に閉じ込めます。`dom.run` へは `signals.map` で導出した読み取り専用の `Signal` を渡します。",
+          "sourceRange": {
+            "startLine": 61,
+            "endLine": 70
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "機能単位での状態の所有境界",
+          "body": "更新可能な `MutableSignal` の生成と書き換えを機能の入口とハンドラー内に閉じ、画面コンポーネントを純粋な関数のまま保つ構成です。"
+        },
+        {
+          "kind": "api",
+          "name": "signals.update",
+          "body": "現在の状態を受け取って次の状態を返す純粋な関数（ここでは `update action`）を渡し、`MutableSignal` を安全に更新します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "まず `Run` を押し、`Preview` で文字入力・`Pin` のチェック・`Save` の送信を試してください。次に下のボタンで静的確認用の課題コードを開き、`\"Owned feature\"` や `\"Save\"` を書き換えて `Run` し、`Output` の HTML が変わることを確かめてください（既定の課題コードでは下の期待結果が出ます）。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "読み取り専用の Signal を更新しようとする",
+        "body": "失敗例では更新権限を持たない `Signal<String>` を `signals.set` に渡しています。状態の書き換えが許可された場所だけに限られるため、実行前にエラー表示が出ます。"
+      },
+      "recap": [
+        "画面部品は `Model` から `Html<Action>` を返す純粋な関数に分け、状態の所有から切り離す。",
+        "`MutableSignal` は機能の入口と `handle` 内に閉じ、実行環境には導出した `Signal<Html<Action>>` だけを渡す。"
+      ],
+      "next": {
+        "lessonId": "list-values",
+        "body": "Web UI の補足トラックはこれで完了です。次の補足トラックでは連結リスト（`List`）やコレクションの細目を学べます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson49Exercise,
+    exerciseExpectedOutput: (lesson49ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson49Diagnostic,
+    diagnosticOutput: (lesson49DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "list-values",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/list-values/main.ssrg",
+    source: lesson50Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson50Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "連続配置で添字アクセスできる `Array` の基本を学びました。ここでは連結リスト型の `List` を作ります。",
+      "walkthrough": [
+        {
+          "heading": "バッククォート付き角括弧で List を作る",
+          "body": "`List<Int>` のリテラルは `` `[1, 2, 3] `` です。`Array` の `[1, 2, 3]` とは別の型として区別されます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "List",
+          "body": "先頭要素と残りの部分を共有しやすい、連結リスト型のコレクションです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `` `[1, 2, 3] `` を `` `[4, 5, 6] `` に書き換えて `Run` し、`List` の出力が変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Array を List に代入する",
+        "body": "失敗例ではバッククォートの付かない `[1, 2, 3]` を `List<Int>` 型の束縛へ置いています。リテラルの書き方を確認してください。"
+      },
+      "recap": [
+        "`List` リテラルはバッククォートの付いた角括弧で書く。",
+        "`List` と `Array` は異なるコレクション型として区別される。"
+      ],
+      "next": {
+        "lessonId": "list-decomposition",
+        "body": "次は `List` を先頭要素と残りのリストへ分解して読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson50Exercise,
+    exerciseExpectedOutput: (lesson50ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson50Diagnostic,
+    diagnosticOutput: (lesson50DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "list-decomposition",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/list-decomposition/main.ssrg",
+    source: lesson51Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson51Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`List` リテラルと `List` 型を書けるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "空のリストと先頭・残りのパターンで match する",
+          "body": "`` `[] `` は空の `List` に一致し、`` `[head, ...tail] `` は先頭要素 `head` と残りのリスト `tail` に一致します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 4
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "List パターン分解",
+          "body": "`List` 専用のパターンを使い、空のリストか先頭と残りの組かを安全に分解します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `` `[1, 2, 3] `` を `` `[9, 8, 7] `` に書き換えて `Run` し、先頭要素 `head` と残り `tail` の出力が変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Array パターンで List を受ける",
+        "body": "失敗例では `List` の値に対して、バッククォートの付かない `Array` パターンを書いています。対象の値とパターンの形を揃えてください。"
+      },
+      "recap": [
+        "`List` は空パターンと先頭・残りパターンで分解できる。",
+        "取り出した `tail` も元と同じ `List` 型になる。"
+      ],
+      "next": {
+        "lessonId": "collection-reduce-step",
+        "body": "次は `reduce` に渡すたたみ込み関数の引数の仕組みを詳しく見ます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson51Exercise,
+    exerciseExpectedOutput: (lesson51ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson51Diagnostic,
+    diagnosticOutput: (lesson51DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-reduce-step",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-reduce-step/main.ssrg",
+    source: lesson52Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson52Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "パイプラインで `reduce` を使って配列を集計できるようになりました。ここでは `reduce` に渡す計算関数の仕組みを詳しく見ます。",
+      "walkthrough": [
+        {
+          "heading": "途中の累積値と次の要素を受け取る",
+          "body": "`add total value` は、ここまでの累積値 `total` と次の要素 `value` を受け取り、新しい累積値を返す純粋関数です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "たたみ込み関数",
+          "body": "`reduce` に渡す関数は、第 1 引数に途中の累積値、第 2 引数に次の要素を受け取り、新しい累積値を返します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `add` を `multiply` に、`total + value` を `total * value` に書き換えて `Run` し、加算でも乗算でも同じ `Int -> Int -> Int` 型の関数になることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "戻り値の型をずらす",
+        "body": "失敗例では累積値の型が `Int` なのに `String` を返しています。入力の累積値と戻り値の型を揃えてください。"
+      },
+      "recap": [
+        "たたみ込み関数は、累積値と次の要素の 2 つの引数を受け取る。",
+        "関数の戻り値が、次の要素を処理するときの累積値になる。"
+      ],
+      "next": {
+        "lessonId": "collection-append-concat",
+        "body": "次は配列同士をつないだり、入れ子の配列を平らにしたりする操作を学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson52Exercise,
+    exerciseExpectedOutput: (lesson52ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson52Diagnostic,
+    diagnosticOutput: (lesson52DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-append-concat",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-append-concat/main.ssrg",
+    source: lesson53Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson53Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "たたみ込み関数の引数の並びと戻り値の役割を確認しました。ここでは複数の配列をつなぐ操作を見ます。",
+      "walkthrough": [
+        {
+          "heading": "後ろにつなぐ append と入れ子を平らにする concat",
+          "body": "`arrays.append` は後ろに別の配列をつなぎ、`arrays.concat` は配列の配列を 1 段平らに連結します。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 4
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "append と concat",
+          "body": "`append` は 2 つのコレクションをつなぎ、`concat` は入れ子になったコレクションを 1 段平らにした新しいコレクションを返します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `arrays.append [3, 4]` を `arrays.append [5, 6]` に、`[[1, 2], [3, 4]]` を `[[1], [2, 3], [4]]` に書き換えて `Run` し、`Output` の変化を確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "配列ではなく単一の要素を渡す",
+        "body": "失敗例では `arrays.append` に配列ではなく `Int` の値 `3` をそのまま渡しています。つなぐ値もコレクション型にしてください。"
+      },
+      "recap": [
+        "`append` は後ろに別のコレクションをつなぐ。",
+        "`concat` は 1 段入れ子になったコレクションを平らに連結する。"
+      ],
+      "next": {
+        "lessonId": "collection-comprehension",
+        "body": "次は要素の取り出し、絞り込み条件、変換の式を 1 つにまとめる内包表記を読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson53Exercise,
+    exerciseExpectedOutput: (lesson53ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson53Diagnostic,
+    diagnosticOutput: (lesson53DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-comprehension",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-comprehension/main.ssrg",
+    source: lesson54Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson54Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`map`、`filter`、`Range` の働きを理解しました。ここではそれらを 1 つの式にまとめる書き方を見ます。",
+      "walkthrough": [
+        {
+          "heading": "結果の式、取り出し元、絞り込み条件の順に読む",
+          "body": "`[value * value | value <- 1 ..= 4, value % 2 == 0]` は、`1 ..= 4` から偶数だけを取り出し、それぞれを 2 乗した新しい `Array` を作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "内包表記",
+          "body": "内包表記（comprehension）は、結果の式・値を取り出す元・省略可能な絞り込み条件を 1 つのコレクションリテラルにまとめます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `1 ..= 4` を `1 ..= 5` に、条件の `value % 2 == 0` を `value % 2 == 1` に書き換えて `Run` し、`Output` に奇数の 2 乗だけが残ることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "反復できない値を指定する",
+        "body": "失敗例では `Range` などのコレクションではなく `Int` の `42` を取り出し元に置いています。反復できるコレクションを渡してください。"
+      },
+      "recap": [
+        "`<-` の右側に置いたコレクションから要素を順番に取り出して束縛する。",
+        "カンマ後の条件を満たす要素だけが左側の結果の式へ進む。"
+      ],
+      "next": {
+        "lessonId": "empty-collections",
+        "body": "次は要素が 1 つもない空のコレクションを安全に扱う方法を確認します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson54Exercise,
+    exerciseExpectedOutput: (lesson54ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson54Diagnostic,
+    diagnosticOutput: (lesson54DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "empty-collections",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/empty-collections/main.ssrg",
+    source: lesson55Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson55Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "配列の連結や内包表記でコレクションを作れるようになりました。ここでは要素が 1 つもない空のコレクションの扱いを確認します。",
+      "walkthrough": [
+        {
+          "heading": "空でも結果が決まる操作を使う",
+          "body": "空の `Array` でも `arrays.length` は `0` を返し、`reduce` は要素がないときに初期値の `0` をそのまま返します。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 4
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "空のコレクション",
+          "body": "要素がない空のコレクションでも、長さを測る処理や初期値付きの `reduce` なら例外なく結果が決まります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、空の `Array` では初期値がそのまま結果になることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "要素の型が分からない空の配列",
+        "body": "失敗例では型注釈や使われる文脈のない空の `Array` `[]` だけを定義しています。`Array<Int>` のような型注釈を付けるか、要素型が決まる処理と組み合わせてください。"
+      },
+      "recap": [
+        "空のコレクションの `arrays.length` は `0` になる。",
+        "初期値付きの `reduce` は、コレクションが空でも安全に初期値を返す。",
+        "空のリテラル `[]` だけを単独で置くときは、型注釈で要素の型を示す。"
       ],
       "next": {
         "lessonId": null,
-        "body": "Tourはここで終わりです。設計背景と内部は関連記事から必要なtopicを選んで読めます。"
+        "body": "コレクションの細目はこれで完了です。本編の次のステップへ進みましょう。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson148Exercise,
-    exerciseExpectedOutput: (lesson148ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson148Diagnostic,
-    diagnosticOutput: (lesson148DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson55Exercise,
+    exerciseExpectedOutput: (lesson55ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson55Diagnostic,
+    diagnosticOutput: (lesson55DiagnosticOutput).replace(/\r?\n$/u, ""),
   }
 ]

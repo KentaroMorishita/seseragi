@@ -5,29 +5,32 @@
   "samples": [
     {
       "id": "html-components",
-      "identity": "warm document surface for static component and SSR",
-      "photoId": "photo-1497366811353-6870744d04b2",
+      "identity": "warm reading-notes shelf with SVG book covers",
+      "photoId": null,
       "photoGroup": "html-components",
-      "layoutMarkers": ["object-cover", "min-h-screen"],
+      "layoutMarkers": [
+        "repeat(auto-fill, minmax(240px, 1fr))",
+        "minHeight: \"100vh\""
+      ],
       "states": ["initial"],
       "artifacts": [
-        "docs/reviews/issue-190/visual/html-components-desktop.png",
-        "docs/reviews/issue-190/visual/html-components-iphone-390.png",
-        "docs/reviews/issue-190/visual/html-components-android-360.png"
+        "docs/reviews/issue-1376/visual/html-components-desktop.png",
+        "docs/reviews/issue-1376/visual/html-components-iphone-390.png",
+        "docs/reviews/issue-1376/visual/html-components-android-360.png"
       ]
     },
     {
       "id": "interactive-app",
-      "identity": "blue trail planner using dom.app",
-      "photoId": "photo-1441974231531-c6227db76b6e",
+      "identity": "warm trail-map planner with an SVG elevation profile per trail",
+      "photoId": null,
       "photoGroup": "trail-planner-comparison",
-      "layoutMarkers": ["object-cover", "min-h-screen"],
-      "states": ["initial", "riverside route"],
+      "layoutMarkers": ["svg.polyline", "minHeight: \"100vh\""],
+      "states": ["initial", "riverside trail", "ridge trail"],
       "artifacts": [
-        "docs/reviews/issue-190/visual/trail-planner-desktop.png",
-        "docs/reviews/issue-190/visual/trail-planner-riverside.png",
-        "docs/reviews/issue-190/visual/trail-planner-iphone-390.png",
-        "docs/reviews/issue-190/visual/trail-planner-android-360.png"
+        "docs/reviews/issue-1376/visual/trail-planner-desktop.png",
+        "docs/reviews/issue-1376/visual/trail-planner-riverside.png",
+        "docs/reviews/issue-1376/visual/trail-planner-iphone-390.png",
+        "docs/reviews/issue-1376/visual/trail-planner-android-360.png"
       ]
     },
     {
@@ -77,15 +80,16 @@
     },
     {
       "id": "web-starter",
-      "identity": "quiet indigo starter desk with one typed counter action",
-      "photoId": "photo-1499750310107-5fef28a66643",
+      "identity": "calm teal starter card that counts with one Signal",
+      "photoId": null,
       "photoGroup": "web-starter",
-      "layoutMarkers": ["objectFit: \"cover\"", "minHeight: \"100vh\""],
+      "layoutMarkers": ["placeItems: \"center\"", "minHeight: \"100vh\""],
       "states": ["initial", "incremented"],
       "artifacts": [
-        "docs/reviews/issue-368/visual/web-starter-desktop.png",
-        "docs/reviews/issue-368/visual/web-starter-iphone-390.png",
-        "docs/reviews/issue-368/visual/web-starter-android-360.png"
+        "docs/reviews/issue-1376/visual/web-starter-desktop.png",
+        "docs/reviews/issue-1376/visual/web-starter-incremented.png",
+        "docs/reviews/issue-1376/visual/web-starter-iphone-390.png",
+        "docs/reviews/issue-1376/visual/web-starter-android-360.png"
       ]
     },
     {
