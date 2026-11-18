@@ -1,3 +1,0 @@
-let result: Either<String, Int> = Right "forty-two"
-
-pub effect fn main = println "Either"

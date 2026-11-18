@@ -2,19 +2,10 @@ import { describe, expect, test } from "bun:test"
 import { tourLessons } from "../src/tour/curriculum"
 
 const fallibilityIds = [
-  "maybe-role",
-  "maybe-constructors",
   "maybe-match",
-  "maybe-default",
-  "maybe-map",
-  "maybe-combine",
   "maybe-short-circuit",
-  "either-role",
-  "either-constructors",
-  "either-match",
-  "either-map-error",
   "09-maybe-and-either",
-  "effect-failure-bridge",
+  "either-map-error",
 ] as const
 
 describe("Tour fallibility curriculum", () => {
@@ -22,17 +13,9 @@ describe("Tour fallibility curriculum", () => {
     const lessons = tourLessons.slice(12, 12 + fallibilityIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...fallibilityIds])
-    const redesigned = new Set([
-      "maybe-map",
-      "maybe-combine",
-      "maybe-short-circuit",
-      "either-map-error",
-    ])
-    expect(
-      lessons.every(({ id, deliveryIssue }) =>
-        redesigned.has(id) ? deliveryIssue === 262 : deliveryIssue === 176
-      )
-    ).toBe(true)
+    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 1348)).toBe(
+      true
+    )
     for (const [index, lesson] of lessons.entries()) {
       expect(lesson.prerequisites).toEqual([
         index === 0 ? "collection-pipeline" : fallibilityIds[index - 1]!,
@@ -57,35 +40,28 @@ describe("Tour fallibility curriculum", () => {
     }
   })
 
-  test("introduces Maybe and Either operators before the pure Effect bridge", () => {
-    const mapped = lessonById("maybe-map")
-    expect(mapped.source).toContain("map double (Just 21)")
-    expect(mapped.source).toContain("double <$> Just 21")
+  test("introduces Maybe and Either operations before the Effect chapter", () => {
+    const maybeMatch = lessonById("maybe-match")
+    expect(maybeMatch.source).toContain('primary ?? "Guest"')
+    expect(maybeMatch.source).toContain("match value {")
 
-    const combined = lessonById("maybe-combine")
-    expect(combined.source).toContain("apply partial right")
-    expect(combined.source).toContain("operatorPartial <*> right")
+    const combined = lessonById("maybe-short-circuit")
+    expect(combined.source).toContain("map double (Just 21)")
+    expect(combined.source).toContain("double <$> Just 21")
+    expect(combined.source).toContain("add <$> Just 20 <*> Just 22")
+    expect(combined.source).toContain("flatMap next input")
+    expect(combined.source).toContain("input >>= next")
+    expect(combined.source).toContain("missing >>= next")
 
-    const shortCircuit = lessonById("maybe-short-circuit")
-    expect(shortCircuit.source).toContain("let source: Maybe<Int> = Nothing")
-    expect(shortCircuit.source).toContain("flatMap")
-    expect(shortCircuit.source).toContain(">>= next")
-    expect(shortCircuit.expectedOutput.trim()).toBe(
-      "flatMap: Nothing / >>=: Nothing"
-    )
+    const compare = lessonById("09-maybe-and-either")
+    expect(compare.source).toContain("Maybe<String>")
+    expect(compare.source).toContain("Either<String, Int>")
 
     const either = lessonById("either-map-error")
     expect(either.source).toContain("map increment success")
     expect(either.source).toContain("increment <$> success")
     expect(either.source).toContain("increment <$> failure")
-
-    const bridge = lessonById("effect-failure-bridge")
-    expect(bridge.source).toContain(
-      'Either<String, Int> = Left "invalid value"'
-    )
-    expect(bridge.source).not.toContain("Effect<")
-    expect(bridge.source).not.toContain("fails ")
-    expect(bridge.source).not.toContain("with ")
+    expect(either.source).toContain("either.mapLeft")
   })
 })
 
