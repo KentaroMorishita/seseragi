@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "reason": "#1358 finishes the v2 shell: Search replaces the old dialogs and Explorer, tabs and Reset take the v2 look",
+  "reason": "The v2 stack takes main's rebuilt Web samples and adds Search, the v2 Tour, network consent and the first example (#1358, #1359, #1371)",
   "showcaseReviews": {
     "feature-composition": "2e5cd252f0cbfa5c791ef27268a6dae0523efa38abbf2c751d88b3d68f5d11ac",
     "form-todo": "5bcd1cdc1dca643937118b5356859cb3a38cab4f8cfcf1f542865777735dfa7a",
@@ -16,11 +16,11 @@
     "form-todo-desktop-invalid-submit-linux.png": "4b6ce092910e781bb2f8dc4d0facada10828b75dd6c441f9b7e0e7a5ee59f534",
     "form-todo-desktop-valid-submit-darwin.png": "822459c0faa0495f3a6980b05263d0543819cc42da831edb0c93cae4d39580e8",
     "form-todo-desktop-valid-submit-linux.png": "fdd6f845b4e9cb9d8faf6d365375493e25d5338c7891b23ddb12644072cf589a",
-    "html-components-desktop-initial-darwin.png": "d460a8f44c3376aa96423f518617648ef4d5a4165fe2ffa99a3eee2f6e304938",
+    "html-components-desktop-initial-darwin.png": "6cc163e9a3010ba1faa65f1e9d30e12465c833332a16697cb21fa2d45baef934",
     "html-components-desktop-initial-linux.png": "5b711d0f610ae2fc28007c99464165e9878f9be346850fedcac586a1d5dba527",
-    "html-components-iphone-390-initial-darwin.png": "b9bea1384d446d0fcb52b2c67f2e7d44bf40b40062b779defbf1b56f6bbbd776",
+    "html-components-iphone-390-initial-darwin.png": "1869b3e9a2e4a6f1341ebcba5833cc5220c99d4d7143312ac411f8070e11a1fa",
     "html-components-iphone-390-initial-linux.png": "916a57a01840fb3422819ee4db529674250585dc478090d53999b477f53c1da7",
-    "html-components-minimum-320-code-darwin.png": "229f6f0630da916eaaa12c3ce71d7c8302f2892e43b08f8fe8933d067b45f37c",
+    "html-components-minimum-320-code-darwin.png": "7ecca508d05366dbb2bf3ba080e6fbff8faab815395041759eb649c6f0ab5a42",
     "html-components-minimum-320-code-linux.png": "ed97eb0329f86119be36ef8f27ec6e65f047a41a0303d518f97e62a80477048a",
     "project-flow-app-desktop-day-studio-darwin.png": "927c9ac83343c4ad35fc6aa8e587e2ce5bff0d6944f26c213ed8bd6e120e5fdf",
     "project-flow-app-desktop-day-studio-linux.png": "809862406d4bd3dd9ce696877d3d8362063d2ac070daea566814c2e9266a871d",
