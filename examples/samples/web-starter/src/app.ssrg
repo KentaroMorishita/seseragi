@@ -2,102 +2,108 @@ import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
 
+// The page state. Add fields here as the app grows.
 pub struct StarterState { pub count: Int, }
 
 pub type StarterAction =
   | Increment
 
-let pageStyle = html.style {
-  backgroundColor: "#eef2ff",
-  color: "#1e1b4b",
-  minHeight: "100vh",
-  padding: "1px"
-}
-
-let cardStyle = html.style {
-  backgroundColor: "#ffffff",
-  borderRadius: "24px",
-  boxShadow: "0 18px 50px #312e8130",
-  margin: "64px auto",
-  maxWidth: "520px",
-  padding: "40px"
-}
-
-let buttonStyle = html.style {
-  backgroundColor: "#4f46e5",
-  borderRadius: "12px",
-  color: "#ffffff",
-  fontWeight: "700",
-  padding: "12px 18px"
-}
-
-let imageStyle = html.style {
-  borderRadius: "16px",
-  height: "auto",
-  objectFit: "cover",
-  width: "100%"
-}
-
 pub fn update action: StarterAction -> state: StarterState -> StarterState =
   match action {
-    Increment -> StarterState { count: state.count + 1 }
+    Increment -> StarterState { ...state, count: state.count + 1 }
   }
 
 fn dispatch state: MutableSignal<StarterState> -> action: StarterAction -> Task<Unit> =
   signals.update (update action) state
 
-fn eyebrow -> html.Html<Task<Unit>> = html.p { children: "SESERAGI WEB STARTER" }
-
-fn heading -> html.Html<Task<Unit>> = html.h1 { children: "Hello from Seseragi" }
-
-fn count current: StarterState -> html.Html<Task<Unit>> = html.p {
-  children: `Count: ${current.count}`
+// Named styles keep the view readable. Change the colors to make it yours.
+fn pageStyle -> html.Style = html.style {
+  background: "linear-gradient(180deg, #e7f4f2 0%, #f6f8f7 55%)",
+  color: "#10201d",
+  display: "grid",
+  fontFamily: "system-ui, -apple-system, \"Segoe UI\", sans-serif",
+  minHeight: "100vh",
+  placeItems: "center",
+  padding: "24px"
 }
 
-fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> = html.img {
-  src: imageUrl,
-  alt: "朝の光が差し込む静かな作業机",
-  style: imageStyle,
-  width: 960,
-  height: 480,
-  loading: "eager"
+fn cardStyle -> html.Style = html.style {
+  background: "#ffffff",
+  boxSizing: "border-box",
+  border: "1px solid #d9e6e3",
+  borderRadius: "24px",
+  boxShadow: "0 24px 60px -32px #0f3d3866",
+  maxWidth: "460px",
+  padding: "36px 32px",
+  width: "100%"
 }
 
-fn card imageUrl: html.WebUrl
-  -> state: MutableSignal<StarterState>
+fn eyebrowStyle -> html.Style = html.style {
+  color: "#0f766e",
+  fontSize: "12px",
+  fontWeight: "700",
+  letterSpacing: "0.14em",
+  margin: "0"
+}
+
+fn headingStyle -> html.Style = html.style {
+  fontSize: "32px",
+  fontWeight: "800",
+  letterSpacing: "-0.02em",
+  margin: "8px 0 0"
+}
+
+fn countStyle -> html.Style = html.style {
+  fontSize: "44px",
+  fontVariantNumeric: "tabular-nums",
+  fontWeight: "800",
+  margin: "24px 0 0"
+}
+
+fn buttonStyle -> html.Style = html.style {
+  background: "#0f766e",
+  border: "0",
+  borderRadius: "999px",
+  color: "#ffffff",
+  cursor: "pointer",
+  font: "inherit",
+  fontWeight: "700",
+  marginTop: "20px",
+  padding: "12px 22px"
+}
+
+fn hintStyle -> html.Style = html.style {
+  color: "#5b6b67",
+  fontSize: "14px",
+  lineHeight: "1.6",
+  margin: "20px 0 0"
+}
+
+fn view state: MutableSignal<StarterState>
   -> current: StarterState
-  -> html.Html<Task<Unit>> =
-  html.section {
-    style: cardStyle,
-    children: [
-      heroImage imageUrl,
-      eyebrow (),
-      heading (),
-      count current,
+  -> html.Html<Task<Unit>> = {
+    let parts: Array<html.Html<Task<Unit>>> = [
+      html.p { style: eyebrowStyle (), children: "SESERAGI WEB STARTER" },
+      html.h1 { style: headingStyle (), children: "Hello from Seseragi" },
+      html.p { style: countStyle (), children: `Count: ${current.count}` },
       html.button {
         buttonType: "button",
         onClick: dispatch state Increment,
-        style: buttonStyle,
+        style: buttonStyle (),
         children: "Count one more"
+      },
+      html.p {
+        style: hintStyle (),
+        children: "Edit src/app.ssrg and save. Run seseragi test to check update."
       }
     ]
+    html.main {
+      style: pageStyle (),
+      children: html.section { style: cardStyle (), children: parts }
+    }
   }
 
-fn view imageUrl: html.WebUrl
-  -> state: MutableSignal<StarterState>
-  -> current: StarterState
-  -> html.Html<Task<Unit>> =
-  html.main {
-    style: pageStyle,
-    children: card imageUrl state current
-  }
-
-effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
-  fromEither (html.parseWebUrl value)
-
-pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String = do {
-  imageUrl <- parsedUrl "https://images.unsplash.com/photo-1499750310107-5fef28a66643?fit=crop&w=960&h=480&q=80"
-    |> mapError (\error: html.HtmlBuildError -> show error)
-  state <- signals.make $ StarterState { count: 0 }
-  succeed $ signals.map (view imageUrl state) state
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails Never = do {
+  state <- signals.make (StarterState { count: 0 })
+  succeed (signals.map (view state) state)
 }
