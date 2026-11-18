@@ -1,8 +1,0 @@
-import * as html from "std/web/html"
-
-type Action =
-  | NoAction
-
-fn message -> html.Html<Action> = html.p { children: "Pure function" }
-
-pub effect fn main = message () |> html.renderToString |> println

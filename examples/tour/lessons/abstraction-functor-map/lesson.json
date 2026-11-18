@@ -1,1 +1,66 @@
-{"$schema":"../../lesson.schema.json","id":"abstraction-functor-map","formatVersion":2,"sections":{"prerequisite":"Array・List・Maybe・Eitherでnamed `map`を`<$>`へ書き換え、Traitのinstance選択も確認しました。","walkthrough":[{"heading":"具体型で使った同じ形を思い出す","body":"Collectionとfallibility章では、型ごとに`map f value`と`f <$> value`が同じ結果を作りました。ここではMaybe sourceでその形を再確認します。","sourceRange":{"startLine":5,"endLine":5}},{"heading":"型名をFへ置き換える","body":"`label`は`A -> B`、sourceは`F<A>`、resultは`F<B>`です。Maybe・Either・Array・Listで変わるのはFだけです。","sourceRange":{"startLine":1,"endLine":5}},{"heading":"Instanceが型ごとのshapeを決める","body":"同じmap contractを呼んでも、選ばれたFunctor instanceがNothingやLeft、Array、Listそれぞれのshapeを保ちます。","sourceRange":{"startLine":6,"endLine":6}},{"heading":"Named形とoperator形は共通contractを共有する","body":"`map`と`<$>`は新しい別operationではありません。具体型で既に使った二表記をFunctorという一つのTrait contractで回収します。","sourceRange":{"startLine":6,"endLine":6}}],"introduced":[{"kind":"api","name":"Functor共通contract","body":"Functorは具体型で使った`map` / `<$>`を`(A -> B) -> F<A> -> F<B>`として統一し、instanceがFごとのshapeを保ちます。"}],"exercise":{"instruction":"課題sourceの`rank`またはMaybe payloadを変更し、共通contractでもmapと<$>が同じ結果になることを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Functor instanceのない値をmapする","body":"失敗例はIntへ`<$>`を使います。右側にFunctor instanceを持つ`F<A>`が必要だとdiagnosticで確認します。"},"recap":["具体型で使ったmapと<$>はFunctorの同じoperationである。","共通型は(A -> B)・F<A>・F<B>で、instanceが型ごとのshapeを決める。"],"next":{"lessonId":"abstraction-applicative-apply","body":"次はMaybeで使ったapplyと<*>の途中型をApplicative contractとして回収します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "abstraction-functor-map",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`Array`・`List`・`Maybe`・`Either` で `map` や `<$>` をそれぞれ使ってきました。ここでは型ごとに共通する `Functor` という契約として整理します。",
+    "walkthrough": [
+      {
+        "heading": "変換関数と表示用ヘルパーを用意する",
+        "body": "`label` は `Int` を受け取り `String` を返す純粋な関数です。`Maybe` の中身を変換するときも、元のコンテナーを保ったままこの関数を適用できます。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 6
+        }
+      },
+      {
+        "heading": "map と演算子で同じ変換を行う",
+        "body": "`map label source` と `label <$> source` はどちらも `Functor` が提供する同じ操作です。呼び出し側の型 `Maybe<Int>` から `Functor<Maybe>` の `instance` が選ばれ、`Maybe<String>` が返ります。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 11
+        }
+      },
+      {
+        "heading": "型が変わっても形を保つ仕組み",
+        "body": "`Maybe` が `Nothing` なら `Nothing` のまま、`Array` や `Either` ならそれぞれの構造を保ったまま中身だけが変換されます。`Output` には両方で同じ `Just Score 41` が出ます。",
+        "sourceRange": {
+          "startLine": 12,
+          "endLine": 13
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "Functor の共通契約",
+        "body": "`Functor<F<_>>` は `(A -> B) -> F<A> -> F<B>` の型を持つ `map`（演算子 `<$>`）を宣言し、各 `instance` がコンテナーの形を保ったまま中身を変換します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 1 行目にある `Score` を `Rank` に、9 行目の `Just 41` を `Just 7` に書き換えて `Run` し、`Output` の両方が `Just Rank 7` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Functor を実装しない値に演算子を使う",
+      "body": "失敗例では `Maybe` などではなく素の `Int` 値 `41` に `<$>` を適用しています。右側には `Functor` を実装した `F<A>` 型の値が必要なため、型の不一致としてエラー表示が出ます。"
+    },
+    "recap": [
+      "`map f x` と `f <$> x` はどちらも `Functor` 型クラスの同じ操作を呼び出している。",
+      "`F` の部分が `Maybe`・`Either`・`Array`・`List` のどれであっても、対応する `instance` が選ばれる。",
+      "中身だけが変換され、コンテナー自身の形（`Nothing` や要素数など）は保たれる。"
+    ],
+    "next": {
+      "lessonId": "abstraction-applicative-apply",
+      "body": "次は `Maybe` で使った `apply` と `<*>` を、`Applicative` の共通契約として整理します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

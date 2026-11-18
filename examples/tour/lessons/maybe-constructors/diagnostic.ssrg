@@ -1,3 +1,0 @@
-let available: Maybe<Int> = Just "forty-two"
-
-pub effect fn main = println "Maybe"

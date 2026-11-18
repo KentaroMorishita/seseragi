@@ -1,6 +1,7 @@
-pub type StepError =
+pub type StepError deriving Show =
   | Rejected
 
-fn stop value: StepError -> Unit = fail value
+effect fn requirePositive count: Int -> Int =
+  if count > 0 then succeed count else fail Rejected
 
-pub effect fn main = println "failure"
+pub effect fn main = println "fails"

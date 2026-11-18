@@ -1,6 +1,6 @@
-examples/tour/lessons/effect-pure-vs-effect/diagnostic.ssrg:1:39: error[SES-T0101]: Expression type does not match the expected type
-  | fn announce message: String -> Unit = println message
-  |                                       ^^^^^^^^^^^^^^^ declared Unit, body produces Effect<{ console: Console }, ConsoleError, Unit>
+examples/tour/lessons/effect-pure-vs-effect/diagnostic.ssrg:1:36: error[SES-T0101]: Expression type does not match the expected type
+  | fn announce name: String -> Unit = println name
+  |                                    ^^^^^^^^^^^^ declared Unit, body produces Effect<{ console: Console }, ConsoleError, Unit>
   = expected: Unit
   = actual: Effect<{ console: Console }, ConsoleError, Unit>
   = diff: expected Unit, actual Effect<{ console: Console }, ConsoleError, Unit>

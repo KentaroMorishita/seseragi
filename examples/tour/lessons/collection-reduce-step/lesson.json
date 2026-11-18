@@ -1,1 +1,49 @@
-{"$schema":"../../lesson.schema.json","id":"collection-reduce-step","formatVersion":2,"sections":{"prerequisite":"各要素を変換し、条件で残す操作を分けて書けるようになりました。","walkthrough":[{"heading":"Accumulatorと次の要素を受け取る","body":"`add total value`は現在のtotalと次のvalueから新しいtotalを返すpure functionです。","sourceRange":{"startLine":1,"endLine":1}}],"introduced":[{"kind":"api","name":"reducer step","body":"reducer stepはaccumulatorを先、次の要素を後に受け取り、新しいaccumulatorを返します。"}],"exercise":{"instruction":"課題sourceのstepを加算から乗算へ変え、二parameterの役割を保ってください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"戻り型を変える","body":"失敗例ではInt accumulatorにStringを返します。stepの入力と戻り型を揃えてください。"},"recap":["stepはaccumulatorと次の要素を受け取る。","stepのresultが次のaccumulatorになる。"],"next":{"lessonId":"collection-reduce","body":"次はinitial value、step、collectionをreduceへ渡します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "collection-reduce-step",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "パイプラインで `reduce` を使って配列を集計できるようになりました。ここでは `reduce` に渡す計算関数の仕組みを詳しく見ます。",
+    "walkthrough": [
+      {
+        "heading": "途中の累積値と次の要素を受け取る",
+        "body": "`add total value` は、ここまでの累積値 `total` と次の要素 `value` を受け取り、新しい累積値を返す純粋関数です。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "たたみ込み関数",
+        "body": "`reduce` に渡す関数は、第 1 引数に途中の累積値、第 2 引数に次の要素を受け取り、新しい累積値を返します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの `add` を `multiply` に、`total + value` を `total * value` に書き換えて `Run` し、加算でも乗算でも同じ `Int -> Int -> Int` 型の関数になることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "戻り値の型をずらす",
+      "body": "失敗例では累積値の型が `Int` なのに `String` を返しています。入力の累積値と戻り値の型を揃えてください。"
+    },
+    "recap": [
+      "たたみ込み関数は、累積値と次の要素の 2 つの引数を受け取る。",
+      "関数の戻り値が、次の要素を処理するときの累積値になる。"
+    ],
+    "next": {
+      "lessonId": "collection-append-concat",
+      "body": "次は配列同士をつないだり、入れ子の配列を平らにしたりする操作を学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

@@ -1,1 +1,57 @@
-{"$schema":"../../lesson.schema.json","id":"abstraction-type-comparison","formatVersion":2,"sections":{"prerequisite":"Functor、Applicative、MonadをMaybeで使いました。","walkthrough":[{"heading":"同じmapを異なるshapeへ使う","body":"同じ`increment <$> value`がMaybe・Either・Array・List・Effectそれぞれのshapeを保ちます。","sourceRange":{"startLine":1,"endLine":11}}],"introduced":[{"kind":"api","name":"cross-type abstraction comparison","body":"Trait operationは型ごとのinstanceを通して同じsource表現を異なるdata shapeへ適用します。"}],"exercise":{"instruction":"課題sourceの変換またはMaybe payloadを変え、shapeとpayloadのどちらが変わるか確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Instanceのない型へFunctor operationを使う","body":"失敗例はcontainerではないIntをmapします。instanceがある型との差を確認します。"},"recap":["同じFunctor operationでも各instanceが保つshapeは異なる。","Maybe・Either・Array・List・Effectは同じ抽象表現で比較できる。"],"next":{"lessonId":"abstraction-signal-contract","body":"次はSignalが持つFunctor・Applicativeと持たないMonadを区別します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "abstraction-type-comparison",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`Functor`・`Applicative`・`Monad` の共通契約を `Maybe` で確認しました。ここでは同じ `Functor` の操作を 5 つの標準型で並べて実行します。",
+    "walkthrough": [
+      {
+        "heading": "変換関数と表示用ヘルパーを定義する",
+        "body": "`increment` は `Int` を 1 増やすだけの単純な関数です。これを `Maybe`・`Either`・`Array`・`List`・`Effect` のすべてに対してそのまま使い回します。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 11
+        }
+      },
+      {
+        "heading": "同じ演算子を 5 種類の型へ並べて適用する",
+        "body": "どの行も同じ `increment <$>` という書き方ですが、渡した値に応じてそれぞれの `Functor` の `instance` が選ばれます。`Array` と `List` は全要素を変換し、`Effect` は実行されたときの成功値だけを変換します。",
+        "sourceRange": {
+          "startLine": 13,
+          "endLine": 24
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "複数型での共通比較",
+        "body": "同じ抽象操作 `<$>` を異なる型に適用しても、各型が持つ固有の形（不在・エラー・列・遅延計算）はそれぞれの `instance` によって正しく保たれます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 1 行目にある `value + 1` を `value * 2` に書き換えて `Run` し、5 つの型すべてで中の数値が 2 倍になりつつそれぞれの形が保たれることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "普通の数値に Functor の演算子を使う",
+      "body": "失敗例ではコンテナーではない `Int` 値の `42` に `<$>` を適用しています。`Functor` の `instance` を持たない型には使えないことがエラー表示からわかります。"
+    },
+    "recap": [
+      "`Maybe`・`Either`・`Array`・`List`・`Effect` はどれも同じ `increment <$>` で中身を変換できる。",
+      "型ごとに異なる `instance` が選ばれるため、それぞれの型の構造や振る舞いは保たれる。"
+    ],
+    "next": {
+      "lessonId": "abstraction-signal-contract",
+      "body": "次は `Signal` が `Functor` と `Applicative` を持つ一方で、`Monad` を持たない理由をコードで確かめます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

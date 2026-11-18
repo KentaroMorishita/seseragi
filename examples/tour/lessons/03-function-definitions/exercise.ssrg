@@ -1,3 +1,7 @@
-fn greeting -> String = "Ready to define functions"
+fn add left: Int -> right: Int -> Int = left + right
 
-pub effect fn main = println "greeting: Unit -> String"
+let add20 = add 20
+let first = add 10 20
+let second = add20 22
+
+pub effect fn main = println `first: ${first}, second: ${second}`

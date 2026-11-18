@@ -100,7 +100,7 @@ test("renders every guide safely at mobile width", async ({
   const tourGuide = page.locator("#tour-walkthrough")
   await expect(page.getByRole("heading", { name: "Walkthrough" })).toBeVisible()
   await expect(
-    tourGuide.getByText("struct Profile", { exact: true })
+    tourGuide.getByText("struct Customer", { exact: true })
   ).toBeVisible()
   expect(
     await tourGuide.evaluate(

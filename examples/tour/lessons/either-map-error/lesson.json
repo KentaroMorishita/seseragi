@@ -1,1 +1,74 @@
-{"$schema":"../../lesson.schema.json","id":"either-map-error","formatVersion":2,"sections":{"prerequisite":"EitherをmatchしてLeftとRightを取り出せるようになりました。Maybeではmapと<$>がsuccess payloadだけを変換しました。","walkthrough":[{"heading":"Right payloadをnamed mapする","body":"`map increment success`はRight 41だけをRight 42へ変換し、Eitherのerror型とshapeを保ちます。","sourceRange":{"startLine":1,"endLine":3}},{"heading":"Eitherでも<$>へ書き換える","body":"`increment <$> success`は同じFunctor operationです。failureへ適用するとLeft理由を変更せず保ちます。","sourceRange":{"startLine":3,"endLine":5}},{"heading":"Error側は明示的に別変換する","body":"tagErrorはLeft StringだけをErrorInfoへ変え、Right Intをそのまま保ちます。success mapとerror mapの対象を混ぜません。","sourceRange":{"startLine":3,"endLine":3}},{"heading":"Right変換とLeft保持を出力で比べる","body":"Named形とoperator形はRight 42で一致し、Leftは変換されず、明示したtagErrorだけがerror型を変えます。","sourceRange":{"startLine":5,"endLine":8}}],"introduced":[{"kind":"api","name":"Either success mapと<$>","body":"Eitherのmapと<$>はRight payloadだけを変換し、Leftを保ちます。Error側の変換は別の明示operationです。"}],"exercise":{"instruction":"課題sourceのdoubleまたはRight payloadを変え、mapと<$>が一致し、tagErrorだけがLeft理由を変えることを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Right valueをerror型へ混ぜる","body":"失敗例ではRight armへErrorInfoを返します。success型を保ってください。"},"recap":["Eitherのmapと<$>はRight payloadだけを変換する。","Leftはそのまま保たれ、error型の変換は明示的に分ける。"],"next":{"lessonId":"09-maybe-and-either","body":"次はMaybeとEitherを情報量で使い分けます。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "either-map-error",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`Either` で失敗理由と成功値を表し、`match` で分岐できるようになりました。ここでは値を保ったまま成功値や失敗理由の形を変換します。",
+    "walkthrough": [
+      {
+        "heading": "map と <$> で成功値だけを変換する",
+        "body": "16〜18 行目の `map` と `<$>` は、`Right` の値だけに `increment` を適用します。`Left` の場合は関数を呼ばず、元の失敗理由をそのまま保ちます。",
+        "sourceRange": {
+          "startLine": 16,
+          "endLine": 18
+        }
+      },
+      {
+        "heading": "either.mapLeft で失敗理由の型を揃える",
+        "body": "19〜20 行目の `either.mapLeft` は、`Right` には触れず `Left` の失敗理由だけを `toErrorInfo` で `ErrorInfo` 型に変換します。",
+        "sourceRange": {
+          "startLine": 19,
+          "endLine": 20
+        }
+      },
+      {
+        "heading": "純粋な値のうちにエラーの形を統一する",
+        "body": "ここではまだ `Effect` を実行せず、純粋な値の段階でエラー型を `ErrorInfo` に揃えて `render` へ渡しています。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 11
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "Either の map と <$>",
+        "body": "`Either` に `map` や `<$>` を適用すると `Right` の成功値だけが変換され、`Left` の失敗理由はそのまま残ります。"
+      },
+      {
+        "kind": "api",
+        "name": "either.mapLeft",
+        "body": "標準モジュール `std/either` の `either.mapLeft` は、`Left` の失敗理由だけを別の型へ変換します。次章の `Effect` では `mapError` が同じ役割を担います。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 14 行目にある `Left \"invalid\"` を `Left \"empty input\"` に書き換えて `Run` し、`Output` の 3 行目が `Left empty input` に、5 行目が `error: empty input` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "失敗理由の型を揃えずに渡してしまう",
+      "body": "失敗例では失敗理由が `String` のままの値を、`ErrorInfo` を期待する `render` へ渡しています。異なるエラー型は `either.mapLeft` で型を揃えてから渡します。"
+    },
+    "recap": [
+      "`Either` の `map` と `<$>` は `Right` の成功値だけを変換し、`Left` はそのまま保ちます。",
+      "`either.mapLeft` を使うと、成功値を変えずに失敗理由の型だけを別の型へ揃えられます。",
+      "`Either` は副作用を実行しない純粋な値であり、次章の `Effect` へ進む前にデータとしてのエラー形を整えられます。"
+    ],
+    "next": {
+      "lessonId": "effect-pure-vs-effect",
+      "body": "値としての欠如と失敗はここまでです。次は副作用を表す `Effect` と、`fn` と `effect fn` の違いを学びます。"
+    },
+    "notes": [
+      "次章で学ぶ `Effect` 層では、`std/effect` の `mapError` を使って実行時の失敗型を同じように変換します。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

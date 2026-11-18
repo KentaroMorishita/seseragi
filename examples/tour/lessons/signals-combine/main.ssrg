@@ -1,11 +1,19 @@
 import * as signals from "std/signal"
-
-fn add left: Int -> right: Int -> Int = left + right
+import { Signal } from "std/signal"
 
 pub effect fn main = do {
-  left <- signals.make 20
-  right <- signals.make 22
-  let total = signals.combine add left right
-  current <- signals.read total
-  println `combined: ${current}`
+  price <- signals.make 100
+  count <- signals.make 2
+  let doubled = signals.map (\n: Int -> n * 2) price
+  let viaOp: Signal<Int> = (\n: Int -> n * 2) <$> price
+  let total = signals.combine (\p: Int -> \c: Int -> p * c) price count
+  initialDoubled <- *doubled
+  initialOp <- *viaOp
+  initialTotal <- *total
+  println `doubled: ${initialDoubled}`
+  println `<$>: ${initialOp}`
+  println `initial total: ${initialTotal}`
+  count := 3
+  afterCount <- *total
+  println `after update: ${afterCount}`
 }

@@ -1,1 +1,75 @@
-{"$schema":"../../lesson.schema.json","id":"abstraction-type-parameter","formatVersion":2,"sections":{"prerequisite":"型だけが違うconcrete関数をgenericへまとめました。","walkthrough":[{"heading":"同じAを同じ具体型へ揃える","body":"`chooseFirst<A>`の二つのparameterと戻り値にある`A`は、一回の呼び出しでは同じ具体型です。","sourceRange":{"startLine":1,"endLine":3}}],"introduced":[{"kind":"type","name":"A type parameter","body":"`A`は特定の型名ではなく、呼び出しごとに決まる一つの型を表します。"}],"exercise":{"instruction":"二つのStringを変更し、戻り値も同じString型になることを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"一つのAへ異なる型を渡す","body":"失敗例は同じ`A`の位置へIntとStringを渡します。どのparameterで型が食い違うか確認します。"},"recap":["同じ名前のtype parameterは一回の呼び出しで同じ型になる。","Aは値ではなく型のplaceholderである。"],"next":{"lessonId":"abstraction-generic-adt-definition","body":"次はtype parameterをdataのpayloadへ使います。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "abstraction-type-parameter",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "代数的データ型や関数、`Maybe` と `Either` を使って値を受け渡せるようになりました。ここでは特定の型に固定しない汎用的な関数とデータ型の書き方を学びます。",
+    "walkthrough": [
+      {
+        "heading": "型パラメーターで汎用データ型を定義する",
+        "body": "`Box<A>` は中身となる値の型を `A` として後から決められる代数的データ型です。`Pair<A, B>` のように `<A, B>` と複数並べると、1 番目と 2 番目に異なる型を入れられます。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 6
+        }
+      },
+      {
+        "heading": "1 つの汎用関数を複数の型で使い回す",
+        "body": "`unwrapOr<A>` は `String` 用と `Int` 用を別々に書かずに 1 つで済みます。ただし 1 回の呼び出しでは、同じ型パラメーター `A` はすべて同じ具体的な型に揃える必要があります。`swap<A, B>` は 2 つの型を入れ替えた `Pair<B, A>` を返します。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 15
+        }
+      },
+      {
+        "heading": "呼び出し時の引数から型が決まる",
+        "body": "18 行目の `unwrapOr` では `A` が `String` に、19 行目の `Empty` を渡す呼び出しでは `A` が `Int` に決まります。20 行目の `swap` によって `count` には `22`、`tag` には `\"Tour\"` が入ります。",
+        "sourceRange": {
+          "startLine": 17,
+          "endLine": 23
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "型パラメーターと汎用データ型",
+        "body": "`type Box<A>` や `type Pair<A, B>` のように `<...>` で型パラメーターを宣言すると、中身の型を呼び出し側で差し替えられる汎用データ型を定義できます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "汎用関数",
+        "body": "`fn unwrapOr<A>` のように関数名の後ろに `<A>` を書くと、特定の型に依存しない処理を 1 度だけ定義できます。同じ名前の型パラメーターは 1 回の呼び出しで同じ具体的な型を表します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 19 行目にある `Empty` を `(Box 42)` に、20 行目の `\"Tour\"` を `\"Step\"` に書き換えて `Run` し、`Output` が `Seseragi: 42` と `22 / Step` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "同じ型パラメーターに異なる型を渡す",
+      "body": "失敗例では `unwrapOr` の第 1 引数に `String` の `\"none\"` を、第 2 引数に `Box<Int>` の `(Box 42)` を渡しています。同じ型パラメーター `A` が 1 回の呼び出しで `String` と `Int` の両方にはなれないため、実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "`fn 名前<A>` や `type 名前<A>` で型パラメーターを宣言すると、複数の具体的な型で同じ仕組みを再利用できる。",
+      "1 回の呼び出しの中で同じ名前の型パラメーター `A` はすべて同じ型になる。",
+      "`<A, B>` のように複数の型パラメーターを並べると、それぞれ独立した型を持たせられる。"
+    ],
+    "next": {
+      "lessonId": "abstraction-trait-operation",
+      "body": "型に依存しない汎用処理を 1 つにまとめられました。次は型ごとに振る舞いを切り替えられる型クラス（`trait`・`instance`・`where`）を学びます。"
+    },
+    "notes": [
+      "`Maybe<Int>` のように型引数を 1 つ受け取る `Maybe` や `Box` 自体は「型コンストラクター」と呼ばれます。型コンストラクター自体をパラメーター `F<_>` として扱う高度な抽象化は、補足トラックの `Functor` などで詳しく扱います。",
+      "型パラメーターだけで書かれた汎用関数の中では、その型に固有の演算（たとえば `+`）は使えません。必要な操作を制約として求める方法は次のレッスンで学びます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

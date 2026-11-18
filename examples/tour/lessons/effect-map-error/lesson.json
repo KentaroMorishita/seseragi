@@ -1,1 +1,75 @@
-{"$schema":"../../lesson.schema.json","id":"effect-map-error","formatVersion":2,"sections":{"prerequisite":"Effect contractの推論と明示を使い分けられるようになりました。","walkthrough":[{"heading":"Failureをapplication型へ写す","body":"mapError InvalidInputFailureはInputError failureだけをAppErrorへ変え、success型は保ちます。","sourceRange":{"startLine":1,"endLine":7}}],"introduced":[{"kind":"api","name":"Effect mapError","body":"mapErrorはEffectのfailure payloadを別型へ変換します。"}],"exercise":{"instruction":"課題sourceの成功mainを実行し、mapError関数定義を保ったまま通常処理を確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"mapErrorへEffectを渡さない","body":"失敗例はmapperだけを渡し、変換元Effectを省きます。"},"recap":["mapErrorはfailure型だけを変える。","application error ADTへ依存failureを揃えられる。"],"next":{"lessonId":"effect-value-boundary","body":"次はEither valueをEffect failureへ変換します。"}},"files":{"source":"main.ssrg","expectedFailure":"failure.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "effect-map-error",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "前のレッスンで `fail` による途中中断と `fails` による失敗型の宣言を学びました。ここでは異なるエラー型を揃え、失敗から立て直す方法を学びます。",
+    "walkthrough": [
+      {
+        "heading": "mapError で部品ごとの失敗型を揃える",
+        "body": "`parseCount` は `ParseError`、`checkStock` は `StockError` で失敗します。同じ `do` ブロックでは失敗型を揃える必要があるため、それぞれ `mapError` で `OrderError` へ変換しています。",
+        "sourceRange": {
+          "startLine": 19,
+          "endLine": 25
+        }
+      },
+      {
+        "heading": "recover で失敗を別の Effect に立て直す",
+        "body": "`recoverOrder` は受け取った `OrderError` を `match` で判別し、`succeed` で既定の文字列を返します。失敗した場合だけ呼ばれ、失敗値を成功値へ置き換えて処理を立て直します。",
+        "sourceRange": {
+          "startLine": 27,
+          "endLine": 30
+        }
+      },
+      {
+        "heading": "通常経路と回復経路を実行する",
+        "body": "1 つ目の `prepareOrder` は成功して `tea x2` を返します。2 つ目は `OutOfStock` で失敗しますが、`recover recoverOrder` で回復されるため中断せず、2 行とも `Output` に表示されます。",
+        "sourceRange": {
+          "startLine": 32,
+          "endLine": 37
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "mapError",
+        "body": "`Effect` の成功型は保ったまま、失敗側の値だけを別のエラー型へ変換します。小さな部品のエラー型をアプリ側のエラー型へ揃えるときに使います。"
+      },
+      {
+        "kind": "api",
+        "name": "recover",
+        "body": "`Effect` が失敗したときに関数を呼び、代替の `Effect` で立て直します。回復すれば後続の `do` を続けられます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 34 行目にある `\"2\"`（`\"coffee\"` の前）を `\"bad\"` に書き換えて `Run` し、`Output` の 2 行目が `bad count: bad` を含む表示に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "異なる失敗型を変換せずに同じ do へ並べる",
+      "body": "失敗例では `ParseError` を返す `parseCount` と `StockError` を返す `checkStock` を `mapError` なしで同じ `do` ブロックに置いています。異なる失敗型が混ざるため実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "`mapError` を使うと、部品ごとに異なる失敗型をアプリ側のエラー型（例では `OrderError`）へ揃えられます。",
+      "`recover` を使うと、失敗を `match` などで受け止めて既定値や別処理へ立て直せます。",
+      "失敗から回復した `Effect` は成功値を持つため、`main` を途中で止めずに後続処理を続けられます。"
+    ],
+    "next": {
+      "lessonId": "effect-with-capability",
+      "body": "次は `Effect` が必要とする `Console` などの環境を型で表す `with` と、その型推論を学びます。"
+    },
+    "notes": [
+      "`recover` は `std/effect` モジュールから `import` して使います。",
+      "パイプラインの `|>` を複数段つなげて `Format` すると、各段が縦に整列して処理の流れを上から順に追えます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

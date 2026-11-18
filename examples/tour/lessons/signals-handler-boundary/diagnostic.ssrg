@@ -1,4 +1,5 @@
 import * as signals from "std/signal"
 import { Signal } from "std/signal"
 
-fn invalid view: Signal<Int> -> Task<Unit> = signals.set 42 view
+fn invalid view: Signal<Int> -> Task<Unit> =
+  signals.transaction [signals.planSet 20 view]

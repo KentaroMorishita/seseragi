@@ -1,0 +1,14 @@
+type Delivery deriving Show =
+  | Preparing
+  | Shipped String
+  | Delivered (String, Int)
+
+let pending: Delivery = Preparing
+let transit: Delivery = Shipped "Osaka"
+let completed: Delivery = Delivered ("Kyoto", 2)
+
+pub effect fn main = do {
+  println (show pending)
+  println (show transit)
+  println (show completed)
+}

@@ -1,9 +1,37 @@
-pub type InputError deriving Show =
-  | InvalidInput String
+import { recover } from "std/effect"
 
-pub type AppError deriving Show =
-  | InvalidInputFailure InputError
+pub type ParseError deriving Show =
+  | InvalidNumber String
 
-pub effect fn main -> Unit fails AppError =
-  fail (InvalidInput "bad")
-  |> mapError InvalidInputFailure
+pub type StockError deriving Show =
+  | OutOfStock String
+
+pub type OrderError deriving Show =
+  | ParseFailure ParseError
+  | StockFailure StockError
+
+effect fn parseCount raw: String -> Int fails ParseError =
+  if raw == "2" then succeed 2 else fail (InvalidNumber raw)
+
+effect fn checkStock item: String -> String fails StockError =
+  if item == "tea" then succeed "tea" else fail (OutOfStock item)
+
+effect fn prepareOrder raw: String -> item: String -> String fails OrderError = do {
+  count <- parseCount raw |> mapError ParseFailure
+  checked <- checkStock item
+    |> map (\name -> `${name} x${count}`)
+    |> mapError StockFailure
+  succeed checked
+}
+
+effect fn recoverOrder error: OrderError -> String = match error {
+  ParseFailure (InvalidNumber raw) -> succeed `fallback (bad count: ${raw})`
+  StockFailure (OutOfStock item) -> succeed `fallback (no stock: ${item})`
+}
+
+pub effect fn main = do {
+  first <- prepareOrder "2" "tea" |> recover recoverOrder
+  second <- prepareOrder "2" "coffee" |> recover recoverOrder
+  println first
+  println second
+}

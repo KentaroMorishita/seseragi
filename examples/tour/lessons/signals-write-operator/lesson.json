@@ -1,1 +1,76 @@
-{"$schema":"../../lesson.schema.json","id":"signals-write-operator","formatVersion":2,"sections":{"prerequisite":"`signals.set value state`でMutableSignalの現在値をEffectとして置き換えました。","walkthrough":[{"heading":"Named APIで値を置き換える","body":"既知の`signals.set 21 state`はvalueを先、MutableSignalを後に受け取り、更新をTaskとして実行します。","sourceRange":{"startLine":3,"endLine":3}},{"heading":"Assignment operatorへ書き換える","body":"`state := 42`は`signals.set 42 state`と同じEffectful writeです。左側は通常のbindingやfieldではなくMutableSignalです。","sourceRange":{"startLine":3,"endLine":4}},{"heading":"二つのcanonical形を結果で比べる","body":"named形とoperator形の直後に現在値を読み、どちらも同じMutableSignalを置き換えたことを確認します。","sourceRange":{"startLine":5,"endLine":6}}],"introduced":[{"kind":"syntax","name":"MutableSignal write operator :=","body":"`state := value`は`signals.set value state`と同じ`Task<Unit>`です。MutableSignal専用であり、通常の代入構文ではありません。現在値に基づくatomic updateには`signals.update`を使い、`*state`の後に`state := ...`とするread-modify-writeは避けます。"}],"exercise":{"instruction":"課題sourceのnamed/operator更新値を変え、`signals.set value state`と`state := value`の引数対応を確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Read-only Signalへ書き込む","body":"失敗例は`Signal<Int>`のviewへ`:=`を使います。write operatorの左側にはMutableSignal<A>が必要です。"},"recap":["`signals.set value state`と`state := value`は同じEffectful writeである。","`:=`の左側はMutableSignal専用で、通常のbindingやfield代入ではない。","現在値からatomicに更新するときはread後の`:=`ではなく`signals.update`を使う。"],"next":{"lessonId":"signals-observable-update","body":"次はreadとwriteを並べ、Effectの実行順で更新前後を観測します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "signals-write-operator",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "前のレッスンで `signals.make` による作成と、`signals.read`・`*` による現在値の読み取りを学びました。ここでは `MutableSignal` の値を書き換える方法と、更新前後の変化を確かめます。",
+    "walkthrough": [
+      {
+        "heading": "signals.set と := で現在値を置き換える",
+        "body": "5 行目で更新前の `10` を読んだあと、6 行目の `signals.set` と 8 行目の `state := 30` で現在値を置き換えています。`:=` は `signals.set` と同じ書き換えを行う演算子で、左辺に `MutableSignal` を書きます。",
+        "sourceRange": {
+          "startLine": 4,
+          "endLine": 9
+        }
+      },
+      {
+        "heading": "signals.update で現在の値をもとに更新する",
+        "body": "10 行目の `signals.update` は、現在の値を受け取って次の値を返す関数で更新します。今の値をもとに計算したいときは、`*state` と `:=` を分けずに `signals.update` を使うと安全にまとめられます。",
+        "sourceRange": {
+          "startLine": 10,
+          "endLine": 11
+        }
+      },
+      {
+        "heading": "do の実行順に沿って変化を観測する",
+        "body": "`do` ブロックは上から順に実行されるため、書き換えの前後に `*state` を挟むとその時点の現在値（`10`・`20`・`30`・`42`）を順番に観測できます。",
+        "sourceRange": {
+          "startLine": 12,
+          "endLine": 15
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "signals.set",
+        "body": "新しい値と `MutableSignal<A>` をこの順で受け取り、現在値を置き換える `Task<Unit>` を返します。"
+      },
+      {
+        "kind": "syntax",
+        "name": "書き換え演算子 :=",
+        "body": "`state := value` は `signals.set` と同じ `Task<Unit>` を作る書き方です。通常の変数への再代入ではなく、`MutableSignal` 専用の操作です。"
+      },
+      {
+        "kind": "api",
+        "name": "signals.update",
+        "body": "現在の値から次の値を計算する関数 `A -> A` を受け取り、`MutableSignal<A>` を安全に更新する `Task<Unit>` を返します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 8 行目にある `state := 30` を `state := 50` に書き換えて `Run` し、`Output` の `afterOp` が `50`、`afterUpdate` が `62` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "読み取り専用の Signal に := で書き込む",
+      "body": "失敗例では読み取り専用の `Signal<Int>` である `view` へ `:=` を使っています。`:=` の左側には `MutableSignal` が必要なため、実行前に `Problems` へエラー表示が出ます。値を更新したい関数には `MutableSignal<Int>` を受け取るように書いてください。"
+    },
+    "recap": [
+      "`signals.set` と `:=` はどちらも `MutableSignal` の現在値を置き換える `Task<Unit>` を作る。",
+      "現在の値をもとに新しい値へ更新したいときは、読み取りと書き込みを分けず `signals.update` を使う。",
+      "`do` ブロックの実行順に沿って書き換え前後の `*state` を読むと、現在値の変化を順に確認できる。"
+    ],
+    "next": {
+      "lessonId": "signals-combine",
+      "body": "次は元の `MutableSignal` を直接書き換えるのではなく、値の変化に連動して計算結果を更新する派生 `Signal` の作り方を学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

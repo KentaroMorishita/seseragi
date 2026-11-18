@@ -1,3 +1,12 @@
-fn label project: String -> String = `Building ${project}`
+fn formatTag name: String -> String = `step: ${name}`
 
-pub effect fn main = println $ label "Seseragi"
+effect fn announce name: String = println (formatTag name)
+
+let second = announce "second"
+let first = announce "first"
+
+pub effect fn main = do {
+  first
+  second
+  first
+}

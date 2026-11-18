@@ -1,3 +1,0 @@
-effect fn load = fromEither (Just "wrong")
-
-pub effect fn main = println "boundary"
