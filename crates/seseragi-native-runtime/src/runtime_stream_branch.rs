@@ -349,6 +349,8 @@ fn branch_close_pair(left: &V, right: &V) -> V {
         }),
     )
 }
+// Zip state: [left, right, results, closed, close, slots]. A slot holds the
+// outcome a side has sent for the current pull.
 fn native_stream_zip_cursor(left: V, right: V, results: V) -> V {
     let closed = stream_cell(V::Bool(false));
     let close = V::fun(vec![left.clone(), right.clone(), closed.clone()], |c, _| {
@@ -360,66 +362,100 @@ fn native_stream_zip_cursor(left: V, right: V, results: V) -> V {
             })],
         )
     });
-    let pull = V::fun(vec![left, right, results, closed, close.clone()], |c, _| {
-        if c[3].read_reference().boolean() {
+    let state = V::Tuple(Shared::new(vec![
+        left,
+        right,
+        results,
+        closed,
+        close.clone(),
+        stream_cell(V::Tuple(Shared::new(vec![V::Unit, V::Unit]))),
+    ]));
+    let pull = V::fun(vec![state], |c, _| {
+        let state = &c[0];
+        if state.index(3).read_reference().boolean() {
             return stream_pure(stream_done());
         }
-        let both = V::Tuple(Shared::new(vec![c[0].clone(), c[1].clone()]));
-        let collect = V::bind(
-            native_operation("std/queue::take", vec![c[2].clone()]),
-            V::fun(vec![both.clone(), c[2].clone()], |c, first| {
-                let branch = c[0].index(branch_side(&first));
-                V::bind(
-                    branch_result(&branch, first.index(1)),
-                    V::fun(vec![c[0].clone(), c[1].clone(), first], |c, first_value| {
-                        V::bind(
-                            native_operation("std/queue::take", vec![c[1].clone()]),
-                            V::fun(
-                                vec![c[0].clone(), c[2].clone(), first_value],
-                                |c, second| {
-                                    let branch = c[0].index(branch_side(&second));
-                                    V::bind(
-                                        branch_result(&branch, second.index(1)),
-                                        V::fun(c.to_vec(), |c, second_value| {
-                                            let (left, right) = if branch_side(&c[1]) == 0 {
-                                                (c[2].clone(), second_value)
-                                            } else {
-                                                (second_value, c[2].clone())
-                                            };
-                                            branch_succeed(V::Tuple(Shared::new(vec![left, right])))
-                                        }),
-                                    )
-                                },
-                            ),
-                        )
-                    }),
-                )
-            }),
-        );
         let step = branch_then(
-            branch_demand(&c[0]),
+            branch_demand(&state.index(0)),
             branch_then(
-                branch_demand(&c[1]),
-                V::bind(
-                    collect,
-                    V::fun(vec![c[4].clone()], |c, pair| {
-                        let (left, right) = (pair.index(0), pair.index(1));
-                        if left.tagged("std/prelude::Nothing")
-                            || right.tagged("std/prelude::Nothing")
-                        {
-                            return branch_then(c[0].apply(V::Unit), stream_pure(stream_done()));
-                        }
-                        stream_pure(stream_item(V::Tuple(Shared::new(vec![
-                            left.payload(),
-                            right.payload(),
-                        ]))))
-                    }),
-                ),
+                branch_demand(&state.index(1)),
+                native_stream_zip_wait(state.clone()),
             ),
         );
-        branch_on_error(step, c[4].apply(V::Unit))
+        branch_on_error(step, state.index(4).apply(V::Unit))
     });
     stream_cursor(pull, close)
+}
+// Waits for the next outcome, then lets the other Fibers settle so every
+// outcome of the same scheduler turn is seen before choosing.
+fn native_stream_zip_wait(state: V) -> V {
+    V::bind(
+        native_operation("std/queue::take", vec![state.index(2)]),
+        V::fun(vec![state], |c, message| {
+            native_stream_zip_store(&c[0], message);
+            branch_then(
+                branch_settle(),
+                branch_then(
+                    native_stream_zip_collect(c[0].clone()),
+                    native_stream_zip_choose(c[0].clone()),
+                ),
+            )
+        }),
+    )
+}
+fn native_stream_zip_store(state: &V, message: V) {
+    branch_set_slot(&state.index(5), branch_side(&message), message.index(1));
+}
+fn native_stream_zip_collect(state: V) -> V {
+    V::bind(
+        native_operation("std/queue::tryTake", vec![state.index(2)]),
+        V::fun(vec![state], |c, taken| {
+            if !(taken.tagged("std/prelude::Right") && taken.payload().tagged("std/prelude::Just"))
+            {
+                return branch_succeed(V::Unit);
+            }
+            native_stream_zip_store(&c[0], taken.payload().payload());
+            native_stream_zip_collect(c[0].clone())
+        }),
+    )
+}
+// A failure wins over an end, and the left failure over the right one. An
+// end closes both sides, which cancels a pull still pending on the other.
+// Two values make a pair; one value waits for the other side.
+fn native_stream_zip_choose(state: V) -> V {
+    V::effect(
+        Instruction::Defer,
+        vec![V::fun(vec![state], |c, _| {
+            let state = &c[0];
+            let slots = state.index(5).read_reference();
+            let outcome = |side: usize| slots.index(side);
+            let failed = |side: &usize| {
+                outcome(*side).tagged(BRANCH_FAIL) || outcome(*side).tagged(BRANCH_ENDED)
+            };
+            let finish = || branch_then(state.index(4).apply(V::Unit), stream_pure(stream_done()));
+            if let Some(side) = (0..2).find(failed) {
+                return V::bind(
+                    branch_result(&state.index(side), outcome(side)),
+                    V::fun(vec![state.index(4)], |c, _| {
+                        branch_then(c[0].apply(V::Unit), stream_pure(stream_done()))
+                    }),
+                );
+            }
+            if (0..2).any(|side| outcome(side).tagged(BRANCH_DONE)) {
+                return finish();
+            }
+            if (0..2).all(|side| outcome(side).tagged(BRANCH_ITEM)) {
+                state
+                    .index(5)
+                    .write_reference(V::Tuple(Shared::new(vec![V::Unit, V::Unit])));
+                return stream_pure(stream_item(V::Tuple(Shared::new(vec![
+                    outcome(0).payload(),
+                    outcome(1).payload(),
+                ]))));
+            }
+            native_stream_zip_wait(state.clone())
+        })],
+    )
 }
 // Merge state: [left, right, results, closed, pending flags, done flags,
 // close, slots]. A slot holds an outcome that arrived but was not chosen yet.

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Playground 画面案（モック）</title>
+    <link rel="stylesheet" href="./mock.css" />
+  </head>
+  <body>
+    <!--
+      状態の切り替え（確認用）:
+        playground.html            初回表示
+        playground.html#discover   「例を探す」を開いた状態
+        playground.html#output     モバイルで「出力」タブを開いた状態
+    -->
+    <div class="shell">
+      <header class="bar">
+        <a class="brand" href="./index.html">
+          <img src="../../../../../../assets/brand/public/brand/seseragi-icon.svg" alt="" />
+          <span class="desktop-only">Seseragi</span>
+        </a>
+        <nav class="surface-switch" aria-label="画面の切り替え">
+          <a href="./playground.html" aria-current="page">Playground</a>
+          <a href="./tour.html">Tour<span class="hint desktop-only">順に学ぶ</span></a>
+        </nav>
+        <div class="spacer"></div>
+        <a class="btn btn--ghost desktop-only" href="#discover"><span class="icon">◎</span>例を探す</a>
+        <button class="btn btn--icon btn--ghost desktop-only" type="button" aria-label="その他">⋯</button>
+        <button class="btn btn--primary" type="button">
+          <span class="icon">▶</span>実行<kbd class="desktop-only">⌘↵</kbd>
+        </button>
+      </header>
+
+      <div>
+        <div class="welcome">
+          <span>
+            <strong>ようこそ。</strong>このコードはそのまま動きます。<span class="desktop-only">書き換えて「実行」を押してみましょう。</span>
+          </span>
+          <div class="actions">
+            <a class="btn btn--link" href="./tour.html">Tour で順に学ぶ →</a>
+            <button class="btn btn--icon btn--ghost desktop-only" type="button" aria-label="閉じる">×</button>
+          </div>
+        </div>
+        <div class="subbar mobile-only">
+          <a class="picker" href="#discover">
+            <span class="label">例</span>
+            <span class="title">天気のアドバイス</span>
+            <span class="chev">⌄</span>
+          </a>
+          <button class="btn btn--icon" type="button" aria-label="その他">⋯</button>
+        </div>
+      </div>
+
+      <main class="work">
+        <section class="pane pane--code" aria-label="コード">
+          <div class="pane-head">
+            <button class="btn btn--icon btn--ghost desktop-only" type="button" aria-label="ファイル一覧">☰</button>
+            <a class="picker desktop-only" href="#discover">
+              <span class="label">例</span>
+              <span class="title">天気のアドバイス</span>
+              <span class="chev">⌄</span>
+            </a>
+            <span class="file-tab">main.ssrg</span>
+            <div class="spacer"></div>
+            <button class="btn btn--ghost" type="button"><span class="icon">?</span>解説</button>
+            <button class="btn btn--ghost" type="button"><span class="icon">≡</span>整形</button>
+          </div>
+<pre class="code"><span class="ln"><span class="c">// 天気ごとに、ひとことアドバイスを返します。</span></span><span class="ln"><span class="k">type</span> <span class="t">Weather</span> <span class="o">=</span></span><span class="ln">  <span class="o">|</span> <span class="t">Sunny</span></span><span class="ln">  <span class="o">|</span> <span class="t">Rainy</span> <span class="t">Int</span></span><span class="ln"> </span><span class="ln"><span class="k">fn</span> advice weather<span class="p">:</span> <span class="t">Weather</span> <span class="o">-&gt;</span> <span class="t">String</span> <span class="o">=</span> <span class="k">match</span> weather <span class="p">{</span></span><span class="ln">  <span class="t">Sunny</span> <span class="o">-&gt;</span> <span class="s">"散歩日和です"</span></span><span class="ln">  <span class="t">Rainy</span> mm <span class="o">-&gt;</span> <span class="s">`傘を持って出かけましょう（</span><span class="p">${</span>mm<span class="p">}</span><span class="s">mm）`</span></span><span class="ln"><span class="p">}</span></span><span class="ln"> </span><span class="ln is-edit"><span class="k">let</span> forecast <span class="o">=</span> <span class="p">[</span><span class="t">Sunny</span><span class="p">,</span> <span class="mark-edit"><span class="t">Rainy</span> 3</span><span class="p">,</span> <span class="t">Sunny</span><span class="p">]</span></span><span class="ln"> </span><span class="ln"><span class="k">pub effect fn</span> main <span class="o">=</span> forecast <span class="o">|&gt;</span> map advice <span class="o">|&gt;</span> join <span class="s">"\n"</span> <span class="o">|&gt;</span> println</span></pre>
+        </section>
+
+        <section class="pane pane--output" aria-label="出力">
+          <div class="pane-head">
+            <span class="pane-title">出力</span>
+            <div class="seg" role="group" aria-label="出力の表示">
+              <button type="button" aria-pressed="true">テキスト</button>
+              <button type="button" aria-pressed="false">画面</button>
+            </div>
+            <div class="spacer"></div>
+            <button class="btn btn--ghost" type="button">入力</button>
+            <button class="btn btn--icon btn--ghost" type="button" aria-label="出力のその他">⋯</button>
+          </div>
+          <div class="output">
+            <div class="run-meta"><span class="ok">✓ 実行しました</span><span>· 開いたときに自動で実行 · 18ms</span></div>
+<pre class="stdout">散歩日和です
+傘を持って出かけましょう（3mm）
+散歩日和です</pre>
+            <div class="next-card">
+              <h3>次に試すこと</h3>
+              <p><code class="inline">Rainy 3</code> を <code class="inline">Rainy 12</code> に変えて、もう一度実行してみましょう。</p>
+              <div class="row">
+                <a class="btn" href="#discover">ほかの例を見る</a>
+                <a class="btn btn--link" href="./tour.html">基本から順に学ぶ →</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="status desktop-only">
+        <span><span class="dot"></span>準備できました</span>
+        <span>main.ssrg · 11 行目</span>
+        <div class="spacer"></div>
+        <a href="#">ドキュメント</a>
+        <a href="#">リファレンス</a>
+        <a href="https://github.com/KentaroMorishita/seseragi">GitHub</a>
+      </footer>
+
+      <nav class="tabbar" aria-label="表示の切り替え">
+        <a href="#" class="tab-code"><span class="icon">{ }</span>コード</a>
+        <a href="#output" class="tab-output"><span class="icon">▤</span><span>出力<span class="badge"></span></span></a>
+      </nav>
+    </div>
+
+    <div class="overlay overlay--discover" role="dialog" aria-labelledby="discover-title">
+      <div class="dialog">
+        <div class="dialog-head">
+          <div>
+            <h2 id="discover-title">例を探す</h2>
+            <p>やりたいことに近い例を選ぶと、そのまま編集して動かせます。基本を順に学ぶなら <a href="./tour.html">Tour</a> へ。</p>
+          </div>
+          <div class="spacer"></div>
+          <a class="btn btn--icon btn--ghost" href="#" aria-label="閉じる">×</a>
+        </div>
+        <div class="dialog-tools">
+          <div class="start-row">
+            <button class="start" type="button"><strong>白紙から書く</strong><span>空の main.ssrg で始めます</span></button>
+            <button class="start" type="button"><strong>最初の例に戻る</strong><span>天気のアドバイス</span></button>
+            <button class="start" type="button"><strong>今の例を元に戻す</strong><span>書き換えた内容は確認してから戻します</span></button>
+          </div>
+          <div class="search"><span>⌕</span><span>例を検索（例: 集計、フォーム、入力）</span></div>
+          <div class="chips">
+            <button class="chip" type="button" aria-pressed="true">すべて</button>
+            <button class="chip" type="button" aria-pressed="false">おすすめ</button>
+            <button class="chip" type="button" aria-pressed="false">小さな例</button>
+            <button class="chip" type="button" aria-pressed="false">完成した作品</button>
+            <button class="chip" type="button" aria-pressed="false">画面を作る</button>
+            <button class="chip" type="button" aria-pressed="false">入力を使う</button>
+          </div>
+        </div>
+        <div class="dialog-body">
+          <section class="group">
+            <h3>関数とデータをまとめて使う</h3>
+            <p>再帰・範囲・パターン・集計を、目的のある小さなプログラムで試します。</p>
+            <div class="cards">
+              <div class="card"><strong>売上を集計して表示する</strong><p>条件で絞った配列を整形し、合計と一緒に表示します。</p><div class="tags"><span class="tag tag--pick">おすすめ</span><span class="tag">小さな例</span></div></div>
+              <div class="card"><strong>FizzBuzz を順に出力する</strong><p>タプルのパターンと範囲を組み合わせて分類します。</p><div class="tags"><span class="tag">小さな例</span></div></div>
+              <div class="card"><strong>関数の中で関数を作る</strong><p>ブロックの中で値を取り込み、再帰で組み立てます。</p><div class="tags"><span class="tag">小さな例</span></div></div>
+            </div>
+          </section>
+          <section class="group">
+            <h3>画面を作る</h3>
+            <p>部品の組み立てから、状態を持つアプリまで。</p>
+            <div class="cards">
+              <div class="card"><strong>HTML の部品を組み立てる</strong><p>タグ・属性・子要素・関数の部品で、静的なページを作ります。</p><div class="tags"><span class="tag tag--pick">おすすめ</span><span class="tag">画面を作る</span></div></div>
+              <div class="card"><strong>散歩ルートを選ぶアプリ</strong><p>状態・操作・更新・表示を分けた、いちばん小さなアプリです。</p><div class="tags"><span class="tag tag--pick">おすすめ</span><span class="tag">画面を作る</span></div></div>
+              <div class="card"><strong>ToDo フォーム</strong><p>入力チェック、カード操作、絞り込み、キーボード操作をまとめた完成例です。</p><div class="tags"><span class="tag">完成した作品</span><span class="tag">画面を作る</span></div></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 確認用: URL の # で表示状態を切り替える（例: #discover, #output）
+      const apply = () => {
+        const state = location.hash.slice(1).replace(/,/g, " ");
+        document.body.dataset.state = state;
+        document.querySelector(".tab-code").setAttribute("aria-current", String(state !== "output"));
+        document.querySelector(".tab-output").setAttribute("aria-current", String(state === "output"));
+      };
+      addEventListener("hashchange", apply);
+      apply();
+    </script>
+  </body>
+</html>

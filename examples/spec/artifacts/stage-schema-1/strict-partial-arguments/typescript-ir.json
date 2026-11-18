@@ -843,6 +843,21 @@
                     "arguments": []
                   }
                 ]
+              },
+              {
+                "name": "Show",
+                "traitIdentity": "std/prelude::Show",
+                "arguments": [
+                  {
+                    "kind": "kind-application",
+                    "constructor": "F",
+                    "arguments": [
+                      {
+                        "kind": "number"
+                      }
+                    ]
+                  }
+                ]
               }
             ],
             "parameters": [
@@ -975,7 +990,13 @@
                                 "kind": "unknown"
                               },
                               "result": {
-                                "kind": "string"
+                                "kind": "function",
+                                "parameter": {
+                                  "kind": "unknown"
+                                },
+                                "result": {
+                                  "kind": "string"
+                                }
                               }
                             }
                           },
@@ -1013,7 +1034,13 @@
                                   "kind": "unknown"
                                 },
                                 "result": {
-                                  "kind": "string"
+                                  "kind": "function",
+                                  "parameter": {
+                                    "kind": "unknown"
+                                  },
+                                  "result": {
+                                    "kind": "string"
+                                  }
                                 }
                               }
                             }
@@ -1035,6 +1062,10 @@
                             {
                               "kind": "identifier",
                               "name": "__ssrg$partial$0"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "__ssrg$evidence$0"
                             },
                             {
                               "kind": "identifier",

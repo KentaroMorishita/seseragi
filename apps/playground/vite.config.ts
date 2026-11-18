@@ -1,6 +1,10 @@
 import { fileURLToPath } from "node:url"
 import { build as bundleExecutionFrame } from "esbuild"
+import { readFile } from "node:fs/promises"
+import { createRequire } from "node:module"
 import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite"
+import { fontPackages } from "./src/ui/design/font-packages"
+import { themeBootScript } from "./src/ui/theme"
 
 const appRoot = fileURLToPath(new URL(".", import.meta.url))
 const publicOrigin = "https://seseragi.vercel.app"
@@ -143,7 +147,34 @@ const brandSurfacePlugin: Plugin = {
         ? `${publicOrigin}/deep-dive/`
         : `${publicOrigin}/`
 
-    return { html, tags: brandTags(title, description, url) }
+    return {
+      html,
+      tags: [
+        // Apply the saved theme before the first paint.
+        { tag: "script", children: themeBootScript, injectTo: "head-prepend" },
+        ...brandTags(title, description, url),
+      ],
+    }
+  },
+}
+
+// The self-hosted fonts are licensed under the SIL Open Font License 1.1,
+// which asks for the license text to travel with the font files.
+const fontLicensePlugin: Plugin = {
+  name: "seseragi-font-licenses",
+  apply: "build",
+  async generateBundle() {
+    const require = createRequire(import.meta.url)
+    for (const font of fontPackages) {
+      this.emitFile({
+        type: "asset",
+        fileName: font.licenseFile,
+        source: await readFile(
+          require.resolve(`${font.packageName}/LICENSE`),
+          "utf8"
+        ),
+      })
+    }
   },
 }
 
@@ -212,7 +243,7 @@ export default defineConfig({
   publicDir: fileURLToPath(
     new URL("../../assets/brand/public", import.meta.url)
   ),
-  plugins: [brandSurfacePlugin, isolatedExecutionPlugin],
+  plugins: [brandSurfacePlugin, fontLicensePlugin, isolatedExecutionPlugin],
   resolve: {
     dedupe: ["@seseragi/runtime"],
   },

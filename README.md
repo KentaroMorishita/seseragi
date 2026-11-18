@@ -319,6 +319,15 @@ powershell -ExecutionPolicy Bypass -c "irm https://github.com/KentaroMorishita/s
 ```
 
 The tools go to `~/.seseragi/bin`. `seseragi upgrade --check` tells you whether a newer release exists, and `seseragi upgrade` installs it with the same script (running the install command again also updates).
+
+With Homebrew on macOS (Apple silicon or Intel) or Linux (x64), install and update with:
+
+```sh
+brew install KentaroMorishita/seseragi/seseragi
+brew upgrade seseragi
+```
+
+Use the full name `KentaroMorishita/seseragi/seseragi` for the first install, so Homebrew trusts the formula from this tap. A CLI installed with Homebrew is updated with `brew upgrade seseragi`; `seseragi upgrade` tells you to run it instead of replacing the files.
 You can also download the archive directly from [GitHub Releases](https://github.com/KentaroMorishita/seseragi/releases).
 Running generated programs requires [Bun](https://bun.sh/) 1.4.4 or later.
 
@@ -362,7 +371,7 @@ cargo install --git https://github.com/KentaroMorishita/seseragi --locked sesera
 # Start the Playground locally
 bun run dev:playground
 
-# Run the checks for what you changed (there are also check:sample / check:playground / check:extension / check:release)
+# Run the checks for what you changed (there are also check:sample / check:sample-catalog / check:tour / check:playground / check:extension / check:release)
 bun run check:rust
 ```
 

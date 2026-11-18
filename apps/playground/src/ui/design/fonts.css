@@ -1,0 +1,13 @@
+/*
+ * フォント（apps/playground/DESIGN.md「4. デザイントークン › 文字」）
+ *
+ * Geist、Geist Mono、Noto Sans JP を、ビルドに含めて自前で配信します。
+ * 外部のフォント配信は使いません。どれも文字の範囲ごとにファイルが分かれていて、
+ * ブラウザはページで使った範囲のファイルだけを読み込みます。
+ * ライセンス（SIL Open Font License 1.1）は、ビルドで dist/fonts/ に出します。
+ * パッケージの一覧は font-packages.ts にあります。
+ */
+
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource-variable/noto-sans-jp";

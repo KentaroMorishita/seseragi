@@ -8,7 +8,7 @@
   "topics": ["Collection", "Array", "filter", "map", "sum", "join"],
   "capabilities": ["console"],
   "outputMode": "text",
-  "prerequisites": ["data-and-patterns"],
+  "prerequisites": ["hello-world"],
   "featured": true,
   "files": {
     "source": "main.ssrg",

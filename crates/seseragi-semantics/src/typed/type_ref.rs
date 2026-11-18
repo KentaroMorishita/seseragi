@@ -212,6 +212,45 @@ pub(crate) fn typed_type_contains_hole(type_ref: &TypedType) -> bool {
     }
 }
 
+/// A requirement row keeps one field per name when the types are the same
+/// service. Two spellings of one canonical service collapse. A `Named` type
+/// is not compared by spelling: it may be a type parameter or a local type.
+/// An unresolved `with Clock` is hydrated to `std/clock::Clock` before this
+/// merge, so that shorthand still meets the standard provider. Different
+/// types stay side by side and remain a requirement conflict.
+fn absorb_requirement_field(
+    fields: &mut Vec<crate::TypedRecordField>,
+    field: crate::TypedRecordField,
+) {
+    if fields.iter().any(|existing| {
+        existing.name == field.name && requirement_types_match(&existing.type_ref, &field.type_ref)
+    }) {
+        return;
+    }
+    fields.push(field);
+}
+
+fn requirement_types_match(left: &TypedType, right: &TypedType) -> bool {
+    if left == right {
+        return true;
+    }
+    match (left, right) {
+        (
+            TypedType::ExternalNamed {
+                canonical: left_canonical,
+                arguments: left_arguments,
+                ..
+            },
+            TypedType::ExternalNamed {
+                canonical: right_canonical,
+                arguments: right_arguments,
+                ..
+            },
+        ) if left_canonical == right_canonical && left_arguments == right_arguments => true,
+        _ => false,
+    }
+}
+
 pub(crate) fn normalize_requirement_merge(operands: Vec<TypedType>) -> TypedType {
     let mut pending = operands;
     let mut flattened = Vec::new();
@@ -232,12 +271,7 @@ pub(crate) fn normalize_requirement_merge(operands: Vec<TypedType>) -> TypedType
                 fields: operand_fields,
             } => {
                 for field in operand_fields {
-                    if fields.iter().any(|existing: &crate::TypedRecordField| {
-                        existing.name == field.name && existing.type_ref == field.type_ref
-                    }) {
-                        continue;
-                    }
-                    fields.push(field);
+                    absorb_requirement_field(&mut fields, field);
                 }
             }
             operand => unresolved.push(operand),

@@ -1,5 +1,9 @@
-struct Profile { name: String, role: String }
+struct Customer { name: String, plan: String }
 
-let profile = Profile { name: "Mio" }
+struct Staff { name: String, plan: String }
 
-pub effect fn main = println "profile"
+fn formatCustomer customer: Customer -> String = `${customer.name}: ${customer.plan}`
+
+let staff = Staff { name: "Aoi", plan: "Support" }
+
+pub effect fn main = println (formatCustomer staff)

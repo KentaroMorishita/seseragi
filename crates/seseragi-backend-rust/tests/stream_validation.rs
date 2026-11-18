@@ -141,8 +141,12 @@ fn large_stream_fold_matches_typescript() {
 #[test]
 fn official_typeclass_operator_sample_matches_typescript() {
     compare(
-        include_str!("../../../examples/samples/typeclass-operator-parity/main.ssrg"),
-        include_str!("../../../examples/samples/typeclass-operator-parity/stdout.txt"),
+        include_str!(
+            "../../../examples/spec/fixtures/projects/typeclass-operator-parity/src/main.ssrg"
+        ),
+        include_str!(
+            "../../../examples/spec/fixtures/projects/typeclass-operator-parity/expected.stdout"
+        ),
     );
 }
 

@@ -23,6 +23,7 @@ on:
       - "crates/seseragi-syntax/**"
       - "crates/seseragi-wasm/**"
       - "runtime/ts/**"
+      - "runtime/providers/**"
       - "apps/playground/**"
       - "extensions/seseragi/**"
       - "extensions/seseragi-legacy/**"

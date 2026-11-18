@@ -1,0 +1,210 @@
+/*
+ * デザイントークン（apps/playground/DESIGN.md「4. デザイントークン」）
+ *
+ * 値はここだけに書きます。部品と画面は var(--…) で参照します。
+ * 既定のテーマは OS の設定に合わせます。保存した選択は <html data-theme="light|dark">
+ * として描画の前に当たり、OS の設定より優先します（src/ui/theme.ts）。
+ * ダークの値は二か所にありますが、中身は同じです（テストで一致を確かめます）。
+ */
+
+:root {
+  --ui-color-scheme: light;
+
+  /* 色 */
+  --canvas: #f4f6f7;
+  --canvas-dot: rgba(12, 20, 24, 0.07);
+  --canvas-glow: rgba(0, 180, 184, 0.1);
+  --surface: #ffffff;
+  --surface-2: #f1f4f5;
+  --surface-3: #e8ecee;
+  --surface-selected: #ffffff;
+  --line: #e2e7ea;
+  --line-strong: #cfd6da;
+  --fg-1: #0c1418;
+  --fg-2: #46545c;
+  --fg-3: #5d6a72;
+  --primary: #0c1418;
+  --on-primary: #ffffff;
+  --on-primary-accent: #00b4b8;
+  --accent: #00a3ad;
+  --accent-2: #00b4b8;
+  --accent-ink: #00747c;
+  --accent-soft: rgba(0, 163, 173, 0.1);
+  --accent-ring: rgba(0, 163, 173, 0.28);
+  --ok: #0a7853;
+  --ok-soft: rgba(10, 120, 83, 0.1);
+  --warn: #985006;
+  --warn-soft: rgba(152, 80, 6, 0.1);
+  --error: #c2334a;
+  --error-soft: rgba(194, 51, 74, 0.1);
+  --brand-from: #009aad;
+  --brand-to: #00b4b8;
+  --on-brand: #ffffff;
+  --scrim: rgba(244, 246, 247, 0.6);
+
+  /* 影 */
+  --shadow-soft: 0 1px 2px rgba(12, 20, 24, 0.05);
+  --shadow-selected: 0 1px 2px rgba(12, 20, 24, 0.1);
+  --shadow-inset: inset 0 1px 2px rgba(12, 20, 24, 0.04);
+  --shadow-card:
+    0 1px 2px rgba(12, 20, 24, 0.04), 0 12px 32px -12px rgba(12, 20, 24, 0.12);
+  --shadow-float:
+    0 2px 6px rgba(12, 20, 24, 0.06), 0 24px 64px -16px rgba(12, 20, 24, 0.28);
+
+  /* コードの色 */
+  --syn-text: #1b262c;
+  --syn-comment: #66727a;
+  --syn-keyword: #7c3aed;
+  --syn-type: #a3530b;
+  --syn-string: #0d7a4a;
+  --syn-flow: #00747c;
+  --syn-punct: #5d6a72;
+  --gutter: #9aa5ab;
+
+  /* 文字 */
+  --font-ui:
+    "Geist Variable", "Noto Sans JP Variable", "Hiragino Sans", system-ui,
+    sans-serif;
+  --font-code:
+    "Geist Mono Variable", ui-monospace, "SF Mono", Menlo,
+    "Noto Sans JP Variable", monospace;
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 14px;
+  --text-lg: 17px;
+  --text-xl: 22px;
+  --text-display: 34px;
+  --code-size: 14px;
+  --code-line: 24px;
+
+  /* 余白・形 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+  --top-h: 60px;
+  --control-h: 32px;
+
+  /* 動き */
+  --duration-fast: 160ms;
+  --duration: 220ms;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ui-color-scheme: dark;
+    --canvas: #0b0e10;
+    --canvas-dot: rgba(255, 255, 255, 0.05);
+    --canvas-glow: rgba(0, 180, 184, 0.12);
+    --surface: #121619;
+    --surface-2: #181d20;
+    --surface-3: #20272b;
+    --surface-selected: #20272b;
+    --line: #232a2e;
+    --line-strong: #323b40;
+    --fg-1: #eef3f4;
+    --fg-2: #a6b1b6;
+    --fg-3: #85919a;
+    --primary: #eef3f4;
+    --on-primary: #0b0e10;
+    --on-primary-accent: #00747c;
+    --accent: #23c4c6;
+    --accent-2: #4fd8d4;
+    --accent-ink: #4fd8d4;
+    --accent-soft: rgba(35, 196, 198, 0.12);
+    --accent-ring: rgba(35, 196, 198, 0.3);
+    --ok: #4fd39a;
+    --ok-soft: rgba(79, 211, 154, 0.12);
+    --warn: #f2b56b;
+    --warn-soft: rgba(242, 181, 107, 0.12);
+    --error: #ff7f92;
+    --error-soft: rgba(255, 127, 146, 0.12);
+    --brand-from: #009aad;
+    --brand-to: #00b4b8;
+    --on-brand: #ffffff;
+    --scrim: rgba(11, 14, 16, 0.6);
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-selected: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-card:
+      0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 32px -12px
+      rgba(0, 0, 0, 0.6);
+    --shadow-float: 0 24px 64px -12px rgba(0, 0, 0, 0.7);
+    --syn-text: #e3eaec;
+    --syn-comment: #85929a;
+    --syn-keyword: #c3a6ff;
+    --syn-type: #f2b56b;
+    --syn-string: #8ddc9f;
+    --syn-flow: #4fd8d4;
+    --syn-punct: #8a969c;
+    --gutter: #4c575d;
+  }
+}
+
+:root[data-theme="dark"] {
+  --ui-color-scheme: dark;
+  --canvas: #0b0e10;
+  --canvas-dot: rgba(255, 255, 255, 0.05);
+  --canvas-glow: rgba(0, 180, 184, 0.12);
+  --surface: #121619;
+  --surface-2: #181d20;
+  --surface-3: #20272b;
+  --surface-selected: #20272b;
+  --line: #232a2e;
+  --line-strong: #323b40;
+  --fg-1: #eef3f4;
+  --fg-2: #a6b1b6;
+  --fg-3: #85919a;
+  --primary: #eef3f4;
+  --on-primary: #0b0e10;
+  --on-primary-accent: #00747c;
+  --accent: #23c4c6;
+  --accent-2: #4fd8d4;
+  --accent-ink: #4fd8d4;
+  --accent-soft: rgba(35, 196, 198, 0.12);
+  --accent-ring: rgba(35, 196, 198, 0.3);
+  --ok: #4fd39a;
+  --ok-soft: rgba(79, 211, 154, 0.12);
+  --warn: #f2b56b;
+  --warn-soft: rgba(242, 181, 107, 0.12);
+  --error: #ff7f92;
+  --error-soft: rgba(255, 127, 146, 0.12);
+  --brand-from: #009aad;
+  --brand-to: #00b4b8;
+  --on-brand: #ffffff;
+  --scrim: rgba(11, 14, 16, 0.6);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-selected: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-card:
+    0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 12px 32px -12px
+    rgba(0, 0, 0, 0.6);
+  --shadow-float: 0 24px 64px -12px rgba(0, 0, 0, 0.7);
+  --syn-text: #e3eaec;
+  --syn-comment: #85929a;
+  --syn-keyword: #c3a6ff;
+  --syn-type: #f2b56b;
+  --syn-string: #8ddc9f;
+  --syn-flow: #4fd8d4;
+  --syn-punct: #8a969c;
+  --gutter: #4c575d;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --top-h: 56px;
+    --text-display: 26px;
+    --code-size: 13px;
+    --code-line: 22px;
+  }
+}

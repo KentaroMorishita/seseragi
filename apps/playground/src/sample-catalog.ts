@@ -234,9 +234,6 @@ export function parseSampleMetadata(
       `sample ${id} must declare both the stdin capability and stdin file`
     )
   }
-  if (!interactive && files.expectedOutput === undefined) {
-    throw new Error(`non-interactive sample ${id} requires expectedOutput`)
-  }
 
   return {
     id,

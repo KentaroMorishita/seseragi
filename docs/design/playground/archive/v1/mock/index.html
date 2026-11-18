@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>画面デザイン案モック</title>
+    <link rel="stylesheet" href="./mock.css" />
+    <style>
+      body { overflow: auto; }
+      main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
+      h1 { font-size: 24px; margin: 0 0 8px; }
+      h2 { font-size: 16px; margin: 32px 0 8px; }
+      p, li { color: var(--fg-2); }
+      ul { padding-left: 20px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Playground / Tour 画面デザイン案</h1>
+      <p>
+        画面構成を目で見て判断するための静的なモックです。本体のコードとは独立しており、
+        ボタンは動きません。デザインの決めごとは <code class="inline">apps/playground/DESIGN.md</code> にあります。
+      </p>
+
+      <h2>見られる状態</h2>
+      <ul>
+        <li><a href="./playground.html">Playground: 初めて開いたとき</a></li>
+        <li><a href="./playground.html#discover">Playground: 「例を探す」を開いたとき</a></li>
+        <li><a href="./playground.html#output">Playground: モバイルで「出力」タブを開いたとき</a></li>
+        <li><a href="./tour.html">Tour: レッスンの表示</a></li>
+        <li><a href="./tour.html#curriculum">Tour: 目次を開いたとき</a></li>
+        <li><a href="./tour.html#code">Tour: モバイルで「試す」タブを開いたとき</a></li>
+      </ul>
+
+      <h2>開き方</h2>
+      <p>
+        このフォルダの HTML をブラウザで直接開きます。モバイル表示は、開発者ツールで幅を 390px
+        前後にすると確認できます。
+      </p>
+    </main>
+  </body>
+</html>

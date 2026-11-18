@@ -31,21 +31,6 @@
       ]
     },
     {
-      "id": "signal-run-route",
-      "identity": "the same blue trail planner with explicit Signal and dom.run",
-      "photoId": "photo-1441974231531-c6227db76b6e",
-      "photoGroup": "trail-planner-comparison",
-      "layoutMarkers": ["object-cover", "min-h-screen"],
-      "states": ["initial", "riverside route"],
-      "artifacts": [
-        "docs/reviews/issue-190/visual/trail-planner-explicit-desktop.png",
-        "docs/reviews/issue-190/visual/trail-planner-desktop.png",
-        "docs/reviews/issue-190/visual/trail-planner-riverside.png",
-        "docs/reviews/issue-190/visual/trail-planner-iphone-390.png",
-        "docs/reviews/issue-190/visual/trail-planner-android-360.png"
-      ]
-    },
-    {
       "id": "feature-composition",
       "identity": "lavender release rhythm with distinct feature-owned pulses",
       "photoId": "photo-1556761175-b413da4baf72",

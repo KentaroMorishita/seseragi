@@ -226,9 +226,8 @@ struct NativeScheduler {
     // A program WASM run has no host: no clock, file, process, stdin or
     // signal. Those turns end as Defects instead of starting a host task.
     hostless: bool,
-    // Test roots that have not had a turn yet. As in the TS runtime, where a
-    // test body starts before any timer can fire, a test cannot time out
-    // before its first turn.
+    // Test roots that have not had a turn yet. On the TS target a test body
+    // starts as soon as its case starts, before any timer can fire.
     unstarted: std::collections::BTreeSet<usize>,
 }
 // The Defect for a turn a hostless run cannot perform, or the turn itself.
@@ -510,6 +509,9 @@ impl NativeScheduler {
         }
         None
     }
+    // The next turn is one the TS target runs as a microtask, so no timer
+    // can fire before it. A Fiber resuming from `yieldNow` is a macrotask
+    // there, and a due timer may fire before it.
     fn spawn_test(&mut self, context: NativeContext, plan: V) -> usize {
         let root = self.spawn(context, plan).fiber().task;
         self.unstarted.insert(root);
@@ -517,6 +519,9 @@ impl NativeScheduler {
     }
     fn started(&self, root: usize) -> bool {
         !self.unstarted.contains(&root)
+    }
+    fn microtask_pending(&self) -> bool {
+        !self.ready.is_empty() && (self.yielded.is_empty() || self.yield_wait < NATIVE_YIELD_BUDGET)
     }
     fn discard_test(&mut self, environment: &Rc<RefCell<NativeTestEnvironment>>) {
         let removed = self
@@ -846,7 +851,22 @@ mod scheduler_tests {
             .expect("finished test root");
         assert_eq!(finished.0, root);
         assert!(finished.2.is_ok());
-        assert!(scheduler.started(root));
+    }
+    #[test]
+    fn a_timer_may_fire_only_when_no_microtask_is_pending() {
+        let mut scheduler = NativeScheduler::default();
+        assert!(!scheduler.microtask_pending());
+        scheduler.ready.push_back(1);
+        assert!(scheduler.microtask_pending());
+        // A yielded Fiber waits while others run, until its budget runs out.
+        scheduler.yielded.push_back(2);
+        scheduler.yield_wait = NATIVE_YIELD_BUDGET - 1;
+        assert!(scheduler.microtask_pending());
+        scheduler.yield_wait = NATIVE_YIELD_BUDGET;
+        assert!(!scheduler.microtask_pending());
+        scheduler.ready.clear();
+        scheduler.yield_wait = 0;
+        assert!(!scheduler.microtask_pending());
     }
     #[test]
     fn tick_resumes_signal_waiters_in_their_own_root_process() {

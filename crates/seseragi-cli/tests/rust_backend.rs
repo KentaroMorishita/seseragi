@@ -1105,6 +1105,7 @@ fn native_cli_and_ts_backend_agree_on_canonical_fixtures() {
         "constructor-disjoint",
         "alias-constructor",
         "local-dictionaries",
+        "local-dictionaries-inherited",
         "method-dictionaries",
         "hkt-callables",
         "binding-scope",

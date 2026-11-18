@@ -1,1 +1,3 @@
-inherent methodと`operator +`をStructの`impl`へまとめます。演算子は個別runtime分岐ではなく、標準Trait instanceへloweringされます。
+まずRunを押して出力を確かめたら、`+ 21`の加算値を変えて比較結果がどう変わるか試してみてください。
+
+`struct`に対するメソッドと演算子（`operator +`や`operator ==`）を`impl`ブロックにまとめて定義できます。

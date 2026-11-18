@@ -8,7 +8,7 @@
   "topics": ["Stdin", "readLine", "Maybe", "match"],
   "capabilities": ["console", "stdin"],
   "outputMode": "text",
-  "prerequisites": ["data-and-patterns", "effects-and-do"],
+  "prerequisites": ["hello-world"],
   "featured": false,
   "isNew": true,
   "files": {

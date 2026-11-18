@@ -20,7 +20,7 @@ const effectIds = [
 
 describe("Tour Effect curriculum", () => {
   test("stages execution, failure and contracts sequentially", () => {
-    const lessons = tourLessons.slice(69, 69 + effectIds.length)
+    const lessons = tourLessons.slice(25, 25 + effectIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...effectIds])
     expect(

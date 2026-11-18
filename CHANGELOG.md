@@ -1,5 +1,60 @@
 # Change Log
 
+## [0.61.184] - 2026-11-18
+
+### Fixed
+
+- On Bun and Node, an `exchange` whose request body keeps producing chunks, including empty chunks, finishes when the server sends a final response before the body ends. The sender yields while it skips empty chunks, so the response is read and the request body is cancelled. A browser schedules that pause with a timer, so the same upload still finishes where `setImmediate` is absent.
+
+## [0.61.183] - 2026-11-18
+
+### Added
+
+- The Playground, the Tour and the Deep Dive pages ship the foundation of the v2 design (#1350): design tokens for color, type, spacing, shape, shadow and motion in light and dark, the shared components that the new screens are built from, and a theme that follows the operating system unless a saved choice says otherwise. The saved choice is applied before the page is drawn, so it does not flash. The current screens look and work the same until they are rebuilt on these parts.
+- Geist, Geist Mono and Noto Sans JP are served with the Playground instead of from a font service. Each font is split by character range, and a page loads only the ranges it uses. Their SIL Open Font License 1.1 texts are published under `fonts/`.
+
+## [0.61.182] - 2026-11-18
+
+### Changed
+
+- A sample's `stdout.txt` is optional. The Playground no longer refuses a sample that is not interactive and has no expected output; when a sample has one, its output is still compared.
+- `bun run check:sample` runs only the samples changed from the base branch and checks that each exits with 0 (and matches its `stdout.txt` when there is one). The sample metadata, the Discover catalog and the Playground manifest moved to `bun run check:sample-catalog`, and the Tour moved to `bun run check:tour`. The repository-wide check and the release gate still run every sample and build every Web sample.
+
+## [0.61.181] - 2026-11-17
+
+### Added
+
+- Homebrew installs the CLI and the language server on macOS (Apple silicon and Intel) and Linux (x64): `brew install KentaroMorishita/seseragi/seseragi`, and `brew upgrade seseragi` updates it. Use the full name for the first install so Homebrew trusts the tap. Each release updates the formula in `KentaroMorishita/homebrew-seseragi` from the published checksums, after installing it on each of those systems.
+
+### Changed
+
+- `seseragi upgrade` recognizes a CLI installed with Homebrew and prints `brew upgrade seseragi` instead of replacing its files. Homebrew links the CLI from a `bin` that also holds `seseragi-lsp`, so `seseragi upgrade` used to treat it as an install-script location.
+
+## [0.61.180] - 2026-11-17
+
+### Fixed
+
+- A requirement row `R & { clock: Clock }` keeps one `clock` field when `R` already requires `Clock`. The unresolved shorthand `with Clock` is the standard service `std/clock::Clock`. `effects.timeout`, `effects.timeoutFail`, `effects.retry`, and `effects.repeat` show that field once, including in a type error. A type parameter or local type that is only spelled `Clock` stays distinct, and two fields that share a name but have different types are still an error.
+
+## [0.61.179] - 2026-11-17
+
+### Fixed
+
+- `seseragi test --target native` and `seseragi bench --target native` time out a case only when no Fiber can take a turn, as on the TS target, where a test's timer fires only after every runnable step has run. A body that never waits used to fail when its Effect steps took longer than its timeout, so a test with a zero or very short timeout failed now and then on a busy machine.
+
+## [0.61.178] - 2026-11-17
+
+### Fixed
+
+- A local function with its own `where` can use the enclosing function's constraints, such as `show seed` inside `fn pair<B> value: B -> String where Show<B>` declared in `fn both<A> seed: A -> String where Show<A>`. It used to report `SES-T0201` ("no Show<A> instance matches") on every target, while the same body without its own `where` already worked. This also holds for calls to other constrained functions, operators, enclosing lambdas, `rec` groups, nested local functions, local `effect fn` and local functions inside instance methods. Writing the enclosing constraint again in the local `where` still works.
+
+## [0.61.177] - 2026-11-17
+
+### Fixed
+
+- `streams.zip` stops as soon as one side ends or fails, on both the TS and the native target, and cancels the pull still waiting on the other side. It used to wait for that pull first, so a side that never produced another value, such as `streams.fromEffect (queues.take queue)` on an empty queue, kept `zip` from finishing after the other side had ended. Before stopping, `zip` also looks at the other side's outcome from the same scheduler turn: a failure wins over an end, and the left failure wins over the right one. Work that resumes after `yieldNow` belongs to a later turn.
+- On the TS target, closing a `zip` or `merge` that is already closing now waits for the first close to finish. An outer `zip` used to finish before an inner one had closed its source, and lost a failure raised while closing it.
+
 ## [0.61.176] - 2026-11-17
 
 ### Fixed

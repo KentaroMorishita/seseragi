@@ -1,3 +1,4 @@
+import "../ui/design/index.css"
 import "../styles.css"
 import { requiredElement } from "../ui/elements"
 import { renderGuideMarkdown } from "../ui/guide-markdown"

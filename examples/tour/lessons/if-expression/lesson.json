@@ -1,0 +1,61 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "if-expression",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "ここまでで `let` 束縛、型推論、そして `>=` などの比較から `Bool` を得る方法を学びました。",
+    "walkthrough": [
+      {
+        "heading": "値を返す式としての if",
+        "body": "2 行目の `if score >= 80 then \"pass\" else \"retry\"` は命令文ではなく、選んだ側の値をそのまま返す式です。条件 `score >= 80` が `True` なので `label` には `\"pass\"` が入ります。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 2
+        }
+      },
+      {
+        "heading": "else が必須で、式の一部にも書ける",
+        "body": "3 行目の `if` 式は `Int` 型の `5` または `0` を返し、5 行目の `score + bonus` の計算にそのまま使われています。`then` と `else` の両方を必ず書くのは、どちらの分岐でも 1 つの値を返す必要があるためです。",
+        "sourceRange": {
+          "startLine": 3,
+          "endLine": 5
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "if ... then ... else",
+        "body": "条件（`Bool`）が `True` なら `then` 側、`False` なら `else` 側の式を評価してその値を返します。`else` は省略できず、両分岐は同じ型でなければなりません。"
+      }
+    ],
+    "exercise": {
+      "instruction": "1 行目の `85` を `70` に書き換えて `Run` し、`Output` が `label: retry, total: 70` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "then と else で違う型を返す",
+      "body": "失敗例では `then` 側が `String`（`\"pass\"`）なのに、`else` 側へ `Int`（`0`）を書いています。`if` 式は両方の分岐で同じ型を返す必要があるため、`Problems` に型不一致のエラー表示が出ます。"
+    },
+    "recap": [
+      "Seseragi の `if ... then ... else ...` は文ではなく値を返す式です。",
+      "どちらの分岐を通っても値を返す必要があるため、`else` は省略できません。",
+      "`then` と `else` の結果は必ず同じ型に揃える必要があります。"
+    ],
+    "next": {
+      "lessonId": "03-function-definitions",
+      "body": "次は繰り返し使う計算に名前を付けて呼び出す関数（`fn`）と部分適用を学びます。"
+    },
+    "notes": [
+      "条件をさらに重ねたいときは `else if 条件 then ... else ...` のように続けて書けます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

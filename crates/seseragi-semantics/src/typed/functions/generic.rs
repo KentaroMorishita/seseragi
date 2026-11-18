@@ -962,6 +962,43 @@ mod tests {
     }
 
     #[test]
+    fn requirement_merge_keeps_a_named_clock_apart_from_its_provider() {
+        let record = |type_ref| TypedType::Record {
+            closed: true,
+            fields: vec![TypedRecordField {
+                name: "clock".to_owned(),
+                optional: false,
+                type_ref,
+            }],
+        };
+        let parameter = record(named("Clock", Vec::new()));
+        let provider = record(external("Clock", "std/clock::Clock", Vec::new()));
+        let alias = record(external("RealClock", "std/clock::Clock", Vec::new()));
+        assert_eq!(
+            crate::typed::type_ref::normalize_requirement_merge(vec![parameter, provider.clone()]),
+            TypedType::Record {
+                closed: true,
+                fields: vec![
+                    TypedRecordField {
+                        name: "clock".to_owned(),
+                        optional: false,
+                        type_ref: named("Clock", Vec::new()),
+                    },
+                    TypedRecordField {
+                        name: "clock".to_owned(),
+                        optional: false,
+                        type_ref: external("Clock", "std/clock::Clock", Vec::new()),
+                    },
+                ],
+            }
+        );
+        assert_eq!(
+            crate::typed::type_ref::normalize_requirement_merge(vec![provider.clone(), alias]),
+            provider
+        );
+    }
+
+    #[test]
     fn infers_through_standard_read_only_signal_coercion() {
         let mut substitutions = BTreeMap::new();
         let parameters = vec![TypeParameter {

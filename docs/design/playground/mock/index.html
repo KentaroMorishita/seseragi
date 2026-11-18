@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>画面案 v2 モック</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&family=Noto+Sans+JP:wght@400;600;700&display=swap" />
+    <link rel="stylesheet" href="./mock.css" />
+    <style>
+      body { overflow: auto; }
+      main { max-width: 720px; margin: 0 auto; padding: 48px 16px 64px; }
+      h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: -0.02em; }
+      h2 { margin: 32px 0 8px; font-size: 13px; color: var(--fg-3); letter-spacing: 0.06em; text-transform: uppercase; }
+      p, li { color: var(--fg-2); }
+      ul { padding-left: 20px; }
+      li a { color: var(--accent-ink); font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Playground / Tour 画面案 v2「澄んだ流れ」</h1>
+      <p>
+        画面を目で見て判断するための静的なモックです。本体のコードとは独立しています。
+        決めごとは <code class="inline">apps/playground/DESIGN.md</code> にあります。旧案は
+        <code class="inline">docs/design/playground/archive/v1/</code> に残しています。
+      </p>
+
+      <h2>Playground</h2>
+      <ul>
+        <li><a href="./playground.html">初めて開いたとき</a>（<a href="./playground.html#dark">ダーク</a> · <a href="./playground.html#en">English</a>）</li>
+        <li><a href="./playground.html#palette">⌘K で例・レッスン・API を探す</a>（<a href="./playground.html#en,palette">English</a>）</li>
+        <li><a href="./playground.html#output">モバイルで出力を広げたとき</a></li>
+        <li><a href="./playground.html#quiet">2 回目から: 案内を畳んだ通常状態</a></li>
+      </ul>
+
+      <h2>自由に書く</h2>
+      <ul>
+        <li><a href="./write.html">自分のコードで型のホバーを見ているところ</a>（<a href="./write.html#dark">ダーク</a>）</li>
+        <li><a href="./write.html#error">エラーがあるとき</a>（下線、行番号の横の点、Problems）</li>
+        <li><a href="./write.html#complete">補完を開いているところ</a>（今の Playground にはない。新しく入れる案）</li>
+      </ul>
+
+      <h2>Tour</h2>
+      <ul>
+        <li><a href="./tour.html">レッスン</a>（<a href="./tour.html#dark">ダーク</a> · <a href="./tour.html#en">English：本文が未翻訳のとき</a>）</li>
+        <li><a href="./tour.html#map">目次（コースマップ）</a></li>
+        <li><a href="./tour.html#code">モバイルでコードに切り替えたとき</a></li>
+      </ul>
+
+      <h2>見方</h2>
+      <p>
+        モバイル表示は、開発者ツールで幅を 390px 前後にすると確認できます。状態は URL の # で切り替えます。
+        右上の JA / EN、月のアイコン、下の切り替えボタン、ひとことの Close と Try next の Hide / Show も押せます。
+      </p>
+    </main>
+  </body>
+</html>

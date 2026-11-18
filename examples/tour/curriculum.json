@@ -20,6 +20,7 @@
     "type-inference",
     "primitive-arithmetic",
     "comparison",
+    "if-expression",
     "comment",
     "format",
     "reset",
@@ -180,1101 +181,321 @@
   ],
   "categories": [
     {
-      "id": "start",
+      "id": "foundations",
       "order": 1,
-      "title": "はじめの一歩",
-      "summary": "実行入口と最初の出力を確かめます。",
+      "title": "基本の構文と値",
+      "summary": "プログラムの実行、値と型推論、if式による条件分岐を学びます。",
       "chapters": [
         {
-          "id": "start-execution",
+          "id": "foundations-basics",
           "order": 1,
-          "title": "実行と最小program",
-          "summary": "最小のmainを実行し、Outputとの関係を確かめます。",
+          "title": "実行・値・分岐",
+          "summary": "最初の実行から、let束縛とif式までを順に進めます。",
           "lessons": [
             {
               "id": "01-hello-world",
               "order": 1,
-              "title": "RunとOutputを対応させる",
-              "summary": "完成済みの最小programをRunし、出力された一行を読みます。",
-              "goal": "sourceをRunし、Outputへ現れた結果を確認できる。",
-              "focus": ["Run", "Output"],
-              "introducedSurfaces": ["run-output"],
+              "title": "最初のプログラムを動かして書き換える",
+              "summary": "文字列テンプレートを自分の手で書き換えてRunとOutputを確かめます。",
+              "goal": "コードを書き換えてRunし、文字列テンプレートの結果をOutputへ出せる。",
+              "focus": ["Run", "String template"],
+              "introducedSurfaces": [
+                "run-output",
+                "main",
+                "effect-fn",
+                "string-literal",
+                "println",
+                "string-template",
+                "comment",
+                "format",
+                "reset"
+              ],
               "requiredSurfaces": [],
               "prerequisites": [],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/01-hello-world/lesson.json",
-              "deliveryIssue": 172,
+              "deliveryIssue": 1348,
               "seedSamples": ["hello-world"]
             },
             {
-              "id": "program-entry",
+              "id": "02-values-and-bindings",
               "order": 2,
-              "title": "mainをprogramの入口として読む",
-              "summary": "Runすると呼ばれる公開されたeffectful functionを読みます。",
-              "goal": "pub effect fn mainがprogramの実行入口だと説明できる。",
-              "focus": ["program entry", "effectful function"],
-              "introducedSurfaces": ["main", "effect-fn"],
-              "requiredSurfaces": ["run-output"],
+              "title": "値に名前を付ける（letと型推論）",
+              "summary": "IntやFloat、Bool、Unitなどの基本値と不変なlet束縛・型推論をまとめます。",
+              "goal": "letで値に名前を付け、型注釈の有無と基本演算の結果を説明できる。",
+              "focus": ["let", "Type inference"],
+              "introducedSurfaces": [
+                "int",
+                "float",
+                "bool",
+                "unit",
+                "let",
+                "local-let",
+                "pure-block",
+                "type-annotation",
+                "type-inference",
+                "primitive-arithmetic",
+                "comparison"
+              ],
+              "requiredSurfaces": ["main", "println", "string-template"],
               "prerequisites": ["01-hello-world"],
               "capabilities": ["console"],
               "outputMode": "text",
-              "content": "lessons/program-entry/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["hello-world"]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "values",
-      "order": 2,
-      "title": "値・literal・型",
-      "summary": "値へ名前と型を与え、出力へ組み立てます。",
-      "chapters": [
-        {
-          "id": "values-literals",
-          "order": 1,
-          "title": "Literalの種類",
-          "summary": "一種類ずつliteralを作り、表示結果と型を確かめます。",
-          "lessons": [
-            {
-              "id": "string-literal",
-              "order": 3,
-              "title": "String literalを作る",
-              "summary": "二重引用符の間にtextを書き、一行出力します。",
-              "goal": "String literalを作り、printlnへ渡せる。",
-              "focus": ["String literal", "println"],
-              "introducedSurfaces": ["string-literal", "println"],
-              "requiredSurfaces": ["main", "effect-fn", "run-output"],
-              "prerequisites": ["program-entry"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/string-literal/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["hello-world"]
-            },
-            {
-              "id": "string-template",
-              "order": 4,
-              "title": "Templateへ値を埋め込む",
-              "summary": "backtickのtextへ一つのString valueを埋め込みます。",
-              "goal": "template literalの${...}へ値を一つ埋め込める。",
-              "focus": ["template literal", "interpolation"],
-              "introducedSurfaces": ["string-template"],
-              "requiredSurfaces": ["string-literal", "println"],
-              "prerequisites": ["string-literal"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/string-template/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
-            },
-            {
-              "id": "int-literal",
-              "order": 5,
-              "title": "Int literalを作る",
-              "summary": "小数点のない整数を作り、templateで表示します。",
-              "goal": "Int literalを書き、Stringとは異なる型として読める。",
-              "focus": ["Int", "integer literal"],
-              "introducedSurfaces": ["int"],
-              "requiredSurfaces": ["string-template", "println"],
-              "prerequisites": ["string-template"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/int-literal/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
-            },
-            {
-              "id": "float-literal",
-              "order": 6,
-              "title": "Float literalを作る",
-              "summary": "小数点を持つ数値を作り、Intとの表記の違いを読みます。",
-              "goal": "Float literalを書き、Intと区別できる。",
-              "focus": ["Float", "decimal literal"],
-              "introducedSurfaces": ["float"],
-              "requiredSurfaces": ["int", "string-template"],
-              "prerequisites": ["int-literal"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/float-literal/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
-            },
-            {
-              "id": "bool-literal",
-              "order": 7,
-              "title": "Bool literalを作る",
-              "summary": "TrueとFalseで二つの状態を表します。",
-              "goal": "Bool literalの二つのconstructorを書ける。",
-              "focus": ["Bool", "True / False"],
-              "introducedSurfaces": ["bool"],
-              "requiredSurfaces": ["string-template"],
-              "prerequisites": ["float-literal"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/bool-literal/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
-            },
-            {
-              "id": "unit-literal",
-              "order": 8,
-              "title": "Unit valueを読む",
-              "summary": "()で情報を持たない一つだけの値を作ります。",
-              "goal": "Unitの値()と型の役割を説明できる。",
-              "focus": ["Unit", "unit value"],
-              "introducedSurfaces": ["unit"],
-              "requiredSurfaces": ["string-template"],
-              "prerequisites": ["bool-literal"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/unit-literal/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
-            }
-          ]
-        },
-        {
-          "id": "values-bindings",
-          "order": 2,
-          "title": "値へ名前と型を与える",
-          "summary": "binding、scope、型注釈、型推論を順に確かめます。",
-          "lessons": [
-            {
-              "id": "02-values-and-bindings",
-              "order": 9,
-              "title": "Top-level valueへ名前を付ける",
-              "summary": "同じvalueを名前で参照できるimmutable bindingを作ります。",
-              "goal": "top-level letで値へ名前を付けて利用できる。",
-              "focus": ["top-level value", "immutable binding"],
-              "introducedSurfaces": ["let"],
-              "requiredSurfaces": ["string-literal", "unit"],
-              "prerequisites": ["unit-literal"],
-              "capabilities": ["console"],
-              "outputMode": "text",
               "content": "lessons/02-values-and-bindings/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
+              "deliveryIssue": 1348,
+              "seedSamples": ["hello-world"]
             },
             {
-              "id": "local-let",
-              "order": 10,
-              "title": "Blockの中でlocal letを使う",
-              "summary": "blockだけで使う中間値へ名前を付けます。",
-              "goal": "pure blockのlocal letをscope内で利用できる。",
-              "focus": ["local binding", "scope"],
-              "introducedSurfaces": ["local-let", "pure-block"],
-              "requiredSurfaces": ["let", "string-template"],
+              "id": "if-expression",
+              "order": 3,
+              "title": "条件で値を選ぶ（if式）",
+              "summary": "if ... then ... else ... が値を返す式であり、分岐の型を揃えることを学びます。",
+              "goal": "if式で条件に応じた値を返し、elseの必須性と型一致を説明できる。",
+              "focus": ["if expression", "Branch types"],
+              "introducedSurfaces": ["if-expression"],
+              "requiredSurfaces": ["bool", "let", "comparison", "println"],
               "prerequisites": ["02-values-and-bindings"],
               "capabilities": ["console"],
               "outputMode": "text",
-              "content": "lessons/local-let/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
-            },
-            {
-              "id": "type-annotations",
-              "order": 11,
-              "title": "型注釈を読む",
-              "summary": "binding名の後ろへ期待する型を明示します。",
-              "goal": "name: Type = valueの型注釈を読んで書ける。",
-              "focus": ["type annotation", "binding contract"],
-              "introducedSurfaces": ["type-annotation"],
-              "requiredSurfaces": ["let", "int"],
-              "prerequisites": ["local-let"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/type-annotations/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
-            },
-            {
-              "id": "type-inference",
-              "order": 12,
-              "title": "右辺から型を推論する",
-              "summary": "型注釈を省略してもcompilerが値の型を決めます。",
-              "goal": "最小のbindingで推論された型を説明できる。",
-              "focus": ["type inference", "inferred binding"],
-              "introducedSurfaces": ["type-inference"],
-              "requiredSurfaces": ["let", "int", "type-annotation"],
-              "prerequisites": ["type-annotations"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/type-inference/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
-            }
-          ]
-        },
-        {
-          "id": "values-operations",
-          "order": 3,
-          "title": "Primitive valueを計算・比較する",
-          "summary": "算術と比較を別々のlessonで確かめます。",
-          "lessons": [
-            {
-              "id": "primitive-arithmetic",
-              "order": 13,
-              "title": "Intを加算する",
-              "summary": "二つのIntから新しいInt valueを作ります。",
-              "goal": "primitiveなInt加算の式を書き、結果の型を読める。",
-              "focus": ["integer addition", "result value"],
-              "introducedSurfaces": ["primitive-arithmetic"],
-              "requiredSurfaces": ["int", "let", "type-inference"],
-              "prerequisites": ["type-inference"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/primitive-arithmetic/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["unary-operators"]
-            },
-            {
-              "id": "primitive-comparison",
-              "order": 14,
-              "title": "Intを比較してBoolを作る",
-              "summary": "二つのIntの大小を比較し、Bool resultを読みます。",
-              "goal": "primitive比較の結果がBoolになると説明できる。",
-              "focus": ["comparison", "Bool result"],
-              "introducedSurfaces": ["comparison"],
-              "requiredSurfaces": ["int", "bool", "let"],
-              "prerequisites": ["primitive-arithmetic"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/primitive-comparison/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["unary-operators"]
-            }
-          ]
-        },
-        {
-          "id": "values-tools",
-          "order": 4,
-          "title": "Editorとdiagnostic",
-          "summary": "comment、Format、Reset、compiler diagnosticを操作します。",
-          "lessons": [
-            {
-              "id": "comments-and-tools",
-              "order": 15,
-              "title": "Comment・Format・Reset・diagnosticを使う",
-              "summary": "sourceを安全に試し、崩れたときに戻して原因を読みます。",
-              "goal": "基本のeditor操作でsourceを変更・整形・復元・修正できる。",
-              "focus": ["editor operations", "compiler feedback"],
-              "introducedSurfaces": [
-                "comment",
-                "format",
-                "reset",
-                "diagnostic"
-              ],
-              "requiredSurfaces": ["string-literal", "let", "type-annotation"],
-              "prerequisites": ["primitive-comparison"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/comments-and-tools/lesson.json",
-              "deliveryIssue": 172,
-              "seedSamples": ["strings-and-templates"]
+              "content": "lessons/if-expression/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["hello-world"]
             }
           ]
         }
       ]
     },
     {
-      "id": "functions",
-      "order": 3,
-      "title": "関数",
-      "summary": "関数を定義し、引数を渡し、処理の流れを組み立てます。",
+      "id": "functions-and-pipelines",
+      "order": 2,
+      "title": "関数とパイプライン",
+      "summary": "関数定義、部分適用、|> と $ による読みやすい値の受け渡しを学びます。",
       "chapters": [
         {
-          "id": "functions-definition",
+          "id": "functions-core",
           "order": 1,
-          "title": "関数を定義する",
-          "summary": "parameterなしから始め、parameterと戻り型を一つずつ読みます。",
+          "title": "関数定義とパイプライン",
+          "summary": "fnで関数を定義し、部分適用やパイプラインでつなぎます。",
           "lessons": [
             {
               "id": "03-function-definitions",
-              "order": 16,
-              "title": "Parameterなしの関数を定義する",
-              "summary": "fnで再利用できるpure functionへ名前を付けます。",
-              "goal": "parameterを持たないpure functionを定義できる。",
-              "focus": ["function definition"],
-              "introducedSurfaces": ["fn", "pure-function"],
-              "requiredSurfaces": ["string-literal", "type-annotation"],
-              "prerequisites": ["comments-and-tools"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/03-function-definitions/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            },
-            {
-              "id": "one-parameter-function",
-              "order": 17,
-              "title": "一つのparameterを受け取る",
-              "summary": "関数名の後ろへparameter名と型を書きます。",
-              "goal": "一つのString parameterを持つ関数を定義できる。",
-              "focus": ["single parameter"],
-              "introducedSurfaces": ["parameter"],
-              "requiredSurfaces": ["fn", "string-template", "type-annotation"],
-              "prerequisites": ["03-function-definitions"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/one-parameter-function/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            },
-            {
-              "id": "function-return-type",
-              "order": 18,
-              "title": "矢印の右を戻り型として読む",
-              "summary": "parameterの型と関数全体が返す型を区別します。",
-              "goal": "->の最後にある型を関数の戻り型として説明できる。",
-              "focus": ["return type"],
-              "introducedSurfaces": ["return-type"],
-              "requiredSurfaces": ["fn", "parameter", "type-annotation"],
-              "prerequisites": ["one-parameter-function"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/function-return-type/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            }
-          ]
-        },
-        {
-          "id": "functions-application",
-          "order": 2,
-          "title": "関数へ値を渡す",
-          "summary": "空白による適用から複数parameterと途中の関数値へ進みます。",
-          "lessons": [
-            {
-              "id": "04-function-calls",
-              "order": 19,
-              "title": "空白で一つの引数を渡す",
-              "summary": "関数名と値を空白で並べて関数を適用します。",
-              "goal": "一parameter関数へ空白で一つの値を渡せる。",
-              "focus": ["function application"],
-              "introducedSurfaces": ["application"],
-              "requiredSurfaces": ["fn", "parameter", "return-type"],
-              "prerequisites": ["function-return-type"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/04-function-calls/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            },
-            {
-              "id": "multiple-parameter-function",
-              "order": 20,
-              "title": "複数のparameterへ左から値を渡す",
-              "summary": "矢印で続くparameterへ値を左から一つずつ渡します。",
-              "goal": "複数parameter関数を定義し、左から順に適用できる。",
-              "focus": ["multiple parameters", "left-to-right application"],
-              "introducedSurfaces": ["multiple-parameters"],
-              "requiredSurfaces": ["application", "parameter", "return-type"],
-              "prerequisites": ["04-function-calls"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/multiple-parameter-function/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            },
-            {
-              "id": "function-value",
-              "order": 21,
-              "title": "途中まで適用した関数を値にする",
-              "summary": "残りの引数を待つ関数へ名前を付けます。",
-              "goal": "途中まで適用した結果が関数値だとcodeから確認できる。",
-              "focus": ["function value"],
-              "introducedSurfaces": ["function-value"],
-              "requiredSurfaces": ["multiple-parameters", "let"],
-              "prerequisites": ["multiple-parameter-function"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/function-value/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            },
-            {
-              "id": "currying-from-code",
-              "order": 22,
-              "title": "一段ずつの適用をcurryingとして読む",
-              "summary": "三つのparameterを一回ずつ適用するcodeからcurryingを理解します。",
-              "goal": "curryingを一引数ずつ関数が返る現象として説明できる。",
-              "focus": ["currying"],
-              "introducedSurfaces": ["currying"],
-              "requiredSurfaces": ["function-value", "multiple-parameters"],
-              "prerequisites": ["function-value"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/currying-from-code/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            },
-            {
-              "id": "partial-application",
-              "order": 23,
-              "title": "Partial applicationで専用関数を作る",
-              "summary": "共通の引数を先に固定した関数値を再利用します。",
-              "goal": "partial applicationで汎用関数から専用関数を作れる。",
-              "focus": ["partial application"],
-              "introducedSurfaces": ["partial-application"],
-              "requiredSurfaces": ["currying", "function-value"],
-              "prerequisites": ["currying-from-code"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/partial-application/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            },
-            {
-              "id": "application-grouping",
-              "order": 24,
-              "title": "Bracketで適用順を明示する",
-              "summary": "内側の関数適用を先に計算する順序を括弧で示します。",
-              "goal": "括弧で内側と外側の関数適用順を明示できる。",
-              "focus": ["application grouping"],
-              "introducedSurfaces": ["application-grouping"],
-              "requiredSurfaces": ["application", "partial-application"],
-              "prerequisites": ["partial-application"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/application-grouping/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            }
-          ]
-        },
-        {
-          "id": "functions-operators",
-          "order": 3,
-          "title": "値を渡すoperator",
-          "summary": "括弧と同じ適用順を$と|>で読みやすく表します。",
-          "lessons": [
-            {
-              "id": "dollar-application",
-              "order": 25,
-              "title": "$で右側全体を一つの値として渡す",
-              "summary": "右側で組み立てた値を低優先順位で左の関数へ渡します。",
-              "goal": "$の右側全体が左の関数の引数になると説明できる。",
-              "focus": ["low-precedence application"],
-              "introducedSurfaces": ["dollar-application"],
-              "requiredSurfaces": ["application-grouping"],
-              "prerequisites": ["application-grouping"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/dollar-application/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            },
-            {
-              "id": "pipeline-application",
-              "order": 26,
-              "title": "|>で左の値を次の関数へ渡す",
-              "summary": "値から始めて右側の関数へ順に渡します。",
-              "goal": "|>の左の値が右の関数の最後の引数になると説明できる。",
-              "focus": ["pipeline"],
-              "introducedSurfaces": ["pipeline"],
-              "requiredSurfaces": ["application", "partial-application"],
-              "prerequisites": ["dollar-application"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/pipeline-application/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            },
-            {
-              "id": "mixed-application",
-              "order": 27,
-              "title": "$と|>を混ぜた読み順を確かめる",
-              "summary": "pipelineで作った右側の値全体を$で渡します。",
-              "goal": "$がpipeline全体を包む優先順位をcodeから説明できる。",
-              "focus": ["mixed application order"],
-              "introducedSurfaces": ["mixed-application"],
-              "requiredSurfaces": ["dollar-application", "pipeline"],
-              "prerequisites": ["pipeline-application"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/mixed-application/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
-            }
-          ]
-        },
-        {
-          "id": "functions-composition",
-          "order": 4,
-          "title": "小さな関数をつなぐ",
-          "summary": "定義・適用・値の流れを一つの短い処理へまとめます。",
-          "lessons": [
-            {
-              "id": "05-pipelines",
-              "order": 28,
-              "title": "小さな関数を組み合わせる",
-              "summary": "一つの仕事を持つ関数をつないでmessageを作ります。",
-              "goal": "小さなpure functionを$と|>で組み合わせられる。",
-              "focus": ["function composition"],
-              "introducedSurfaces": ["function-composition"],
-              "requiredSurfaces": [
-                "mixed-application",
+              "order": 4,
+              "title": "関数を作って呼び出す（fnと部分適用）",
+              "summary": "fnによる関数宣言、空白区切りの呼び出し、部分適用を一つずつ確かめます。",
+              "goal": "fnで関数を定義し、引数適用と部分適用で新しい関数を作れる。",
+              "focus": ["fn", "Partial application"],
+              "introducedSurfaces": [
+                "fn",
+                "pure-function",
+                "parameter",
+                "return-type",
+                "application",
+                "multiple-parameters",
+                "function-value",
                 "currying",
                 "partial-application"
               ],
-              "prerequisites": ["mixed-application"],
+              "requiredSurfaces": [
+                "int",
+                "string-template",
+                "let",
+                "type-annotation"
+              ],
+              "prerequisites": ["if-expression"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/03-function-definitions/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["hello-world", "local-functions"]
+            },
+            {
+              "id": "05-pipelines",
+              "order": 5,
+              "title": "パイプラインと $ で処理をつなぐ",
+              "summary": "縦に揃えた |> と括弧を減らす $ を使って小さな関数をつなぎます。",
+              "goal": "|> と $ で値の流れる順に複数の関数を組み合わせて出力できる。",
+              "focus": ["Pipeline", "Application $"],
+              "introducedSurfaces": [
+                "application-grouping",
+                "dollar-application",
+                "pipeline",
+                "mixed-application",
+                "function-composition"
+              ],
+              "requiredSurfaces": ["fn", "application", "partial-application"],
+              "prerequisites": ["03-function-definitions"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/05-pipelines/lesson.json",
-              "deliveryIssue": 173,
-              "seedSamples": ["functions-and-pipelines"]
+              "deliveryIssue": 1348,
+              "seedSamples": ["hello-world"]
             }
           ]
         }
       ]
     },
     {
-      "id": "data",
-      "order": 4,
-      "title": "データの形",
-      "summary": "tuple、Record、Structを一つずつ組み立て、違いを読みます。",
+      "id": "data-and-collections",
+      "order": 3,
+      "title": "データの形とコレクション",
+      "summary": "タプル、レコード、struct、ADT、matchと網羅性チェック、ArrayとRangeの集計を学びます。",
       "chapters": [
         {
-          "id": "data-tuples",
+          "id": "data-shapes-and-match",
           "order": 1,
-          "title": "Tuple",
-          "summary": "位置で並ぶvalueを作り、patternで分解します。",
+          "title": "データの形とmatch",
+          "summary": "データの組み立て方と、matchによる安全な分解・網羅性チェックを扱います。",
           "lessons": [
             {
-              "id": "tuple-values",
-              "order": 29,
-              "title": "Tupleを組み立てる",
-              "summary": "異なる型のvalueを位置付きで一つにまとめます。",
-              "goal": "tuple literalとtuple typeを書ける。",
-              "focus": ["tuple construction"],
-              "introducedSurfaces": ["tuple"],
-              "requiredSurfaces": ["let", "string-literal", "int"],
+              "id": "tuple-and-record",
+              "order": 6,
+              "title": "タプルと無名レコード",
+              "summary": "固定長のタプルと、フィールド名で扱う構造的な無名レコードを比較します。",
+              "goal": "タプルとレコードを作り、参照やスプレッド更新・幅部分型を使える。",
+              "focus": ["Tuple", "Record"],
+              "introducedSurfaces": [
+                "tuple",
+                "tuple-pattern",
+                "record",
+                "field-access",
+                "record-spread"
+              ],
+              "requiredSurfaces": ["let", "int", "string-template"],
               "prerequisites": ["05-pipelines"],
               "capabilities": ["console"],
               "outputMode": "text",
-              "content": "lessons/tuple-values/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["data-and-patterns"]
-            },
-            {
-              "id": "tuple-pattern-binding",
-              "order": 30,
-              "title": "Tupleをpatternで分解する",
-              "summary": "tupleの各位置へ名前を束縛します。",
-              "goal": "tuple pattern bindingで要素を取り出せる。",
-              "focus": ["tuple destructuring"],
-              "introducedSurfaces": ["tuple-pattern"],
-              "requiredSurfaces": ["tuple", "let", "string-template"],
-              "prerequisites": ["tuple-values"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/tuple-pattern-binding/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["data-and-patterns"]
-            }
-          ]
-        },
-        {
-          "id": "data-records",
-          "order": 2,
-          "title": "Record",
-          "summary": "field名で構造を作り、immutableに更新します。",
-          "lessons": [
-            {
-              "id": "record-values",
-              "order": 31,
-              "title": "Recordを組み立てる",
-              "summary": "field名とvalueから構造的な値を作ります。",
-              "goal": "Record literalを書ける。",
-              "focus": ["record construction"],
-              "introducedSurfaces": ["record"],
-              "requiredSurfaces": ["let", "string-literal"],
-              "prerequisites": ["tuple-pattern-binding"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/record-values/lesson.json",
-              "deliveryIssue": 174,
+              "content": "lessons/tuple-and-record/lesson.json",
+              "deliveryIssue": 1348,
               "seedSamples": ["records"]
             },
-            {
-              "id": "record-access-update",
-              "order": 32,
-              "title": "Recordを読み、更新する",
-              "summary": "field accessとspreadで新しいRecordを作ります。",
-              "goal": "Record fieldを読み、元の値を変えずに更新できる。",
-              "focus": ["record access", "immutable update"],
-              "introducedSurfaces": ["field-access", "record-spread"],
-              "requiredSurfaces": ["record", "string-template"],
-              "prerequisites": ["record-values"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/record-access-update/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["records"]
-            }
-          ]
-        },
-        {
-          "id": "data-structs",
-          "order": 3,
-          "title": "Struct",
-          "summary": "名前を持つ型を宣言し、fieldを読みます。",
-          "lessons": [
             {
               "id": "06-records-and-structs",
-              "order": 33,
-              "title": "Structを宣言して組み立てる",
-              "summary": "named Structの型とvalueを作ります。",
-              "goal": "Struct declarationとconstructorを書ける。",
-              "focus": ["named structure"],
-              "introducedSurfaces": ["struct"],
-              "requiredSurfaces": ["record", "let", "string-literal"],
-              "prerequisites": ["record-access-update"],
+              "order": 7,
+              "title": "名前付きデータ struct",
+              "summary": "名前で型を区別するstructの宣言・生成・フィールド参照を学びます。",
+              "goal": "structを定義して無名レコードと使い分け、名義型で取り違えを防げる。",
+              "focus": ["struct", "Field access"],
+              "introducedSurfaces": [
+                "struct",
+                "struct-field-access",
+                "data-shape-selection"
+              ],
+              "requiredSurfaces": ["record", "field-access", "string-template"],
+              "prerequisites": ["tuple-and-record"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/06-records-and-structs/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["generic-structs"]
+              "deliveryIssue": 1348,
+              "seedSamples": ["records", "type-aliases"]
             },
             {
-              "id": "struct-field-access",
-              "order": 34,
-              "title": "Structのfieldを読む",
-              "summary": "Struct valueから型のあるfieldを選びます。",
-              "goal": "Struct field accessを書ける。",
-              "focus": ["struct field access"],
-              "introducedSurfaces": ["struct-field-access"],
-              "requiredSurfaces": ["struct", "field-access", "string-template"],
+              "id": "adt-definition",
+              "order": 8,
+              "title": "代数的データ型（ADT）",
+              "summary": "取りうる状態のケースと中身の値を持つコンストラクターをADTで定義します。",
+              "goal": "typeで状態ごとのコンストラクターを持つ代数的データ型を定義できる。",
+              "focus": ["ADT", "Constructor"],
+              "introducedSurfaces": ["adt", "constructor"],
+              "requiredSurfaces": ["let", "application", "string-literal"],
               "prerequisites": ["06-records-and-structs"],
               "capabilities": ["console"],
               "outputMode": "text",
-              "content": "lessons/struct-field-access/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["generic-structs"]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "patterns",
-      "order": 5,
-      "title": "状態と分解",
-      "summary": "ADTを組み立て、pattern matchで段階的に分解します。",
-      "chapters": [
-        {
-          "id": "patterns-adts",
-          "order": 1,
-          "title": "ADT",
-          "summary": "取りうる状態とpayloadをconstructorで表します。",
-          "lessons": [
-            {
-              "id": "simple-adt",
-              "order": 35,
-              "title": "状態をADTで列挙する",
-              "summary": "payloadを持たないconstructorで状態を表します。",
-              "goal": "simple ADTを宣言してvalueを作れる。",
-              "focus": ["algebraic data type"],
-              "introducedSurfaces": ["adt"],
-              "requiredSurfaces": ["let", "string-literal"],
-              "prerequisites": ["struct-field-access"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/simple-adt/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["data-and-patterns"]
-            },
-            {
-              "id": "payload-adt",
-              "order": 36,
-              "title": "Constructorへpayloadを持たせる",
-              "summary": "状態と一緒にString valueを保持します。",
-              "goal": "payload constructorを宣言して適用できる。",
-              "focus": ["payload constructor"],
-              "introducedSurfaces": ["constructor"],
-              "requiredSurfaces": ["adt", "application", "string-literal"],
-              "prerequisites": ["simple-adt"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/payload-adt/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["data-and-patterns"]
-            }
-          ]
-        },
-        {
-          "id": "patterns-matching",
-          "order": 2,
-          "title": "Pattern match",
-          "summary": "constructorを判別し、payloadを取り出します。",
-          "lessons": [
-            {
-              "id": "single-constructor-match",
-              "order": 37,
-              "title": "一つのconstructorをmatchする",
-              "summary": "一種類だけのADTをpatternで判別します。",
-              "goal": "最小のmatch expressionを書ける。",
-              "focus": ["single constructor match"],
-              "introducedSurfaces": ["match"],
-              "requiredSurfaces": ["adt", "constructor", "fn"],
-              "prerequisites": ["payload-adt"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/single-constructor-match/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["data-and-patterns"]
+              "content": "lessons/adt-definition/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["hello-world", "newtypes"]
             },
             {
               "id": "07-adts-and-patterns",
-              "order": 38,
-              "title": "複数のconstructorをmatchする",
-              "summary": "状態ごとに別のarmを選びます。",
-              "goal": "multi-constructor matchを書ける。",
-              "focus": ["multiple match arms"],
-              "introducedSurfaces": ["multi-constructor-match"],
-              "requiredSurfaces": ["match", "adt", "fn"],
-              "prerequisites": ["single-constructor-match"],
+              "order": 9,
+              "title": "matchで値を分解する",
+              "summary": "コンストラクターの分岐、変数束縛、入れ子とワイルドカード _ で値を分解します。",
+              "goal": "matchの分岐でADTから中身の値を取り出し、変数や _ で安全に処理できる。",
+              "focus": ["match", "Pattern binding"],
+              "introducedSurfaces": [
+                "match",
+                "multi-constructor-match",
+                "pattern-binding",
+                "nested-pattern",
+                "wildcard-pattern"
+              ],
+              "requiredSurfaces": ["adt", "constructor", "tuple", "fn"],
+              "prerequisites": ["adt-definition"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/07-adts-and-patterns/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["data-and-patterns"]
-            },
-            {
-              "id": "payload-pattern-binding",
-              "order": 39,
-              "title": "Patternからpayloadへ名前を付ける",
-              "summary": "constructor payloadをarm内のvalueとして使います。",
-              "goal": "payload pattern bindingを書ける。",
-              "focus": ["payload binding"],
-              "introducedSurfaces": ["pattern-binding"],
-              "requiredSurfaces": ["match", "constructor", "string-template"],
-              "prerequisites": ["07-adts-and-patterns"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/payload-pattern-binding/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["data-and-patterns"]
-            },
-            {
-              "id": "nested-pattern-wildcard",
-              "order": 40,
-              "title": "Nested patternで必要な値だけ受け取る",
-              "summary": "内側のtupleを分解し、不要な位置をwildcardにします。",
-              "goal": "nested patternとwildcardを書ける。",
-              "focus": ["nested pattern", "wildcard"],
-              "introducedSurfaces": ["nested-pattern", "wildcard-pattern"],
-              "requiredSurfaces": ["pattern-binding", "tuple", "match"],
-              "prerequisites": ["payload-pattern-binding"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/nested-pattern-wildcard/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["data-and-patterns"]
+              "deliveryIssue": 1348,
+              "seedSamples": ["hello-world", "fizzbuzz"]
             },
             {
               "id": "exhaustive-match",
-              "order": 41,
-              "title": "すべての状態を扱う",
-              "summary": "網羅的なmatchとmissing arm diagnosticを確認します。",
-              "goal": "ADTの全constructorをmatchできる。",
-              "focus": ["exhaustiveness"],
-              "introducedSurfaces": ["exhaustive-match"],
-              "requiredSurfaces": ["multi-constructor-match", "diagnostic"],
-              "prerequisites": ["nested-pattern-wildcard"],
+              "order": 10,
+              "title": "網羅性チェック",
+              "summary": "全ケースを処理しているかをコンパイラが実行前に検査する仕組みを確かめます。",
+              "goal": "matchの漏れをエラー表示で確認し、全ケースを網羅して修正できる。",
+              "focus": ["Exhaustive match", "Problems"],
+              "introducedSurfaces": ["exhaustive-match", "diagnostic"],
+              "requiredSurfaces": [
+                "multi-constructor-match",
+                "pattern-binding"
+              ],
+              "prerequisites": ["07-adts-and-patterns"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/exhaustive-match/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["data-and-patterns"]
+              "deliveryIssue": 1348,
+              "seedSamples": ["hello-world"]
             }
           ]
         },
         {
-          "id": "patterns-selection",
-          "order": 3,
-          "title": "形の選択",
-          "summary": "Tuple、Record、Struct、ADTの役割を比較します。",
+          "id": "collections-basics",
+          "order": 2,
+          "title": "Array・Range・集計パイプライン",
+          "summary": "配列、範囲、map・filter・reduceのパイプラインを扱います。",
           "lessons": [
             {
-              "id": "data-shape-selection",
-              "order": 42,
-              "title": "目的に合うdataの形を選ぶ",
-              "summary": "四つのdata表現を同じprogramで比較します。",
-              "goal": "位置、field、型名、状態の違いでdata表現を選べる。",
-              "focus": ["data modeling choice"],
-              "introducedSurfaces": ["data-shape-selection"],
-              "requiredSurfaces": ["tuple", "record", "struct", "adt", "match"],
+              "id": "08-collections-and-ranges",
+              "order": 11,
+              "title": "ArrayとRangeの基本",
+              "summary": "Arrayリテラル、Range、添字アクセスがMaybeを返す安全な設計を学びます。",
+              "goal": "ArrayとRangeを作り、境界を意識して安全に要素を取り出せる。",
+              "focus": ["Array", "Range"],
+              "introducedSurfaces": ["array", "array-access", "range"],
+              "requiredSurfaces": ["int", "let", "match", "pattern-binding"],
               "prerequisites": ["exhaustive-match"],
               "capabilities": ["console"],
               "outputMode": "text",
-              "content": "lessons/data-shape-selection/lesson.json",
-              "deliveryIssue": 174,
-              "seedSamples": ["records", "data-and-patterns"]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "collections",
-      "order": 6,
-      "title": "複数の値",
-      "summary": "Array、List、Rangeを作り、読み、変換し、集約します。",
-      "chapters": [
-        {
-          "id": "collections-shapes",
-          "order": 1,
-          "title": "Collectionの形",
-          "summary": "Array、List、Rangeを一つずつ作り、読みます。",
-          "lessons": [
-            {
-              "id": "array-values",
-              "order": 43,
-              "title": "Array literalを作る",
-              "summary": "同じ型のvalueを順序付きArrayへ並べます。",
-              "goal": "Array literalとArray typeを書ける。",
-              "focus": ["array literal"],
-              "introducedSurfaces": ["array"],
-              "requiredSurfaces": ["let", "int"],
-              "prerequisites": ["data-shape-selection"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/array-values/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collections"]
-            },
-            {
-              "id": "array-access",
-              "order": 44,
-              "title": "Arrayの長さと要素を読む",
-              "summary": "lengthと安全な添字アクセスでArrayを観測します。",
-              "goal": "ArrayのlengthとMaybeを返すarray[index]を使える。",
-              "focus": ["array access"],
-              "introducedSurfaces": ["array-access"],
-              "requiredSurfaces": ["array", "match", "pattern-binding"],
-              "prerequisites": ["array-values"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/array-access/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collections"]
-            },
-            {
-              "id": "list-values",
-              "order": 45,
-              "title": "Listを組み立てる",
-              "summary": "persistent List literalを作ります。",
-              "goal": "List literalとList typeを書ける。",
-              "focus": ["list construction"],
-              "introducedSurfaces": ["list"],
-              "requiredSurfaces": ["let", "int"],
-              "prerequisites": ["array-access"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/list-values/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collection-patterns"]
-            },
-            {
-              "id": "list-decomposition",
-              "order": 46,
-              "title": "Listをheadとtailへ分解する",
-              "summary": "List patternで先頭と残りを取り出します。",
-              "goal": "空とconsのList patternを書ける。",
-              "focus": ["list pattern"],
-              "introducedSurfaces": ["list-decomposition"],
-              "requiredSurfaces": ["list", "match", "pattern-binding"],
-              "prerequisites": ["list-values"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/list-decomposition/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collection-patterns"]
-            },
-            {
-              "id": "range-values",
-              "order": 47,
-              "title": "Rangeで範囲を表す",
-              "summary": "要素を保存せず開始と終端でInt範囲を表します。",
-              "goal": "exclusiveとinclusiveのRangeを書ける。",
-              "focus": ["lazy integer range"],
-              "introducedSurfaces": ["range"],
-              "requiredSurfaces": ["int", "let"],
-              "prerequisites": ["list-decomposition"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/range-values/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collections"]
-            }
-          ]
-        },
-        {
-          "id": "collections-transform",
-          "order": 2,
-          "title": "変換と絞り込み",
-          "summary": "callbackとcollection本体の位置を読み分けます。",
-          "lessons": [
-            {
-              "id": "collection-map",
-              "order": 48,
-              "title": "ArrayとListをmap・<$>で変換する",
-              "summary": "Named形とoperator形で二つのcollection shapeを保ちます。",
-              "goal": "ArrayとListでmapと<$>を相互に書き換えられる。",
-              "focus": ["element transform", "concrete Functor operator"],
-              "introducedSurfaces": ["map", "collection-functor-operator"],
-              "requiredSurfaces": ["array", "list", "function-value"],
-              "prerequisites": ["range-values"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/collection-map/lesson.json",
-              "deliveryIssue": 262,
-              "seedSamples": ["collections"]
-            },
-            {
-              "id": "collection-filter",
-              "order": 49,
-              "title": "filterで要素を残す",
-              "summary": "Bool callbackがTrueにする要素だけを残します。",
-              "goal": "predicateを先、Arrayを後にfilterへ渡せる。",
-              "focus": ["element predicate"],
-              "introducedSurfaces": ["filter"],
-              "requiredSurfaces": ["array", "bool", "function-value"],
-              "prerequisites": ["collection-map"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/collection-filter/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collections"]
-            }
-          ]
-        },
-        {
-          "id": "collections-reduce",
-          "order": 3,
-          "title": "集約",
-          "summary": "initial valueとstepから一つのresultを作ります。",
-          "lessons": [
-            {
-              "id": "collection-reduce-step",
-              "order": 50,
-              "title": "集約stepを書く",
-              "summary": "accumulatorと次の要素から新しいaccumulatorを返します。",
-              "goal": "reduce callbackの二つのparameterを説明できる。",
-              "focus": ["reducer callback"],
-              "introducedSurfaces": ["reduce-step"],
-              "requiredSurfaces": ["fn", "multiple-parameters", "int"],
-              "prerequisites": ["collection-filter"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/collection-reduce-step/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collection-patterns"]
-            },
-            {
-              "id": "collection-reduce",
-              "order": 51,
-              "title": "reduceで一つの値へ集約する",
-              "summary": "initial valueからsource順にstepを適用します。",
-              "goal": "reduceのinitial、step、collectionを順に渡せる。",
-              "focus": ["collection reduction"],
-              "introducedSurfaces": ["reduce"],
-              "requiredSurfaces": ["reduce-step", "array", "application"],
-              "prerequisites": ["collection-reduce-step"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/collection-reduce/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collection-patterns"]
-            },
-            {
-              "id": "collection-append-concat",
-              "order": 52,
-              "title": "appendとconcatでcollectionをつなぐ",
-              "summary": "一つのsuffixまたはnested collectionを平らにつなぎます。",
-              "goal": "appendとconcatの入力形の違いを説明できる。",
-              "focus": ["collection composition"],
-              "introducedSurfaces": ["collection-compose"],
-              "requiredSurfaces": ["array", "list", "application"],
-              "prerequisites": ["collection-reduce"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/collection-append-concat/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collections"]
-            },
-            {
-              "id": "collection-comprehension",
-              "order": 53,
-              "title": "Comprehensionを読む",
-              "summary": "source、条件、resultの順でcollection生成を読みます。",
-              "goal": "Rangeから条件付きArrayを作れる。",
-              "focus": ["collection comprehension"],
-              "introducedSurfaces": ["comprehension"],
-              "requiredSurfaces": ["range", "filter", "map"],
-              "prerequisites": ["collection-append-concat"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/collection-comprehension/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collection-patterns"]
+              "content": "lessons/08-collections-and-ranges/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["collections", "fizzbuzz"]
             },
             {
               "id": "collection-pipeline",
-              "order": 54,
-              "title": "Collection処理をpipelineでつなぐ",
-              "summary": "filter、map、reduceへ同じvalueを順に流します。",
-              "goal": "data-last APIをpipelineで組み合わせられる。",
-              "focus": ["collection pipeline"],
-              "introducedSurfaces": ["collection-pipeline"],
-              "requiredSurfaces": ["filter", "map", "reduce", "pipeline"],
-              "prerequisites": ["collection-comprehension"],
+              "order": 12,
+              "title": "map・filter・reduceで集計する",
+              "summary": "mapや<$>、filter、reduceを縦のパイプラインでつないで集計します。",
+              "goal": "Arrayに対して変換・絞り込み・集約をパイプラインで組み立てられる。",
+              "focus": ["map / filter", "reduce"],
+              "introducedSurfaces": [
+                "map",
+                "collection-functor-operator",
+                "filter",
+                "reduce",
+                "collection-pipeline",
+                "collection-selection"
+              ],
+              "requiredSurfaces": [
+                "array",
+                "range",
+                "function-value",
+                "pipeline"
+              ],
+              "prerequisites": ["08-collections-and-ranges"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/collection-pipeline/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collections"]
-            },
-            {
-              "id": "empty-collections",
-              "order": 55,
-              "title": "空collectionを扱う",
-              "summary": "空Arrayのlengthとreduce resultを確認します。",
-              "goal": "空collectionでもtotal operationを安全に使える。",
-              "focus": ["empty collection"],
-              "introducedSurfaces": ["empty-collection"],
-              "requiredSurfaces": ["array", "reduce", "array-access"],
-              "prerequisites": ["collection-pipeline"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/empty-collections/lesson.json",
-              "deliveryIssue": 175,
-              "seedSamples": ["collections"]
-            },
-            {
-              "id": "08-collections-and-ranges",
-              "order": 56,
-              "title": "Array・List・Rangeを使い分ける",
-              "summary": "index、persistent分解、遅延範囲の役割を比較します。",
-              "goal": "用途に合わせて三つのcollectionを選べる。",
-              "focus": ["collection selection"],
-              "introducedSurfaces": ["collection-selection"],
-              "requiredSurfaces": [
-                "array",
-                "list",
-                "range",
-                "collection-pipeline"
-              ],
-              "prerequisites": ["empty-collections"],
-              "capabilities": ["console"],
-              "outputMode": "text",
-              "content": "lessons/08-collections-and-ranges/lesson.json",
-              "deliveryIssue": 175,
+              "deliveryIssue": 1348,
               "seedSamples": ["collections", "collection-patterns"]
             }
           ]
@@ -1283,7 +504,7 @@
     },
     {
       "id": "fallibility",
-      "order": 7,
+      "order": 4,
       "title": "欠如と失敗",
       "summary": "値がない場合と失敗理由を通常の値として段階的に扱います。",
       "chapters": [
@@ -1295,14 +516,14 @@
           "lessons": [
             {
               "id": "maybe-role",
-              "order": 57,
+              "order": 13,
               "title": "値の有無をMaybeで表す",
               "summary": "通常値が得られない場合を型へ残します。",
               "goal": "Maybe<A>のAと値の有無を説明できる。",
               "focus": ["optional value"],
               "introducedSurfaces": ["maybe"],
               "requiredSurfaces": ["adt", "int"],
-              "prerequisites": ["08-collections-and-ranges"],
+              "prerequisites": ["collection-pipeline"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/maybe-role/lesson.json",
@@ -1311,7 +532,7 @@
             },
             {
               "id": "maybe-constructors",
-              "order": 58,
+              "order": 14,
               "title": "JustとNothingを作る",
               "summary": "値ありと値なしの二constructorを使います。",
               "goal": "JustとNothingのMaybe valueを作れる。",
@@ -1327,7 +548,7 @@
             },
             {
               "id": "maybe-match",
-              "order": 59,
+              "order": 15,
               "title": "Maybeをmatchで取り出す",
               "summary": "NothingとJustのarmを分けます。",
               "goal": "Maybeを網羅的にmatchできる。",
@@ -1343,7 +564,7 @@
             },
             {
               "id": "maybe-default",
-              "order": 60,
+              "order": 16,
               "title": "値がなければdefaultを使う",
               "summary": "pureなwithDefault helperでMaybeを通常値へ変換します。",
               "goal": "Maybeをmatchしてfallback付きの通常値へ変換できる。",
@@ -1359,7 +580,7 @@
             },
             {
               "id": "maybe-map",
-              "order": 61,
+              "order": 17,
               "title": "Maybeをmap・<$>で変換する",
               "summary": "Just payloadだけを二つの表記で変換します。",
               "goal": "Maybeでmapと<$>を相互に書き換えられる。",
@@ -1379,7 +600,7 @@
             },
             {
               "id": "maybe-combine",
-              "order": 62,
+              "order": 18,
               "title": "二つのMaybeをapply・<*>で組み合わせる",
               "summary": "Maybe<Int -> Int>の途中型を経由して独立した値を合成します。",
               "goal": "Maybeでapplyと<*>を相互に書き換えられる。",
@@ -1405,7 +626,7 @@
             },
             {
               "id": "maybe-short-circuit",
-              "order": 63,
+              "order": 19,
               "title": "MaybeをflatMap・>>=で短絡合成する",
               "summary": "依存する次のMaybeを選び、Nothingなら後続を止めます。",
               "goal": "MaybeでflatMapと>>=を相互に書き換え、短絡を確認できる。",
@@ -1435,7 +656,7 @@
           "lessons": [
             {
               "id": "either-role",
-              "order": 64,
+              "order": 20,
               "title": "失敗理由をEitherで保持する",
               "summary": "error型とsuccess型を両方残します。",
               "goal": "Either<E, A>の二parameterを説明できる。",
@@ -1451,7 +672,7 @@
             },
             {
               "id": "either-constructors",
-              "order": 65,
+              "order": 21,
               "title": "LeftとRightを作る",
               "summary": "失敗または成功の一方をvalueにします。",
               "goal": "EitherのLeftとRightを構築できる。",
@@ -1467,7 +688,7 @@
             },
             {
               "id": "either-match",
-              "order": 66,
+              "order": 22,
               "title": "Eitherをmatchする",
               "summary": "errorとsuccessを別々のarmで取り出します。",
               "goal": "Eitherを網羅的にmatchできる。",
@@ -1483,7 +704,7 @@
             },
             {
               "id": "either-map-error",
-              "order": 67,
+              "order": 23,
               "title": "Eitherのsuccessとerrorを別々に変換する",
               "summary": "map・<$>はRightを変換し、Leftの変換は明示的に分けます。",
               "goal": "Eitherでmapと<$>を相互に書き換え、Left保持を説明できる。",
@@ -1506,7 +727,7 @@
             },
             {
               "id": "09-maybe-and-either",
-              "order": 68,
+              "order": 24,
               "title": "MaybeとEitherを使い分ける",
               "summary": "欠如か理由付き失敗かで型を選びます。",
               "goal": "情報を残す必要からMaybeとEitherを選べる。",
@@ -1522,7 +743,7 @@
             },
             {
               "id": "effect-failure-bridge",
-              "order": 69,
+              "order": 25,
               "title": "Valueの失敗からEffect failureへ接続する",
               "summary": "今章のvalueと次章の実行failureの境界を整理します。",
               "goal": "Either valueとEffect failureの役割差を説明できる。",
@@ -1534,7 +755,7 @@
               "outputMode": "text",
               "content": "lessons/effect-failure-bridge/lesson.json",
               "deliveryIssue": 176,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             }
           ]
         }
@@ -1542,7 +763,7 @@
     },
     {
       "id": "effects",
-      "order": 8,
+      "order": 5,
       "title": "Effect",
       "summary": "副作用を遅延した値として順番に合成します。",
       "chapters": [
@@ -1554,7 +775,7 @@
           "lessons": [
             {
               "id": "effect-pure-vs-effect",
-              "order": 70,
+              "order": 26,
               "title": "Pure関数とeffect fnを分ける",
               "summary": "通常値を返す計算と実行する処理を分けます。",
               "goal": "fnとeffect fnの戻り値の役割差を説明できる。",
@@ -1566,11 +787,11 @@
               "outputMode": "text",
               "content": "lessons/effect-pure-vs-effect/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-single-operation",
-              "order": 71,
+              "order": 27,
               "title": "一つのEffectを実行する",
               "summary": "println一つをmainの実行境界で動かします。",
               "goal": "一つのEffect operationを実行できる。",
@@ -1582,11 +803,11 @@
               "outputMode": "text",
               "content": "lessons/effect-single-operation/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-do-block",
-              "order": 72,
+              "order": 28,
               "title": "do blockを上から読む",
               "summary": "複数Effectを一つのblockへ並べます。",
               "goal": "doの各行とblock全体がEffectだと説明できる。",
@@ -1598,11 +819,11 @@
               "outputMode": "text",
               "content": "lessons/effect-do-block/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-sequence",
-              "order": 73,
+              "order": 29,
               "title": "複数Effectを順番に実行する",
               "summary": "出力順で逐次実行を確認します。",
               "goal": "doがEffectをsource順に実行すると確認できる。",
@@ -1614,7 +835,7 @@
               "outputMode": "text",
               "content": "lessons/effect-sequence/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             }
           ]
         },
@@ -1626,7 +847,7 @@
           "lessons": [
             {
               "id": "effect-bind-success",
-              "order": 74,
+              "order": 30,
               "title": "成功値を<-で受け取る",
               "summary": "Effectの成功値を名前へbindします。",
               "goal": "<-の左側へ入るsuccess valueを追える。",
@@ -1638,11 +859,11 @@
               "outputMode": "text",
               "content": "lessons/effect-bind-success/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-succeed-value",
-              "order": 75,
+              "order": 31,
               "title": "succeedで成功値を返す",
               "summary": "通常値を失敗しないEffectへ持ち上げます。",
               "goal": "succeedでEffectのsuccess valueを作れる。",
@@ -1654,11 +875,11 @@
               "outputMode": "text",
               "content": "lessons/effect-succeed-value/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-failure-short-circuit",
-              "order": 76,
+              "order": 32,
               "title": "Failureで後続処理を止める",
               "summary": "実際のtyped failureと未実行の後続を確認します。",
               "goal": "failure pathの終了結果を実行して確認できる。",
@@ -1670,11 +891,11 @@
               "outputMode": "text",
               "content": "lessons/effect-failure-short-circuit/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-fails-type",
-              "order": 77,
+              "order": 33,
               "title": "failsでfailure型を読む",
               "summary": "回復可能なfailure型をcontractへ明示します。",
               "goal": "fails EをEffectのfailure channelとして読める。",
@@ -1686,7 +907,7 @@
               "outputMode": "text",
               "content": "lessons/effect-fails-type/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             }
           ]
         },
@@ -1698,7 +919,7 @@
           "lessons": [
             {
               "id": "effect-with-capability",
-              "order": 78,
+              "order": 34,
               "title": "withでcapabilityを要求する",
               "summary": "Console serviceをenvironment contractへ書きます。",
               "goal": "withが利用可能なcapabilityを表すと説明できる。",
@@ -1710,11 +931,11 @@
               "outputMode": "text",
               "content": "lessons/effect-with-capability/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-inferred-contract",
-              "order": 79,
+              "order": 35,
               "title": "Effect contractを推論する",
               "summary": "Compact formでwith、fails、successをbodyから得ます。",
               "goal": "inferred Effect contractを説明できる。",
@@ -1726,11 +947,11 @@
               "outputMode": "text",
               "content": "lessons/effect-inferred-contract/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-explicit-contract",
-              "order": 80,
+              "order": 36,
               "title": "Effect contractを明示する",
               "summary": "Success、with、failsをsourceへ固定します。",
               "goal": "推論版と明示版を使い分けられる。",
@@ -1742,11 +963,11 @@
               "outputMode": "text",
               "content": "lessons/effect-explicit-contract/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-map-error",
-              "order": 81,
+              "order": 37,
               "title": "mapErrorでapplication errorへ揃える",
               "summary": "依存failureをapplicationのADTへ写します。",
               "goal": "mapErrorでfailure型だけを変換できる。",
@@ -1758,11 +979,11 @@
               "outputMode": "text",
               "content": "lessons/effect-map-error/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "effect-value-boundary",
-              "order": 82,
+              "order": 38,
               "title": "Maybe・EitherとEffectを変換する",
               "summary": "Pure valueをfromEitherでEffect channelへ移します。",
               "goal": "Either valueとEffect failureの変換境界を書ける。",
@@ -1774,11 +995,11 @@
               "outputMode": "text",
               "content": "lessons/effect-value-boundary/lesson.json",
               "deliveryIssue": 177,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             },
             {
               "id": "10-effects-and-do",
-              "order": 83,
+              "order": 39,
               "title": "EffectのflatMap・>>=・doを対応付ける",
               "summary": "同じsuccess-dependent compositionを三つの表記で実行します。",
               "goal": "EffectでflatMap・>>=・doを相互に書き換えられる。",
@@ -1798,7 +1019,7 @@
               "outputMode": "text",
               "content": "lessons/10-effects-and-do/lesson.json",
               "deliveryIssue": 262,
-              "seedSamples": ["effects-and-do"]
+              "seedSamples": ["stdin-greeting"]
             }
           ]
         }
@@ -1806,7 +1027,7 @@
     },
     {
       "id": "abstraction",
-      "order": 9,
+      "order": 6,
       "title": "再利用できる契約",
       "summary": "genericなcodeとTraitの振る舞いを定義します。",
       "chapters": [
@@ -1818,7 +1039,7 @@
           "lessons": [
             {
               "id": "abstraction-concrete-generic",
-              "order": 84,
+              "order": 40,
               "title": "Concrete関数をgenericへまとめる",
               "summary": "型だけが違う処理を一つのgeneric関数へ置き換えます。",
               "goal": "concrete版とgeneric版の違いをcodeから説明できる。",
@@ -1835,11 +1056,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-concrete-generic/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["generic-structs"]
+              "seedSamples": ["type-aliases"]
             },
             {
               "id": "abstraction-type-parameter",
-              "order": 85,
+              "order": 41,
               "title": "Type parameter Aを読む",
               "summary": "同じAが同じ具体型へ揃うことを確認します。",
               "goal": "generic signature内のAを呼び出しごとの具体型として読める。",
@@ -1851,11 +1072,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-type-parameter/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["generic-structs"]
+              "seedSamples": ["type-aliases"]
             },
             {
               "id": "abstraction-generic-adt-definition",
-              "order": 86,
+              "order": 42,
               "title": "Generic ADTを定義する",
               "summary": "payload型をparameterにしたBoxを宣言します。",
               "goal": "type parameterを持つADTを宣言できる。",
@@ -1867,11 +1088,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-generic-adt-definition/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["generic-structs"]
+              "seedSamples": ["type-aliases"]
             },
             {
               "id": "abstraction-generic-adt-use",
-              "order": 87,
+              "order": 43,
               "title": "Generic ADTを利用する",
               "summary": "Boxのpayloadを型を保ったまま取り出します。",
               "goal": "generic ADTをconstructしてgeneric関数へ渡せる。",
@@ -1883,11 +1104,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-generic-adt-use/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["generic-structs"]
+              "seedSamples": ["type-aliases"]
             },
             {
               "id": "abstraction-multiple-type-parameters",
-              "order": 88,
+              "order": 44,
               "title": "複数のtype parameterを使う",
               "summary": "failureとsuccessをEとAで別々に表します。",
               "goal": "複数parameterの役割を型の位置から説明できる。",
@@ -1899,11 +1120,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-multiple-type-parameters/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["generic-structs"]
+              "seedSamples": ["type-aliases"]
             },
             {
               "id": "abstraction-type-constructor-parameter",
-              "order": 89,
+              "order": 45,
               "title": "F<_>を型constructorとして読む",
               "summary": "containerの形Fと中身Aを分けて扱います。",
               "goal": "F<_>とAのkindの違いをcodeから説明できる。",
@@ -1915,11 +1136,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-type-constructor-parameter/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["generic-structs"]
+              "seedSamples": ["type-aliases"]
             },
             {
               "id": "abstraction-trait-operation",
-              "order": 90,
+              "order": 46,
               "title": "Traitが要求するoperationを読む",
               "summary": "型が提供すべき関数signatureを契約として宣言します。",
               "goal": "Trait declarationから必要なoperationを読み取れる。",
@@ -1931,11 +1152,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-trait-operation/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["traits-and-instances"]
+              "seedSamples": ["impl-and-operators"]
             },
             {
               "id": "abstraction-user-instance",
-              "order": 91,
+              "order": 47,
               "title": "Userland instanceを定義する",
               "summary": "concrete型へTrait operationの実装を与えます。",
               "goal": "Traitの要求を満たすinstanceを書ける。",
@@ -1947,11 +1168,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-user-instance/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["traits-and-instances"]
+              "seedSamples": ["impl-and-operators"]
             },
             {
               "id": "abstraction-where-constraint",
-              "order": 92,
+              "order": 48,
               "title": "Where constraintを読む",
               "summary": "generic関数が必要とするTrait evidenceを明記します。",
               "goal": "where節をgeneric関数の利用条件として読める。",
@@ -1963,11 +1184,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-where-constraint/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["traits-and-instances"]
+              "seedSamples": ["impl-and-operators"]
             },
             {
               "id": "abstraction-instance-selection",
-              "order": 93,
+              "order": 49,
               "title": "Instance選択と不足diagnosticを確認する",
               "summary": "同じgeneric関数がinstanceの有無で成功・失敗する差を見ます。",
               "goal": "不足したinstanceのdiagnosticから必要な契約を判断できる。",
@@ -1979,11 +1200,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-instance-selection/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["traits-and-instances"]
+              "seedSamples": ["impl-and-operators"]
             },
             {
               "id": "abstraction-functor-map",
-              "order": 94,
+              "order": 50,
               "title": "具体型のmapと<$>をFunctorで統一する",
               "summary": "Array・List・Maybe・Eitherで使った同じ型の流れをTraitとして回収します。",
               "goal": "複数の具体型で使ったmapと<$>をFunctorの共通type schemeで説明できる。",
@@ -1997,7 +1218,7 @@
               ],
               "prerequisites": [
                 "abstraction-instance-selection",
-                "collection-map",
+                "collection-pipeline",
                 "maybe-map",
                 "either-map-error"
               ],
@@ -2009,7 +1230,7 @@
             },
             {
               "id": "abstraction-applicative-apply",
-              "order": 95,
+              "order": 51,
               "title": "Maybeのapplyと<*>をApplicativeで統一する",
               "summary": "具体型で追ったF<A -> B>の途中型を共通Trait contractへ一般化します。",
               "goal": "Maybeで使ったapplyと<*>をApplicativeの共通type schemeで説明できる。",
@@ -2029,7 +1250,7 @@
             },
             {
               "id": "abstraction-monad-bind",
-              "order": 96,
+              "order": 52,
               "title": "MaybeとEffectのbindをMonadで統一する",
               "summary": "具体型で使ったflatMap・>>=・doを一つの共通contractとして回収します。",
               "goal": "MaybeとEffectで使ったbind表記をMonadの共通type schemeで説明できる。",
@@ -2054,13 +1275,13 @@
             },
             {
               "id": "abstraction-type-comparison",
-              "order": 97,
+              "order": 53,
               "title": "同じ抽象操作を複数の型で比べる",
               "summary": "Maybe・Either・Array・List・Effectのmapを横断します。",
               "goal": "同じoperationが異なるcontainerの形を保つことを確認できる。",
               "focus": ["cross-type abstraction comparison"],
               "introducedSurfaces": ["abstraction-comparison"],
-              "requiredSurfaces": ["monad", "array", "list", "effect"],
+              "requiredSurfaces": ["monad", "array", "effect"],
               "prerequisites": ["abstraction-monad-bind"],
               "capabilities": ["console"],
               "outputMode": "text",
@@ -2070,7 +1291,7 @@
             },
             {
               "id": "abstraction-signal-contract",
-              "order": 98,
+              "order": 54,
               "title": "SignalがMonadではない契約を理解する",
               "summary": "SignalのFunctor・ApplicativeとMonadの境界を確認します。",
               "goal": "Signalで<$>と<*>は使えて>>=は使えない理由を説明できる。",
@@ -2082,11 +1303,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-signal-contract/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["signal-composition", "signal-state"]
+              "seedSamples": ["signal-state"]
             },
             {
               "id": "abstraction-impl-method",
-              "order": 99,
+              "order": 55,
               "title": "Impl methodをgeneric型へ定義する",
               "summary": "nominal型に型を保つoperationを追加します。",
               "goal": "generic nominal型へmethodを定義して呼び出せる。",
@@ -2098,11 +1319,11 @@
               "outputMode": "text",
               "content": "lessons/abstraction-impl-method/lesson.json",
               "deliveryIssue": 178,
-              "seedSamples": ["generic-structs", "impl-and-operators"]
+              "seedSamples": ["type-aliases", "impl-and-operators"]
             },
             {
               "id": "abstraction-custom-operator",
-              "order": 100,
+              "order": 56,
               "title": "Custom operatorを関数として定義する",
               "summary": "fixityを持つoperatorを通常関数と同じ型で扱います。",
               "goal": "custom operatorを定義し、infixと関数値の両方で使える。",
@@ -2122,7 +1343,7 @@
     },
     {
       "id": "signals",
-      "order": 10,
+      "order": 7,
       "title": "時間変化する値",
       "summary": "Signalを生成し、導出し、まとめて更新します。",
       "chapters": [
@@ -2134,7 +1355,7 @@
           "lessons": [
             {
               "id": "signals-value-difference",
-              "order": 101,
+              "order": 57,
               "title": "通常の値とSignalを区別する",
               "summary": "固定した値と時間で変わる現在値をcodeで比べます。",
               "goal": "IntとSignal<Int>の役割差を説明できる。",
@@ -2146,11 +1367,11 @@
               "outputMode": "text",
               "content": "lessons/signals-value-difference/lesson.json",
               "deliveryIssue": 179,
-              "seedSamples": ["signal-composition"]
+              "seedSamples": ["signal-state"]
             },
             {
               "id": "signals-make",
-              "order": 102,
+              "order": 58,
               "title": "MutableSignalを作る",
               "summary": "signals.makeで更新可能な現在値をEffect内に作ります。",
               "goal": "初期値からMutableSignal<A>を作成できる。",
@@ -2166,7 +1387,7 @@
             },
             {
               "id": "signals-readonly-coercion",
-              "order": 103,
+              "order": 59,
               "title": "MutableSignalをSignalとして読む",
               "summary": "更新権限を隠したread-only viewへcoerceします。",
               "goal": "MutableSignal<A>をSignal<A>引数へ安全に渡せる。",
@@ -2178,11 +1399,11 @@
               "outputMode": "text",
               "content": "lessons/signals-readonly-coercion/lesson.json",
               "deliveryIssue": 179,
-              "seedSamples": ["signal-composition"]
+              "seedSamples": ["signal-state"]
             },
             {
               "id": "signals-read-operator",
-              "order": 104,
+              "order": 60,
               "title": "Signals.readと*を対応付ける",
               "summary": "Named APIとprefix operatorで同じEffectful readを実行します。",
               "goal": "signals.readと*を相互に書き換え、対象と戻り型を説明できる。",
@@ -2194,11 +1415,11 @@
               "outputMode": "text",
               "content": "lessons/signals-read-operator/lesson.json",
               "deliveryIssue": 252,
-              "seedSamples": ["signal-composition"]
+              "seedSamples": ["signal-state"]
             },
             {
               "id": "signals-set",
-              "order": 105,
+              "order": 61,
               "title": "Signals.setで値を更新する",
               "summary": "MutableSignalの現在値を明示的なEffectで置換します。",
               "goal": "signals.setのvalueとtargetの順序を読んで更新できる。",
@@ -2214,7 +1435,7 @@
             },
             {
               "id": "signals-write-operator",
-              "order": 106,
+              "order": 62,
               "title": "Signals.setと:=を対応付ける",
               "summary": "Named APIとMutableSignal専用operatorで同じEffectful writeを実行します。",
               "goal": "signals.setと:=を相互に書き換え、更新権限を説明できる。",
@@ -2230,7 +1451,7 @@
             },
             {
               "id": "signals-observable-update",
-              "order": 107,
+              "order": 63,
               "title": "更新前後の現在値を観測する",
               "summary": "readとsetを分けてbefore/afterを出力します。",
               "goal": "更新の前後をEffectの実行順で確認できる。",
@@ -2246,7 +1467,7 @@
             },
             {
               "id": "signals-map",
-              "order": 108,
+              "order": 64,
               "title": "Signals.mapで表示値へ変換する",
               "summary": "元のstateを変更せずderived Signalを作ります。",
               "goal": "Signal<A>からSignal<B>を導出できる。",
@@ -2258,11 +1479,11 @@
               "outputMode": "text",
               "content": "lessons/signals-map/lesson.json",
               "deliveryIssue": 179,
-              "seedSamples": ["signal-composition"]
+              "seedSamples": ["signal-state"]
             },
             {
               "id": "signals-functor-operator",
-              "order": 109,
+              "order": 65,
               "title": "Signals.mapと<$>を対応付ける",
               "summary": "named APIとFunctor operatorが同じderived値を作ることを確認します。",
               "goal": "signals.mapと<$>を同じSignal Functor operationとして使える。",
@@ -2274,11 +1495,11 @@
               "outputMode": "text",
               "content": "lessons/signals-functor-operator/lesson.json",
               "deliveryIssue": 179,
-              "seedSamples": ["signal-composition"]
+              "seedSamples": ["signal-state"]
             },
             {
               "id": "signals-constant-pure",
-              "order": 110,
+              "order": 66,
               "title": "Constantとpureで固定Signalを作る",
               "summary": "変化しない値をSignalのshapeへ持ち上げます。",
               "goal": "signals.constantとpureの対応を説明できる。",
@@ -2290,11 +1511,11 @@
               "outputMode": "text",
               "content": "lessons/signals-constant-pure/lesson.json",
               "deliveryIssue": 179,
-              "seedSamples": ["signal-composition"]
+              "seedSamples": ["signal-state"]
             },
             {
               "id": "signals-combine",
-              "order": 111,
+              "order": 67,
               "title": "Signals.combineで二つの現在値を合成する",
               "summary": "二つのdependencyから一つのderived Signalを作ります。",
               "goal": "curried関数で二つのSignalを合成できる。",
@@ -2310,7 +1531,7 @@
             },
             {
               "id": "signals-applicative-glitch-free",
-              "order": 112,
+              "order": 68,
               "title": "<*>とtransactionでglitch-freeに合成する",
               "summary": "複数更新を一度に公開し中間値をobserverへ見せません。",
               "goal": "Signal Applicativeとtransactionの役割を区別できる。",
@@ -2330,7 +1551,7 @@
             },
             {
               "id": "signals-monad-boundary",
-              "order": 113,
+              "order": 69,
               "title": "SignalがMonadではない理由を確認する",
               "summary": "依存graphを保つApplicativeと動的bindの違いを整理します。",
               "goal": "Signalへ>>=を使わない契約をdiagnosticから説明できる。",
@@ -2342,11 +1563,11 @@
               "outputMode": "text",
               "content": "lessons/signals-monad-boundary/lesson.json",
               "deliveryIssue": 179,
-              "seedSamples": ["signal-composition"]
+              "seedSamples": ["signal-state"]
             },
             {
               "id": "signals-switch-map",
-              "order": 114,
+              "order": 70,
               "title": "SwitchMapで選択先を明示する",
               "summary": "動的dependency切替をMonad bindではなく専用APIで表します。",
               "goal": "switchMapと>>=の意味差をcodeから説明できる。",
@@ -2362,7 +1583,7 @@
             },
             {
               "id": "signals-handler-boundary",
-              "order": 115,
+              "order": 71,
               "title": "HandlerだけへMutableSignalを渡す",
               "summary": "更新権限をhandler内へ閉じ、外側へSignalだけ公開します。",
               "goal": "更新処理と表示用Signalを型で分離できる。",
@@ -2374,7 +1595,7 @@
               "outputMode": "text",
               "content": "lessons/signals-handler-boundary/lesson.json",
               "deliveryIssue": 179,
-              "seedSamples": ["signal-run-route"]
+              "seedSamples": ["interactive-app"]
             }
           ]
         }
@@ -2382,7 +1603,7 @@
     },
     {
       "id": "web-ui",
-      "order": 11,
+      "order": 8,
       "title": "Browser UI",
       "summary": "pureなHtmlとFunction componentを組み立てます。",
       "chapters": [
@@ -2394,7 +1615,7 @@
           "lessons": [
             {
               "id": "web-html-value",
-              "order": 116,
+              "order": 72,
               "title": "Html namespaceで静的elementを作る",
               "summary": "pureなHtml valueを一つ作りPreviewします。",
               "goal": "std/web/htmlから最小の静的elementを作れる。",
@@ -2410,7 +1631,7 @@
             },
             {
               "id": "web-text-attributes",
-              "order": 117,
+              "order": 73,
               "title": "Textとattributeを指定する",
               "summary": "elementへtext、id、titleを順に指定します。",
               "goal": "text childとglobal attributeを設定できる。",
@@ -2426,7 +1647,7 @@
             },
             {
               "id": "web-style-class",
-              "order": 118,
+              "order": 74,
               "title": "Styleとclassを分けて指定する",
               "summary": "typed StyleとclassNameを同じelementへ渡します。",
               "goal": "html.styleとclassNameの役割を区別できる。",
@@ -2442,7 +1663,7 @@
             },
             {
               "id": "web-tags-children",
-              "order": 119,
+              "order": 75,
               "title": "Childrenでdocument treeを作る",
               "summary": "親elementへ複数の子elementを順に置きます。",
               "goal": "children配列でnested Html treeを作れる。",
@@ -2458,7 +1679,7 @@
             },
             {
               "id": "web-component-definition",
-              "order": 120,
+              "order": 76,
               "title": "Htmlを返すFunction componentを定義する",
               "summary": "通常のpure関数をcomponentとして定義します。",
               "goal": "Htmlを返すpure function componentを書ける。",
@@ -2474,7 +1695,7 @@
             },
             {
               "id": "web-component-children",
-              "order": 121,
+              "order": 77,
               "title": "Childrenからcomponentを呼び出す",
               "summary": "componentの戻り値を親のchildrenへ置きます。",
               "goal": "Function componentをchildrenの一要素として呼べる。",
@@ -2490,7 +1711,7 @@
             },
             {
               "id": "web-component-props",
-              "order": 122,
+              "order": 78,
               "title": "Propsをcomponentへ渡す",
               "summary": "引数をpropsとして受け取りHtmlへ反映します。",
               "goal": "component引数から表示内容を変えられる。",
@@ -2506,7 +1727,7 @@
             },
             {
               "id": "web-link-image",
-              "order": 123,
+              "order": 79,
               "title": "External linkとimageを表示する",
               "summary": "安全なWebUrlをlinkとimageへ渡します。",
               "goal": "linkとimageを現行Preview契約で表示できる。",
@@ -2522,7 +1743,7 @@
             },
             {
               "id": "web-click-action",
-              "order": 124,
+              "order": 80,
               "title": "OnClickでtyped Actionを送る",
               "summary": "button clickをADT constructorへ変換します。",
               "goal": "onClickへtyped Actionを設定できる。",
@@ -2538,7 +1759,7 @@
             },
             {
               "id": "web-input-action",
-              "order": 125,
+              "order": 81,
               "title": "OnInputで文字列を受け取る",
               "summary": "InputEventのvalue snapshotをActionへ包みます。",
               "goal": "onInputから文字列Actionを作れる。",
@@ -2554,7 +1775,7 @@
             },
             {
               "id": "web-change-action",
-              "order": 126,
+              "order": 82,
               "title": "OnChangeでcheckboxを受け取る",
               "summary": "ChangeEventのchecked snapshotをActionへ包みます。",
               "goal": "onChangeからBool Actionを作れる。",
@@ -2570,7 +1791,7 @@
             },
             {
               "id": "web-form-submit",
-              "order": 127,
+              "order": 83,
               "title": "Form submitとdefault behaviorを扱う",
               "summary": "submit Actionを送りbrowser navigationを抑止します。",
               "goal": "formのonSubmitとsubmit buttonを接続できる。",
@@ -2586,7 +1807,7 @@
             },
             {
               "id": "web-signal-preview",
-              "order": 128,
+              "order": 84,
               "title": "Signal<Html>をPreviewへ描画する",
               "summary": "stateからderived Html Signalを作ります。",
               "goal": "Signalの現在値をHtml Previewへ接続できる。",
@@ -2598,11 +1819,11 @@
               "outputMode": "html",
               "content": "lessons/web-signal-preview/lesson.json",
               "deliveryIssue": 180,
-              "seedSamples": ["signal-run-route"]
+              "seedSamples": ["interactive-app"]
             },
             {
               "id": "web-dom-run",
-              "order": 129,
+              "order": 85,
               "title": "Dom.runへtarget・options・handlerを渡す",
               "summary": "明示的なbrowser runtime boundaryを接続します。",
               "goal": "dom.runの四つの入力を追ってmountできる。",
@@ -2617,11 +1838,11 @@
               "outputMode": "html",
               "content": "lessons/web-dom-run/lesson.json",
               "deliveryIssue": 180,
-              "seedSamples": ["signal-run-route"]
+              "seedSamples": ["interactive-app"]
             },
             {
               "id": "web-typed-action",
-              "order": 130,
+              "order": 86,
               "title": "Typed Actionをmatchしてstateを更新する",
               "summary": "Action payloadをhandlerで分岐しMutableSignalへ反映します。",
               "goal": "inputからstate更新までの経路を一行ずつ追える。",
@@ -2641,7 +1862,7 @@
             },
             {
               "id": "web-accessibility-label",
-              "order": 131,
+              "order": 87,
               "title": "Labelとaccessibility attributeを付ける",
               "summary": "label、htmlFor、ARIA statusをformへ加えます。",
               "goal": "入力とlabelを関連付け、状態を支援技術へ伝えられる。",
@@ -2657,7 +1878,7 @@
             },
             {
               "id": "web-feature-state",
-              "order": 132,
+              "order": 88,
               "title": "Component分割とstate ownershipを保つ",
               "summary": "MutableSignalをfeature内へ閉じSignal<Html>だけをruntimeへ渡します。",
               "goal": "componentとstateの所有境界を保ったinteractive formを組める。",
@@ -2677,7 +1898,7 @@
     },
     {
       "id": "applications",
-      "order": 12,
+      "order": 9,
       "title": "到達課題",
       "summary": "state、Action、viewを小さなbrowser applicationへまとめます。",
       "chapters": [
@@ -2689,7 +1910,7 @@
           "lessons": [
             {
               "id": "applications-console-data",
-              "order": 133,
+              "order": 89,
               "title": "Step 1: input dataを定義する",
               "summary": "SaleとArrayをreportの入力として固定します。",
               "goal": "Applicationのinput dataをStructとArrayで表せる。",
@@ -2705,7 +1926,7 @@
             },
             {
               "id": "applications-console-transform",
-              "order": 134,
+              "order": 90,
               "title": "Step 2: collectionを変換する",
               "summary": "同じinputへfilterとmapを一段ずつ加えます。",
               "goal": "直前sourceへcollection変換を追加し、出力差分を説明できる。",
@@ -2721,7 +1942,7 @@
             },
             {
               "id": "applications-console-fallibility",
-              "order": 135,
+              "order": 91,
               "title": "Step 3: 欠損とvalidation失敗を型に保つ",
               "summary": "MaybeとEitherをreport pipelineへ追加します。",
               "goal": "欠損と理由付き失敗を捨てずにreportへ残せる。",
@@ -2741,7 +1962,7 @@
             },
             {
               "id": "applications-console-output",
-              "order": 136,
+              "order": 92,
               "title": "Step 4: Effect境界からreportを出力する",
               "summary": "Pure reportとprintlnの境界を完成sourceで分けます。",
               "goal": "Pureな変換をmainのEffect出力へ一度だけ接続できる。",
@@ -2768,7 +1989,7 @@
           "lessons": [
             {
               "id": "applications-web-static",
-              "order": 137,
+              "order": 93,
               "title": "Web Step 1: static viewを作る",
               "summary": "Plan boardのHtml treeとexpected Previewを固定します。",
               "goal": "Stateやeventなしのstatic application viewを作れる。",
@@ -2788,7 +2009,7 @@
             },
             {
               "id": "applications-web-component",
-              "order": 138,
+              "order": 94,
               "title": "Web Step 2: Function componentへ分ける",
               "summary": "Previewを保ったままform subtreeをpure functionへ移します。",
               "goal": "Static subtreeをtyped componentへ分割できる。",
@@ -2807,7 +2028,7 @@
             },
             {
               "id": "applications-web-signal",
-              "order": 139,
+              "order": 95,
               "title": "Web Step 3: Signal stateを表示する",
               "summary": "Mainがstateを所有しcomponentからderived Htmlを作ります。",
               "goal": "Signal stateをpure componentのpropへ接続できる。",
@@ -2823,7 +2044,7 @@
             },
             {
               "id": "applications-web-form-event",
-              "order": 140,
+              "order": 96,
               "title": "Web Step 4: form eventをActionへする",
               "summary": "InputEvent snapshotをDraftChangedへ変換します。",
               "goal": "Form eventからtyped Actionを作れる。",
@@ -2842,7 +2063,7 @@
             },
             {
               "id": "applications-web-action",
-              "order": 141,
+              "order": 97,
               "title": "Web Step 5: Typed Actionとhandlerを接続する",
               "summary": "Pure reducerとeffectful state handlerを分けます。",
               "goal": "ActionからSignal state transitionまでを追える。",
@@ -2862,7 +2083,7 @@
             },
             {
               "id": "applications-web-validation",
-              "order": 142,
+              "order": 98,
               "title": "Web Step 6: validation failureを表示する",
               "summary": "Eitherのfailure理由をaccessible statusへ変換します。",
               "goal": "Typed validation結果をUIのsuccess / failure表示へ接続できる。",
@@ -2882,7 +2103,7 @@
             },
             {
               "id": "applications-web-feature-ownership",
-              "order": 143,
+              "order": 99,
               "title": "Web Step 7: feature stateを階層合成する",
               "summary": "MutableSignalを各featureへ閉じSignal<Html>だけを親へ返します。",
               "goal": "Feature ownershipを保って複数の表示を合成できる。",
@@ -2902,7 +2123,7 @@
             },
             {
               "id": "14-integrated-app",
-              "order": 144,
+              "order": 100,
               "title": "Typed Actionで小さなアプリを動かす",
               "summary": "state、Action、update、viewをDOM runtimeへ渡します。",
               "goal": "pure reducerで状態を更新するinteractive Web UIを実行できる。",
@@ -2928,7 +2149,7 @@
     },
     {
       "id": "design",
-      "order": 13,
+      "order": 10,
       "title": "抽象を設計する",
       "summary": "型のkind、Trait evidence、law、最小contractを実コードから設計します。",
       "chapters": [
@@ -2940,7 +2161,7 @@
           "lessons": [
             {
               "id": "design-learning-map",
-              "order": 145,
+              "order": 101,
               "title": "Tourと設計記事の役割を分ける",
               "summary": "実行教材と設計記事を別の責務として使い分けます。",
               "goal": "Codeを動かすTourと背景を読むArticlesを目的別に選べる。",
@@ -2952,11 +2173,11 @@
               "outputMode": "text",
               "content": "lessons/design-learning-map/lesson.json",
               "deliveryIssue": 266,
-              "seedSamples": ["traits-and-instances"]
+              "seedSamples": ["impl-and-operators"]
             },
             {
               "id": "design-type-constructor-kinds",
-              "order": 146,
+              "order": 102,
               "title": "AとF<_>のkindを設計契約として読む",
               "summary": "通常のtype parameterとtype constructor parameterをarityで比較します。",
               "goal": "TypeとType -> Typeを区別し、parametricityが保つshapeを説明できる。",
@@ -2971,11 +2192,11 @@
               "outputMode": "text",
               "content": "lessons/design-type-constructor-kinds/lesson.json",
               "deliveryIssue": 266,
-              "seedSamples": ["generic-structs"]
+              "seedSamples": ["type-aliases"]
             },
             {
               "id": "design-trait-evidence",
-              "order": 147,
+              "order": 103,
               "title": "Trait evidenceとcoherenceを追う",
               "summary": "where制約からinstance選択までをdictionary evidenceとして読みます。",
               "goal": "Generic callが使うinstanceを説明し、coherenceが守る一意性を確認できる。",
@@ -2990,11 +2211,11 @@
               "outputMode": "text",
               "content": "lessons/design-trait-evidence/lesson.json",
               "deliveryIssue": 266,
-              "seedSamples": ["traits-and-instances"]
+              "seedSamples": ["impl-and-operators"]
             },
             {
               "id": "design-abstraction-laws",
-              "order": 148,
+              "order": 104,
               "title": "Functor・Applicative・Monadのlawを実行する",
               "summary": "Operationの強さとlawの両辺を同じsourceで比較します。",
               "goal": "必要な抽象の強さを選び、lawが支える置換可能性を実行結果で確認できる。",
@@ -3015,7 +2236,7 @@
             },
             {
               "id": "design-trait-boundary",
-              "order": 149,
+              "order": 105,
               "title": "最小のTrait境界を切り出す",
               "summary": "Consumer、複数instance、lawからcustom abstractionの境界を決めます。",
               "goal": "似た名前ではなく置換可能な最小operationからTraitを設計できる。",
@@ -3030,7 +2251,119 @@
               "outputMode": "text",
               "content": "lessons/design-trait-boundary/lesson.json",
               "deliveryIssue": 266,
-              "seedSamples": ["traits-and-instances"]
+              "seedSamples": ["impl-and-operators"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "side-trips-collections-web",
+      "order": 11,
+      "title": "補足トラック：コレクションの細目",
+      "summary": "本編を補う発展的なコレクション操作を必要に応じて確認します。",
+      "chapters": [
+        {
+          "id": "side-trips-collections",
+          "order": 1,
+          "title": "Listとコレクションの細目",
+          "summary": "Listの分解、集約関数の書き方、内包表記、空のコレクションを扱います。",
+          "lessons": [
+            {
+              "id": "list-values",
+              "order": 106,
+              "title": "Listを組み立てる",
+              "summary": "先頭への追加に適した連結リストの組み立て方を学びます。",
+              "goal": "Listをリテラルとcons演算子で組み立てられる。",
+              "focus": ["List"],
+              "introducedSurfaces": ["list"],
+              "requiredSurfaces": ["let", "int"],
+              "prerequisites": ["collection-pipeline"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/list-values/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["collection-patterns"]
+            },
+            {
+              "id": "list-decomposition",
+              "order": 107,
+              "title": "Listを先頭と残りに分解する",
+              "summary": "matchを使ってListを先頭要素と残りのListに分けて扱います。",
+              "goal": "Listをmatchで先頭要素と残りのListに分解できる。",
+              "focus": ["List decomposition"],
+              "introducedSurfaces": ["list-decomposition"],
+              "requiredSurfaces": ["list", "match", "pattern-binding"],
+              "prerequisites": ["list-values"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/list-decomposition/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["collection-patterns"]
+            },
+            {
+              "id": "collection-reduce-step",
+              "order": 108,
+              "title": "集約の計算関数を書く",
+              "summary": "途中経過の値と次の要素を受け取って新しい途中経過を返す関数を作ります。",
+              "goal": "reduceに渡す集約用関数の引数の順と戻り値を設計できる。",
+              "focus": ["reduce step"],
+              "introducedSurfaces": ["reduce-step"],
+              "requiredSurfaces": ["fn", "multiple-parameters", "int"],
+              "prerequisites": ["list-decomposition"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/collection-reduce-step/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["collection-patterns"]
+            },
+            {
+              "id": "collection-append-concat",
+              "order": 109,
+              "title": "appendとconcatでコレクションをつなぐ",
+              "summary": "2つのコレクションの連結と、入れ子のコレクションを平坦化する操作を確認します。",
+              "goal": "appendとconcatの違いを区別してコレクションを連結できる。",
+              "focus": ["append / concat"],
+              "introducedSurfaces": ["collection-compose"],
+              "requiredSurfaces": ["array", "list", "application"],
+              "prerequisites": ["collection-reduce-step"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/collection-append-concat/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["collections"]
+            },
+            {
+              "id": "collection-comprehension",
+              "order": 110,
+              "title": "内包表記で一覧を作る",
+              "summary": "条件付きの繰り返しから新しいコレクションを宣言的に作る内包表記を学びます。",
+              "goal": "内包表記の要素生成・絞り込み・出力式を読み書きできる。",
+              "focus": ["Comprehension"],
+              "introducedSurfaces": ["comprehension"],
+              "requiredSurfaces": ["range", "filter", "map"],
+              "prerequisites": ["collection-append-concat"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/collection-comprehension/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["collection-patterns"]
+            },
+            {
+              "id": "empty-collections",
+              "order": 111,
+              "title": "空のコレクションを扱う",
+              "summary": "要素が0件のコレクションに対して安全に計算を続ける型注釈と既定値を確認します。",
+              "goal": "空の配列に型注釈を付け、安全な既定値と組み合わせて扱える。",
+              "focus": ["Empty collection"],
+              "introducedSurfaces": ["empty-collection"],
+              "requiredSurfaces": ["array", "reduce", "array-access"],
+              "prerequisites": ["collection-comprehension"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/empty-collections/lesson.json",
+              "deliveryIssue": 1348,
+              "seedSamples": ["collections"]
             }
           ]
         }
@@ -3043,12 +2376,11 @@
       "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",
       "tourLessons": [
+        "collection-pipeline",
         "list-values",
         "list-decomposition",
         "collection-reduce-step",
-        "collection-reduce",
-        "collection-comprehension",
-        "08-collections-and-ranges"
+        "collection-comprehension"
       ],
       "reason": "List分解・集約・comprehensionを段階教材へ借り、再帰は発展Recipeに残す。"
     },
@@ -3057,61 +2389,15 @@
       "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",
       "tourLessons": [
-        "array-values",
-        "array-access",
-        "range-values",
-        "collection-map",
-        "collection-filter",
-        "collection-append-concat",
-        "collection-pipeline",
-        "empty-collections",
         "08-collections-and-ranges",
+        "collection-pipeline",
         "applications-console-data",
         "applications-console-transform",
-        "applications-console-output"
+        "applications-console-output",
+        "collection-append-concat",
+        "empty-collections"
       ],
       "reason": "Array・Range・変換・絞り込み・合成を段階教材へ借り、report例はRecipeに残す。"
-    },
-    {
-      "sampleId": "data-and-patterns",
-      "currentKind": "lesson",
-      "decision": "tour-seed-only",
-      "tourLessons": [
-        "tuple-values",
-        "tuple-pattern-binding",
-        "simple-adt",
-        "payload-adt",
-        "single-constructor-match",
-        "07-adts-and-patterns",
-        "payload-pattern-binding",
-        "nested-pattern-wildcard",
-        "exhaustive-match",
-        "data-shape-selection"
-      ],
-      "reason": "tuple、ADT、matchを一概念ずつcanonical Tourへ分離する。"
-    },
-    {
-      "sampleId": "effects-and-do",
-      "currentKind": "lesson",
-      "decision": "tour-seed-only",
-      "tourLessons": [
-        "effect-failure-bridge",
-        "effect-pure-vs-effect",
-        "effect-single-operation",
-        "effect-do-block",
-        "effect-sequence",
-        "effect-bind-success",
-        "effect-succeed-value",
-        "effect-failure-short-circuit",
-        "effect-fails-type",
-        "effect-with-capability",
-        "effect-inferred-contract",
-        "effect-explicit-contract",
-        "effect-map-error",
-        "effect-value-boundary",
-        "10-effects-and-do"
-      ],
-      "reason": "pure valueとの境界を確認してからEffectとdoへ接続する。"
     },
     {
       "sampleId": "either-and-monad",
@@ -3155,8 +2441,8 @@
     {
       "sampleId": "fizzbuzz",
       "currentKind": "recipe",
-      "decision": "discover-recipe",
-      "tourLessons": [],
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["07-adts-and-patterns", "08-collections-and-ranges"],
       "reason": "複数の既習概念を組み合わせる定番Recipeとして残す。"
     },
     {
@@ -3180,49 +2466,19 @@
       "reason": "form・IME・accessibilityを統合した完成例として残す。"
     },
     {
-      "sampleId": "functions-and-pipelines",
-      "currentKind": "lesson",
-      "decision": "tour-seed-only",
-      "tourLessons": [
-        "03-function-definitions",
-        "one-parameter-function",
-        "function-return-type",
-        "04-function-calls",
-        "multiple-parameter-function",
-        "function-value",
-        "currying-from-code",
-        "partial-application",
-        "application-grouping",
-        "dollar-application",
-        "pipeline-application",
-        "mixed-application",
-        "05-pipelines"
-      ],
-      "reason": "関数定義・適用・currying・operatorを一つのsampleから13段階へ分離する。"
-    },
-    {
-      "sampleId": "generic-structs",
-      "currentKind": "lesson",
-      "decision": "tour-seed-only",
-      "tourLessons": [
-        "06-records-and-structs",
-        "struct-field-access",
-        "abstraction-concrete-generic",
-        "abstraction-type-parameter",
-        "abstraction-generic-adt-definition",
-        "abstraction-generic-adt-use",
-        "abstraction-multiple-type-parameters",
-        "abstraction-type-constructor-parameter",
-        "abstraction-impl-method",
-        "design-type-constructor-kinds"
-      ],
-      "reason": "Struct導入とgeneric/impl導入を別lessonへ分離する。"
-    },
-    {
       "sampleId": "hello-world",
       "currentKind": "lesson",
       "decision": "tour-seed-only",
-      "tourLessons": ["01-hello-world", "program-entry", "string-literal"],
+      "tourLessons": [
+        "01-hello-world",
+        "02-values-and-bindings",
+        "if-expression",
+        "03-function-definitions",
+        "05-pipelines",
+        "adt-definition",
+        "07-adts-and-patterns",
+        "exhaustive-match"
+      ],
       "reason": "Run、program entry、String出力を最初の三段階へ分ける。"
     },
     {
@@ -3245,36 +2501,45 @@
       "sampleId": "impl-and-operators",
       "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",
-      "tourLessons": ["abstraction-impl-method", "abstraction-custom-operator"],
+      "tourLessons": [
+        "abstraction-trait-operation",
+        "abstraction-user-instance",
+        "abstraction-where-constraint",
+        "abstraction-instance-selection",
+        "abstraction-impl-method",
+        "abstraction-custom-operator",
+        "design-learning-map",
+        "design-trait-evidence",
+        "design-trait-boundary"
+      ],
       "reason": "標準operatorの利用例を教材へ借り、custom operator例はRecipeとして残す。"
     },
     {
       "sampleId": "interactive-app",
       "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",
-      "tourLessons": ["web-click-action", "14-integrated-app"],
+      "tourLessons": [
+        "signals-handler-boundary",
+        "web-click-action",
+        "web-signal-preview",
+        "web-dom-run",
+        "14-integrated-app"
+      ],
       "reason": "最終lessonはActionを段階導入し、compactなdom.app state machineはRecipeとして残す。"
     },
     {
       "sampleId": "local-functions",
       "currentKind": "recipe",
-      "decision": "discover-recipe",
-      "tourLessons": [],
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["03-function-definitions"],
       "reason": "scope・capture・recursionをまとめて試す発展Recipeへ再分類する。"
     },
     {
       "sampleId": "newtypes",
       "currentKind": "recipe",
-      "decision": "discover-recipe",
-      "tourLessons": [],
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["adt-definition"],
       "reason": "domain境界を作る目的別Recipeへ再分類する。"
-    },
-    {
-      "sampleId": "project-greeting",
-      "currentKind": "recipe",
-      "decision": "discover-recipe",
-      "tourLessons": [],
-      "reason": "複数module・初期Input・workspace操作をまとめて試すproject Recipeとして残す。"
     },
     {
       "sampleId": "project-flow-app",
@@ -3284,14 +2549,17 @@
       "reason": "model・view・entryを分割したinteractive browser projectとして残す。"
     },
     {
+      "sampleId": "project-greeting",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "複数module・初期Input・workspace操作をまとめて試すproject Recipeとして残す。"
+    },
+    {
       "sampleId": "records",
       "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",
-      "tourLessons": [
-        "record-values",
-        "record-access-update",
-        "data-shape-selection"
-      ],
+      "tourLessons": ["tuple-and-record", "06-records-and-structs"],
       "reason": "Record構築、field access、spreadを分離し、width typing例はRecipeに残す。"
     },
     {
@@ -3302,44 +2570,24 @@
       "reason": "公式identity、responsive composition、interactive code、multi-module境界を統合した完成pageとしてDiscoverに残す。"
     },
     {
-      "sampleId": "signal-composition",
-      "currentKind": "lesson",
-      "decision": "tour-seed-only",
-      "tourLessons": [
-        "abstraction-signal-contract",
-        "signals-value-difference",
-        "signals-readonly-coercion",
-        "signals-read-operator",
-        "signals-map",
-        "signals-functor-operator",
-        "signals-constant-pure",
-        "signals-monad-boundary"
-      ],
-      "reason": "SignalのFunctor/Applicative導入をcanonical Tourへ吸収する。"
-    },
-    {
-      "sampleId": "signal-run-route",
-      "currentKind": "recipe",
-      "decision": "tour-seed-and-recipe",
-      "tourLessons": [
-        "signals-handler-boundary",
-        "web-signal-preview",
-        "web-dom-run"
-      ],
-      "reason": "dom.appと同一のmodel / viewを明示的Signal・query・runへ接続する比較Recipeとして残す。"
-    },
-    {
       "sampleId": "signal-state",
       "currentKind": "showcase",
       "decision": "tour-seed-and-showcase",
       "tourLessons": [
         "abstraction-signal-contract",
+        "signals-value-difference",
         "signals-make",
+        "signals-readonly-coercion",
+        "signals-read-operator",
         "signals-set",
         "signals-write-operator",
         "signals-observable-update",
+        "signals-map",
+        "signals-functor-operator",
+        "signals-constant-pure",
         "signals-combine",
-        "signals-applicative-glitch-free"
+        "signals-applicative-glitch-free",
+        "signals-monad-boundary"
       ],
       "reason": "Tourでは小さな更新だけを使い、transaction統合例はShowcaseに残す。"
     },
@@ -3352,63 +2600,41 @@
         "maybe-constructors",
         "maybe-match",
         "maybe-default",
-        "09-maybe-and-either"
+        "09-maybe-and-either",
+        "effect-failure-bridge",
+        "effect-pure-vs-effect",
+        "effect-single-operation",
+        "effect-do-block",
+        "effect-sequence",
+        "effect-bind-success",
+        "effect-succeed-value",
+        "effect-failure-short-circuit",
+        "effect-fails-type",
+        "effect-with-capability",
+        "effect-inferred-contract",
+        "effect-explicit-contract",
+        "effect-map-error",
+        "effect-value-boundary",
+        "10-effects-and-do"
       ],
       "reason": "MaybeとEffect inputの現行契約を教材へ借り、標準入力Recipeにも残す。"
     },
     {
-      "sampleId": "strings-and-templates",
-      "currentKind": "lesson",
-      "decision": "tour-seed-only",
-      "tourLessons": [
-        "string-template",
-        "int-literal",
-        "float-literal",
-        "bool-literal",
-        "unit-literal",
-        "02-values-and-bindings",
-        "local-let",
-        "type-annotations",
-        "type-inference",
-        "comments-and-tools"
-      ],
-      "reason": "literal、binding、型、editor操作を一概念ずつ学ぶseedにする。"
-    },
-    {
-      "sampleId": "traits-and-instances",
-      "currentKind": "lesson",
-      "decision": "tour-seed-only",
-      "tourLessons": [
-        "abstraction-trait-operation",
-        "abstraction-user-instance",
-        "abstraction-where-constraint",
-        "abstraction-instance-selection",
-        "design-learning-map",
-        "design-trait-evidence",
-        "design-trait-boundary"
-      ],
-      "reason": "traitとinstanceの最小契約をcanonical Tourへ吸収する。"
-    },
-    {
-      "sampleId": "typeclass-operator-parity",
-      "currentKind": "recipe",
-      "decision": "discover-recipe",
-      "tourLessons": [],
-      "reason": "標準operatorの辞書選択と実行結果を複数の値型で横断確認する発展Recipeとして残す。"
-    },
-    {
       "sampleId": "type-aliases",
       "currentKind": "recipe",
-      "decision": "discover-recipe",
-      "tourLessons": [],
-      "reason": "aliasとTask表記を確認する発展Recipeへ再分類する。"
-    },
-    {
-      "sampleId": "unary-operators",
-      "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",
-      "tourLessons": ["primitive-arithmetic", "primitive-comparison"],
-      "reason": "Tourではprimitive演算と比較の入口を借り、単項operator確認はRecipeに残す。"
+      "tourLessons": [
+        "06-records-and-structs",
+        "abstraction-concrete-generic",
+        "abstraction-type-parameter",
+        "abstraction-generic-adt-definition",
+        "abstraction-generic-adt-use",
+        "abstraction-multiple-type-parameters",
+        "abstraction-type-constructor-parameter",
+        "abstraction-impl-method",
+        "design-type-constructor-kinds"
+      ],
+      "reason": "aliasとTask表記を確認する発展Recipeへ再分類する。"
     },
     {
       "sampleId": "web-starter",
@@ -3423,12 +2649,8 @@
     {
       "surface": "maybe-transformer",
       "designLessons": [20],
-      "forbiddenTopics": [
-        "maybe-transformer"
-      ],
-      "forbiddenImports": [
-        "std/transformer/maybe"
-      ],
+      "forbiddenTopics": ["maybe-transformer"],
+      "forbiddenImports": ["std/transformer/maybe"],
       "reason": "Maybe transformerは現行runtimeの公開教材surfaceとして完了していない。"
     },
     {

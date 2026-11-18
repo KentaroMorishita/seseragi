@@ -1,2 +1,2 @@
-do: 42
->>=: 42
+valid: 3600 yen
+invalid: rejected (quantity must be positive)

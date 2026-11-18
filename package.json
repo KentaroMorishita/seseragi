@@ -1,6 +1,6 @@
 {
   "name": "seseragi",
-  "version": "0.61.176",
+  "version": "0.61.184",
   "private": true,
   "workspaces": [
     "runtime/ts"
@@ -14,6 +14,8 @@
     "check:full": "./scripts/check-scoped.sh full",
     "check:readme": "bun scripts/check-readme.ts",
     "check:sample": "./scripts/check-scoped.sh sample",
+    "check:sample-catalog": "./scripts/check-scoped.sh sample-catalog",
+    "check:tour": "./scripts/check-scoped.sh tour",
     "check:playground": "./scripts/check-scoped.sh playground",
     "check:rust": "./scripts/check-scoped.sh rust",
     "check:conformance": "./scripts/check-scoped.sh conformance",
@@ -45,7 +47,8 @@
     "cli": "cargo run -p seseragi-cli --",
     "conformance": "cargo run -p seseragi-conformance -- .",
     "test:samples:cli": "bun scripts/check-samples-cli.ts",
-    "tour:diagnostics:update": "bun scripts/check-samples-cli.ts --update-tour-diagnostics",
+    "test:tour:cli": "bun scripts/check-tour-cli.ts",
+    "tour:diagnostics:update": "bun scripts/check-tour-cli.ts --update-tour-diagnostics",
     "test:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg && git diff --exit-code -- apps/playground/src/wasm/pkg && cd apps/playground && bun run test",
     "test:local-web-e2e": "bun scripts/local-web-product-e2e.ts",
     "dev:playground": "cd apps/playground && bun run dev",
