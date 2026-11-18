@@ -3,43 +3,63 @@
   "id": "01-hello-world",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "最初のlessonです。sourceの文法は次のlessonから一つずつ読みます。ここではEditor、Run、Outputの位置だけに集中します。",
+    "prerequisite": "最初のレッスンです。まずは画面のコードを実行して、`Run` と `Output` のつながりを確かめます。",
     "walkthrough": [
       {
-        "heading": "完成済みの一行をRunする",
-        "body": "Editorのsourceはそのままで動く最小programです。Runを押すとcompilerとruntimeを通り、結果がOutputへ一行表示されます。",
+        "heading": "コメントと名前の定義",
+        "body": "1 行目の `//` から行末まではコメントです。プログラムの動きには影響せず、メモを残せます。2 行目では文字列 `\"Seseragi\"` に `name` という名前を付けています。",
         "sourceRange": {
           "startLine": 1,
-          "endLine": 1
+          "endLine": 2
+        }
+      },
+      {
+        "heading": "プログラムの入口と出力",
+        "body": "実行すると `pub effect fn main` から動き始めます。`println` は `Output` へ 1 行出力する命令で、バッククォートで囲んだ `` `Hello, ${name}!` `` の `${name}` には `name` の値が入ります。",
+        "sourceRange": {
+          "startLine": 4,
+          "endLine": 4
         }
       }
     ],
     "introduced": [
       {
         "kind": "api",
-        "name": "Run → Output",
-        "body": "Runは現在のsourceをcompileして実行し、programが出力したtextをOutputへ表示します。"
+        "name": "println",
+        "body": "受け取った文字列を `Output` へ 1 行出力します。"
+      },
+      {
+        "kind": "syntax",
+        "name": "テンプレート文字列",
+        "body": "`` `...${式}...` `` の形でバッククォートで囲むと、文字列の中に変数や式の値を埋め込めます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "コメント",
+        "body": "`//` から行末まではコンパイラに無視されるコメントになります。"
       }
     ],
     "exercise": {
-      "instruction": "課題sourceを開いてRunし、Outputが`Hello, Tour!`へ変わることだけを確認してください。",
+      "instruction": "エディターの `\"Seseragi\"` を `\"Tour\"` に書き換えて `Run` し、`Output` が `Hello, Tour!` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "型が一致しないsourceを開く",
-      "body": "Stringと書いた場所へ数値を置いたsourceをRunすると、実行前にcompiler diagnosticが表示されます。今は内容を直す必要はなく、Outputとの違いを見ます。"
+      "heading": "文字列の場所に数値を書いてみる",
+      "body": "失敗例では `String` と書いた場所に数値 `42` を置いています。実行前にコンパイラが型の違いを見つけ、`Problems` にエラー表示を出します。"
     },
     "recap": [
-      "RunはEditorにあるsourceをcompileして実行する。",
-      "成功したprogramの出力はOutputへ表示される。",
-      "compileできないsourceでは実行結果の代わりにdiagnosticが表示される。"
+      "`Run` を押すとエディターのコードがコンパイル・実行され、結果が `Output` に表示されます。",
+      "`pub effect fn main` がプログラムの入口で、`println` とテンプレート文字列で出力できます。",
+      "`//` でメモ用のコメントを残せます。",
+      "コンパイルできないときは実行結果の代わりにエラー表示が出ます。"
     ],
     "next": {
-      "lessonId": "program-entry",
-      "body": "次は、Runしたときにどこからprogramが始まるのかを`main`という名前から読みます。"
+      "lessonId": "02-values-and-bindings",
+      "body": "次は `let` を使っていろいろな型の値に名前を付け、型推論や簡単な計算・比較を確かめます。"
     },
     "notes": [
-      "最初のsourceに含まれる構文は暗記しません。後続lessonで一つずつ説明します。"
+      "コードのインデントや空白を整えたいときはツールバーの `Format` を、編集した内容をこのレッスンの初期コードへ戻したいときは `Reset` を使えます。",
+      "最初のコードに含まれる細かなキーワードはここで暗記する必要はありません。後のレッスンで順番に説明します。"
     ]
   },
   "files": {

@@ -9,1036 +9,770 @@ import lesson0ExerciseOutput from "../../../../examples/tour/lessons/01-hello-wo
 import lesson0Diagnostic from "../../../../examples/tour/lessons/01-hello-world/diagnostic.ssrg?raw"
 import lesson0DiagnosticOutput from "../../../../examples/tour/lessons/01-hello-world/diagnostic.txt?raw"
 
-import lesson1Source from "../../../../examples/tour/lessons/program-entry/main.ssrg?raw"
-import lesson1Output from "../../../../examples/tour/lessons/program-entry/stdout.txt?raw"
-import lesson1Exercise from "../../../../examples/tour/lessons/program-entry/exercise.ssrg?raw"
-import lesson1ExerciseOutput from "../../../../examples/tour/lessons/program-entry/exercise.stdout.txt?raw"
-import lesson1Diagnostic from "../../../../examples/tour/lessons/program-entry/diagnostic.ssrg?raw"
-import lesson1DiagnosticOutput from "../../../../examples/tour/lessons/program-entry/diagnostic.txt?raw"
-
-import lesson2Source from "../../../../examples/tour/lessons/string-literal/main.ssrg?raw"
-import lesson2Output from "../../../../examples/tour/lessons/string-literal/stdout.txt?raw"
-import lesson2Exercise from "../../../../examples/tour/lessons/string-literal/exercise.ssrg?raw"
-import lesson2ExerciseOutput from "../../../../examples/tour/lessons/string-literal/exercise.stdout.txt?raw"
-import lesson2Diagnostic from "../../../../examples/tour/lessons/string-literal/diagnostic.ssrg?raw"
-import lesson2DiagnosticOutput from "../../../../examples/tour/lessons/string-literal/diagnostic.txt?raw"
-
-import lesson3Source from "../../../../examples/tour/lessons/string-template/main.ssrg?raw"
-import lesson3Output from "../../../../examples/tour/lessons/string-template/stdout.txt?raw"
-import lesson3Exercise from "../../../../examples/tour/lessons/string-template/exercise.ssrg?raw"
-import lesson3ExerciseOutput from "../../../../examples/tour/lessons/string-template/exercise.stdout.txt?raw"
-import lesson3Diagnostic from "../../../../examples/tour/lessons/string-template/diagnostic.ssrg?raw"
-import lesson3DiagnosticOutput from "../../../../examples/tour/lessons/string-template/diagnostic.txt?raw"
-
-import lesson4Source from "../../../../examples/tour/lessons/int-literal/main.ssrg?raw"
-import lesson4Output from "../../../../examples/tour/lessons/int-literal/stdout.txt?raw"
-import lesson4Exercise from "../../../../examples/tour/lessons/int-literal/exercise.ssrg?raw"
-import lesson4ExerciseOutput from "../../../../examples/tour/lessons/int-literal/exercise.stdout.txt?raw"
-import lesson4Diagnostic from "../../../../examples/tour/lessons/int-literal/diagnostic.ssrg?raw"
-import lesson4DiagnosticOutput from "../../../../examples/tour/lessons/int-literal/diagnostic.txt?raw"
-
-import lesson5Source from "../../../../examples/tour/lessons/float-literal/main.ssrg?raw"
-import lesson5Output from "../../../../examples/tour/lessons/float-literal/stdout.txt?raw"
-import lesson5Exercise from "../../../../examples/tour/lessons/float-literal/exercise.ssrg?raw"
-import lesson5ExerciseOutput from "../../../../examples/tour/lessons/float-literal/exercise.stdout.txt?raw"
-import lesson5Diagnostic from "../../../../examples/tour/lessons/float-literal/diagnostic.ssrg?raw"
-import lesson5DiagnosticOutput from "../../../../examples/tour/lessons/float-literal/diagnostic.txt?raw"
-
-import lesson6Source from "../../../../examples/tour/lessons/bool-literal/main.ssrg?raw"
-import lesson6Output from "../../../../examples/tour/lessons/bool-literal/stdout.txt?raw"
-import lesson6Exercise from "../../../../examples/tour/lessons/bool-literal/exercise.ssrg?raw"
-import lesson6ExerciseOutput from "../../../../examples/tour/lessons/bool-literal/exercise.stdout.txt?raw"
-import lesson6Diagnostic from "../../../../examples/tour/lessons/bool-literal/diagnostic.ssrg?raw"
-import lesson6DiagnosticOutput from "../../../../examples/tour/lessons/bool-literal/diagnostic.txt?raw"
-
-import lesson7Source from "../../../../examples/tour/lessons/unit-literal/main.ssrg?raw"
-import lesson7Output from "../../../../examples/tour/lessons/unit-literal/stdout.txt?raw"
-import lesson7Exercise from "../../../../examples/tour/lessons/unit-literal/exercise.ssrg?raw"
-import lesson7ExerciseOutput from "../../../../examples/tour/lessons/unit-literal/exercise.stdout.txt?raw"
-import lesson7Diagnostic from "../../../../examples/tour/lessons/unit-literal/diagnostic.ssrg?raw"
-import lesson7DiagnosticOutput from "../../../../examples/tour/lessons/unit-literal/diagnostic.txt?raw"
-
-import lesson8Source from "../../../../examples/tour/lessons/02-values-and-bindings/main.ssrg?raw"
-import lesson8Output from "../../../../examples/tour/lessons/02-values-and-bindings/stdout.txt?raw"
-import lesson8Exercise from "../../../../examples/tour/lessons/02-values-and-bindings/exercise.ssrg?raw"
-import lesson8ExerciseOutput from "../../../../examples/tour/lessons/02-values-and-bindings/exercise.stdout.txt?raw"
-import lesson8Diagnostic from "../../../../examples/tour/lessons/02-values-and-bindings/diagnostic.ssrg?raw"
-import lesson8DiagnosticOutput from "../../../../examples/tour/lessons/02-values-and-bindings/diagnostic.txt?raw"
-
-import lesson9Source from "../../../../examples/tour/lessons/local-let/main.ssrg?raw"
-import lesson9Output from "../../../../examples/tour/lessons/local-let/stdout.txt?raw"
-import lesson9Exercise from "../../../../examples/tour/lessons/local-let/exercise.ssrg?raw"
-import lesson9ExerciseOutput from "../../../../examples/tour/lessons/local-let/exercise.stdout.txt?raw"
-import lesson9Diagnostic from "../../../../examples/tour/lessons/local-let/diagnostic.ssrg?raw"
-import lesson9DiagnosticOutput from "../../../../examples/tour/lessons/local-let/diagnostic.txt?raw"
-
-import lesson10Source from "../../../../examples/tour/lessons/type-annotations/main.ssrg?raw"
-import lesson10Output from "../../../../examples/tour/lessons/type-annotations/stdout.txt?raw"
-import lesson10Exercise from "../../../../examples/tour/lessons/type-annotations/exercise.ssrg?raw"
-import lesson10ExerciseOutput from "../../../../examples/tour/lessons/type-annotations/exercise.stdout.txt?raw"
-import lesson10Diagnostic from "../../../../examples/tour/lessons/type-annotations/diagnostic.ssrg?raw"
-import lesson10DiagnosticOutput from "../../../../examples/tour/lessons/type-annotations/diagnostic.txt?raw"
-
-import lesson11Source from "../../../../examples/tour/lessons/type-inference/main.ssrg?raw"
-import lesson11Output from "../../../../examples/tour/lessons/type-inference/stdout.txt?raw"
-import lesson11Exercise from "../../../../examples/tour/lessons/type-inference/exercise.ssrg?raw"
-import lesson11ExerciseOutput from "../../../../examples/tour/lessons/type-inference/exercise.stdout.txt?raw"
-import lesson11Diagnostic from "../../../../examples/tour/lessons/type-inference/diagnostic.ssrg?raw"
-import lesson11DiagnosticOutput from "../../../../examples/tour/lessons/type-inference/diagnostic.txt?raw"
-
-import lesson12Source from "../../../../examples/tour/lessons/primitive-arithmetic/main.ssrg?raw"
-import lesson12Output from "../../../../examples/tour/lessons/primitive-arithmetic/stdout.txt?raw"
-import lesson12Exercise from "../../../../examples/tour/lessons/primitive-arithmetic/exercise.ssrg?raw"
-import lesson12ExerciseOutput from "../../../../examples/tour/lessons/primitive-arithmetic/exercise.stdout.txt?raw"
-import lesson12Diagnostic from "../../../../examples/tour/lessons/primitive-arithmetic/diagnostic.ssrg?raw"
-import lesson12DiagnosticOutput from "../../../../examples/tour/lessons/primitive-arithmetic/diagnostic.txt?raw"
-
-import lesson13Source from "../../../../examples/tour/lessons/primitive-comparison/main.ssrg?raw"
-import lesson13Output from "../../../../examples/tour/lessons/primitive-comparison/stdout.txt?raw"
-import lesson13Exercise from "../../../../examples/tour/lessons/primitive-comparison/exercise.ssrg?raw"
-import lesson13ExerciseOutput from "../../../../examples/tour/lessons/primitive-comparison/exercise.stdout.txt?raw"
-import lesson13Diagnostic from "../../../../examples/tour/lessons/primitive-comparison/diagnostic.ssrg?raw"
-import lesson13DiagnosticOutput from "../../../../examples/tour/lessons/primitive-comparison/diagnostic.txt?raw"
-
-import lesson14Source from "../../../../examples/tour/lessons/comments-and-tools/main.ssrg?raw"
-import lesson14Output from "../../../../examples/tour/lessons/comments-and-tools/stdout.txt?raw"
-import lesson14Exercise from "../../../../examples/tour/lessons/comments-and-tools/exercise.ssrg?raw"
-import lesson14ExerciseOutput from "../../../../examples/tour/lessons/comments-and-tools/exercise.stdout.txt?raw"
-import lesson14Diagnostic from "../../../../examples/tour/lessons/comments-and-tools/diagnostic.ssrg?raw"
-import lesson14DiagnosticOutput from "../../../../examples/tour/lessons/comments-and-tools/diagnostic.txt?raw"
-
-import lesson15Source from "../../../../examples/tour/lessons/03-function-definitions/main.ssrg?raw"
-import lesson15Output from "../../../../examples/tour/lessons/03-function-definitions/stdout.txt?raw"
-import lesson15Exercise from "../../../../examples/tour/lessons/03-function-definitions/exercise.ssrg?raw"
-import lesson15ExerciseOutput from "../../../../examples/tour/lessons/03-function-definitions/exercise.stdout.txt?raw"
-import lesson15Diagnostic from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.ssrg?raw"
-import lesson15DiagnosticOutput from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.txt?raw"
-
-import lesson16Source from "../../../../examples/tour/lessons/one-parameter-function/main.ssrg?raw"
-import lesson16Output from "../../../../examples/tour/lessons/one-parameter-function/stdout.txt?raw"
-import lesson16Exercise from "../../../../examples/tour/lessons/one-parameter-function/exercise.ssrg?raw"
-import lesson16ExerciseOutput from "../../../../examples/tour/lessons/one-parameter-function/exercise.stdout.txt?raw"
-import lesson16Diagnostic from "../../../../examples/tour/lessons/one-parameter-function/diagnostic.ssrg?raw"
-import lesson16DiagnosticOutput from "../../../../examples/tour/lessons/one-parameter-function/diagnostic.txt?raw"
-
-import lesson17Source from "../../../../examples/tour/lessons/function-return-type/main.ssrg?raw"
-import lesson17Output from "../../../../examples/tour/lessons/function-return-type/stdout.txt?raw"
-import lesson17Exercise from "../../../../examples/tour/lessons/function-return-type/exercise.ssrg?raw"
-import lesson17ExerciseOutput from "../../../../examples/tour/lessons/function-return-type/exercise.stdout.txt?raw"
-import lesson17Diagnostic from "../../../../examples/tour/lessons/function-return-type/diagnostic.ssrg?raw"
-import lesson17DiagnosticOutput from "../../../../examples/tour/lessons/function-return-type/diagnostic.txt?raw"
-
-import lesson18Source from "../../../../examples/tour/lessons/04-function-calls/main.ssrg?raw"
-import lesson18Output from "../../../../examples/tour/lessons/04-function-calls/stdout.txt?raw"
-import lesson18Exercise from "../../../../examples/tour/lessons/04-function-calls/exercise.ssrg?raw"
-import lesson18ExerciseOutput from "../../../../examples/tour/lessons/04-function-calls/exercise.stdout.txt?raw"
-import lesson18Diagnostic from "../../../../examples/tour/lessons/04-function-calls/diagnostic.ssrg?raw"
-import lesson18DiagnosticOutput from "../../../../examples/tour/lessons/04-function-calls/diagnostic.txt?raw"
-
-import lesson19Source from "../../../../examples/tour/lessons/multiple-parameter-function/main.ssrg?raw"
-import lesson19Output from "../../../../examples/tour/lessons/multiple-parameter-function/stdout.txt?raw"
-import lesson19Exercise from "../../../../examples/tour/lessons/multiple-parameter-function/exercise.ssrg?raw"
-import lesson19ExerciseOutput from "../../../../examples/tour/lessons/multiple-parameter-function/exercise.stdout.txt?raw"
-import lesson19Diagnostic from "../../../../examples/tour/lessons/multiple-parameter-function/diagnostic.ssrg?raw"
-import lesson19DiagnosticOutput from "../../../../examples/tour/lessons/multiple-parameter-function/diagnostic.txt?raw"
-
-import lesson20Source from "../../../../examples/tour/lessons/function-value/main.ssrg?raw"
-import lesson20Output from "../../../../examples/tour/lessons/function-value/stdout.txt?raw"
-import lesson20Exercise from "../../../../examples/tour/lessons/function-value/exercise.ssrg?raw"
-import lesson20ExerciseOutput from "../../../../examples/tour/lessons/function-value/exercise.stdout.txt?raw"
-import lesson20Diagnostic from "../../../../examples/tour/lessons/function-value/diagnostic.ssrg?raw"
-import lesson20DiagnosticOutput from "../../../../examples/tour/lessons/function-value/diagnostic.txt?raw"
-
-import lesson21Source from "../../../../examples/tour/lessons/currying-from-code/main.ssrg?raw"
-import lesson21Output from "../../../../examples/tour/lessons/currying-from-code/stdout.txt?raw"
-import lesson21Exercise from "../../../../examples/tour/lessons/currying-from-code/exercise.ssrg?raw"
-import lesson21ExerciseOutput from "../../../../examples/tour/lessons/currying-from-code/exercise.stdout.txt?raw"
-import lesson21Diagnostic from "../../../../examples/tour/lessons/currying-from-code/diagnostic.ssrg?raw"
-import lesson21DiagnosticOutput from "../../../../examples/tour/lessons/currying-from-code/diagnostic.txt?raw"
-
-import lesson22Source from "../../../../examples/tour/lessons/partial-application/main.ssrg?raw"
-import lesson22Output from "../../../../examples/tour/lessons/partial-application/stdout.txt?raw"
-import lesson22Exercise from "../../../../examples/tour/lessons/partial-application/exercise.ssrg?raw"
-import lesson22ExerciseOutput from "../../../../examples/tour/lessons/partial-application/exercise.stdout.txt?raw"
-import lesson22Diagnostic from "../../../../examples/tour/lessons/partial-application/diagnostic.ssrg?raw"
-import lesson22DiagnosticOutput from "../../../../examples/tour/lessons/partial-application/diagnostic.txt?raw"
-
-import lesson23Source from "../../../../examples/tour/lessons/application-grouping/main.ssrg?raw"
-import lesson23Output from "../../../../examples/tour/lessons/application-grouping/stdout.txt?raw"
-import lesson23Exercise from "../../../../examples/tour/lessons/application-grouping/exercise.ssrg?raw"
-import lesson23ExerciseOutput from "../../../../examples/tour/lessons/application-grouping/exercise.stdout.txt?raw"
-import lesson23Diagnostic from "../../../../examples/tour/lessons/application-grouping/diagnostic.ssrg?raw"
-import lesson23DiagnosticOutput from "../../../../examples/tour/lessons/application-grouping/diagnostic.txt?raw"
-
-import lesson24Source from "../../../../examples/tour/lessons/dollar-application/main.ssrg?raw"
-import lesson24Output from "../../../../examples/tour/lessons/dollar-application/stdout.txt?raw"
-import lesson24Exercise from "../../../../examples/tour/lessons/dollar-application/exercise.ssrg?raw"
-import lesson24ExerciseOutput from "../../../../examples/tour/lessons/dollar-application/exercise.stdout.txt?raw"
-import lesson24Diagnostic from "../../../../examples/tour/lessons/dollar-application/diagnostic.ssrg?raw"
-import lesson24DiagnosticOutput from "../../../../examples/tour/lessons/dollar-application/diagnostic.txt?raw"
-
-import lesson25Source from "../../../../examples/tour/lessons/pipeline-application/main.ssrg?raw"
-import lesson25Output from "../../../../examples/tour/lessons/pipeline-application/stdout.txt?raw"
-import lesson25Exercise from "../../../../examples/tour/lessons/pipeline-application/exercise.ssrg?raw"
-import lesson25ExerciseOutput from "../../../../examples/tour/lessons/pipeline-application/exercise.stdout.txt?raw"
-import lesson25Diagnostic from "../../../../examples/tour/lessons/pipeline-application/diagnostic.ssrg?raw"
-import lesson25DiagnosticOutput from "../../../../examples/tour/lessons/pipeline-application/diagnostic.txt?raw"
-
-import lesson26Source from "../../../../examples/tour/lessons/mixed-application/main.ssrg?raw"
-import lesson26Output from "../../../../examples/tour/lessons/mixed-application/stdout.txt?raw"
-import lesson26Exercise from "../../../../examples/tour/lessons/mixed-application/exercise.ssrg?raw"
-import lesson26ExerciseOutput from "../../../../examples/tour/lessons/mixed-application/exercise.stdout.txt?raw"
-import lesson26Diagnostic from "../../../../examples/tour/lessons/mixed-application/diagnostic.ssrg?raw"
-import lesson26DiagnosticOutput from "../../../../examples/tour/lessons/mixed-application/diagnostic.txt?raw"
-
-import lesson27Source from "../../../../examples/tour/lessons/05-pipelines/main.ssrg?raw"
-import lesson27Output from "../../../../examples/tour/lessons/05-pipelines/stdout.txt?raw"
-import lesson27Exercise from "../../../../examples/tour/lessons/05-pipelines/exercise.ssrg?raw"
-import lesson27ExerciseOutput from "../../../../examples/tour/lessons/05-pipelines/exercise.stdout.txt?raw"
-import lesson27Diagnostic from "../../../../examples/tour/lessons/05-pipelines/diagnostic.ssrg?raw"
-import lesson27DiagnosticOutput from "../../../../examples/tour/lessons/05-pipelines/diagnostic.txt?raw"
-
-import lesson28Source from "../../../../examples/tour/lessons/tuple-values/main.ssrg?raw"
-import lesson28Output from "../../../../examples/tour/lessons/tuple-values/stdout.txt?raw"
-import lesson28Exercise from "../../../../examples/tour/lessons/tuple-values/exercise.ssrg?raw"
-import lesson28ExerciseOutput from "../../../../examples/tour/lessons/tuple-values/exercise.stdout.txt?raw"
-import lesson28Diagnostic from "../../../../examples/tour/lessons/tuple-values/diagnostic.ssrg?raw"
-import lesson28DiagnosticOutput from "../../../../examples/tour/lessons/tuple-values/diagnostic.txt?raw"
-
-import lesson29Source from "../../../../examples/tour/lessons/tuple-pattern-binding/main.ssrg?raw"
-import lesson29Output from "../../../../examples/tour/lessons/tuple-pattern-binding/stdout.txt?raw"
-import lesson29Exercise from "../../../../examples/tour/lessons/tuple-pattern-binding/exercise.ssrg?raw"
-import lesson29ExerciseOutput from "../../../../examples/tour/lessons/tuple-pattern-binding/exercise.stdout.txt?raw"
-import lesson29Diagnostic from "../../../../examples/tour/lessons/tuple-pattern-binding/diagnostic.ssrg?raw"
-import lesson29DiagnosticOutput from "../../../../examples/tour/lessons/tuple-pattern-binding/diagnostic.txt?raw"
-
-import lesson30Source from "../../../../examples/tour/lessons/record-values/main.ssrg?raw"
-import lesson30Output from "../../../../examples/tour/lessons/record-values/stdout.txt?raw"
-import lesson30Exercise from "../../../../examples/tour/lessons/record-values/exercise.ssrg?raw"
-import lesson30ExerciseOutput from "../../../../examples/tour/lessons/record-values/exercise.stdout.txt?raw"
-import lesson30Diagnostic from "../../../../examples/tour/lessons/record-values/diagnostic.ssrg?raw"
-import lesson30DiagnosticOutput from "../../../../examples/tour/lessons/record-values/diagnostic.txt?raw"
-
-import lesson31Source from "../../../../examples/tour/lessons/record-access-update/main.ssrg?raw"
-import lesson31Output from "../../../../examples/tour/lessons/record-access-update/stdout.txt?raw"
-import lesson31Exercise from "../../../../examples/tour/lessons/record-access-update/exercise.ssrg?raw"
-import lesson31ExerciseOutput from "../../../../examples/tour/lessons/record-access-update/exercise.stdout.txt?raw"
-import lesson31Diagnostic from "../../../../examples/tour/lessons/record-access-update/diagnostic.ssrg?raw"
-import lesson31DiagnosticOutput from "../../../../examples/tour/lessons/record-access-update/diagnostic.txt?raw"
-
-import lesson32Source from "../../../../examples/tour/lessons/06-records-and-structs/main.ssrg?raw"
-import lesson32Output from "../../../../examples/tour/lessons/06-records-and-structs/stdout.txt?raw"
-import lesson32Exercise from "../../../../examples/tour/lessons/06-records-and-structs/exercise.ssrg?raw"
-import lesson32ExerciseOutput from "../../../../examples/tour/lessons/06-records-and-structs/exercise.stdout.txt?raw"
-import lesson32Diagnostic from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.ssrg?raw"
-import lesson32DiagnosticOutput from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.txt?raw"
-
-import lesson33Source from "../../../../examples/tour/lessons/struct-field-access/main.ssrg?raw"
-import lesson33Output from "../../../../examples/tour/lessons/struct-field-access/stdout.txt?raw"
-import lesson33Exercise from "../../../../examples/tour/lessons/struct-field-access/exercise.ssrg?raw"
-import lesson33ExerciseOutput from "../../../../examples/tour/lessons/struct-field-access/exercise.stdout.txt?raw"
-import lesson33Diagnostic from "../../../../examples/tour/lessons/struct-field-access/diagnostic.ssrg?raw"
-import lesson33DiagnosticOutput from "../../../../examples/tour/lessons/struct-field-access/diagnostic.txt?raw"
-
-import lesson34Source from "../../../../examples/tour/lessons/simple-adt/main.ssrg?raw"
-import lesson34Output from "../../../../examples/tour/lessons/simple-adt/stdout.txt?raw"
-import lesson34Exercise from "../../../../examples/tour/lessons/simple-adt/exercise.ssrg?raw"
-import lesson34ExerciseOutput from "../../../../examples/tour/lessons/simple-adt/exercise.stdout.txt?raw"
-import lesson34Diagnostic from "../../../../examples/tour/lessons/simple-adt/diagnostic.ssrg?raw"
-import lesson34DiagnosticOutput from "../../../../examples/tour/lessons/simple-adt/diagnostic.txt?raw"
-
-import lesson35Source from "../../../../examples/tour/lessons/payload-adt/main.ssrg?raw"
-import lesson35Output from "../../../../examples/tour/lessons/payload-adt/stdout.txt?raw"
-import lesson35Exercise from "../../../../examples/tour/lessons/payload-adt/exercise.ssrg?raw"
-import lesson35ExerciseOutput from "../../../../examples/tour/lessons/payload-adt/exercise.stdout.txt?raw"
-import lesson35Diagnostic from "../../../../examples/tour/lessons/payload-adt/diagnostic.ssrg?raw"
-import lesson35DiagnosticOutput from "../../../../examples/tour/lessons/payload-adt/diagnostic.txt?raw"
-
-import lesson36Source from "../../../../examples/tour/lessons/single-constructor-match/main.ssrg?raw"
-import lesson36Output from "../../../../examples/tour/lessons/single-constructor-match/stdout.txt?raw"
-import lesson36Exercise from "../../../../examples/tour/lessons/single-constructor-match/exercise.ssrg?raw"
-import lesson36ExerciseOutput from "../../../../examples/tour/lessons/single-constructor-match/exercise.stdout.txt?raw"
-import lesson36Diagnostic from "../../../../examples/tour/lessons/single-constructor-match/diagnostic.ssrg?raw"
-import lesson36DiagnosticOutput from "../../../../examples/tour/lessons/single-constructor-match/diagnostic.txt?raw"
-
-import lesson37Source from "../../../../examples/tour/lessons/07-adts-and-patterns/main.ssrg?raw"
-import lesson37Output from "../../../../examples/tour/lessons/07-adts-and-patterns/stdout.txt?raw"
-import lesson37Exercise from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.ssrg?raw"
-import lesson37ExerciseOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.stdout.txt?raw"
-import lesson37Diagnostic from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.ssrg?raw"
-import lesson37DiagnosticOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.txt?raw"
-
-import lesson38Source from "../../../../examples/tour/lessons/payload-pattern-binding/main.ssrg?raw"
-import lesson38Output from "../../../../examples/tour/lessons/payload-pattern-binding/stdout.txt?raw"
-import lesson38Exercise from "../../../../examples/tour/lessons/payload-pattern-binding/exercise.ssrg?raw"
-import lesson38ExerciseOutput from "../../../../examples/tour/lessons/payload-pattern-binding/exercise.stdout.txt?raw"
-import lesson38Diagnostic from "../../../../examples/tour/lessons/payload-pattern-binding/diagnostic.ssrg?raw"
-import lesson38DiagnosticOutput from "../../../../examples/tour/lessons/payload-pattern-binding/diagnostic.txt?raw"
-
-import lesson39Source from "../../../../examples/tour/lessons/nested-pattern-wildcard/main.ssrg?raw"
-import lesson39Output from "../../../../examples/tour/lessons/nested-pattern-wildcard/stdout.txt?raw"
-import lesson39Exercise from "../../../../examples/tour/lessons/nested-pattern-wildcard/exercise.ssrg?raw"
-import lesson39ExerciseOutput from "../../../../examples/tour/lessons/nested-pattern-wildcard/exercise.stdout.txt?raw"
-import lesson39Diagnostic from "../../../../examples/tour/lessons/nested-pattern-wildcard/diagnostic.ssrg?raw"
-import lesson39DiagnosticOutput from "../../../../examples/tour/lessons/nested-pattern-wildcard/diagnostic.txt?raw"
-
-import lesson40Source from "../../../../examples/tour/lessons/exhaustive-match/main.ssrg?raw"
-import lesson40Output from "../../../../examples/tour/lessons/exhaustive-match/stdout.txt?raw"
-import lesson40Exercise from "../../../../examples/tour/lessons/exhaustive-match/exercise.ssrg?raw"
-import lesson40ExerciseOutput from "../../../../examples/tour/lessons/exhaustive-match/exercise.stdout.txt?raw"
-import lesson40Diagnostic from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.ssrg?raw"
-import lesson40DiagnosticOutput from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.txt?raw"
-
-import lesson41Source from "../../../../examples/tour/lessons/data-shape-selection/main.ssrg?raw"
-import lesson41Output from "../../../../examples/tour/lessons/data-shape-selection/stdout.txt?raw"
-import lesson41Exercise from "../../../../examples/tour/lessons/data-shape-selection/exercise.ssrg?raw"
-import lesson41ExerciseOutput from "../../../../examples/tour/lessons/data-shape-selection/exercise.stdout.txt?raw"
-import lesson41Diagnostic from "../../../../examples/tour/lessons/data-shape-selection/diagnostic.ssrg?raw"
-import lesson41DiagnosticOutput from "../../../../examples/tour/lessons/data-shape-selection/diagnostic.txt?raw"
-
-import lesson42Source from "../../../../examples/tour/lessons/array-values/main.ssrg?raw"
-import lesson42Output from "../../../../examples/tour/lessons/array-values/stdout.txt?raw"
-import lesson42Exercise from "../../../../examples/tour/lessons/array-values/exercise.ssrg?raw"
-import lesson42ExerciseOutput from "../../../../examples/tour/lessons/array-values/exercise.stdout.txt?raw"
-import lesson42Diagnostic from "../../../../examples/tour/lessons/array-values/diagnostic.ssrg?raw"
-import lesson42DiagnosticOutput from "../../../../examples/tour/lessons/array-values/diagnostic.txt?raw"
-
-import lesson43Source from "../../../../examples/tour/lessons/array-access/main.ssrg?raw"
-import lesson43Output from "../../../../examples/tour/lessons/array-access/stdout.txt?raw"
-import lesson43Exercise from "../../../../examples/tour/lessons/array-access/exercise.ssrg?raw"
-import lesson43ExerciseOutput from "../../../../examples/tour/lessons/array-access/exercise.stdout.txt?raw"
-import lesson43Diagnostic from "../../../../examples/tour/lessons/array-access/diagnostic.ssrg?raw"
-import lesson43DiagnosticOutput from "../../../../examples/tour/lessons/array-access/diagnostic.txt?raw"
-
-import lesson44Source from "../../../../examples/tour/lessons/list-values/main.ssrg?raw"
-import lesson44Output from "../../../../examples/tour/lessons/list-values/stdout.txt?raw"
-import lesson44Exercise from "../../../../examples/tour/lessons/list-values/exercise.ssrg?raw"
-import lesson44ExerciseOutput from "../../../../examples/tour/lessons/list-values/exercise.stdout.txt?raw"
-import lesson44Diagnostic from "../../../../examples/tour/lessons/list-values/diagnostic.ssrg?raw"
-import lesson44DiagnosticOutput from "../../../../examples/tour/lessons/list-values/diagnostic.txt?raw"
-
-import lesson45Source from "../../../../examples/tour/lessons/list-decomposition/main.ssrg?raw"
-import lesson45Output from "../../../../examples/tour/lessons/list-decomposition/stdout.txt?raw"
-import lesson45Exercise from "../../../../examples/tour/lessons/list-decomposition/exercise.ssrg?raw"
-import lesson45ExerciseOutput from "../../../../examples/tour/lessons/list-decomposition/exercise.stdout.txt?raw"
-import lesson45Diagnostic from "../../../../examples/tour/lessons/list-decomposition/diagnostic.ssrg?raw"
-import lesson45DiagnosticOutput from "../../../../examples/tour/lessons/list-decomposition/diagnostic.txt?raw"
-
-import lesson46Source from "../../../../examples/tour/lessons/range-values/main.ssrg?raw"
-import lesson46Output from "../../../../examples/tour/lessons/range-values/stdout.txt?raw"
-import lesson46Exercise from "../../../../examples/tour/lessons/range-values/exercise.ssrg?raw"
-import lesson46ExerciseOutput from "../../../../examples/tour/lessons/range-values/exercise.stdout.txt?raw"
-import lesson46Diagnostic from "../../../../examples/tour/lessons/range-values/diagnostic.ssrg?raw"
-import lesson46DiagnosticOutput from "../../../../examples/tour/lessons/range-values/diagnostic.txt?raw"
-
-import lesson47Source from "../../../../examples/tour/lessons/collection-map/main.ssrg?raw"
-import lesson47Output from "../../../../examples/tour/lessons/collection-map/stdout.txt?raw"
-import lesson47Exercise from "../../../../examples/tour/lessons/collection-map/exercise.ssrg?raw"
-import lesson47ExerciseOutput from "../../../../examples/tour/lessons/collection-map/exercise.stdout.txt?raw"
-import lesson47Diagnostic from "../../../../examples/tour/lessons/collection-map/diagnostic.ssrg?raw"
-import lesson47DiagnosticOutput from "../../../../examples/tour/lessons/collection-map/diagnostic.txt?raw"
-
-import lesson48Source from "../../../../examples/tour/lessons/collection-filter/main.ssrg?raw"
-import lesson48Output from "../../../../examples/tour/lessons/collection-filter/stdout.txt?raw"
-import lesson48Exercise from "../../../../examples/tour/lessons/collection-filter/exercise.ssrg?raw"
-import lesson48ExerciseOutput from "../../../../examples/tour/lessons/collection-filter/exercise.stdout.txt?raw"
-import lesson48Diagnostic from "../../../../examples/tour/lessons/collection-filter/diagnostic.ssrg?raw"
-import lesson48DiagnosticOutput from "../../../../examples/tour/lessons/collection-filter/diagnostic.txt?raw"
-
-import lesson49Source from "../../../../examples/tour/lessons/collection-reduce-step/main.ssrg?raw"
-import lesson49Output from "../../../../examples/tour/lessons/collection-reduce-step/stdout.txt?raw"
-import lesson49Exercise from "../../../../examples/tour/lessons/collection-reduce-step/exercise.ssrg?raw"
-import lesson49ExerciseOutput from "../../../../examples/tour/lessons/collection-reduce-step/exercise.stdout.txt?raw"
-import lesson49Diagnostic from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.ssrg?raw"
-import lesson49DiagnosticOutput from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.txt?raw"
-
-import lesson50Source from "../../../../examples/tour/lessons/collection-reduce/main.ssrg?raw"
-import lesson50Output from "../../../../examples/tour/lessons/collection-reduce/stdout.txt?raw"
-import lesson50Exercise from "../../../../examples/tour/lessons/collection-reduce/exercise.ssrg?raw"
-import lesson50ExerciseOutput from "../../../../examples/tour/lessons/collection-reduce/exercise.stdout.txt?raw"
-import lesson50Diagnostic from "../../../../examples/tour/lessons/collection-reduce/diagnostic.ssrg?raw"
-import lesson50DiagnosticOutput from "../../../../examples/tour/lessons/collection-reduce/diagnostic.txt?raw"
-
-import lesson51Source from "../../../../examples/tour/lessons/collection-append-concat/main.ssrg?raw"
-import lesson51Output from "../../../../examples/tour/lessons/collection-append-concat/stdout.txt?raw"
-import lesson51Exercise from "../../../../examples/tour/lessons/collection-append-concat/exercise.ssrg?raw"
-import lesson51ExerciseOutput from "../../../../examples/tour/lessons/collection-append-concat/exercise.stdout.txt?raw"
-import lesson51Diagnostic from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.ssrg?raw"
-import lesson51DiagnosticOutput from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.txt?raw"
-
-import lesson52Source from "../../../../examples/tour/lessons/collection-comprehension/main.ssrg?raw"
-import lesson52Output from "../../../../examples/tour/lessons/collection-comprehension/stdout.txt?raw"
-import lesson52Exercise from "../../../../examples/tour/lessons/collection-comprehension/exercise.ssrg?raw"
-import lesson52ExerciseOutput from "../../../../examples/tour/lessons/collection-comprehension/exercise.stdout.txt?raw"
-import lesson52Diagnostic from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.ssrg?raw"
-import lesson52DiagnosticOutput from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.txt?raw"
-
-import lesson53Source from "../../../../examples/tour/lessons/collection-pipeline/main.ssrg?raw"
-import lesson53Output from "../../../../examples/tour/lessons/collection-pipeline/stdout.txt?raw"
-import lesson53Exercise from "../../../../examples/tour/lessons/collection-pipeline/exercise.ssrg?raw"
-import lesson53ExerciseOutput from "../../../../examples/tour/lessons/collection-pipeline/exercise.stdout.txt?raw"
-import lesson53Diagnostic from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.ssrg?raw"
-import lesson53DiagnosticOutput from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.txt?raw"
-
-import lesson54Source from "../../../../examples/tour/lessons/empty-collections/main.ssrg?raw"
-import lesson54Output from "../../../../examples/tour/lessons/empty-collections/stdout.txt?raw"
-import lesson54Exercise from "../../../../examples/tour/lessons/empty-collections/exercise.ssrg?raw"
-import lesson54ExerciseOutput from "../../../../examples/tour/lessons/empty-collections/exercise.stdout.txt?raw"
-import lesson54Diagnostic from "../../../../examples/tour/lessons/empty-collections/diagnostic.ssrg?raw"
-import lesson54DiagnosticOutput from "../../../../examples/tour/lessons/empty-collections/diagnostic.txt?raw"
-
-import lesson55Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
-import lesson55Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
-import lesson55Exercise from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.ssrg?raw"
-import lesson55ExerciseOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.stdout.txt?raw"
-import lesson55Diagnostic from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.ssrg?raw"
-import lesson55DiagnosticOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.txt?raw"
-
-import lesson56Source from "../../../../examples/tour/lessons/maybe-role/main.ssrg?raw"
-import lesson56Output from "../../../../examples/tour/lessons/maybe-role/stdout.txt?raw"
-import lesson56Exercise from "../../../../examples/tour/lessons/maybe-role/exercise.ssrg?raw"
-import lesson56ExerciseOutput from "../../../../examples/tour/lessons/maybe-role/exercise.stdout.txt?raw"
-import lesson56Diagnostic from "../../../../examples/tour/lessons/maybe-role/diagnostic.ssrg?raw"
-import lesson56DiagnosticOutput from "../../../../examples/tour/lessons/maybe-role/diagnostic.txt?raw"
-
-import lesson57Source from "../../../../examples/tour/lessons/maybe-constructors/main.ssrg?raw"
-import lesson57Output from "../../../../examples/tour/lessons/maybe-constructors/stdout.txt?raw"
-import lesson57Exercise from "../../../../examples/tour/lessons/maybe-constructors/exercise.ssrg?raw"
-import lesson57ExerciseOutput from "../../../../examples/tour/lessons/maybe-constructors/exercise.stdout.txt?raw"
-import lesson57Diagnostic from "../../../../examples/tour/lessons/maybe-constructors/diagnostic.ssrg?raw"
-import lesson57DiagnosticOutput from "../../../../examples/tour/lessons/maybe-constructors/diagnostic.txt?raw"
-
-import lesson58Source from "../../../../examples/tour/lessons/maybe-match/main.ssrg?raw"
-import lesson58Output from "../../../../examples/tour/lessons/maybe-match/stdout.txt?raw"
-import lesson58Exercise from "../../../../examples/tour/lessons/maybe-match/exercise.ssrg?raw"
-import lesson58ExerciseOutput from "../../../../examples/tour/lessons/maybe-match/exercise.stdout.txt?raw"
-import lesson58Diagnostic from "../../../../examples/tour/lessons/maybe-match/diagnostic.ssrg?raw"
-import lesson58DiagnosticOutput from "../../../../examples/tour/lessons/maybe-match/diagnostic.txt?raw"
-
-import lesson59Source from "../../../../examples/tour/lessons/maybe-default/main.ssrg?raw"
-import lesson59Output from "../../../../examples/tour/lessons/maybe-default/stdout.txt?raw"
-import lesson59Exercise from "../../../../examples/tour/lessons/maybe-default/exercise.ssrg?raw"
-import lesson59ExerciseOutput from "../../../../examples/tour/lessons/maybe-default/exercise.stdout.txt?raw"
-import lesson59Diagnostic from "../../../../examples/tour/lessons/maybe-default/diagnostic.ssrg?raw"
-import lesson59DiagnosticOutput from "../../../../examples/tour/lessons/maybe-default/diagnostic.txt?raw"
-
-import lesson60Source from "../../../../examples/tour/lessons/maybe-map/main.ssrg?raw"
-import lesson60Output from "../../../../examples/tour/lessons/maybe-map/stdout.txt?raw"
-import lesson60Exercise from "../../../../examples/tour/lessons/maybe-map/exercise.ssrg?raw"
-import lesson60ExerciseOutput from "../../../../examples/tour/lessons/maybe-map/exercise.stdout.txt?raw"
-import lesson60Diagnostic from "../../../../examples/tour/lessons/maybe-map/diagnostic.ssrg?raw"
-import lesson60DiagnosticOutput from "../../../../examples/tour/lessons/maybe-map/diagnostic.txt?raw"
-
-import lesson61Source from "../../../../examples/tour/lessons/maybe-combine/main.ssrg?raw"
-import lesson61Output from "../../../../examples/tour/lessons/maybe-combine/stdout.txt?raw"
-import lesson61Exercise from "../../../../examples/tour/lessons/maybe-combine/exercise.ssrg?raw"
-import lesson61ExerciseOutput from "../../../../examples/tour/lessons/maybe-combine/exercise.stdout.txt?raw"
-import lesson61Diagnostic from "../../../../examples/tour/lessons/maybe-combine/diagnostic.ssrg?raw"
-import lesson61DiagnosticOutput from "../../../../examples/tour/lessons/maybe-combine/diagnostic.txt?raw"
-
-import lesson62Source from "../../../../examples/tour/lessons/maybe-short-circuit/main.ssrg?raw"
-import lesson62Output from "../../../../examples/tour/lessons/maybe-short-circuit/stdout.txt?raw"
-import lesson62Exercise from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.ssrg?raw"
-import lesson62ExerciseOutput from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.stdout.txt?raw"
-import lesson62Diagnostic from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.ssrg?raw"
-import lesson62DiagnosticOutput from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.txt?raw"
-
-import lesson63Source from "../../../../examples/tour/lessons/either-role/main.ssrg?raw"
-import lesson63Output from "../../../../examples/tour/lessons/either-role/stdout.txt?raw"
-import lesson63Exercise from "../../../../examples/tour/lessons/either-role/exercise.ssrg?raw"
-import lesson63ExerciseOutput from "../../../../examples/tour/lessons/either-role/exercise.stdout.txt?raw"
-import lesson63Diagnostic from "../../../../examples/tour/lessons/either-role/diagnostic.ssrg?raw"
-import lesson63DiagnosticOutput from "../../../../examples/tour/lessons/either-role/diagnostic.txt?raw"
-
-import lesson64Source from "../../../../examples/tour/lessons/either-constructors/main.ssrg?raw"
-import lesson64Output from "../../../../examples/tour/lessons/either-constructors/stdout.txt?raw"
-import lesson64Exercise from "../../../../examples/tour/lessons/either-constructors/exercise.ssrg?raw"
-import lesson64ExerciseOutput from "../../../../examples/tour/lessons/either-constructors/exercise.stdout.txt?raw"
-import lesson64Diagnostic from "../../../../examples/tour/lessons/either-constructors/diagnostic.ssrg?raw"
-import lesson64DiagnosticOutput from "../../../../examples/tour/lessons/either-constructors/diagnostic.txt?raw"
-
-import lesson65Source from "../../../../examples/tour/lessons/either-match/main.ssrg?raw"
-import lesson65Output from "../../../../examples/tour/lessons/either-match/stdout.txt?raw"
-import lesson65Exercise from "../../../../examples/tour/lessons/either-match/exercise.ssrg?raw"
-import lesson65ExerciseOutput from "../../../../examples/tour/lessons/either-match/exercise.stdout.txt?raw"
-import lesson65Diagnostic from "../../../../examples/tour/lessons/either-match/diagnostic.ssrg?raw"
-import lesson65DiagnosticOutput from "../../../../examples/tour/lessons/either-match/diagnostic.txt?raw"
-
-import lesson66Source from "../../../../examples/tour/lessons/either-map-error/main.ssrg?raw"
-import lesson66Output from "../../../../examples/tour/lessons/either-map-error/stdout.txt?raw"
-import lesson66Exercise from "../../../../examples/tour/lessons/either-map-error/exercise.ssrg?raw"
-import lesson66ExerciseOutput from "../../../../examples/tour/lessons/either-map-error/exercise.stdout.txt?raw"
-import lesson66Diagnostic from "../../../../examples/tour/lessons/either-map-error/diagnostic.ssrg?raw"
-import lesson66DiagnosticOutput from "../../../../examples/tour/lessons/either-map-error/diagnostic.txt?raw"
-
-import lesson67Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
-import lesson67Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
-import lesson67Exercise from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.ssrg?raw"
-import lesson67ExerciseOutput from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.stdout.txt?raw"
-import lesson67Diagnostic from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.ssrg?raw"
-import lesson67DiagnosticOutput from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.txt?raw"
-
-import lesson68Source from "../../../../examples/tour/lessons/effect-failure-bridge/main.ssrg?raw"
-import lesson68Output from "../../../../examples/tour/lessons/effect-failure-bridge/stdout.txt?raw"
-import lesson68Exercise from "../../../../examples/tour/lessons/effect-failure-bridge/exercise.ssrg?raw"
-import lesson68ExerciseOutput from "../../../../examples/tour/lessons/effect-failure-bridge/exercise.stdout.txt?raw"
-import lesson68Diagnostic from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.ssrg?raw"
-import lesson68DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.txt?raw"
-
-import lesson69Source from "../../../../examples/tour/lessons/effect-pure-vs-effect/main.ssrg?raw"
-import lesson69Output from "../../../../examples/tour/lessons/effect-pure-vs-effect/stdout.txt?raw"
-import lesson69Exercise from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.ssrg?raw"
-import lesson69ExerciseOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.stdout.txt?raw"
-import lesson69Diagnostic from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.ssrg?raw"
-import lesson69DiagnosticOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.txt?raw"
-
-import lesson70Source from "../../../../examples/tour/lessons/effect-single-operation/main.ssrg?raw"
-import lesson70Output from "../../../../examples/tour/lessons/effect-single-operation/stdout.txt?raw"
-import lesson70Exercise from "../../../../examples/tour/lessons/effect-single-operation/exercise.ssrg?raw"
-import lesson70ExerciseOutput from "../../../../examples/tour/lessons/effect-single-operation/exercise.stdout.txt?raw"
-import lesson70Diagnostic from "../../../../examples/tour/lessons/effect-single-operation/diagnostic.ssrg?raw"
-import lesson70DiagnosticOutput from "../../../../examples/tour/lessons/effect-single-operation/diagnostic.txt?raw"
-
-import lesson71Source from "../../../../examples/tour/lessons/effect-do-block/main.ssrg?raw"
-import lesson71Output from "../../../../examples/tour/lessons/effect-do-block/stdout.txt?raw"
-import lesson71Exercise from "../../../../examples/tour/lessons/effect-do-block/exercise.ssrg?raw"
-import lesson71ExerciseOutput from "../../../../examples/tour/lessons/effect-do-block/exercise.stdout.txt?raw"
-import lesson71Diagnostic from "../../../../examples/tour/lessons/effect-do-block/diagnostic.ssrg?raw"
-import lesson71DiagnosticOutput from "../../../../examples/tour/lessons/effect-do-block/diagnostic.txt?raw"
-
-import lesson72Source from "../../../../examples/tour/lessons/effect-sequence/main.ssrg?raw"
-import lesson72Output from "../../../../examples/tour/lessons/effect-sequence/stdout.txt?raw"
-import lesson72Exercise from "../../../../examples/tour/lessons/effect-sequence/exercise.ssrg?raw"
-import lesson72ExerciseOutput from "../../../../examples/tour/lessons/effect-sequence/exercise.stdout.txt?raw"
-import lesson72Diagnostic from "../../../../examples/tour/lessons/effect-sequence/diagnostic.ssrg?raw"
-import lesson72DiagnosticOutput from "../../../../examples/tour/lessons/effect-sequence/diagnostic.txt?raw"
-
-import lesson73Source from "../../../../examples/tour/lessons/effect-bind-success/main.ssrg?raw"
-import lesson73Output from "../../../../examples/tour/lessons/effect-bind-success/stdout.txt?raw"
-import lesson73Exercise from "../../../../examples/tour/lessons/effect-bind-success/exercise.ssrg?raw"
-import lesson73ExerciseOutput from "../../../../examples/tour/lessons/effect-bind-success/exercise.stdout.txt?raw"
-import lesson73Diagnostic from "../../../../examples/tour/lessons/effect-bind-success/diagnostic.ssrg?raw"
-import lesson73DiagnosticOutput from "../../../../examples/tour/lessons/effect-bind-success/diagnostic.txt?raw"
-
-import lesson74Source from "../../../../examples/tour/lessons/effect-succeed-value/main.ssrg?raw"
-import lesson74Output from "../../../../examples/tour/lessons/effect-succeed-value/stdout.txt?raw"
-import lesson74Exercise from "../../../../examples/tour/lessons/effect-succeed-value/exercise.ssrg?raw"
-import lesson74ExerciseOutput from "../../../../examples/tour/lessons/effect-succeed-value/exercise.stdout.txt?raw"
-import lesson74Diagnostic from "../../../../examples/tour/lessons/effect-succeed-value/diagnostic.ssrg?raw"
-import lesson74DiagnosticOutput from "../../../../examples/tour/lessons/effect-succeed-value/diagnostic.txt?raw"
-
-import lesson75Source from "../../../../examples/tour/lessons/effect-failure-short-circuit/main.ssrg?raw"
-import lesson75Output from "../../../../examples/tour/lessons/effect-failure-short-circuit/stdout.txt?raw"
-import lesson75Failure from "../../../../examples/tour/lessons/effect-failure-short-circuit/failure.txt?raw"
-import lesson75Exercise from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.ssrg?raw"
-import lesson75ExerciseOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.stdout.txt?raw"
-import lesson75Diagnostic from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.ssrg?raw"
-import lesson75DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.txt?raw"
-
-import lesson76Source from "../../../../examples/tour/lessons/effect-fails-type/main.ssrg?raw"
-import lesson76Output from "../../../../examples/tour/lessons/effect-fails-type/stdout.txt?raw"
-import lesson76Exercise from "../../../../examples/tour/lessons/effect-fails-type/exercise.ssrg?raw"
-import lesson76ExerciseOutput from "../../../../examples/tour/lessons/effect-fails-type/exercise.stdout.txt?raw"
-import lesson76Diagnostic from "../../../../examples/tour/lessons/effect-fails-type/diagnostic.ssrg?raw"
-import lesson76DiagnosticOutput from "../../../../examples/tour/lessons/effect-fails-type/diagnostic.txt?raw"
-
-import lesson77Source from "../../../../examples/tour/lessons/effect-with-capability/main.ssrg?raw"
-import lesson77Output from "../../../../examples/tour/lessons/effect-with-capability/stdout.txt?raw"
-import lesson77Exercise from "../../../../examples/tour/lessons/effect-with-capability/exercise.ssrg?raw"
-import lesson77ExerciseOutput from "../../../../examples/tour/lessons/effect-with-capability/exercise.stdout.txt?raw"
-import lesson77Diagnostic from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.ssrg?raw"
-import lesson77DiagnosticOutput from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.txt?raw"
-
-import lesson78Source from "../../../../examples/tour/lessons/effect-inferred-contract/main.ssrg?raw"
-import lesson78Output from "../../../../examples/tour/lessons/effect-inferred-contract/stdout.txt?raw"
-import lesson78Exercise from "../../../../examples/tour/lessons/effect-inferred-contract/exercise.ssrg?raw"
-import lesson78ExerciseOutput from "../../../../examples/tour/lessons/effect-inferred-contract/exercise.stdout.txt?raw"
-import lesson78Diagnostic from "../../../../examples/tour/lessons/effect-inferred-contract/diagnostic.ssrg?raw"
-import lesson78DiagnosticOutput from "../../../../examples/tour/lessons/effect-inferred-contract/diagnostic.txt?raw"
-
-import lesson79Source from "../../../../examples/tour/lessons/effect-explicit-contract/main.ssrg?raw"
-import lesson79Output from "../../../../examples/tour/lessons/effect-explicit-contract/stdout.txt?raw"
-import lesson79Exercise from "../../../../examples/tour/lessons/effect-explicit-contract/exercise.ssrg?raw"
-import lesson79ExerciseOutput from "../../../../examples/tour/lessons/effect-explicit-contract/exercise.stdout.txt?raw"
-import lesson79Diagnostic from "../../../../examples/tour/lessons/effect-explicit-contract/diagnostic.ssrg?raw"
-import lesson79DiagnosticOutput from "../../../../examples/tour/lessons/effect-explicit-contract/diagnostic.txt?raw"
-
-import lesson80Source from "../../../../examples/tour/lessons/effect-map-error/main.ssrg?raw"
-import lesson80Failure from "../../../../examples/tour/lessons/effect-map-error/failure.txt?raw"
-import lesson80Exercise from "../../../../examples/tour/lessons/effect-map-error/exercise.ssrg?raw"
-import lesson80ExerciseOutput from "../../../../examples/tour/lessons/effect-map-error/exercise.stdout.txt?raw"
-import lesson80Diagnostic from "../../../../examples/tour/lessons/effect-map-error/diagnostic.ssrg?raw"
-import lesson80DiagnosticOutput from "../../../../examples/tour/lessons/effect-map-error/diagnostic.txt?raw"
-
-import lesson81Source from "../../../../examples/tour/lessons/effect-value-boundary/main.ssrg?raw"
-import lesson81Output from "../../../../examples/tour/lessons/effect-value-boundary/stdout.txt?raw"
-import lesson81Exercise from "../../../../examples/tour/lessons/effect-value-boundary/exercise.ssrg?raw"
-import lesson81ExerciseOutput from "../../../../examples/tour/lessons/effect-value-boundary/exercise.stdout.txt?raw"
-import lesson81Diagnostic from "../../../../examples/tour/lessons/effect-value-boundary/diagnostic.ssrg?raw"
-import lesson81DiagnosticOutput from "../../../../examples/tour/lessons/effect-value-boundary/diagnostic.txt?raw"
-
-import lesson82Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
-import lesson82Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
-import lesson82Exercise from "../../../../examples/tour/lessons/10-effects-and-do/exercise.ssrg?raw"
-import lesson82ExerciseOutput from "../../../../examples/tour/lessons/10-effects-and-do/exercise.stdout.txt?raw"
-import lesson82Diagnostic from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.ssrg?raw"
-import lesson82DiagnosticOutput from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.txt?raw"
-
-import lesson83Source from "../../../../examples/tour/lessons/abstraction-concrete-generic/main.ssrg?raw"
-import lesson83Output from "../../../../examples/tour/lessons/abstraction-concrete-generic/stdout.txt?raw"
-import lesson83Exercise from "../../../../examples/tour/lessons/abstraction-concrete-generic/exercise.ssrg?raw"
-import lesson83ExerciseOutput from "../../../../examples/tour/lessons/abstraction-concrete-generic/exercise.stdout.txt?raw"
-import lesson83Diagnostic from "../../../../examples/tour/lessons/abstraction-concrete-generic/diagnostic.ssrg?raw"
-import lesson83DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-concrete-generic/diagnostic.txt?raw"
-
-import lesson84Source from "../../../../examples/tour/lessons/abstraction-type-parameter/main.ssrg?raw"
-import lesson84Output from "../../../../examples/tour/lessons/abstraction-type-parameter/stdout.txt?raw"
-import lesson84Exercise from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.ssrg?raw"
-import lesson84ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.stdout.txt?raw"
-import lesson84Diagnostic from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.ssrg?raw"
-import lesson84DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.txt?raw"
-
-import lesson85Source from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/main.ssrg?raw"
-import lesson85Output from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/stdout.txt?raw"
-import lesson85Exercise from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/exercise.ssrg?raw"
-import lesson85ExerciseOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/exercise.stdout.txt?raw"
-import lesson85Diagnostic from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/diagnostic.ssrg?raw"
-import lesson85DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/diagnostic.txt?raw"
-
-import lesson86Source from "../../../../examples/tour/lessons/abstraction-generic-adt-use/main.ssrg?raw"
-import lesson86Output from "../../../../examples/tour/lessons/abstraction-generic-adt-use/stdout.txt?raw"
-import lesson86Exercise from "../../../../examples/tour/lessons/abstraction-generic-adt-use/exercise.ssrg?raw"
-import lesson86ExerciseOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-use/exercise.stdout.txt?raw"
-import lesson86Diagnostic from "../../../../examples/tour/lessons/abstraction-generic-adt-use/diagnostic.ssrg?raw"
-import lesson86DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-use/diagnostic.txt?raw"
-
-import lesson87Source from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/main.ssrg?raw"
-import lesson87Output from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/stdout.txt?raw"
-import lesson87Exercise from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/exercise.ssrg?raw"
-import lesson87ExerciseOutput from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/exercise.stdout.txt?raw"
-import lesson87Diagnostic from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/diagnostic.ssrg?raw"
-import lesson87DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/diagnostic.txt?raw"
-
-import lesson88Source from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/main.ssrg?raw"
-import lesson88Output from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/stdout.txt?raw"
-import lesson88Exercise from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/exercise.ssrg?raw"
-import lesson88ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/exercise.stdout.txt?raw"
-import lesson88Diagnostic from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/diagnostic.ssrg?raw"
-import lesson88DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/diagnostic.txt?raw"
-
-import lesson89Source from "../../../../examples/tour/lessons/abstraction-trait-operation/main.ssrg?raw"
-import lesson89Output from "../../../../examples/tour/lessons/abstraction-trait-operation/stdout.txt?raw"
-import lesson89Exercise from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.ssrg?raw"
-import lesson89ExerciseOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.stdout.txt?raw"
-import lesson89Diagnostic from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.ssrg?raw"
-import lesson89DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.txt?raw"
-
-import lesson90Source from "../../../../examples/tour/lessons/abstraction-user-instance/main.ssrg?raw"
-import lesson90Output from "../../../../examples/tour/lessons/abstraction-user-instance/stdout.txt?raw"
-import lesson90Exercise from "../../../../examples/tour/lessons/abstraction-user-instance/exercise.ssrg?raw"
-import lesson90ExerciseOutput from "../../../../examples/tour/lessons/abstraction-user-instance/exercise.stdout.txt?raw"
-import lesson90Diagnostic from "../../../../examples/tour/lessons/abstraction-user-instance/diagnostic.ssrg?raw"
-import lesson90DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-user-instance/diagnostic.txt?raw"
-
-import lesson91Source from "../../../../examples/tour/lessons/abstraction-where-constraint/main.ssrg?raw"
-import lesson91Output from "../../../../examples/tour/lessons/abstraction-where-constraint/stdout.txt?raw"
-import lesson91Exercise from "../../../../examples/tour/lessons/abstraction-where-constraint/exercise.ssrg?raw"
-import lesson91ExerciseOutput from "../../../../examples/tour/lessons/abstraction-where-constraint/exercise.stdout.txt?raw"
-import lesson91Diagnostic from "../../../../examples/tour/lessons/abstraction-where-constraint/diagnostic.ssrg?raw"
-import lesson91DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-where-constraint/diagnostic.txt?raw"
-
-import lesson92Source from "../../../../examples/tour/lessons/abstraction-instance-selection/main.ssrg?raw"
-import lesson92Output from "../../../../examples/tour/lessons/abstraction-instance-selection/stdout.txt?raw"
-import lesson92Exercise from "../../../../examples/tour/lessons/abstraction-instance-selection/exercise.ssrg?raw"
-import lesson92ExerciseOutput from "../../../../examples/tour/lessons/abstraction-instance-selection/exercise.stdout.txt?raw"
-import lesson92Diagnostic from "../../../../examples/tour/lessons/abstraction-instance-selection/diagnostic.ssrg?raw"
-import lesson92DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-instance-selection/diagnostic.txt?raw"
-
-import lesson93Source from "../../../../examples/tour/lessons/abstraction-functor-map/main.ssrg?raw"
-import lesson93Output from "../../../../examples/tour/lessons/abstraction-functor-map/stdout.txt?raw"
-import lesson93Exercise from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.ssrg?raw"
-import lesson93ExerciseOutput from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.stdout.txt?raw"
-import lesson93Diagnostic from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.ssrg?raw"
-import lesson93DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.txt?raw"
-
-import lesson94Source from "../../../../examples/tour/lessons/abstraction-applicative-apply/main.ssrg?raw"
-import lesson94Output from "../../../../examples/tour/lessons/abstraction-applicative-apply/stdout.txt?raw"
-import lesson94Exercise from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.ssrg?raw"
-import lesson94ExerciseOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.stdout.txt?raw"
-import lesson94Diagnostic from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.ssrg?raw"
-import lesson94DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.txt?raw"
-
-import lesson95Source from "../../../../examples/tour/lessons/abstraction-monad-bind/main.ssrg?raw"
-import lesson95Output from "../../../../examples/tour/lessons/abstraction-monad-bind/stdout.txt?raw"
-import lesson95Exercise from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.ssrg?raw"
-import lesson95ExerciseOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.stdout.txt?raw"
-import lesson95Diagnostic from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.ssrg?raw"
-import lesson95DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.txt?raw"
-
-import lesson96Source from "../../../../examples/tour/lessons/abstraction-type-comparison/main.ssrg?raw"
-import lesson96Output from "../../../../examples/tour/lessons/abstraction-type-comparison/stdout.txt?raw"
-import lesson96Exercise from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.ssrg?raw"
-import lesson96ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.stdout.txt?raw"
-import lesson96Diagnostic from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.ssrg?raw"
-import lesson96DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.txt?raw"
-
-import lesson97Source from "../../../../examples/tour/lessons/abstraction-signal-contract/main.ssrg?raw"
-import lesson97Output from "../../../../examples/tour/lessons/abstraction-signal-contract/stdout.txt?raw"
-import lesson97Exercise from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.ssrg?raw"
-import lesson97ExerciseOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.stdout.txt?raw"
-import lesson97Diagnostic from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.ssrg?raw"
-import lesson97DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.txt?raw"
-
-import lesson98Source from "../../../../examples/tour/lessons/abstraction-impl-method/main.ssrg?raw"
-import lesson98Output from "../../../../examples/tour/lessons/abstraction-impl-method/stdout.txt?raw"
-import lesson98Exercise from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.ssrg?raw"
-import lesson98ExerciseOutput from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.stdout.txt?raw"
-import lesson98Diagnostic from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.ssrg?raw"
-import lesson98DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.txt?raw"
-
-import lesson99Source from "../../../../examples/tour/lessons/abstraction-custom-operator/main.ssrg?raw"
-import lesson99Output from "../../../../examples/tour/lessons/abstraction-custom-operator/stdout.txt?raw"
-import lesson99Exercise from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.ssrg?raw"
-import lesson99ExerciseOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.stdout.txt?raw"
-import lesson99Diagnostic from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.ssrg?raw"
-import lesson99DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.txt?raw"
-
-import lesson100Source from "../../../../examples/tour/lessons/signals-value-difference/main.ssrg?raw"
-import lesson100Output from "../../../../examples/tour/lessons/signals-value-difference/stdout.txt?raw"
-import lesson100Exercise from "../../../../examples/tour/lessons/signals-value-difference/exercise.ssrg?raw"
-import lesson100ExerciseOutput from "../../../../examples/tour/lessons/signals-value-difference/exercise.stdout.txt?raw"
-import lesson100Diagnostic from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.ssrg?raw"
-import lesson100DiagnosticOutput from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.txt?raw"
-
-import lesson101Source from "../../../../examples/tour/lessons/signals-make/main.ssrg?raw"
-import lesson101Output from "../../../../examples/tour/lessons/signals-make/stdout.txt?raw"
-import lesson101Exercise from "../../../../examples/tour/lessons/signals-make/exercise.ssrg?raw"
-import lesson101ExerciseOutput from "../../../../examples/tour/lessons/signals-make/exercise.stdout.txt?raw"
-import lesson101Diagnostic from "../../../../examples/tour/lessons/signals-make/diagnostic.ssrg?raw"
-import lesson101DiagnosticOutput from "../../../../examples/tour/lessons/signals-make/diagnostic.txt?raw"
-
-import lesson102Source from "../../../../examples/tour/lessons/signals-readonly-coercion/main.ssrg?raw"
-import lesson102Output from "../../../../examples/tour/lessons/signals-readonly-coercion/stdout.txt?raw"
-import lesson102Exercise from "../../../../examples/tour/lessons/signals-readonly-coercion/exercise.ssrg?raw"
-import lesson102ExerciseOutput from "../../../../examples/tour/lessons/signals-readonly-coercion/exercise.stdout.txt?raw"
-import lesson102Diagnostic from "../../../../examples/tour/lessons/signals-readonly-coercion/diagnostic.ssrg?raw"
-import lesson102DiagnosticOutput from "../../../../examples/tour/lessons/signals-readonly-coercion/diagnostic.txt?raw"
-
-import lesson103Source from "../../../../examples/tour/lessons/signals-read-operator/main.ssrg?raw"
-import lesson103Output from "../../../../examples/tour/lessons/signals-read-operator/stdout.txt?raw"
-import lesson103Exercise from "../../../../examples/tour/lessons/signals-read-operator/exercise.ssrg?raw"
-import lesson103ExerciseOutput from "../../../../examples/tour/lessons/signals-read-operator/exercise.stdout.txt?raw"
-import lesson103Diagnostic from "../../../../examples/tour/lessons/signals-read-operator/diagnostic.ssrg?raw"
-import lesson103DiagnosticOutput from "../../../../examples/tour/lessons/signals-read-operator/diagnostic.txt?raw"
-
-import lesson104Source from "../../../../examples/tour/lessons/signals-set/main.ssrg?raw"
-import lesson104Output from "../../../../examples/tour/lessons/signals-set/stdout.txt?raw"
-import lesson104Exercise from "../../../../examples/tour/lessons/signals-set/exercise.ssrg?raw"
-import lesson104ExerciseOutput from "../../../../examples/tour/lessons/signals-set/exercise.stdout.txt?raw"
-import lesson104Diagnostic from "../../../../examples/tour/lessons/signals-set/diagnostic.ssrg?raw"
-import lesson104DiagnosticOutput from "../../../../examples/tour/lessons/signals-set/diagnostic.txt?raw"
-
-import lesson105Source from "../../../../examples/tour/lessons/signals-write-operator/main.ssrg?raw"
-import lesson105Output from "../../../../examples/tour/lessons/signals-write-operator/stdout.txt?raw"
-import lesson105Exercise from "../../../../examples/tour/lessons/signals-write-operator/exercise.ssrg?raw"
-import lesson105ExerciseOutput from "../../../../examples/tour/lessons/signals-write-operator/exercise.stdout.txt?raw"
-import lesson105Diagnostic from "../../../../examples/tour/lessons/signals-write-operator/diagnostic.ssrg?raw"
-import lesson105DiagnosticOutput from "../../../../examples/tour/lessons/signals-write-operator/diagnostic.txt?raw"
-
-import lesson106Source from "../../../../examples/tour/lessons/signals-observable-update/main.ssrg?raw"
-import lesson106Output from "../../../../examples/tour/lessons/signals-observable-update/stdout.txt?raw"
-import lesson106Exercise from "../../../../examples/tour/lessons/signals-observable-update/exercise.ssrg?raw"
-import lesson106ExerciseOutput from "../../../../examples/tour/lessons/signals-observable-update/exercise.stdout.txt?raw"
-import lesson106Diagnostic from "../../../../examples/tour/lessons/signals-observable-update/diagnostic.ssrg?raw"
-import lesson106DiagnosticOutput from "../../../../examples/tour/lessons/signals-observable-update/diagnostic.txt?raw"
-
-import lesson107Source from "../../../../examples/tour/lessons/signals-map/main.ssrg?raw"
-import lesson107Output from "../../../../examples/tour/lessons/signals-map/stdout.txt?raw"
-import lesson107Exercise from "../../../../examples/tour/lessons/signals-map/exercise.ssrg?raw"
-import lesson107ExerciseOutput from "../../../../examples/tour/lessons/signals-map/exercise.stdout.txt?raw"
-import lesson107Diagnostic from "../../../../examples/tour/lessons/signals-map/diagnostic.ssrg?raw"
-import lesson107DiagnosticOutput from "../../../../examples/tour/lessons/signals-map/diagnostic.txt?raw"
-
-import lesson108Source from "../../../../examples/tour/lessons/signals-functor-operator/main.ssrg?raw"
-import lesson108Output from "../../../../examples/tour/lessons/signals-functor-operator/stdout.txt?raw"
-import lesson108Exercise from "../../../../examples/tour/lessons/signals-functor-operator/exercise.ssrg?raw"
-import lesson108ExerciseOutput from "../../../../examples/tour/lessons/signals-functor-operator/exercise.stdout.txt?raw"
-import lesson108Diagnostic from "../../../../examples/tour/lessons/signals-functor-operator/diagnostic.ssrg?raw"
-import lesson108DiagnosticOutput from "../../../../examples/tour/lessons/signals-functor-operator/diagnostic.txt?raw"
-
-import lesson109Source from "../../../../examples/tour/lessons/signals-constant-pure/main.ssrg?raw"
-import lesson109Output from "../../../../examples/tour/lessons/signals-constant-pure/stdout.txt?raw"
-import lesson109Exercise from "../../../../examples/tour/lessons/signals-constant-pure/exercise.ssrg?raw"
-import lesson109ExerciseOutput from "../../../../examples/tour/lessons/signals-constant-pure/exercise.stdout.txt?raw"
-import lesson109Diagnostic from "../../../../examples/tour/lessons/signals-constant-pure/diagnostic.ssrg?raw"
-import lesson109DiagnosticOutput from "../../../../examples/tour/lessons/signals-constant-pure/diagnostic.txt?raw"
-
-import lesson110Source from "../../../../examples/tour/lessons/signals-combine/main.ssrg?raw"
-import lesson110Output from "../../../../examples/tour/lessons/signals-combine/stdout.txt?raw"
-import lesson110Exercise from "../../../../examples/tour/lessons/signals-combine/exercise.ssrg?raw"
-import lesson110ExerciseOutput from "../../../../examples/tour/lessons/signals-combine/exercise.stdout.txt?raw"
-import lesson110Diagnostic from "../../../../examples/tour/lessons/signals-combine/diagnostic.ssrg?raw"
-import lesson110DiagnosticOutput from "../../../../examples/tour/lessons/signals-combine/diagnostic.txt?raw"
-
-import lesson111Source from "../../../../examples/tour/lessons/signals-applicative-glitch-free/main.ssrg?raw"
-import lesson111Output from "../../../../examples/tour/lessons/signals-applicative-glitch-free/stdout.txt?raw"
-import lesson111Exercise from "../../../../examples/tour/lessons/signals-applicative-glitch-free/exercise.ssrg?raw"
-import lesson111ExerciseOutput from "../../../../examples/tour/lessons/signals-applicative-glitch-free/exercise.stdout.txt?raw"
-import lesson111Diagnostic from "../../../../examples/tour/lessons/signals-applicative-glitch-free/diagnostic.ssrg?raw"
-import lesson111DiagnosticOutput from "../../../../examples/tour/lessons/signals-applicative-glitch-free/diagnostic.txt?raw"
-
-import lesson112Source from "../../../../examples/tour/lessons/signals-monad-boundary/main.ssrg?raw"
-import lesson112Output from "../../../../examples/tour/lessons/signals-monad-boundary/stdout.txt?raw"
-import lesson112Exercise from "../../../../examples/tour/lessons/signals-monad-boundary/exercise.ssrg?raw"
-import lesson112ExerciseOutput from "../../../../examples/tour/lessons/signals-monad-boundary/exercise.stdout.txt?raw"
-import lesson112Diagnostic from "../../../../examples/tour/lessons/signals-monad-boundary/diagnostic.ssrg?raw"
-import lesson112DiagnosticOutput from "../../../../examples/tour/lessons/signals-monad-boundary/diagnostic.txt?raw"
-
-import lesson113Source from "../../../../examples/tour/lessons/signals-switch-map/main.ssrg?raw"
-import lesson113Output from "../../../../examples/tour/lessons/signals-switch-map/stdout.txt?raw"
-import lesson113Exercise from "../../../../examples/tour/lessons/signals-switch-map/exercise.ssrg?raw"
-import lesson113ExerciseOutput from "../../../../examples/tour/lessons/signals-switch-map/exercise.stdout.txt?raw"
-import lesson113Diagnostic from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.ssrg?raw"
-import lesson113DiagnosticOutput from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.txt?raw"
-
-import lesson114Source from "../../../../examples/tour/lessons/signals-handler-boundary/main.ssrg?raw"
-import lesson114Output from "../../../../examples/tour/lessons/signals-handler-boundary/stdout.txt?raw"
-import lesson114Exercise from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.ssrg?raw"
-import lesson114ExerciseOutput from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.stdout.txt?raw"
-import lesson114Diagnostic from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.ssrg?raw"
-import lesson114DiagnosticOutput from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.txt?raw"
-
-import lesson115Source from "../../../../examples/tour/lessons/web-html-value/main.ssrg?raw"
-import lesson115Output from "../../../../examples/tour/lessons/web-html-value/stdout.html?raw"
-import lesson115Exercise from "../../../../examples/tour/lessons/web-html-value/exercise.ssrg?raw"
-import lesson115ExerciseOutput from "../../../../examples/tour/lessons/web-html-value/exercise.stdout.txt?raw"
-import lesson115Diagnostic from "../../../../examples/tour/lessons/web-html-value/diagnostic.ssrg?raw"
-import lesson115DiagnosticOutput from "../../../../examples/tour/lessons/web-html-value/diagnostic.txt?raw"
-
-import lesson116Source from "../../../../examples/tour/lessons/web-text-attributes/main.ssrg?raw"
-import lesson116Output from "../../../../examples/tour/lessons/web-text-attributes/stdout.html?raw"
-import lesson116Exercise from "../../../../examples/tour/lessons/web-text-attributes/exercise.ssrg?raw"
-import lesson116ExerciseOutput from "../../../../examples/tour/lessons/web-text-attributes/exercise.stdout.txt?raw"
-import lesson116Diagnostic from "../../../../examples/tour/lessons/web-text-attributes/diagnostic.ssrg?raw"
-import lesson116DiagnosticOutput from "../../../../examples/tour/lessons/web-text-attributes/diagnostic.txt?raw"
-
-import lesson117Source from "../../../../examples/tour/lessons/web-style-class/main.ssrg?raw"
-import lesson117Output from "../../../../examples/tour/lessons/web-style-class/stdout.html?raw"
-import lesson117Exercise from "../../../../examples/tour/lessons/web-style-class/exercise.ssrg?raw"
-import lesson117ExerciseOutput from "../../../../examples/tour/lessons/web-style-class/exercise.stdout.txt?raw"
-import lesson117Diagnostic from "../../../../examples/tour/lessons/web-style-class/diagnostic.ssrg?raw"
-import lesson117DiagnosticOutput from "../../../../examples/tour/lessons/web-style-class/diagnostic.txt?raw"
-
-import lesson118Source from "../../../../examples/tour/lessons/web-tags-children/main.ssrg?raw"
-import lesson118Output from "../../../../examples/tour/lessons/web-tags-children/stdout.html?raw"
-import lesson118Exercise from "../../../../examples/tour/lessons/web-tags-children/exercise.ssrg?raw"
-import lesson118ExerciseOutput from "../../../../examples/tour/lessons/web-tags-children/exercise.stdout.txt?raw"
-import lesson118Diagnostic from "../../../../examples/tour/lessons/web-tags-children/diagnostic.ssrg?raw"
-import lesson118DiagnosticOutput from "../../../../examples/tour/lessons/web-tags-children/diagnostic.txt?raw"
-
-import lesson119Source from "../../../../examples/tour/lessons/web-component-definition/main.ssrg?raw"
-import lesson119Output from "../../../../examples/tour/lessons/web-component-definition/stdout.html?raw"
-import lesson119Exercise from "../../../../examples/tour/lessons/web-component-definition/exercise.ssrg?raw"
-import lesson119ExerciseOutput from "../../../../examples/tour/lessons/web-component-definition/exercise.stdout.txt?raw"
-import lesson119Diagnostic from "../../../../examples/tour/lessons/web-component-definition/diagnostic.ssrg?raw"
-import lesson119DiagnosticOutput from "../../../../examples/tour/lessons/web-component-definition/diagnostic.txt?raw"
-
-import lesson120Source from "../../../../examples/tour/lessons/web-component-children/main.ssrg?raw"
-import lesson120Output from "../../../../examples/tour/lessons/web-component-children/stdout.html?raw"
-import lesson120Exercise from "../../../../examples/tour/lessons/web-component-children/exercise.ssrg?raw"
-import lesson120ExerciseOutput from "../../../../examples/tour/lessons/web-component-children/exercise.stdout.txt?raw"
-import lesson120Diagnostic from "../../../../examples/tour/lessons/web-component-children/diagnostic.ssrg?raw"
-import lesson120DiagnosticOutput from "../../../../examples/tour/lessons/web-component-children/diagnostic.txt?raw"
-
-import lesson121Source from "../../../../examples/tour/lessons/web-component-props/main.ssrg?raw"
-import lesson121Output from "../../../../examples/tour/lessons/web-component-props/stdout.html?raw"
-import lesson121Exercise from "../../../../examples/tour/lessons/web-component-props/exercise.ssrg?raw"
-import lesson121ExerciseOutput from "../../../../examples/tour/lessons/web-component-props/exercise.stdout.txt?raw"
-import lesson121Diagnostic from "../../../../examples/tour/lessons/web-component-props/diagnostic.ssrg?raw"
-import lesson121DiagnosticOutput from "../../../../examples/tour/lessons/web-component-props/diagnostic.txt?raw"
-
-import lesson122Source from "../../../../examples/tour/lessons/web-link-image/main.ssrg?raw"
-import lesson122Output from "../../../../examples/tour/lessons/web-link-image/stdout.html?raw"
-import lesson122Exercise from "../../../../examples/tour/lessons/web-link-image/exercise.ssrg?raw"
-import lesson122ExerciseOutput from "../../../../examples/tour/lessons/web-link-image/exercise.stdout.txt?raw"
-import lesson122Diagnostic from "../../../../examples/tour/lessons/web-link-image/diagnostic.ssrg?raw"
-import lesson122DiagnosticOutput from "../../../../examples/tour/lessons/web-link-image/diagnostic.txt?raw"
-
-import lesson123Source from "../../../../examples/tour/lessons/web-click-action/main.ssrg?raw"
-import lesson123Output from "../../../../examples/tour/lessons/web-click-action/stdout.html?raw"
-import lesson123Exercise from "../../../../examples/tour/lessons/web-click-action/exercise.ssrg?raw"
-import lesson123ExerciseOutput from "../../../../examples/tour/lessons/web-click-action/exercise.stdout.txt?raw"
-import lesson123Diagnostic from "../../../../examples/tour/lessons/web-click-action/diagnostic.ssrg?raw"
-import lesson123DiagnosticOutput from "../../../../examples/tour/lessons/web-click-action/diagnostic.txt?raw"
-
-import lesson124Source from "../../../../examples/tour/lessons/web-input-action/main.ssrg?raw"
-import lesson124Output from "../../../../examples/tour/lessons/web-input-action/stdout.html?raw"
-import lesson124Exercise from "../../../../examples/tour/lessons/web-input-action/exercise.ssrg?raw"
-import lesson124ExerciseOutput from "../../../../examples/tour/lessons/web-input-action/exercise.stdout.txt?raw"
-import lesson124Diagnostic from "../../../../examples/tour/lessons/web-input-action/diagnostic.ssrg?raw"
-import lesson124DiagnosticOutput from "../../../../examples/tour/lessons/web-input-action/diagnostic.txt?raw"
-
-import lesson125Source from "../../../../examples/tour/lessons/web-change-action/main.ssrg?raw"
-import lesson125Output from "../../../../examples/tour/lessons/web-change-action/stdout.html?raw"
-import lesson125Exercise from "../../../../examples/tour/lessons/web-change-action/exercise.ssrg?raw"
-import lesson125ExerciseOutput from "../../../../examples/tour/lessons/web-change-action/exercise.stdout.txt?raw"
-import lesson125Diagnostic from "../../../../examples/tour/lessons/web-change-action/diagnostic.ssrg?raw"
-import lesson125DiagnosticOutput from "../../../../examples/tour/lessons/web-change-action/diagnostic.txt?raw"
-
-import lesson126Source from "../../../../examples/tour/lessons/web-form-submit/main.ssrg?raw"
-import lesson126Output from "../../../../examples/tour/lessons/web-form-submit/stdout.html?raw"
-import lesson126Exercise from "../../../../examples/tour/lessons/web-form-submit/exercise.ssrg?raw"
-import lesson126ExerciseOutput from "../../../../examples/tour/lessons/web-form-submit/exercise.stdout.txt?raw"
-import lesson126Diagnostic from "../../../../examples/tour/lessons/web-form-submit/diagnostic.ssrg?raw"
-import lesson126DiagnosticOutput from "../../../../examples/tour/lessons/web-form-submit/diagnostic.txt?raw"
-
-import lesson127Source from "../../../../examples/tour/lessons/web-signal-preview/main.ssrg?raw"
-import lesson127Output from "../../../../examples/tour/lessons/web-signal-preview/stdout.html?raw"
-import lesson127Exercise from "../../../../examples/tour/lessons/web-signal-preview/exercise.ssrg?raw"
-import lesson127ExerciseOutput from "../../../../examples/tour/lessons/web-signal-preview/exercise.stdout.txt?raw"
-import lesson127Diagnostic from "../../../../examples/tour/lessons/web-signal-preview/diagnostic.ssrg?raw"
-import lesson127DiagnosticOutput from "../../../../examples/tour/lessons/web-signal-preview/diagnostic.txt?raw"
-
-import lesson128Source from "../../../../examples/tour/lessons/web-dom-run/main.ssrg?raw"
-import lesson128Exercise from "../../../../examples/tour/lessons/web-dom-run/exercise.ssrg?raw"
-import lesson128ExerciseOutput from "../../../../examples/tour/lessons/web-dom-run/exercise.stdout.txt?raw"
-import lesson128Diagnostic from "../../../../examples/tour/lessons/web-dom-run/diagnostic.ssrg?raw"
-import lesson128DiagnosticOutput from "../../../../examples/tour/lessons/web-dom-run/diagnostic.txt?raw"
-
-import lesson129Source from "../../../../examples/tour/lessons/web-typed-action/main.ssrg?raw"
-import lesson129Output from "../../../../examples/tour/lessons/web-typed-action/stdout.html?raw"
-import lesson129Exercise from "../../../../examples/tour/lessons/web-typed-action/exercise.ssrg?raw"
-import lesson129ExerciseOutput from "../../../../examples/tour/lessons/web-typed-action/exercise.stdout.txt?raw"
-import lesson129Diagnostic from "../../../../examples/tour/lessons/web-typed-action/diagnostic.ssrg?raw"
-import lesson129DiagnosticOutput from "../../../../examples/tour/lessons/web-typed-action/diagnostic.txt?raw"
-
-import lesson130Source from "../../../../examples/tour/lessons/web-accessibility-label/main.ssrg?raw"
-import lesson130Output from "../../../../examples/tour/lessons/web-accessibility-label/stdout.html?raw"
-import lesson130Exercise from "../../../../examples/tour/lessons/web-accessibility-label/exercise.ssrg?raw"
-import lesson130ExerciseOutput from "../../../../examples/tour/lessons/web-accessibility-label/exercise.stdout.txt?raw"
-import lesson130Diagnostic from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.ssrg?raw"
-import lesson130DiagnosticOutput from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.txt?raw"
-
-import lesson131Source from "../../../../examples/tour/lessons/web-feature-state/main.ssrg?raw"
-import lesson131Exercise from "../../../../examples/tour/lessons/web-feature-state/exercise.ssrg?raw"
-import lesson131ExerciseOutput from "../../../../examples/tour/lessons/web-feature-state/exercise.stdout.txt?raw"
-import lesson131Diagnostic from "../../../../examples/tour/lessons/web-feature-state/diagnostic.ssrg?raw"
-import lesson131DiagnosticOutput from "../../../../examples/tour/lessons/web-feature-state/diagnostic.txt?raw"
-
-import lesson132Source from "../../../../examples/tour/lessons/applications-console-data/main.ssrg?raw"
-import lesson132Output from "../../../../examples/tour/lessons/applications-console-data/stdout.txt?raw"
-import lesson132Exercise from "../../../../examples/tour/lessons/applications-console-data/exercise.ssrg?raw"
-import lesson132ExerciseOutput from "../../../../examples/tour/lessons/applications-console-data/exercise.stdout.txt?raw"
-import lesson132Diagnostic from "../../../../examples/tour/lessons/applications-console-data/diagnostic.ssrg?raw"
-import lesson132DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-data/diagnostic.txt?raw"
-
-import lesson133Source from "../../../../examples/tour/lessons/applications-console-transform/main.ssrg?raw"
-import lesson133Output from "../../../../examples/tour/lessons/applications-console-transform/stdout.txt?raw"
-import lesson133Exercise from "../../../../examples/tour/lessons/applications-console-transform/exercise.ssrg?raw"
-import lesson133ExerciseOutput from "../../../../examples/tour/lessons/applications-console-transform/exercise.stdout.txt?raw"
-import lesson133Diagnostic from "../../../../examples/tour/lessons/applications-console-transform/diagnostic.ssrg?raw"
-import lesson133DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-transform/diagnostic.txt?raw"
-
-import lesson134Source from "../../../../examples/tour/lessons/applications-console-fallibility/main.ssrg?raw"
-import lesson134Output from "../../../../examples/tour/lessons/applications-console-fallibility/stdout.txt?raw"
-import lesson134Exercise from "../../../../examples/tour/lessons/applications-console-fallibility/exercise.ssrg?raw"
-import lesson134ExerciseOutput from "../../../../examples/tour/lessons/applications-console-fallibility/exercise.stdout.txt?raw"
-import lesson134Diagnostic from "../../../../examples/tour/lessons/applications-console-fallibility/diagnostic.ssrg?raw"
-import lesson134DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-fallibility/diagnostic.txt?raw"
-
-import lesson135Source from "../../../../examples/tour/lessons/applications-console-output/main.ssrg?raw"
-import lesson135Output from "../../../../examples/tour/lessons/applications-console-output/stdout.txt?raw"
-import lesson135Exercise from "../../../../examples/tour/lessons/applications-console-output/exercise.ssrg?raw"
-import lesson135ExerciseOutput from "../../../../examples/tour/lessons/applications-console-output/exercise.stdout.txt?raw"
-import lesson135Diagnostic from "../../../../examples/tour/lessons/applications-console-output/diagnostic.ssrg?raw"
-import lesson135DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-output/diagnostic.txt?raw"
-
-import lesson136Source from "../../../../examples/tour/lessons/applications-web-static/main.ssrg?raw"
-import lesson136Output from "../../../../examples/tour/lessons/applications-web-static/stdout.html?raw"
-import lesson136Exercise from "../../../../examples/tour/lessons/applications-web-static/exercise.ssrg?raw"
-import lesson136ExerciseOutput from "../../../../examples/tour/lessons/applications-web-static/exercise.stdout.html?raw"
-import lesson136Diagnostic from "../../../../examples/tour/lessons/applications-web-static/diagnostic.ssrg?raw"
-import lesson136DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-static/diagnostic.txt?raw"
-
-import lesson137Source from "../../../../examples/tour/lessons/applications-web-component/main.ssrg?raw"
-import lesson137Output from "../../../../examples/tour/lessons/applications-web-component/stdout.html?raw"
-import lesson137Exercise from "../../../../examples/tour/lessons/applications-web-component/exercise.ssrg?raw"
-import lesson137ExerciseOutput from "../../../../examples/tour/lessons/applications-web-component/exercise.stdout.html?raw"
-import lesson137Diagnostic from "../../../../examples/tour/lessons/applications-web-component/diagnostic.ssrg?raw"
-import lesson137DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-component/diagnostic.txt?raw"
-
-import lesson138Source from "../../../../examples/tour/lessons/applications-web-signal/main.ssrg?raw"
-import lesson138Output from "../../../../examples/tour/lessons/applications-web-signal/stdout.html?raw"
-import lesson138Exercise from "../../../../examples/tour/lessons/applications-web-signal/exercise.ssrg?raw"
-import lesson138ExerciseOutput from "../../../../examples/tour/lessons/applications-web-signal/exercise.stdout.html?raw"
-import lesson138Diagnostic from "../../../../examples/tour/lessons/applications-web-signal/diagnostic.ssrg?raw"
-import lesson138DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-signal/diagnostic.txt?raw"
-
-import lesson139Source from "../../../../examples/tour/lessons/applications-web-form-event/main.ssrg?raw"
-import lesson139Output from "../../../../examples/tour/lessons/applications-web-form-event/stdout.html?raw"
-import lesson139Exercise from "../../../../examples/tour/lessons/applications-web-form-event/exercise.ssrg?raw"
-import lesson139ExerciseOutput from "../../../../examples/tour/lessons/applications-web-form-event/exercise.stdout.html?raw"
-import lesson139Diagnostic from "../../../../examples/tour/lessons/applications-web-form-event/diagnostic.ssrg?raw"
-import lesson139DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-form-event/diagnostic.txt?raw"
-
-import lesson140Source from "../../../../examples/tour/lessons/applications-web-action/main.ssrg?raw"
-import lesson140Output from "../../../../examples/tour/lessons/applications-web-action/stdout.html?raw"
-import lesson140Exercise from "../../../../examples/tour/lessons/applications-web-action/exercise.ssrg?raw"
-import lesson140ExerciseOutput from "../../../../examples/tour/lessons/applications-web-action/exercise.stdout.txt?raw"
-import lesson140Diagnostic from "../../../../examples/tour/lessons/applications-web-action/diagnostic.ssrg?raw"
-import lesson140DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-action/diagnostic.txt?raw"
-
-import lesson141Source from "../../../../examples/tour/lessons/applications-web-validation/main.ssrg?raw"
-import lesson141Output from "../../../../examples/tour/lessons/applications-web-validation/stdout.html?raw"
-import lesson141Exercise from "../../../../examples/tour/lessons/applications-web-validation/exercise.ssrg?raw"
-import lesson141ExerciseOutput from "../../../../examples/tour/lessons/applications-web-validation/exercise.stdout.txt?raw"
-import lesson141Diagnostic from "../../../../examples/tour/lessons/applications-web-validation/diagnostic.ssrg?raw"
-import lesson141DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-validation/diagnostic.txt?raw"
-
-import lesson142Source from "../../../../examples/tour/lessons/applications-web-feature-ownership/main.ssrg?raw"
-import lesson142Output from "../../../../examples/tour/lessons/applications-web-feature-ownership/stdout.html?raw"
-import lesson142Exercise from "../../../../examples/tour/lessons/applications-web-feature-ownership/exercise.ssrg?raw"
-import lesson142ExerciseOutput from "../../../../examples/tour/lessons/applications-web-feature-ownership/exercise.stdout.html?raw"
-import lesson142Diagnostic from "../../../../examples/tour/lessons/applications-web-feature-ownership/diagnostic.ssrg?raw"
-import lesson142DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-feature-ownership/diagnostic.txt?raw"
-
-import lesson143Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson143Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
-
-import lesson144Source from "../../../../examples/tour/lessons/design-learning-map/main.ssrg?raw"
-import lesson144Output from "../../../../examples/tour/lessons/design-learning-map/stdout.txt?raw"
-import lesson144Exercise from "../../../../examples/tour/lessons/design-learning-map/exercise.ssrg?raw"
-import lesson144ExerciseOutput from "../../../../examples/tour/lessons/design-learning-map/exercise.stdout.txt?raw"
-import lesson144Diagnostic from "../../../../examples/tour/lessons/design-learning-map/diagnostic.ssrg?raw"
-import lesson144DiagnosticOutput from "../../../../examples/tour/lessons/design-learning-map/diagnostic.txt?raw"
-
-import lesson145Source from "../../../../examples/tour/lessons/design-type-constructor-kinds/main.ssrg?raw"
-import lesson145Output from "../../../../examples/tour/lessons/design-type-constructor-kinds/stdout.txt?raw"
-import lesson145Exercise from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.ssrg?raw"
-import lesson145ExerciseOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.stdout.txt?raw"
-import lesson145Diagnostic from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.ssrg?raw"
-import lesson145DiagnosticOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.txt?raw"
-
-import lesson146Source from "../../../../examples/tour/lessons/design-trait-evidence/main.ssrg?raw"
-import lesson146Output from "../../../../examples/tour/lessons/design-trait-evidence/stdout.txt?raw"
-import lesson146Exercise from "../../../../examples/tour/lessons/design-trait-evidence/exercise.ssrg?raw"
-import lesson146ExerciseOutput from "../../../../examples/tour/lessons/design-trait-evidence/exercise.stdout.txt?raw"
-import lesson146Diagnostic from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.ssrg?raw"
-import lesson146DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.txt?raw"
-
-import lesson147Source from "../../../../examples/tour/lessons/design-abstraction-laws/main.ssrg?raw"
-import lesson147Output from "../../../../examples/tour/lessons/design-abstraction-laws/stdout.txt?raw"
-import lesson147Exercise from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.ssrg?raw"
-import lesson147ExerciseOutput from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.stdout.txt?raw"
-import lesson147Diagnostic from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.ssrg?raw"
-import lesson147DiagnosticOutput from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.txt?raw"
-
-import lesson148Source from "../../../../examples/tour/lessons/design-trait-boundary/main.ssrg?raw"
-import lesson148Output from "../../../../examples/tour/lessons/design-trait-boundary/stdout.txt?raw"
-import lesson148Exercise from "../../../../examples/tour/lessons/design-trait-boundary/exercise.ssrg?raw"
-import lesson148ExerciseOutput from "../../../../examples/tour/lessons/design-trait-boundary/exercise.stdout.txt?raw"
-import lesson148Diagnostic from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.ssrg?raw"
-import lesson148DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.txt?raw"
+import lesson1Source from "../../../../examples/tour/lessons/02-values-and-bindings/main.ssrg?raw"
+import lesson1Output from "../../../../examples/tour/lessons/02-values-and-bindings/stdout.txt?raw"
+import lesson1Exercise from "../../../../examples/tour/lessons/02-values-and-bindings/exercise.ssrg?raw"
+import lesson1ExerciseOutput from "../../../../examples/tour/lessons/02-values-and-bindings/exercise.stdout.txt?raw"
+import lesson1Diagnostic from "../../../../examples/tour/lessons/02-values-and-bindings/diagnostic.ssrg?raw"
+import lesson1DiagnosticOutput from "../../../../examples/tour/lessons/02-values-and-bindings/diagnostic.txt?raw"
+
+import lesson2Source from "../../../../examples/tour/lessons/if-expression/main.ssrg?raw"
+import lesson2Output from "../../../../examples/tour/lessons/if-expression/stdout.txt?raw"
+import lesson2Exercise from "../../../../examples/tour/lessons/if-expression/exercise.ssrg?raw"
+import lesson2ExerciseOutput from "../../../../examples/tour/lessons/if-expression/exercise.stdout.txt?raw"
+import lesson2Diagnostic from "../../../../examples/tour/lessons/if-expression/diagnostic.ssrg?raw"
+import lesson2DiagnosticOutput from "../../../../examples/tour/lessons/if-expression/diagnostic.txt?raw"
+
+import lesson3Source from "../../../../examples/tour/lessons/03-function-definitions/main.ssrg?raw"
+import lesson3Output from "../../../../examples/tour/lessons/03-function-definitions/stdout.txt?raw"
+import lesson3Exercise from "../../../../examples/tour/lessons/03-function-definitions/exercise.ssrg?raw"
+import lesson3ExerciseOutput from "../../../../examples/tour/lessons/03-function-definitions/exercise.stdout.txt?raw"
+import lesson3Diagnostic from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.ssrg?raw"
+import lesson3DiagnosticOutput from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.txt?raw"
+
+import lesson4Source from "../../../../examples/tour/lessons/05-pipelines/main.ssrg?raw"
+import lesson4Output from "../../../../examples/tour/lessons/05-pipelines/stdout.txt?raw"
+import lesson4Exercise from "../../../../examples/tour/lessons/05-pipelines/exercise.ssrg?raw"
+import lesson4ExerciseOutput from "../../../../examples/tour/lessons/05-pipelines/exercise.stdout.txt?raw"
+import lesson4Diagnostic from "../../../../examples/tour/lessons/05-pipelines/diagnostic.ssrg?raw"
+import lesson4DiagnosticOutput from "../../../../examples/tour/lessons/05-pipelines/diagnostic.txt?raw"
+
+import lesson5Source from "../../../../examples/tour/lessons/tuple-and-record/main.ssrg?raw"
+import lesson5Output from "../../../../examples/tour/lessons/tuple-and-record/stdout.txt?raw"
+import lesson5Exercise from "../../../../examples/tour/lessons/tuple-and-record/exercise.ssrg?raw"
+import lesson5ExerciseOutput from "../../../../examples/tour/lessons/tuple-and-record/exercise.stdout.txt?raw"
+import lesson5Diagnostic from "../../../../examples/tour/lessons/tuple-and-record/diagnostic.ssrg?raw"
+import lesson5DiagnosticOutput from "../../../../examples/tour/lessons/tuple-and-record/diagnostic.txt?raw"
+
+import lesson6Source from "../../../../examples/tour/lessons/06-records-and-structs/main.ssrg?raw"
+import lesson6Output from "../../../../examples/tour/lessons/06-records-and-structs/stdout.txt?raw"
+import lesson6Exercise from "../../../../examples/tour/lessons/06-records-and-structs/exercise.ssrg?raw"
+import lesson6ExerciseOutput from "../../../../examples/tour/lessons/06-records-and-structs/exercise.stdout.txt?raw"
+import lesson6Diagnostic from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.ssrg?raw"
+import lesson6DiagnosticOutput from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.txt?raw"
+
+import lesson7Source from "../../../../examples/tour/lessons/adt-definition/main.ssrg?raw"
+import lesson7Output from "../../../../examples/tour/lessons/adt-definition/stdout.txt?raw"
+import lesson7Exercise from "../../../../examples/tour/lessons/adt-definition/exercise.ssrg?raw"
+import lesson7ExerciseOutput from "../../../../examples/tour/lessons/adt-definition/exercise.stdout.txt?raw"
+import lesson7Diagnostic from "../../../../examples/tour/lessons/adt-definition/diagnostic.ssrg?raw"
+import lesson7DiagnosticOutput from "../../../../examples/tour/lessons/adt-definition/diagnostic.txt?raw"
+
+import lesson8Source from "../../../../examples/tour/lessons/07-adts-and-patterns/main.ssrg?raw"
+import lesson8Output from "../../../../examples/tour/lessons/07-adts-and-patterns/stdout.txt?raw"
+import lesson8Exercise from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.ssrg?raw"
+import lesson8ExerciseOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.stdout.txt?raw"
+import lesson8Diagnostic from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.ssrg?raw"
+import lesson8DiagnosticOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.txt?raw"
+
+import lesson9Source from "../../../../examples/tour/lessons/exhaustive-match/main.ssrg?raw"
+import lesson9Output from "../../../../examples/tour/lessons/exhaustive-match/stdout.txt?raw"
+import lesson9Exercise from "../../../../examples/tour/lessons/exhaustive-match/exercise.ssrg?raw"
+import lesson9ExerciseOutput from "../../../../examples/tour/lessons/exhaustive-match/exercise.stdout.txt?raw"
+import lesson9Diagnostic from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.ssrg?raw"
+import lesson9DiagnosticOutput from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.txt?raw"
+
+import lesson10Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
+import lesson10Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
+import lesson10Exercise from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.ssrg?raw"
+import lesson10ExerciseOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.stdout.txt?raw"
+import lesson10Diagnostic from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.ssrg?raw"
+import lesson10DiagnosticOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.txt?raw"
+
+import lesson11Source from "../../../../examples/tour/lessons/collection-pipeline/main.ssrg?raw"
+import lesson11Output from "../../../../examples/tour/lessons/collection-pipeline/stdout.txt?raw"
+import lesson11Exercise from "../../../../examples/tour/lessons/collection-pipeline/exercise.ssrg?raw"
+import lesson11ExerciseOutput from "../../../../examples/tour/lessons/collection-pipeline/exercise.stdout.txt?raw"
+import lesson11Diagnostic from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.ssrg?raw"
+import lesson11DiagnosticOutput from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.txt?raw"
+
+import lesson12Source from "../../../../examples/tour/lessons/maybe-role/main.ssrg?raw"
+import lesson12Output from "../../../../examples/tour/lessons/maybe-role/stdout.txt?raw"
+import lesson12Exercise from "../../../../examples/tour/lessons/maybe-role/exercise.ssrg?raw"
+import lesson12ExerciseOutput from "../../../../examples/tour/lessons/maybe-role/exercise.stdout.txt?raw"
+import lesson12Diagnostic from "../../../../examples/tour/lessons/maybe-role/diagnostic.ssrg?raw"
+import lesson12DiagnosticOutput from "../../../../examples/tour/lessons/maybe-role/diagnostic.txt?raw"
+
+import lesson13Source from "../../../../examples/tour/lessons/maybe-constructors/main.ssrg?raw"
+import lesson13Output from "../../../../examples/tour/lessons/maybe-constructors/stdout.txt?raw"
+import lesson13Exercise from "../../../../examples/tour/lessons/maybe-constructors/exercise.ssrg?raw"
+import lesson13ExerciseOutput from "../../../../examples/tour/lessons/maybe-constructors/exercise.stdout.txt?raw"
+import lesson13Diagnostic from "../../../../examples/tour/lessons/maybe-constructors/diagnostic.ssrg?raw"
+import lesson13DiagnosticOutput from "../../../../examples/tour/lessons/maybe-constructors/diagnostic.txt?raw"
+
+import lesson14Source from "../../../../examples/tour/lessons/maybe-match/main.ssrg?raw"
+import lesson14Output from "../../../../examples/tour/lessons/maybe-match/stdout.txt?raw"
+import lesson14Exercise from "../../../../examples/tour/lessons/maybe-match/exercise.ssrg?raw"
+import lesson14ExerciseOutput from "../../../../examples/tour/lessons/maybe-match/exercise.stdout.txt?raw"
+import lesson14Diagnostic from "../../../../examples/tour/lessons/maybe-match/diagnostic.ssrg?raw"
+import lesson14DiagnosticOutput from "../../../../examples/tour/lessons/maybe-match/diagnostic.txt?raw"
+
+import lesson15Source from "../../../../examples/tour/lessons/maybe-default/main.ssrg?raw"
+import lesson15Output from "../../../../examples/tour/lessons/maybe-default/stdout.txt?raw"
+import lesson15Exercise from "../../../../examples/tour/lessons/maybe-default/exercise.ssrg?raw"
+import lesson15ExerciseOutput from "../../../../examples/tour/lessons/maybe-default/exercise.stdout.txt?raw"
+import lesson15Diagnostic from "../../../../examples/tour/lessons/maybe-default/diagnostic.ssrg?raw"
+import lesson15DiagnosticOutput from "../../../../examples/tour/lessons/maybe-default/diagnostic.txt?raw"
+
+import lesson16Source from "../../../../examples/tour/lessons/maybe-map/main.ssrg?raw"
+import lesson16Output from "../../../../examples/tour/lessons/maybe-map/stdout.txt?raw"
+import lesson16Exercise from "../../../../examples/tour/lessons/maybe-map/exercise.ssrg?raw"
+import lesson16ExerciseOutput from "../../../../examples/tour/lessons/maybe-map/exercise.stdout.txt?raw"
+import lesson16Diagnostic from "../../../../examples/tour/lessons/maybe-map/diagnostic.ssrg?raw"
+import lesson16DiagnosticOutput from "../../../../examples/tour/lessons/maybe-map/diagnostic.txt?raw"
+
+import lesson17Source from "../../../../examples/tour/lessons/maybe-combine/main.ssrg?raw"
+import lesson17Output from "../../../../examples/tour/lessons/maybe-combine/stdout.txt?raw"
+import lesson17Exercise from "../../../../examples/tour/lessons/maybe-combine/exercise.ssrg?raw"
+import lesson17ExerciseOutput from "../../../../examples/tour/lessons/maybe-combine/exercise.stdout.txt?raw"
+import lesson17Diagnostic from "../../../../examples/tour/lessons/maybe-combine/diagnostic.ssrg?raw"
+import lesson17DiagnosticOutput from "../../../../examples/tour/lessons/maybe-combine/diagnostic.txt?raw"
+
+import lesson18Source from "../../../../examples/tour/lessons/maybe-short-circuit/main.ssrg?raw"
+import lesson18Output from "../../../../examples/tour/lessons/maybe-short-circuit/stdout.txt?raw"
+import lesson18Exercise from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.ssrg?raw"
+import lesson18ExerciseOutput from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.stdout.txt?raw"
+import lesson18Diagnostic from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.ssrg?raw"
+import lesson18DiagnosticOutput from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.txt?raw"
+
+import lesson19Source from "../../../../examples/tour/lessons/either-role/main.ssrg?raw"
+import lesson19Output from "../../../../examples/tour/lessons/either-role/stdout.txt?raw"
+import lesson19Exercise from "../../../../examples/tour/lessons/either-role/exercise.ssrg?raw"
+import lesson19ExerciseOutput from "../../../../examples/tour/lessons/either-role/exercise.stdout.txt?raw"
+import lesson19Diagnostic from "../../../../examples/tour/lessons/either-role/diagnostic.ssrg?raw"
+import lesson19DiagnosticOutput from "../../../../examples/tour/lessons/either-role/diagnostic.txt?raw"
+
+import lesson20Source from "../../../../examples/tour/lessons/either-constructors/main.ssrg?raw"
+import lesson20Output from "../../../../examples/tour/lessons/either-constructors/stdout.txt?raw"
+import lesson20Exercise from "../../../../examples/tour/lessons/either-constructors/exercise.ssrg?raw"
+import lesson20ExerciseOutput from "../../../../examples/tour/lessons/either-constructors/exercise.stdout.txt?raw"
+import lesson20Diagnostic from "../../../../examples/tour/lessons/either-constructors/diagnostic.ssrg?raw"
+import lesson20DiagnosticOutput from "../../../../examples/tour/lessons/either-constructors/diagnostic.txt?raw"
+
+import lesson21Source from "../../../../examples/tour/lessons/either-match/main.ssrg?raw"
+import lesson21Output from "../../../../examples/tour/lessons/either-match/stdout.txt?raw"
+import lesson21Exercise from "../../../../examples/tour/lessons/either-match/exercise.ssrg?raw"
+import lesson21ExerciseOutput from "../../../../examples/tour/lessons/either-match/exercise.stdout.txt?raw"
+import lesson21Diagnostic from "../../../../examples/tour/lessons/either-match/diagnostic.ssrg?raw"
+import lesson21DiagnosticOutput from "../../../../examples/tour/lessons/either-match/diagnostic.txt?raw"
+
+import lesson22Source from "../../../../examples/tour/lessons/either-map-error/main.ssrg?raw"
+import lesson22Output from "../../../../examples/tour/lessons/either-map-error/stdout.txt?raw"
+import lesson22Exercise from "../../../../examples/tour/lessons/either-map-error/exercise.ssrg?raw"
+import lesson22ExerciseOutput from "../../../../examples/tour/lessons/either-map-error/exercise.stdout.txt?raw"
+import lesson22Diagnostic from "../../../../examples/tour/lessons/either-map-error/diagnostic.ssrg?raw"
+import lesson22DiagnosticOutput from "../../../../examples/tour/lessons/either-map-error/diagnostic.txt?raw"
+
+import lesson23Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
+import lesson23Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+import lesson23Exercise from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.ssrg?raw"
+import lesson23ExerciseOutput from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.stdout.txt?raw"
+import lesson23Diagnostic from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.ssrg?raw"
+import lesson23DiagnosticOutput from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.txt?raw"
+
+import lesson24Source from "../../../../examples/tour/lessons/effect-failure-bridge/main.ssrg?raw"
+import lesson24Output from "../../../../examples/tour/lessons/effect-failure-bridge/stdout.txt?raw"
+import lesson24Exercise from "../../../../examples/tour/lessons/effect-failure-bridge/exercise.ssrg?raw"
+import lesson24ExerciseOutput from "../../../../examples/tour/lessons/effect-failure-bridge/exercise.stdout.txt?raw"
+import lesson24Diagnostic from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.ssrg?raw"
+import lesson24DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.txt?raw"
+
+import lesson25Source from "../../../../examples/tour/lessons/effect-pure-vs-effect/main.ssrg?raw"
+import lesson25Output from "../../../../examples/tour/lessons/effect-pure-vs-effect/stdout.txt?raw"
+import lesson25Exercise from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.ssrg?raw"
+import lesson25ExerciseOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.stdout.txt?raw"
+import lesson25Diagnostic from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.ssrg?raw"
+import lesson25DiagnosticOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.txt?raw"
+
+import lesson26Source from "../../../../examples/tour/lessons/effect-single-operation/main.ssrg?raw"
+import lesson26Output from "../../../../examples/tour/lessons/effect-single-operation/stdout.txt?raw"
+import lesson26Exercise from "../../../../examples/tour/lessons/effect-single-operation/exercise.ssrg?raw"
+import lesson26ExerciseOutput from "../../../../examples/tour/lessons/effect-single-operation/exercise.stdout.txt?raw"
+import lesson26Diagnostic from "../../../../examples/tour/lessons/effect-single-operation/diagnostic.ssrg?raw"
+import lesson26DiagnosticOutput from "../../../../examples/tour/lessons/effect-single-operation/diagnostic.txt?raw"
+
+import lesson27Source from "../../../../examples/tour/lessons/effect-do-block/main.ssrg?raw"
+import lesson27Output from "../../../../examples/tour/lessons/effect-do-block/stdout.txt?raw"
+import lesson27Exercise from "../../../../examples/tour/lessons/effect-do-block/exercise.ssrg?raw"
+import lesson27ExerciseOutput from "../../../../examples/tour/lessons/effect-do-block/exercise.stdout.txt?raw"
+import lesson27Diagnostic from "../../../../examples/tour/lessons/effect-do-block/diagnostic.ssrg?raw"
+import lesson27DiagnosticOutput from "../../../../examples/tour/lessons/effect-do-block/diagnostic.txt?raw"
+
+import lesson28Source from "../../../../examples/tour/lessons/effect-sequence/main.ssrg?raw"
+import lesson28Output from "../../../../examples/tour/lessons/effect-sequence/stdout.txt?raw"
+import lesson28Exercise from "../../../../examples/tour/lessons/effect-sequence/exercise.ssrg?raw"
+import lesson28ExerciseOutput from "../../../../examples/tour/lessons/effect-sequence/exercise.stdout.txt?raw"
+import lesson28Diagnostic from "../../../../examples/tour/lessons/effect-sequence/diagnostic.ssrg?raw"
+import lesson28DiagnosticOutput from "../../../../examples/tour/lessons/effect-sequence/diagnostic.txt?raw"
+
+import lesson29Source from "../../../../examples/tour/lessons/effect-bind-success/main.ssrg?raw"
+import lesson29Output from "../../../../examples/tour/lessons/effect-bind-success/stdout.txt?raw"
+import lesson29Exercise from "../../../../examples/tour/lessons/effect-bind-success/exercise.ssrg?raw"
+import lesson29ExerciseOutput from "../../../../examples/tour/lessons/effect-bind-success/exercise.stdout.txt?raw"
+import lesson29Diagnostic from "../../../../examples/tour/lessons/effect-bind-success/diagnostic.ssrg?raw"
+import lesson29DiagnosticOutput from "../../../../examples/tour/lessons/effect-bind-success/diagnostic.txt?raw"
+
+import lesson30Source from "../../../../examples/tour/lessons/effect-succeed-value/main.ssrg?raw"
+import lesson30Output from "../../../../examples/tour/lessons/effect-succeed-value/stdout.txt?raw"
+import lesson30Exercise from "../../../../examples/tour/lessons/effect-succeed-value/exercise.ssrg?raw"
+import lesson30ExerciseOutput from "../../../../examples/tour/lessons/effect-succeed-value/exercise.stdout.txt?raw"
+import lesson30Diagnostic from "../../../../examples/tour/lessons/effect-succeed-value/diagnostic.ssrg?raw"
+import lesson30DiagnosticOutput from "../../../../examples/tour/lessons/effect-succeed-value/diagnostic.txt?raw"
+
+import lesson31Source from "../../../../examples/tour/lessons/effect-failure-short-circuit/main.ssrg?raw"
+import lesson31Output from "../../../../examples/tour/lessons/effect-failure-short-circuit/stdout.txt?raw"
+import lesson31Failure from "../../../../examples/tour/lessons/effect-failure-short-circuit/failure.txt?raw"
+import lesson31Exercise from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.ssrg?raw"
+import lesson31ExerciseOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.stdout.txt?raw"
+import lesson31Diagnostic from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.ssrg?raw"
+import lesson31DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.txt?raw"
+
+import lesson32Source from "../../../../examples/tour/lessons/effect-fails-type/main.ssrg?raw"
+import lesson32Output from "../../../../examples/tour/lessons/effect-fails-type/stdout.txt?raw"
+import lesson32Exercise from "../../../../examples/tour/lessons/effect-fails-type/exercise.ssrg?raw"
+import lesson32ExerciseOutput from "../../../../examples/tour/lessons/effect-fails-type/exercise.stdout.txt?raw"
+import lesson32Diagnostic from "../../../../examples/tour/lessons/effect-fails-type/diagnostic.ssrg?raw"
+import lesson32DiagnosticOutput from "../../../../examples/tour/lessons/effect-fails-type/diagnostic.txt?raw"
+
+import lesson33Source from "../../../../examples/tour/lessons/effect-with-capability/main.ssrg?raw"
+import lesson33Output from "../../../../examples/tour/lessons/effect-with-capability/stdout.txt?raw"
+import lesson33Exercise from "../../../../examples/tour/lessons/effect-with-capability/exercise.ssrg?raw"
+import lesson33ExerciseOutput from "../../../../examples/tour/lessons/effect-with-capability/exercise.stdout.txt?raw"
+import lesson33Diagnostic from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.ssrg?raw"
+import lesson33DiagnosticOutput from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.txt?raw"
+
+import lesson34Source from "../../../../examples/tour/lessons/effect-inferred-contract/main.ssrg?raw"
+import lesson34Output from "../../../../examples/tour/lessons/effect-inferred-contract/stdout.txt?raw"
+import lesson34Exercise from "../../../../examples/tour/lessons/effect-inferred-contract/exercise.ssrg?raw"
+import lesson34ExerciseOutput from "../../../../examples/tour/lessons/effect-inferred-contract/exercise.stdout.txt?raw"
+import lesson34Diagnostic from "../../../../examples/tour/lessons/effect-inferred-contract/diagnostic.ssrg?raw"
+import lesson34DiagnosticOutput from "../../../../examples/tour/lessons/effect-inferred-contract/diagnostic.txt?raw"
+
+import lesson35Source from "../../../../examples/tour/lessons/effect-explicit-contract/main.ssrg?raw"
+import lesson35Output from "../../../../examples/tour/lessons/effect-explicit-contract/stdout.txt?raw"
+import lesson35Exercise from "../../../../examples/tour/lessons/effect-explicit-contract/exercise.ssrg?raw"
+import lesson35ExerciseOutput from "../../../../examples/tour/lessons/effect-explicit-contract/exercise.stdout.txt?raw"
+import lesson35Diagnostic from "../../../../examples/tour/lessons/effect-explicit-contract/diagnostic.ssrg?raw"
+import lesson35DiagnosticOutput from "../../../../examples/tour/lessons/effect-explicit-contract/diagnostic.txt?raw"
+
+import lesson36Source from "../../../../examples/tour/lessons/effect-map-error/main.ssrg?raw"
+import lesson36Failure from "../../../../examples/tour/lessons/effect-map-error/failure.txt?raw"
+import lesson36Exercise from "../../../../examples/tour/lessons/effect-map-error/exercise.ssrg?raw"
+import lesson36ExerciseOutput from "../../../../examples/tour/lessons/effect-map-error/exercise.stdout.txt?raw"
+import lesson36Diagnostic from "../../../../examples/tour/lessons/effect-map-error/diagnostic.ssrg?raw"
+import lesson36DiagnosticOutput from "../../../../examples/tour/lessons/effect-map-error/diagnostic.txt?raw"
+
+import lesson37Source from "../../../../examples/tour/lessons/effect-value-boundary/main.ssrg?raw"
+import lesson37Output from "../../../../examples/tour/lessons/effect-value-boundary/stdout.txt?raw"
+import lesson37Exercise from "../../../../examples/tour/lessons/effect-value-boundary/exercise.ssrg?raw"
+import lesson37ExerciseOutput from "../../../../examples/tour/lessons/effect-value-boundary/exercise.stdout.txt?raw"
+import lesson37Diagnostic from "../../../../examples/tour/lessons/effect-value-boundary/diagnostic.ssrg?raw"
+import lesson37DiagnosticOutput from "../../../../examples/tour/lessons/effect-value-boundary/diagnostic.txt?raw"
+
+import lesson38Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
+import lesson38Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+import lesson38Exercise from "../../../../examples/tour/lessons/10-effects-and-do/exercise.ssrg?raw"
+import lesson38ExerciseOutput from "../../../../examples/tour/lessons/10-effects-and-do/exercise.stdout.txt?raw"
+import lesson38Diagnostic from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.ssrg?raw"
+import lesson38DiagnosticOutput from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.txt?raw"
+
+import lesson39Source from "../../../../examples/tour/lessons/abstraction-concrete-generic/main.ssrg?raw"
+import lesson39Output from "../../../../examples/tour/lessons/abstraction-concrete-generic/stdout.txt?raw"
+import lesson39Exercise from "../../../../examples/tour/lessons/abstraction-concrete-generic/exercise.ssrg?raw"
+import lesson39ExerciseOutput from "../../../../examples/tour/lessons/abstraction-concrete-generic/exercise.stdout.txt?raw"
+import lesson39Diagnostic from "../../../../examples/tour/lessons/abstraction-concrete-generic/diagnostic.ssrg?raw"
+import lesson39DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-concrete-generic/diagnostic.txt?raw"
+
+import lesson40Source from "../../../../examples/tour/lessons/abstraction-type-parameter/main.ssrg?raw"
+import lesson40Output from "../../../../examples/tour/lessons/abstraction-type-parameter/stdout.txt?raw"
+import lesson40Exercise from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.ssrg?raw"
+import lesson40ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.stdout.txt?raw"
+import lesson40Diagnostic from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.ssrg?raw"
+import lesson40DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.txt?raw"
+
+import lesson41Source from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/main.ssrg?raw"
+import lesson41Output from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/stdout.txt?raw"
+import lesson41Exercise from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/exercise.ssrg?raw"
+import lesson41ExerciseOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/exercise.stdout.txt?raw"
+import lesson41Diagnostic from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/diagnostic.ssrg?raw"
+import lesson41DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/diagnostic.txt?raw"
+
+import lesson42Source from "../../../../examples/tour/lessons/abstraction-generic-adt-use/main.ssrg?raw"
+import lesson42Output from "../../../../examples/tour/lessons/abstraction-generic-adt-use/stdout.txt?raw"
+import lesson42Exercise from "../../../../examples/tour/lessons/abstraction-generic-adt-use/exercise.ssrg?raw"
+import lesson42ExerciseOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-use/exercise.stdout.txt?raw"
+import lesson42Diagnostic from "../../../../examples/tour/lessons/abstraction-generic-adt-use/diagnostic.ssrg?raw"
+import lesson42DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-use/diagnostic.txt?raw"
+
+import lesson43Source from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/main.ssrg?raw"
+import lesson43Output from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/stdout.txt?raw"
+import lesson43Exercise from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/exercise.ssrg?raw"
+import lesson43ExerciseOutput from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/exercise.stdout.txt?raw"
+import lesson43Diagnostic from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/diagnostic.ssrg?raw"
+import lesson43DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/diagnostic.txt?raw"
+
+import lesson44Source from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/main.ssrg?raw"
+import lesson44Output from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/stdout.txt?raw"
+import lesson44Exercise from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/exercise.ssrg?raw"
+import lesson44ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/exercise.stdout.txt?raw"
+import lesson44Diagnostic from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/diagnostic.ssrg?raw"
+import lesson44DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/diagnostic.txt?raw"
+
+import lesson45Source from "../../../../examples/tour/lessons/abstraction-trait-operation/main.ssrg?raw"
+import lesson45Output from "../../../../examples/tour/lessons/abstraction-trait-operation/stdout.txt?raw"
+import lesson45Exercise from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.ssrg?raw"
+import lesson45ExerciseOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.stdout.txt?raw"
+import lesson45Diagnostic from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.ssrg?raw"
+import lesson45DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.txt?raw"
+
+import lesson46Source from "../../../../examples/tour/lessons/abstraction-user-instance/main.ssrg?raw"
+import lesson46Output from "../../../../examples/tour/lessons/abstraction-user-instance/stdout.txt?raw"
+import lesson46Exercise from "../../../../examples/tour/lessons/abstraction-user-instance/exercise.ssrg?raw"
+import lesson46ExerciseOutput from "../../../../examples/tour/lessons/abstraction-user-instance/exercise.stdout.txt?raw"
+import lesson46Diagnostic from "../../../../examples/tour/lessons/abstraction-user-instance/diagnostic.ssrg?raw"
+import lesson46DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-user-instance/diagnostic.txt?raw"
+
+import lesson47Source from "../../../../examples/tour/lessons/abstraction-where-constraint/main.ssrg?raw"
+import lesson47Output from "../../../../examples/tour/lessons/abstraction-where-constraint/stdout.txt?raw"
+import lesson47Exercise from "../../../../examples/tour/lessons/abstraction-where-constraint/exercise.ssrg?raw"
+import lesson47ExerciseOutput from "../../../../examples/tour/lessons/abstraction-where-constraint/exercise.stdout.txt?raw"
+import lesson47Diagnostic from "../../../../examples/tour/lessons/abstraction-where-constraint/diagnostic.ssrg?raw"
+import lesson47DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-where-constraint/diagnostic.txt?raw"
+
+import lesson48Source from "../../../../examples/tour/lessons/abstraction-instance-selection/main.ssrg?raw"
+import lesson48Output from "../../../../examples/tour/lessons/abstraction-instance-selection/stdout.txt?raw"
+import lesson48Exercise from "../../../../examples/tour/lessons/abstraction-instance-selection/exercise.ssrg?raw"
+import lesson48ExerciseOutput from "../../../../examples/tour/lessons/abstraction-instance-selection/exercise.stdout.txt?raw"
+import lesson48Diagnostic from "../../../../examples/tour/lessons/abstraction-instance-selection/diagnostic.ssrg?raw"
+import lesson48DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-instance-selection/diagnostic.txt?raw"
+
+import lesson49Source from "../../../../examples/tour/lessons/abstraction-functor-map/main.ssrg?raw"
+import lesson49Output from "../../../../examples/tour/lessons/abstraction-functor-map/stdout.txt?raw"
+import lesson49Exercise from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.ssrg?raw"
+import lesson49ExerciseOutput from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.stdout.txt?raw"
+import lesson49Diagnostic from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.ssrg?raw"
+import lesson49DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.txt?raw"
+
+import lesson50Source from "../../../../examples/tour/lessons/abstraction-applicative-apply/main.ssrg?raw"
+import lesson50Output from "../../../../examples/tour/lessons/abstraction-applicative-apply/stdout.txt?raw"
+import lesson50Exercise from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.ssrg?raw"
+import lesson50ExerciseOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.stdout.txt?raw"
+import lesson50Diagnostic from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.ssrg?raw"
+import lesson50DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.txt?raw"
+
+import lesson51Source from "../../../../examples/tour/lessons/abstraction-monad-bind/main.ssrg?raw"
+import lesson51Output from "../../../../examples/tour/lessons/abstraction-monad-bind/stdout.txt?raw"
+import lesson51Exercise from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.ssrg?raw"
+import lesson51ExerciseOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.stdout.txt?raw"
+import lesson51Diagnostic from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.ssrg?raw"
+import lesson51DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.txt?raw"
+
+import lesson52Source from "../../../../examples/tour/lessons/abstraction-type-comparison/main.ssrg?raw"
+import lesson52Output from "../../../../examples/tour/lessons/abstraction-type-comparison/stdout.txt?raw"
+import lesson52Exercise from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.ssrg?raw"
+import lesson52ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.stdout.txt?raw"
+import lesson52Diagnostic from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.ssrg?raw"
+import lesson52DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.txt?raw"
+
+import lesson53Source from "../../../../examples/tour/lessons/abstraction-signal-contract/main.ssrg?raw"
+import lesson53Output from "../../../../examples/tour/lessons/abstraction-signal-contract/stdout.txt?raw"
+import lesson53Exercise from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.ssrg?raw"
+import lesson53ExerciseOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.stdout.txt?raw"
+import lesson53Diagnostic from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.ssrg?raw"
+import lesson53DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.txt?raw"
+
+import lesson54Source from "../../../../examples/tour/lessons/abstraction-impl-method/main.ssrg?raw"
+import lesson54Output from "../../../../examples/tour/lessons/abstraction-impl-method/stdout.txt?raw"
+import lesson54Exercise from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.ssrg?raw"
+import lesson54ExerciseOutput from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.stdout.txt?raw"
+import lesson54Diagnostic from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.ssrg?raw"
+import lesson54DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.txt?raw"
+
+import lesson55Source from "../../../../examples/tour/lessons/abstraction-custom-operator/main.ssrg?raw"
+import lesson55Output from "../../../../examples/tour/lessons/abstraction-custom-operator/stdout.txt?raw"
+import lesson55Exercise from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.ssrg?raw"
+import lesson55ExerciseOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.stdout.txt?raw"
+import lesson55Diagnostic from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.ssrg?raw"
+import lesson55DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.txt?raw"
+
+import lesson56Source from "../../../../examples/tour/lessons/signals-value-difference/main.ssrg?raw"
+import lesson56Output from "../../../../examples/tour/lessons/signals-value-difference/stdout.txt?raw"
+import lesson56Exercise from "../../../../examples/tour/lessons/signals-value-difference/exercise.ssrg?raw"
+import lesson56ExerciseOutput from "../../../../examples/tour/lessons/signals-value-difference/exercise.stdout.txt?raw"
+import lesson56Diagnostic from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.ssrg?raw"
+import lesson56DiagnosticOutput from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.txt?raw"
+
+import lesson57Source from "../../../../examples/tour/lessons/signals-make/main.ssrg?raw"
+import lesson57Output from "../../../../examples/tour/lessons/signals-make/stdout.txt?raw"
+import lesson57Exercise from "../../../../examples/tour/lessons/signals-make/exercise.ssrg?raw"
+import lesson57ExerciseOutput from "../../../../examples/tour/lessons/signals-make/exercise.stdout.txt?raw"
+import lesson57Diagnostic from "../../../../examples/tour/lessons/signals-make/diagnostic.ssrg?raw"
+import lesson57DiagnosticOutput from "../../../../examples/tour/lessons/signals-make/diagnostic.txt?raw"
+
+import lesson58Source from "../../../../examples/tour/lessons/signals-readonly-coercion/main.ssrg?raw"
+import lesson58Output from "../../../../examples/tour/lessons/signals-readonly-coercion/stdout.txt?raw"
+import lesson58Exercise from "../../../../examples/tour/lessons/signals-readonly-coercion/exercise.ssrg?raw"
+import lesson58ExerciseOutput from "../../../../examples/tour/lessons/signals-readonly-coercion/exercise.stdout.txt?raw"
+import lesson58Diagnostic from "../../../../examples/tour/lessons/signals-readonly-coercion/diagnostic.ssrg?raw"
+import lesson58DiagnosticOutput from "../../../../examples/tour/lessons/signals-readonly-coercion/diagnostic.txt?raw"
+
+import lesson59Source from "../../../../examples/tour/lessons/signals-read-operator/main.ssrg?raw"
+import lesson59Output from "../../../../examples/tour/lessons/signals-read-operator/stdout.txt?raw"
+import lesson59Exercise from "../../../../examples/tour/lessons/signals-read-operator/exercise.ssrg?raw"
+import lesson59ExerciseOutput from "../../../../examples/tour/lessons/signals-read-operator/exercise.stdout.txt?raw"
+import lesson59Diagnostic from "../../../../examples/tour/lessons/signals-read-operator/diagnostic.ssrg?raw"
+import lesson59DiagnosticOutput from "../../../../examples/tour/lessons/signals-read-operator/diagnostic.txt?raw"
+
+import lesson60Source from "../../../../examples/tour/lessons/signals-set/main.ssrg?raw"
+import lesson60Output from "../../../../examples/tour/lessons/signals-set/stdout.txt?raw"
+import lesson60Exercise from "../../../../examples/tour/lessons/signals-set/exercise.ssrg?raw"
+import lesson60ExerciseOutput from "../../../../examples/tour/lessons/signals-set/exercise.stdout.txt?raw"
+import lesson60Diagnostic from "../../../../examples/tour/lessons/signals-set/diagnostic.ssrg?raw"
+import lesson60DiagnosticOutput from "../../../../examples/tour/lessons/signals-set/diagnostic.txt?raw"
+
+import lesson61Source from "../../../../examples/tour/lessons/signals-write-operator/main.ssrg?raw"
+import lesson61Output from "../../../../examples/tour/lessons/signals-write-operator/stdout.txt?raw"
+import lesson61Exercise from "../../../../examples/tour/lessons/signals-write-operator/exercise.ssrg?raw"
+import lesson61ExerciseOutput from "../../../../examples/tour/lessons/signals-write-operator/exercise.stdout.txt?raw"
+import lesson61Diagnostic from "../../../../examples/tour/lessons/signals-write-operator/diagnostic.ssrg?raw"
+import lesson61DiagnosticOutput from "../../../../examples/tour/lessons/signals-write-operator/diagnostic.txt?raw"
+
+import lesson62Source from "../../../../examples/tour/lessons/signals-observable-update/main.ssrg?raw"
+import lesson62Output from "../../../../examples/tour/lessons/signals-observable-update/stdout.txt?raw"
+import lesson62Exercise from "../../../../examples/tour/lessons/signals-observable-update/exercise.ssrg?raw"
+import lesson62ExerciseOutput from "../../../../examples/tour/lessons/signals-observable-update/exercise.stdout.txt?raw"
+import lesson62Diagnostic from "../../../../examples/tour/lessons/signals-observable-update/diagnostic.ssrg?raw"
+import lesson62DiagnosticOutput from "../../../../examples/tour/lessons/signals-observable-update/diagnostic.txt?raw"
+
+import lesson63Source from "../../../../examples/tour/lessons/signals-map/main.ssrg?raw"
+import lesson63Output from "../../../../examples/tour/lessons/signals-map/stdout.txt?raw"
+import lesson63Exercise from "../../../../examples/tour/lessons/signals-map/exercise.ssrg?raw"
+import lesson63ExerciseOutput from "../../../../examples/tour/lessons/signals-map/exercise.stdout.txt?raw"
+import lesson63Diagnostic from "../../../../examples/tour/lessons/signals-map/diagnostic.ssrg?raw"
+import lesson63DiagnosticOutput from "../../../../examples/tour/lessons/signals-map/diagnostic.txt?raw"
+
+import lesson64Source from "../../../../examples/tour/lessons/signals-functor-operator/main.ssrg?raw"
+import lesson64Output from "../../../../examples/tour/lessons/signals-functor-operator/stdout.txt?raw"
+import lesson64Exercise from "../../../../examples/tour/lessons/signals-functor-operator/exercise.ssrg?raw"
+import lesson64ExerciseOutput from "../../../../examples/tour/lessons/signals-functor-operator/exercise.stdout.txt?raw"
+import lesson64Diagnostic from "../../../../examples/tour/lessons/signals-functor-operator/diagnostic.ssrg?raw"
+import lesson64DiagnosticOutput from "../../../../examples/tour/lessons/signals-functor-operator/diagnostic.txt?raw"
+
+import lesson65Source from "../../../../examples/tour/lessons/signals-constant-pure/main.ssrg?raw"
+import lesson65Output from "../../../../examples/tour/lessons/signals-constant-pure/stdout.txt?raw"
+import lesson65Exercise from "../../../../examples/tour/lessons/signals-constant-pure/exercise.ssrg?raw"
+import lesson65ExerciseOutput from "../../../../examples/tour/lessons/signals-constant-pure/exercise.stdout.txt?raw"
+import lesson65Diagnostic from "../../../../examples/tour/lessons/signals-constant-pure/diagnostic.ssrg?raw"
+import lesson65DiagnosticOutput from "../../../../examples/tour/lessons/signals-constant-pure/diagnostic.txt?raw"
+
+import lesson66Source from "../../../../examples/tour/lessons/signals-combine/main.ssrg?raw"
+import lesson66Output from "../../../../examples/tour/lessons/signals-combine/stdout.txt?raw"
+import lesson66Exercise from "../../../../examples/tour/lessons/signals-combine/exercise.ssrg?raw"
+import lesson66ExerciseOutput from "../../../../examples/tour/lessons/signals-combine/exercise.stdout.txt?raw"
+import lesson66Diagnostic from "../../../../examples/tour/lessons/signals-combine/diagnostic.ssrg?raw"
+import lesson66DiagnosticOutput from "../../../../examples/tour/lessons/signals-combine/diagnostic.txt?raw"
+
+import lesson67Source from "../../../../examples/tour/lessons/signals-applicative-glitch-free/main.ssrg?raw"
+import lesson67Output from "../../../../examples/tour/lessons/signals-applicative-glitch-free/stdout.txt?raw"
+import lesson67Exercise from "../../../../examples/tour/lessons/signals-applicative-glitch-free/exercise.ssrg?raw"
+import lesson67ExerciseOutput from "../../../../examples/tour/lessons/signals-applicative-glitch-free/exercise.stdout.txt?raw"
+import lesson67Diagnostic from "../../../../examples/tour/lessons/signals-applicative-glitch-free/diagnostic.ssrg?raw"
+import lesson67DiagnosticOutput from "../../../../examples/tour/lessons/signals-applicative-glitch-free/diagnostic.txt?raw"
+
+import lesson68Source from "../../../../examples/tour/lessons/signals-monad-boundary/main.ssrg?raw"
+import lesson68Output from "../../../../examples/tour/lessons/signals-monad-boundary/stdout.txt?raw"
+import lesson68Exercise from "../../../../examples/tour/lessons/signals-monad-boundary/exercise.ssrg?raw"
+import lesson68ExerciseOutput from "../../../../examples/tour/lessons/signals-monad-boundary/exercise.stdout.txt?raw"
+import lesson68Diagnostic from "../../../../examples/tour/lessons/signals-monad-boundary/diagnostic.ssrg?raw"
+import lesson68DiagnosticOutput from "../../../../examples/tour/lessons/signals-monad-boundary/diagnostic.txt?raw"
+
+import lesson69Source from "../../../../examples/tour/lessons/signals-switch-map/main.ssrg?raw"
+import lesson69Output from "../../../../examples/tour/lessons/signals-switch-map/stdout.txt?raw"
+import lesson69Exercise from "../../../../examples/tour/lessons/signals-switch-map/exercise.ssrg?raw"
+import lesson69ExerciseOutput from "../../../../examples/tour/lessons/signals-switch-map/exercise.stdout.txt?raw"
+import lesson69Diagnostic from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.ssrg?raw"
+import lesson69DiagnosticOutput from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.txt?raw"
+
+import lesson70Source from "../../../../examples/tour/lessons/signals-handler-boundary/main.ssrg?raw"
+import lesson70Output from "../../../../examples/tour/lessons/signals-handler-boundary/stdout.txt?raw"
+import lesson70Exercise from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.ssrg?raw"
+import lesson70ExerciseOutput from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.stdout.txt?raw"
+import lesson70Diagnostic from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.ssrg?raw"
+import lesson70DiagnosticOutput from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.txt?raw"
+
+import lesson71Source from "../../../../examples/tour/lessons/web-html-value/main.ssrg?raw"
+import lesson71Output from "../../../../examples/tour/lessons/web-html-value/stdout.html?raw"
+import lesson71Exercise from "../../../../examples/tour/lessons/web-html-value/exercise.ssrg?raw"
+import lesson71ExerciseOutput from "../../../../examples/tour/lessons/web-html-value/exercise.stdout.txt?raw"
+import lesson71Diagnostic from "../../../../examples/tour/lessons/web-html-value/diagnostic.ssrg?raw"
+import lesson71DiagnosticOutput from "../../../../examples/tour/lessons/web-html-value/diagnostic.txt?raw"
+
+import lesson72Source from "../../../../examples/tour/lessons/web-text-attributes/main.ssrg?raw"
+import lesson72Output from "../../../../examples/tour/lessons/web-text-attributes/stdout.html?raw"
+import lesson72Exercise from "../../../../examples/tour/lessons/web-text-attributes/exercise.ssrg?raw"
+import lesson72ExerciseOutput from "../../../../examples/tour/lessons/web-text-attributes/exercise.stdout.txt?raw"
+import lesson72Diagnostic from "../../../../examples/tour/lessons/web-text-attributes/diagnostic.ssrg?raw"
+import lesson72DiagnosticOutput from "../../../../examples/tour/lessons/web-text-attributes/diagnostic.txt?raw"
+
+import lesson73Source from "../../../../examples/tour/lessons/web-style-class/main.ssrg?raw"
+import lesson73Output from "../../../../examples/tour/lessons/web-style-class/stdout.html?raw"
+import lesson73Exercise from "../../../../examples/tour/lessons/web-style-class/exercise.ssrg?raw"
+import lesson73ExerciseOutput from "../../../../examples/tour/lessons/web-style-class/exercise.stdout.txt?raw"
+import lesson73Diagnostic from "../../../../examples/tour/lessons/web-style-class/diagnostic.ssrg?raw"
+import lesson73DiagnosticOutput from "../../../../examples/tour/lessons/web-style-class/diagnostic.txt?raw"
+
+import lesson74Source from "../../../../examples/tour/lessons/web-tags-children/main.ssrg?raw"
+import lesson74Output from "../../../../examples/tour/lessons/web-tags-children/stdout.html?raw"
+import lesson74Exercise from "../../../../examples/tour/lessons/web-tags-children/exercise.ssrg?raw"
+import lesson74ExerciseOutput from "../../../../examples/tour/lessons/web-tags-children/exercise.stdout.txt?raw"
+import lesson74Diagnostic from "../../../../examples/tour/lessons/web-tags-children/diagnostic.ssrg?raw"
+import lesson74DiagnosticOutput from "../../../../examples/tour/lessons/web-tags-children/diagnostic.txt?raw"
+
+import lesson75Source from "../../../../examples/tour/lessons/web-component-definition/main.ssrg?raw"
+import lesson75Output from "../../../../examples/tour/lessons/web-component-definition/stdout.html?raw"
+import lesson75Exercise from "../../../../examples/tour/lessons/web-component-definition/exercise.ssrg?raw"
+import lesson75ExerciseOutput from "../../../../examples/tour/lessons/web-component-definition/exercise.stdout.txt?raw"
+import lesson75Diagnostic from "../../../../examples/tour/lessons/web-component-definition/diagnostic.ssrg?raw"
+import lesson75DiagnosticOutput from "../../../../examples/tour/lessons/web-component-definition/diagnostic.txt?raw"
+
+import lesson76Source from "../../../../examples/tour/lessons/web-component-children/main.ssrg?raw"
+import lesson76Output from "../../../../examples/tour/lessons/web-component-children/stdout.html?raw"
+import lesson76Exercise from "../../../../examples/tour/lessons/web-component-children/exercise.ssrg?raw"
+import lesson76ExerciseOutput from "../../../../examples/tour/lessons/web-component-children/exercise.stdout.txt?raw"
+import lesson76Diagnostic from "../../../../examples/tour/lessons/web-component-children/diagnostic.ssrg?raw"
+import lesson76DiagnosticOutput from "../../../../examples/tour/lessons/web-component-children/diagnostic.txt?raw"
+
+import lesson77Source from "../../../../examples/tour/lessons/web-component-props/main.ssrg?raw"
+import lesson77Output from "../../../../examples/tour/lessons/web-component-props/stdout.html?raw"
+import lesson77Exercise from "../../../../examples/tour/lessons/web-component-props/exercise.ssrg?raw"
+import lesson77ExerciseOutput from "../../../../examples/tour/lessons/web-component-props/exercise.stdout.txt?raw"
+import lesson77Diagnostic from "../../../../examples/tour/lessons/web-component-props/diagnostic.ssrg?raw"
+import lesson77DiagnosticOutput from "../../../../examples/tour/lessons/web-component-props/diagnostic.txt?raw"
+
+import lesson78Source from "../../../../examples/tour/lessons/web-link-image/main.ssrg?raw"
+import lesson78Output from "../../../../examples/tour/lessons/web-link-image/stdout.html?raw"
+import lesson78Exercise from "../../../../examples/tour/lessons/web-link-image/exercise.ssrg?raw"
+import lesson78ExerciseOutput from "../../../../examples/tour/lessons/web-link-image/exercise.stdout.txt?raw"
+import lesson78Diagnostic from "../../../../examples/tour/lessons/web-link-image/diagnostic.ssrg?raw"
+import lesson78DiagnosticOutput from "../../../../examples/tour/lessons/web-link-image/diagnostic.txt?raw"
+
+import lesson79Source from "../../../../examples/tour/lessons/web-click-action/main.ssrg?raw"
+import lesson79Output from "../../../../examples/tour/lessons/web-click-action/stdout.html?raw"
+import lesson79Exercise from "../../../../examples/tour/lessons/web-click-action/exercise.ssrg?raw"
+import lesson79ExerciseOutput from "../../../../examples/tour/lessons/web-click-action/exercise.stdout.txt?raw"
+import lesson79Diagnostic from "../../../../examples/tour/lessons/web-click-action/diagnostic.ssrg?raw"
+import lesson79DiagnosticOutput from "../../../../examples/tour/lessons/web-click-action/diagnostic.txt?raw"
+
+import lesson80Source from "../../../../examples/tour/lessons/web-input-action/main.ssrg?raw"
+import lesson80Output from "../../../../examples/tour/lessons/web-input-action/stdout.html?raw"
+import lesson80Exercise from "../../../../examples/tour/lessons/web-input-action/exercise.ssrg?raw"
+import lesson80ExerciseOutput from "../../../../examples/tour/lessons/web-input-action/exercise.stdout.txt?raw"
+import lesson80Diagnostic from "../../../../examples/tour/lessons/web-input-action/diagnostic.ssrg?raw"
+import lesson80DiagnosticOutput from "../../../../examples/tour/lessons/web-input-action/diagnostic.txt?raw"
+
+import lesson81Source from "../../../../examples/tour/lessons/web-change-action/main.ssrg?raw"
+import lesson81Output from "../../../../examples/tour/lessons/web-change-action/stdout.html?raw"
+import lesson81Exercise from "../../../../examples/tour/lessons/web-change-action/exercise.ssrg?raw"
+import lesson81ExerciseOutput from "../../../../examples/tour/lessons/web-change-action/exercise.stdout.txt?raw"
+import lesson81Diagnostic from "../../../../examples/tour/lessons/web-change-action/diagnostic.ssrg?raw"
+import lesson81DiagnosticOutput from "../../../../examples/tour/lessons/web-change-action/diagnostic.txt?raw"
+
+import lesson82Source from "../../../../examples/tour/lessons/web-form-submit/main.ssrg?raw"
+import lesson82Output from "../../../../examples/tour/lessons/web-form-submit/stdout.html?raw"
+import lesson82Exercise from "../../../../examples/tour/lessons/web-form-submit/exercise.ssrg?raw"
+import lesson82ExerciseOutput from "../../../../examples/tour/lessons/web-form-submit/exercise.stdout.txt?raw"
+import lesson82Diagnostic from "../../../../examples/tour/lessons/web-form-submit/diagnostic.ssrg?raw"
+import lesson82DiagnosticOutput from "../../../../examples/tour/lessons/web-form-submit/diagnostic.txt?raw"
+
+import lesson83Source from "../../../../examples/tour/lessons/web-signal-preview/main.ssrg?raw"
+import lesson83Output from "../../../../examples/tour/lessons/web-signal-preview/stdout.html?raw"
+import lesson83Exercise from "../../../../examples/tour/lessons/web-signal-preview/exercise.ssrg?raw"
+import lesson83ExerciseOutput from "../../../../examples/tour/lessons/web-signal-preview/exercise.stdout.txt?raw"
+import lesson83Diagnostic from "../../../../examples/tour/lessons/web-signal-preview/diagnostic.ssrg?raw"
+import lesson83DiagnosticOutput from "../../../../examples/tour/lessons/web-signal-preview/diagnostic.txt?raw"
+
+import lesson84Source from "../../../../examples/tour/lessons/web-dom-run/main.ssrg?raw"
+import lesson84Exercise from "../../../../examples/tour/lessons/web-dom-run/exercise.ssrg?raw"
+import lesson84ExerciseOutput from "../../../../examples/tour/lessons/web-dom-run/exercise.stdout.txt?raw"
+import lesson84Diagnostic from "../../../../examples/tour/lessons/web-dom-run/diagnostic.ssrg?raw"
+import lesson84DiagnosticOutput from "../../../../examples/tour/lessons/web-dom-run/diagnostic.txt?raw"
+
+import lesson85Source from "../../../../examples/tour/lessons/web-typed-action/main.ssrg?raw"
+import lesson85Output from "../../../../examples/tour/lessons/web-typed-action/stdout.html?raw"
+import lesson85Exercise from "../../../../examples/tour/lessons/web-typed-action/exercise.ssrg?raw"
+import lesson85ExerciseOutput from "../../../../examples/tour/lessons/web-typed-action/exercise.stdout.txt?raw"
+import lesson85Diagnostic from "../../../../examples/tour/lessons/web-typed-action/diagnostic.ssrg?raw"
+import lesson85DiagnosticOutput from "../../../../examples/tour/lessons/web-typed-action/diagnostic.txt?raw"
+
+import lesson86Source from "../../../../examples/tour/lessons/web-accessibility-label/main.ssrg?raw"
+import lesson86Output from "../../../../examples/tour/lessons/web-accessibility-label/stdout.html?raw"
+import lesson86Exercise from "../../../../examples/tour/lessons/web-accessibility-label/exercise.ssrg?raw"
+import lesson86ExerciseOutput from "../../../../examples/tour/lessons/web-accessibility-label/exercise.stdout.txt?raw"
+import lesson86Diagnostic from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.ssrg?raw"
+import lesson86DiagnosticOutput from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.txt?raw"
+
+import lesson87Source from "../../../../examples/tour/lessons/web-feature-state/main.ssrg?raw"
+import lesson87Exercise from "../../../../examples/tour/lessons/web-feature-state/exercise.ssrg?raw"
+import lesson87ExerciseOutput from "../../../../examples/tour/lessons/web-feature-state/exercise.stdout.txt?raw"
+import lesson87Diagnostic from "../../../../examples/tour/lessons/web-feature-state/diagnostic.ssrg?raw"
+import lesson87DiagnosticOutput from "../../../../examples/tour/lessons/web-feature-state/diagnostic.txt?raw"
+
+import lesson88Source from "../../../../examples/tour/lessons/applications-console-data/main.ssrg?raw"
+import lesson88Output from "../../../../examples/tour/lessons/applications-console-data/stdout.txt?raw"
+import lesson88Exercise from "../../../../examples/tour/lessons/applications-console-data/exercise.ssrg?raw"
+import lesson88ExerciseOutput from "../../../../examples/tour/lessons/applications-console-data/exercise.stdout.txt?raw"
+import lesson88Diagnostic from "../../../../examples/tour/lessons/applications-console-data/diagnostic.ssrg?raw"
+import lesson88DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-data/diagnostic.txt?raw"
+
+import lesson89Source from "../../../../examples/tour/lessons/applications-console-transform/main.ssrg?raw"
+import lesson89Output from "../../../../examples/tour/lessons/applications-console-transform/stdout.txt?raw"
+import lesson89Exercise from "../../../../examples/tour/lessons/applications-console-transform/exercise.ssrg?raw"
+import lesson89ExerciseOutput from "../../../../examples/tour/lessons/applications-console-transform/exercise.stdout.txt?raw"
+import lesson89Diagnostic from "../../../../examples/tour/lessons/applications-console-transform/diagnostic.ssrg?raw"
+import lesson89DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-transform/diagnostic.txt?raw"
+
+import lesson90Source from "../../../../examples/tour/lessons/applications-console-fallibility/main.ssrg?raw"
+import lesson90Output from "../../../../examples/tour/lessons/applications-console-fallibility/stdout.txt?raw"
+import lesson90Exercise from "../../../../examples/tour/lessons/applications-console-fallibility/exercise.ssrg?raw"
+import lesson90ExerciseOutput from "../../../../examples/tour/lessons/applications-console-fallibility/exercise.stdout.txt?raw"
+import lesson90Diagnostic from "../../../../examples/tour/lessons/applications-console-fallibility/diagnostic.ssrg?raw"
+import lesson90DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-fallibility/diagnostic.txt?raw"
+
+import lesson91Source from "../../../../examples/tour/lessons/applications-console-output/main.ssrg?raw"
+import lesson91Output from "../../../../examples/tour/lessons/applications-console-output/stdout.txt?raw"
+import lesson91Exercise from "../../../../examples/tour/lessons/applications-console-output/exercise.ssrg?raw"
+import lesson91ExerciseOutput from "../../../../examples/tour/lessons/applications-console-output/exercise.stdout.txt?raw"
+import lesson91Diagnostic from "../../../../examples/tour/lessons/applications-console-output/diagnostic.ssrg?raw"
+import lesson91DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-output/diagnostic.txt?raw"
+
+import lesson92Source from "../../../../examples/tour/lessons/applications-web-static/main.ssrg?raw"
+import lesson92Output from "../../../../examples/tour/lessons/applications-web-static/stdout.html?raw"
+import lesson92Exercise from "../../../../examples/tour/lessons/applications-web-static/exercise.ssrg?raw"
+import lesson92ExerciseOutput from "../../../../examples/tour/lessons/applications-web-static/exercise.stdout.html?raw"
+import lesson92Diagnostic from "../../../../examples/tour/lessons/applications-web-static/diagnostic.ssrg?raw"
+import lesson92DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-static/diagnostic.txt?raw"
+
+import lesson93Source from "../../../../examples/tour/lessons/applications-web-component/main.ssrg?raw"
+import lesson93Output from "../../../../examples/tour/lessons/applications-web-component/stdout.html?raw"
+import lesson93Exercise from "../../../../examples/tour/lessons/applications-web-component/exercise.ssrg?raw"
+import lesson93ExerciseOutput from "../../../../examples/tour/lessons/applications-web-component/exercise.stdout.html?raw"
+import lesson93Diagnostic from "../../../../examples/tour/lessons/applications-web-component/diagnostic.ssrg?raw"
+import lesson93DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-component/diagnostic.txt?raw"
+
+import lesson94Source from "../../../../examples/tour/lessons/applications-web-signal/main.ssrg?raw"
+import lesson94Output from "../../../../examples/tour/lessons/applications-web-signal/stdout.html?raw"
+import lesson94Exercise from "../../../../examples/tour/lessons/applications-web-signal/exercise.ssrg?raw"
+import lesson94ExerciseOutput from "../../../../examples/tour/lessons/applications-web-signal/exercise.stdout.html?raw"
+import lesson94Diagnostic from "../../../../examples/tour/lessons/applications-web-signal/diagnostic.ssrg?raw"
+import lesson94DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-signal/diagnostic.txt?raw"
+
+import lesson95Source from "../../../../examples/tour/lessons/applications-web-form-event/main.ssrg?raw"
+import lesson95Output from "../../../../examples/tour/lessons/applications-web-form-event/stdout.html?raw"
+import lesson95Exercise from "../../../../examples/tour/lessons/applications-web-form-event/exercise.ssrg?raw"
+import lesson95ExerciseOutput from "../../../../examples/tour/lessons/applications-web-form-event/exercise.stdout.html?raw"
+import lesson95Diagnostic from "../../../../examples/tour/lessons/applications-web-form-event/diagnostic.ssrg?raw"
+import lesson95DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-form-event/diagnostic.txt?raw"
+
+import lesson96Source from "../../../../examples/tour/lessons/applications-web-action/main.ssrg?raw"
+import lesson96Output from "../../../../examples/tour/lessons/applications-web-action/stdout.html?raw"
+import lesson96Exercise from "../../../../examples/tour/lessons/applications-web-action/exercise.ssrg?raw"
+import lesson96ExerciseOutput from "../../../../examples/tour/lessons/applications-web-action/exercise.stdout.txt?raw"
+import lesson96Diagnostic from "../../../../examples/tour/lessons/applications-web-action/diagnostic.ssrg?raw"
+import lesson96DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-action/diagnostic.txt?raw"
+
+import lesson97Source from "../../../../examples/tour/lessons/applications-web-validation/main.ssrg?raw"
+import lesson97Output from "../../../../examples/tour/lessons/applications-web-validation/stdout.html?raw"
+import lesson97Exercise from "../../../../examples/tour/lessons/applications-web-validation/exercise.ssrg?raw"
+import lesson97ExerciseOutput from "../../../../examples/tour/lessons/applications-web-validation/exercise.stdout.txt?raw"
+import lesson97Diagnostic from "../../../../examples/tour/lessons/applications-web-validation/diagnostic.ssrg?raw"
+import lesson97DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-validation/diagnostic.txt?raw"
+
+import lesson98Source from "../../../../examples/tour/lessons/applications-web-feature-ownership/main.ssrg?raw"
+import lesson98Output from "../../../../examples/tour/lessons/applications-web-feature-ownership/stdout.html?raw"
+import lesson98Exercise from "../../../../examples/tour/lessons/applications-web-feature-ownership/exercise.ssrg?raw"
+import lesson98ExerciseOutput from "../../../../examples/tour/lessons/applications-web-feature-ownership/exercise.stdout.html?raw"
+import lesson98Diagnostic from "../../../../examples/tour/lessons/applications-web-feature-ownership/diagnostic.ssrg?raw"
+import lesson98DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-feature-ownership/diagnostic.txt?raw"
+
+import lesson99Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson99Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+
+import lesson100Source from "../../../../examples/tour/lessons/design-learning-map/main.ssrg?raw"
+import lesson100Output from "../../../../examples/tour/lessons/design-learning-map/stdout.txt?raw"
+import lesson100Exercise from "../../../../examples/tour/lessons/design-learning-map/exercise.ssrg?raw"
+import lesson100ExerciseOutput from "../../../../examples/tour/lessons/design-learning-map/exercise.stdout.txt?raw"
+import lesson100Diagnostic from "../../../../examples/tour/lessons/design-learning-map/diagnostic.ssrg?raw"
+import lesson100DiagnosticOutput from "../../../../examples/tour/lessons/design-learning-map/diagnostic.txt?raw"
+
+import lesson101Source from "../../../../examples/tour/lessons/design-type-constructor-kinds/main.ssrg?raw"
+import lesson101Output from "../../../../examples/tour/lessons/design-type-constructor-kinds/stdout.txt?raw"
+import lesson101Exercise from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.ssrg?raw"
+import lesson101ExerciseOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.stdout.txt?raw"
+import lesson101Diagnostic from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.ssrg?raw"
+import lesson101DiagnosticOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.txt?raw"
+
+import lesson102Source from "../../../../examples/tour/lessons/design-trait-evidence/main.ssrg?raw"
+import lesson102Output from "../../../../examples/tour/lessons/design-trait-evidence/stdout.txt?raw"
+import lesson102Exercise from "../../../../examples/tour/lessons/design-trait-evidence/exercise.ssrg?raw"
+import lesson102ExerciseOutput from "../../../../examples/tour/lessons/design-trait-evidence/exercise.stdout.txt?raw"
+import lesson102Diagnostic from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.ssrg?raw"
+import lesson102DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.txt?raw"
+
+import lesson103Source from "../../../../examples/tour/lessons/design-abstraction-laws/main.ssrg?raw"
+import lesson103Output from "../../../../examples/tour/lessons/design-abstraction-laws/stdout.txt?raw"
+import lesson103Exercise from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.ssrg?raw"
+import lesson103ExerciseOutput from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.stdout.txt?raw"
+import lesson103Diagnostic from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.ssrg?raw"
+import lesson103DiagnosticOutput from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.txt?raw"
+
+import lesson104Source from "../../../../examples/tour/lessons/design-trait-boundary/main.ssrg?raw"
+import lesson104Output from "../../../../examples/tour/lessons/design-trait-boundary/stdout.txt?raw"
+import lesson104Exercise from "../../../../examples/tour/lessons/design-trait-boundary/exercise.ssrg?raw"
+import lesson104ExerciseOutput from "../../../../examples/tour/lessons/design-trait-boundary/exercise.stdout.txt?raw"
+import lesson104Diagnostic from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.ssrg?raw"
+import lesson104DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.txt?raw"
+
+import lesson105Source from "../../../../examples/tour/lessons/list-values/main.ssrg?raw"
+import lesson105Output from "../../../../examples/tour/lessons/list-values/stdout.txt?raw"
+import lesson105Exercise from "../../../../examples/tour/lessons/list-values/exercise.ssrg?raw"
+import lesson105ExerciseOutput from "../../../../examples/tour/lessons/list-values/exercise.stdout.txt?raw"
+import lesson105Diagnostic from "../../../../examples/tour/lessons/list-values/diagnostic.ssrg?raw"
+import lesson105DiagnosticOutput from "../../../../examples/tour/lessons/list-values/diagnostic.txt?raw"
+
+import lesson106Source from "../../../../examples/tour/lessons/list-decomposition/main.ssrg?raw"
+import lesson106Output from "../../../../examples/tour/lessons/list-decomposition/stdout.txt?raw"
+import lesson106Exercise from "../../../../examples/tour/lessons/list-decomposition/exercise.ssrg?raw"
+import lesson106ExerciseOutput from "../../../../examples/tour/lessons/list-decomposition/exercise.stdout.txt?raw"
+import lesson106Diagnostic from "../../../../examples/tour/lessons/list-decomposition/diagnostic.ssrg?raw"
+import lesson106DiagnosticOutput from "../../../../examples/tour/lessons/list-decomposition/diagnostic.txt?raw"
+
+import lesson107Source from "../../../../examples/tour/lessons/collection-reduce-step/main.ssrg?raw"
+import lesson107Output from "../../../../examples/tour/lessons/collection-reduce-step/stdout.txt?raw"
+import lesson107Exercise from "../../../../examples/tour/lessons/collection-reduce-step/exercise.ssrg?raw"
+import lesson107ExerciseOutput from "../../../../examples/tour/lessons/collection-reduce-step/exercise.stdout.txt?raw"
+import lesson107Diagnostic from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.ssrg?raw"
+import lesson107DiagnosticOutput from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.txt?raw"
+
+import lesson108Source from "../../../../examples/tour/lessons/collection-append-concat/main.ssrg?raw"
+import lesson108Output from "../../../../examples/tour/lessons/collection-append-concat/stdout.txt?raw"
+import lesson108Exercise from "../../../../examples/tour/lessons/collection-append-concat/exercise.ssrg?raw"
+import lesson108ExerciseOutput from "../../../../examples/tour/lessons/collection-append-concat/exercise.stdout.txt?raw"
+import lesson108Diagnostic from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.ssrg?raw"
+import lesson108DiagnosticOutput from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.txt?raw"
+
+import lesson109Source from "../../../../examples/tour/lessons/collection-comprehension/main.ssrg?raw"
+import lesson109Output from "../../../../examples/tour/lessons/collection-comprehension/stdout.txt?raw"
+import lesson109Exercise from "../../../../examples/tour/lessons/collection-comprehension/exercise.ssrg?raw"
+import lesson109ExerciseOutput from "../../../../examples/tour/lessons/collection-comprehension/exercise.stdout.txt?raw"
+import lesson109Diagnostic from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.ssrg?raw"
+import lesson109DiagnosticOutput from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.txt?raw"
+
+import lesson110Source from "../../../../examples/tour/lessons/empty-collections/main.ssrg?raw"
+import lesson110Output from "../../../../examples/tour/lessons/empty-collections/stdout.txt?raw"
+import lesson110Exercise from "../../../../examples/tour/lessons/empty-collections/exercise.ssrg?raw"
+import lesson110ExerciseOutput from "../../../../examples/tour/lessons/empty-collections/exercise.stdout.txt?raw"
+import lesson110Diagnostic from "../../../../examples/tour/lessons/empty-collections/diagnostic.ssrg?raw"
+import lesson110DiagnosticOutput from "../../../../examples/tour/lessons/empty-collections/diagnostic.txt?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -1052,43 +786,63 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     expectedOutput: (lesson0Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "最初のlessonです。sourceの文法は次のlessonから一つずつ読みます。ここではEditor、Run、Outputの位置だけに集中します。",
+      "prerequisite": "最初のレッスンです。まずは画面のコードを実行して、`Run` と `Output` のつながりを確かめます。",
       "walkthrough": [
         {
-          "heading": "完成済みの一行をRunする",
-          "body": "Editorのsourceはそのままで動く最小programです。Runを押すとcompilerとruntimeを通り、結果がOutputへ一行表示されます。",
+          "heading": "コメントと名前の定義",
+          "body": "1 行目の `//` から行末まではコメントです。プログラムの動きには影響せず、メモを残せます。2 行目では文字列 `\"Seseragi\"` に `name` という名前を付けています。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "プログラムの入口と出力",
+          "body": "実行すると `pub effect fn main` から動き始めます。`println` は `Output` へ 1 行出力する命令で、バッククォートで囲んだ `` `Hello, ${name}!` `` の `${name}` には `name` の値が入ります。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 4
           }
         }
       ],
       "introduced": [
         {
           "kind": "api",
-          "name": "Run → Output",
-          "body": "Runは現在のsourceをcompileして実行し、programが出力したtextをOutputへ表示します。"
+          "name": "println",
+          "body": "受け取った文字列を `Output` へ 1 行出力します。"
+        },
+        {
+          "kind": "syntax",
+          "name": "テンプレート文字列",
+          "body": "`` `...${式}...` `` の形でバッククォートで囲むと、文字列の中に変数や式の値を埋め込めます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "コメント",
+          "body": "`//` から行末まではコンパイラに無視されるコメントになります。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceを開いてRunし、Outputが`Hello, Tour!`へ変わることだけを確認してください。",
+        "instruction": "エディターの `\"Seseragi\"` を `\"Tour\"` に書き換えて `Run` し、`Output` が `Hello, Tour!` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "型が一致しないsourceを開く",
-        "body": "Stringと書いた場所へ数値を置いたsourceをRunすると、実行前にcompiler diagnosticが表示されます。今は内容を直す必要はなく、Outputとの違いを見ます。"
+        "heading": "文字列の場所に数値を書いてみる",
+        "body": "失敗例では `String` と書いた場所に数値 `42` を置いています。実行前にコンパイラが型の違いを見つけ、`Problems` にエラー表示を出します。"
       },
       "recap": [
-        "RunはEditorにあるsourceをcompileして実行する。",
-        "成功したprogramの出力はOutputへ表示される。",
-        "compileできないsourceでは実行結果の代わりにdiagnosticが表示される。"
+        "`Run` を押すとエディターのコードがコンパイル・実行され、結果が `Output` に表示されます。",
+        "`pub effect fn main` がプログラムの入口で、`println` とテンプレート文字列で出力できます。",
+        "`//` でメモ用のコメントを残せます。",
+        "コンパイルできないときは実行結果の代わりにエラー表示が出ます。"
       ],
       "next": {
-        "lessonId": "program-entry",
-        "body": "次は、Runしたときにどこからprogramが始まるのかを`main`という名前から読みます。"
+        "lessonId": "02-values-and-bindings",
+        "body": "次は `let` を使っていろいろな型の値に名前を付け、型推論や簡単な計算・比較を確かめます。"
       },
       "notes": [
-        "最初のsourceに含まれる構文は暗記しません。後続lessonで一つずつ説明します。"
+        "コードのインデントや空白を整えたいときはツールバーの `Format` を、編集した内容をこのレッスンの初期コードへ戻したいときは `Reset` を使えます。",
+        "最初のコードに含まれる細かなキーワードはここで暗記する必要はありません。後のレッスンで順番に説明します。"
       ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson0Exercise,
@@ -1097,50 +851,72 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson0DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "program-entry",
+    id: "02-values-and-bindings",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/program-entry/main.ssrg",
+    sourcePath: "examples/tour/lessons/02-values-and-bindings/main.ssrg",
     source: lesson1Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson1Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "RunとOutputの対応だけを確認しました。ここから最小programの一行を部分ごとに読みます。",
+      "prerequisite": "最初のレッスンで `let` と文字列の出力、そして `Run` と `Output` の使い方を確かめました。ここでは数値・真偽値・値がないことを表す型をまとめます。",
       "walkthrough": [
         {
-          "heading": "Runが呼ぶ入口を見つける",
-          "body": "`main`はprogramの入口です。`pub`は外から見えること、`effect fn`はOutputのように外部へ作用するfunctionであることを表します。",
+          "heading": "型注釈・型推論と演算・比較",
+          "body": "1 行目の `let total: Int = 20 + 22` は `: Int` と型注釈を付けながら `+` で整数を計算します。2 行目の `1.5`（`Float`）や 3 行目の `42 > 40`（`Bool`）は型注釈を省略しても右辺から型が推論され、`42 > 40` の結果は `True` になります。4 行目の `()` は値がないことを表す `Unit` 型です。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 4
+          }
+        },
+        {
+          "heading": "変更できない束縛を参照する",
+          "body": "`let` で付けた名前は後から値を上書きできない変更できない束縛です。`main` の中では名前をそのまま参照し、`Output` へ 4 つの型の値をまとめて表示しています。",
+          "sourceRange": {
+            "startLine": 6,
+            "endLine": 7
           }
         }
       ],
       "introduced": [
         {
           "kind": "syntax",
-          "name": "pub effect fn main",
-          "body": "外部から実行でき、作用を持つprogram entryを宣言します。Runはこの`main`を探します。"
+          "name": "let と型注釈・型推論",
+          "body": "`let 名前: 型 = 式` のように型注釈を書けます。右辺から型が決まるときは `: 型` を省略してもコンパイラが型推論します。"
+        },
+        {
+          "kind": "type",
+          "name": "Int・Float・Bool・Unit",
+          "body": "`Int` は整数、`Float` は小数、`Bool` は `True` または `False`、`Unit` は意味のある値がないことを表す `()` の型です。"
+        },
+        {
+          "kind": "syntax",
+          "name": "演算子 + と比較 >",
+          "body": "`+` で同じ数値型同士を足し算し、`>`・`<`・`>=`・`<=`・`==` で値を比べて `Bool` を得ます。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceをRunし、同じ`main`から`Entry ready!`が出力されることを確認してください。",
+        "instruction": "3 行目の `42 > 40` を `42 > 50` に書き換えて `Run` し、`Output` の `Bool: True` が `Bool: False` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "mainを二つ宣言する",
-        "body": "program entryは一つに決まる必要があります。同じ名前の`main`を二度宣言したdiagnosticを確認します。"
+        "heading": "同じ名前をもう一度宣言してみる",
+        "body": "Seseragi の `let` は変更できない束縛です。失敗例のように同じスコープで `total` を二度宣言すると名前が重複し、コンパイル前に `Problems` へエラー表示が出ます。"
       },
       "recap": [
-        "`main`がRunで呼ばれるprogram entryになる。",
-        "`pub effect fn`は外部へ作用できる公開functionを宣言する。"
+        "`let` は値に名前を付ける変更できない束縛を作り、型注釈がなくても型推論で型が決まります。",
+        "主な基本型として `Int`・`Float`・`Bool`・`Unit` があり、`+` や `>` などの演算で計算・比較できます。",
+        "同じスコープ内で同じ名前を宣言し直すことはできません。"
       ],
       "next": {
-        "lessonId": "string-literal",
-        "body": "次は`println`の右側にある二重引用符のvalueだけを取り出して学びます。"
-      }
+        "lessonId": "if-expression",
+        "body": "次は `Bool` の比較結果を使って値を選び分ける `if` 式を学びます。"
+      },
+      "notes": [
+        "一時的な名前を式の中だけに閉じ込めたいときは、`{ let x = 1; x + 2 }` のように波括弧のブロック内で `let` を書くこともできます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson1Exercise,
     exerciseExpectedOutput: (lesson1ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1148,55 +924,62 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson1DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "string-literal",
+    id: "if-expression",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/string-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/if-expression/main.ssrg",
     source: lesson2Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson2Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "`pub effect fn main`がprogram entryだと分かりました。ここでは右辺のString valueと出力APIだけを読みます。",
+      "prerequisite": "ここまでで `let` 束縛、型推論、そして `>=` などの比較から `Bool` を得る方法を学びました。",
       "walkthrough": [
         {
-          "heading": "二重引用符でStringを作る",
-          "body": "`\"Hello, Seseragi!\"`はString literalです。`println`へ渡すとtextと改行がOutputへ書き込まれます。",
+          "heading": "値を返す式としての if",
+          "body": "2 行目の `if score >= 80 then \"pass\" else \"retry\"` は命令文ではなく、選んだ側の値をそのまま返す式です。条件 `score >= 80` が `True` なので `label` には `\"pass\"` が入ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "else が必須で、式の一部にも書ける",
+          "body": "3 行目の `if` 式は `Int` 型の `5` または `0` を返し、5 行目の `score + bonus` の計算にそのまま使われています。`then` と `else` の両方を必ず書くのは、どちらの分岐でも 1 つの値を返す必要があるためです。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 5
           }
         }
       ],
       "introduced": [
         {
-          "kind": "type",
-          "name": "String literal",
-          "body": "二重引用符の間に書いたtextからString valueを作ります。"
-        },
-        {
-          "kind": "api",
-          "name": "println",
-          "body": "String valueをOutputへ書き込み、最後に改行します。"
+          "kind": "syntax",
+          "name": "if ... then ... else",
+          "body": "条件（`Bool`）が `True` なら `then` 側、`False` なら `else` 側の式を評価してその値を返します。`else` は省略できず、両分岐は同じ型でなければなりません。"
         }
       ],
       "exercise": {
-        "instruction": "String literalの中身だけを`Hello, Tour!`へ変更した課題sourceをRunしてください。",
+        "instruction": "1 行目の `85` を `70` に書き換えて `Run` し、`Output` が `label: retry, total: 70` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "使えないescapeを書く",
-        "body": "String中のbackslashはescapeの開始です。存在しない`\\q`をcompilerがsource位置付きで拒否します。"
+        "heading": "then と else で違う型を返す",
+        "body": "失敗例では `then` 側が `String`（`\"pass\"`）なのに、`else` 側へ `Int`（`0`）を書いています。`if` 式は両方の分岐で同じ型を返す必要があるため、`Problems` に型不一致のエラー表示が出ます。"
       },
       "recap": [
-        "二重引用符でString literalを作れる。",
-        "`println`はStringを一行出力する。"
+        "Seseragi の `if ... then ... else ...` は文ではなく値を返す式です。",
+        "どちらの分岐を通っても値を返す必要があるため、`else` は省略できません。",
+        "`then` と `else` の結果は必ず同じ型に揃える必要があります。"
       ],
       "next": {
-        "lessonId": "string-template",
-        "body": "次は固定textの中へ別のvalueを埋め込めるtemplate literalへ進みます。"
-      }
+        "lessonId": "03-function-definitions",
+        "body": "次は繰り返し使う計算に名前を付けて呼び出す関数（`fn`）と部分適用を学びます。"
+      },
+      "notes": [
+        "条件をさらに重ねたいときは `else if 条件 then ... else ...` のように続けて書けます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson2Exercise,
     exerciseExpectedOutput: (lesson2ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1204,50 +987,81 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson2DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "string-template",
+    id: "03-function-definitions",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/string-template/main.ssrg",
+    sourcePath: "examples/tour/lessons/03-function-definitions/main.ssrg",
     source: lesson3Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson3Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "二重引用符で一つのStringを作り、`println`へ渡せます。",
+      "prerequisite": "ここまでで `let` 束縛、型注釈、`if` 式を使った値の組み立て方を学びました。",
       "walkthrough": [
         {
-          "heading": "固定textへvalueを埋め込む",
-          "body": "backtickで囲むtemplate literalでは、`${...}`の中のvalueがString表示へ変換されて同じtextへ入ります。",
+          "heading": "fn で関数を定義し、引数と戻り型を読む",
+          "body": "1 行目の `fn add` は副作用を持たない純粋な関数を定義します。`left: Int -> right: Int -> Int` は、`Int` 型の引数 `left` と `right` を受け取り、最後の `->` の後にある `Int` 型を返すという意味です。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 1
+          }
+        },
+        {
+          "heading": "空白区切りの呼び出しと部分適用",
+          "body": "4 行目の `add 10 20` のように、Seseragi では関数名と引数を空白で並べて呼び出します。3 行目の `let add10 = add 10` のように 1 つ目の引数だけを渡すと、残りの引数を受け取る新しい関数（`add10`）ができ、5 行目で `add10 22` のように呼び出せます。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "計算した結果を出力する",
+          "body": "純粋な関数 `add` が返した値（`30` と `32`）を、`main` の中でテンプレート文字列に埋め込んで `Output` へ出力しています。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 7
           }
         }
       ],
       "introduced": [
         {
           "kind": "syntax",
-          "name": "template literal",
-          "body": "backtickでtextを作り、`${expression}`でvalueの表示を埋め込みます。"
+          "name": "fn と引数・戻り型",
+          "body": "`fn 名前 引数1: 型 -> 引数2: 型 -> 戻り型 = 式` で関数を定義します。`->` で区切った最後が戻り型で、`=` の右側の式がそのまま戻り値になります。"
+        },
+        {
+          "kind": "syntax",
+          "name": "括弧なしの関数呼び出し",
+          "body": "`add 10 20` のように関数と引数を空白で区切って渡します。式を引数に渡したいときだけ `(add 1 2)` のように括弧でまとめます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "部分適用",
+          "body": "複数引数の関数に先頭の一部の引数だけを渡すと、残りの引数を受け取る関数値が得られます。"
         }
       ],
       "exercise": {
-        "instruction": "埋め込むString literalだけを`Tour`へ変更し、固定textを残したままRunしてください。",
+        "instruction": "3 行目の `let add10 = add 10` を `let add20 = add 20` に、5 行目の `add10 22` を `add20 22` に書き換えて `Run` し、`second: 42` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "templateで使えないescapeを書く",
-        "body": "template textでもbackslash escapeは検証されます。存在しないescapeの位置を確認します。"
+        "heading": "括弧とカンマで引数を渡してしまう",
+        "body": "失敗例では `add(10, 20)` と書いています。Seseragi では `(10, 20)` が 2 つの引数ではなく 1 つのまとまった値 `(Int, Int)` として扱われるため、`Int` を期待する 1 番目の引数と型が合いません。"
       },
       "recap": [
-        "backtickでtemplate literalを作れる。",
-        "`${...}`へvalueを埋め込める。"
+        "`fn` で関数を定義し、`引数: 型 -> ... -> 戻り型` の順で型を読みます。",
+        "関数呼び出しは `add 10 20` のように括弧を使わず空白で引数を並べます。",
+        "1 つ目の引数だけを渡して `let add10 = add 10` のように専用の関数を作れます（部分適用）。"
       ],
       "next": {
-        "lessonId": "int-literal",
-        "body": "次はStringではなく、最初の数値型Intをtemplateへ埋め込みます。"
-      }
+        "lessonId": "05-pipelines",
+        "body": "次は関数同士をつないでデータの流れをわかりやすく書く演算子 `|>` と `$` を学びます。"
+      },
+      "notes": [
+        "引数を 1 つも取らない関数を定義したいときは `fn greeting -> String = \"Hello\"` のように書き、呼び出すときは `greeting ()` のように `Unit` を渡します。",
+        "入出力などの副作用を伴う `main` のような処理には Effectを返す関数（`effect fn`）を使いますが、ふだんの計算は副作用のない `fn` で書きます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson3Exercise,
     exerciseExpectedOutput: (lesson3ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1255,50 +1069,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson3DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "int-literal",
+    id: "05-pipelines",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/int-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/05-pipelines/main.ssrg",
     source: lesson4Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson4Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "templateの`${...}`へString valueを埋め込めます。",
+      "prerequisite": "前のレッスンで `fn` による関数定義、空白区切りの呼び出し、部分適用を学びました。ここでは複数の関数をつなげて読みやすく書く方法を学びます。",
       "walkthrough": [
         {
-          "heading": "小数点のない数値を書く",
-          "body": "`42`はInt literalです。引用符がないためStringではなく、整数のvalueとして型付けされます。",
+          "heading": "小さな変換関数を用意する",
+          "body": "1〜5 行目では `greeting`・`wrap`・`addLabel` という 1 つずつ小さな役割を持つ関数を定義しています。`wrap` と `addLabel` は最後に対象の `value: String` を受け取る形にしておくと、部分適用でパイプラインに並べやすくなります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "パイプライン |> で上から下へ流す",
+          "body": "7〜11 行目の `|>` は左の値を次の関数の最後の引数として渡します。`name` が `greeting` を通り、`wrap \"**\"` を通り、`addLabel \"Welcome\"` を通る流れを、行を分けて上から下へ読めます。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 11
+          }
+        },
+        {
+          "heading": "$ で右側の計算結果をまとめて渡す",
+          "body": "13 行目の `$` は右側全体 `buildMessage \"Seseragi\"` を先に計算し、その 1 つの結果を左側の `println` へ渡します。`println (buildMessage \"Seseragi\")` のように括弧で囲むのと同じ意味です。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 13
           }
         }
       ],
       "introduced": [
         {
-          "kind": "type",
-          "name": "Int",
-          "body": "安全な整数範囲のvalueを表す型です。小数点なしの数値literalから作ります。"
+          "kind": "syntax",
+          "name": "|>",
+          "body": "左側の値を右側の関数へ渡します。複数段つなげて書くときは改行して `|>` を揃えるとデータの流れが読みやすくなります。"
+        },
+        {
+          "kind": "syntax",
+          "name": "$",
+          "body": "右側全体を 1 つの式として先に評価し、左側の関数へ最後の引数として渡します。括弧の入れ子を減らしたいときに便利です。"
         }
       ],
       "exercise": {
-        "instruction": "Int literalを`7`へ一箇所だけ変更し、templateの表示へ反映させてください。",
+        "instruction": "11 行目の次に `|> wrap \"==\"` を 1 段書き足し、13 行目の `\"Seseragi\"` を `\"Tour\"` に書き換えて `Run` し、`Output` が `==Welcome: **Hello, Tour!**==` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "安全なInt範囲を超える",
-        "body": "Int literalはJavaScriptの安全な整数範囲に収まる必要があります。境界を超えたliteralのdiagnosticを読みます。"
+        "heading": "$ や括弧を付けずに別の関数呼び出しを渡す",
+        "body": "失敗例では 13 行目から `$` を外して `println buildMessage \"Seseragi\"` と書いています。この書き方では `println` に `buildMessage` と `\"Seseragi\"` の 2 つの引数を渡そうとしてしまい、引数の数のエラーになります。"
       },
       "recap": [
-        "小数点なしの数値はInt literalになる。",
-        "IntはStringとは異なる型だがtemplateで表示できる。"
+        "`|>` は左側の値を右側の関数へ流し、行を分けてデータの変換を上から順に書けます。",
+        "変換対象の `value` を最後の引数にした関数は、`wrap \"**\"` のような部分適用で `|>` に組み込めます。",
+        "`$` を使うと括弧を書かずに右側の計算結果全体を左側の関数へ渡せます。"
       ],
       "next": {
-        "lessonId": "float-literal",
-        "body": "次は小数点を持つFloat literalとIntの表記を比較します。"
-      }
+        "lessonId": "tuple-and-record",
+        "body": "関数とパイプラインの基礎が揃いました。次は複数の値を 1 つにまとめるタプルとレコードを学びます。"
+      },
+      "notes": [
+        "パイプラインが長いときや `Format` を実行したときは、ここで見たように `|>` ごとに改行して整列したレイアウトへ整形されます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson4Exercise,
     exerciseExpectedOutput: (lesson4ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1306,50 +1145,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson4DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "float-literal",
+    id: "tuple-and-record",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/float-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/tuple-and-record/main.ssrg",
     source: lesson5Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson5Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "小数点のないInt literalを作り、templateで表示できました。",
+      "prerequisite": "小さな関数を組み立てて値を受け渡せるようになりました。ここからは複数の値をひとまとめに扱うデータの形を学びます。",
       "walkthrough": [
         {
-          "heading": "小数点を持つ数値を書く",
-          "body": "`2.5`はFloat literalです。小数点があることで`2`というIntとは別の型になります。",
+          "heading": "固定長のタプルを作って分解する",
+          "body": "1行目の `(String, Int)` は `String` と `Int` を順に並べる固定長のタプル型です。2行目の `let (city, stops) = pair` で位置ごとの要素を変数に取り出します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "無名レコードの作成とスプレッド更新",
+          "body": "4行目の `{ city: city, stops: stops, line: \"Rapid\" }` は名前なしの無名レコードです。5行目の `{ ...route, stops: 3 }` は元の `route` を変えずに `stops` だけを更新した新しいレコードを作ります。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 6
+          }
+        },
+        {
+          "heading": "フィールド参照と構造による互換性",
+          "body": "`.city` や `.stops` のようにドットでフィールドを取り出せます。`summarize` が要求するのは `{ city: String, stops: Int }` だけなので、余分な `line` がある `route` も、ちょうど2つのフィールドだけを持つ `express` も同じ関数に渡せます。",
+          "sourceRange": {
+            "startLine": 8,
+            "endLine": 12
           }
         }
       ],
       "introduced": [
         {
           "kind": "type",
-          "name": "Float",
-          "body": "小数を含むbinary64の数値型です。表示ではFloatだと分かる小数表記を保ちます。"
+          "name": "タプルと無名レコード",
+          "body": "`(A, B)` は位置で要素をまとめる固定長タプル、`{ field: value }` は名前付きフィールドで値をまとめる無名レコードです。"
+        },
+        {
+          "kind": "syntax",
+          "name": "タプル分解とスプレッド更新",
+          "body": "`let (a, b) = pair` でタプルを位置ごとに分解でき、`{ ...record, field: newValue }` で元の値を変えずに一部を更新したレコードを作れます。"
         }
       ],
       "exercise": {
-        "instruction": "Float literalを`3.25`へ変更し、Outputの小数表記を確認してください。",
+        "instruction": "エディターの1行目にある `(\"Osaka\", 2)` を `(\"Kobe\", 4)` に、5行目の `stops: 3` を `stops: 5` に書き換えて `Run` し、`Output` の1行目と2行目が `Rapid: Kobe (4)` と `Updated: Kobe (5)` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Float annotationへStringを入れる",
-        "body": "FloatとStringは別の型です。Floatを期待するbindingへStringを置いたときの型差分を先取りして読みます。"
+        "heading": "必要なフィールドが足りないレコードを渡す",
+        "body": "無名レコードは必要なフィールドがすべて揃っていれば互換しますが、`stops` を欠いた `{ city: \"Kyoto\" }` を `summarize` に渡すと実行前の診断で不足しているフィールドが示されます。"
       },
       "recap": [
-        "小数点を持つ数値はFloat literalになる。",
-        "FloatとIntは異なる型である。"
+        "固定長のタプルは位置で値をまとめ、`let (a, b) = ...` で各要素を取り出せる。",
+        "無名レコードは `{ ... }` で作り、`.field` で参照し、`{ ...record, field: newValue }` で元の値を保ったまま更新できる。",
+        "関数が要求するフィールドをすべて持っていれば、余分なフィールドの有無にかかわらず同じ関数に渡せる。"
       ],
       "next": {
-        "lessonId": "bool-literal",
-        "body": "次は数値ではなく、二つの状態だけを持つBool valueへ進みます。"
-      }
+        "lessonId": "06-records-and-structs",
+        "body": "次は型に固有の名前を付けて形で混同されないようにする `struct` を学びます。"
+      },
+      "notes": [
+        "スプレッド更新で新しいレコードを作っても元の `route` は書き換わらず、`Output` には変更前の値がそのまま残ります。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson5Exercise,
     exerciseExpectedOutput: (lesson5ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1357,50 +1221,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson5DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "bool-literal",
+    id: "06-records-and-structs",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/bool-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/06-records-and-structs/main.ssrg",
     source: lesson6Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson6Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "IntとFloatという二種類の数値型をliteralの表記から区別できました。",
+      "prerequisite": "無名レコードを組み立て、必要なフィールドが揃えば同じ関数に渡せることを確認しました。ここでは型名で区別される名前付きデータ `struct` を学びます。",
       "walkthrough": [
         {
-          "heading": "二つのBool valueから選ぶ",
-          "body": "`True`と`False`はBoolの二つのconstructorです。このsourceでは`True`をtemplateへ埋め込みます。",
+          "heading": "名前付きの型 struct を宣言する",
+          "body": "`struct Customer` と `struct Staff` は同じ `name` と `plan` フィールドを持ちますが、型名が異なる別の型として扱われます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 3
+          }
+        },
+        {
+          "heading": "特定の struct 型だけを受け取る関数",
+          "body": "`formatCustomer` は `Customer` 型を引数に取ります。無名レコードと違い、フィールドの形が同じでも `Staff` 型の値は受け取りません。フィールドの読み取りは同じく `.name` のように書きます。",
+          "sourceRange": {
+            "startLine": 5,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "型名を明示して値を組み立てる",
+          "body": "`Customer { ... }` のように宣言した型名を先頭に書いて値を作ります。宣言にあるすべてのフィールドが揃っていなければ作成できません。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 8
           }
         }
       ],
       "introduced": [
         {
           "kind": "type",
-          "name": "Bool",
-          "body": "`True`または`False`の二つのvalueだけを持ちます。先頭は大文字です。"
+          "name": "struct による名前付きデータ",
+          "body": "`struct` は型名によって区別されるデータ型です。フィールド構成が同じでも異なる型名同士は互換しません。"
+        },
+        {
+          "kind": "syntax",
+          "name": "struct の宣言と生成",
+          "body": "`struct Name { field: Type }` で型を定義し、`Name { field: value }` で値を組み立てます。参照は `.field` を使います。"
         }
       ],
       "exercise": {
-        "instruction": "`True`を`False`へ変更し、二つ目のBool valueを表示してください。",
+        "instruction": "エディターの7行目にある `name: \"Mio\", plan: \"Pro\"` を `name: \"Ren\", plan: \"Team\"` に書き換えて `Run` し、`Output` の1行目が `Customer -> Ren: Team` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "小文字のtrueを書く",
-        "body": "SeseragiのBool constructorは`True`と`False`です。小文字名が未定義だと分かるdiagnosticを読みます。"
+        "heading": "フィールドが同じでも別の struct 型は渡せない",
+        "body": "失敗例では同じ `name` と `plan` を持つ `Staff` 型の `staff` を `formatCustomer` に渡しています。無名レコードなら形で通りますが、`struct` では型名の違いをコンパイラが実行前に防ぎます。"
       },
       "recap": [
-        "Boolには`True`と`False`がある。",
-        "constructor名は大文字で始まる。"
+        "同じフィールド構成でも別のデータとして区別したいときは `struct` を使い、形で柔軟に受けたいときは無名レコードを使う。",
+        "`struct` の値を作るときは型名を明示し、宣言されたフィールドをすべて指定する。",
+        "フィールドへのアクセスはどちらも `.field` で同じように書ける。"
       ],
       "next": {
-        "lessonId": "unit-literal",
-        "body": "次は二つではなく、一つだけのvalueを持つUnitを読みます。"
-      }
+        "lessonId": "adt-definition",
+        "body": "次はすべてのフィールドを同時に持つのではなく、いくつかの状態のうちどれか1つになるデータを表す代数的データ型（ADT）を学びます。"
+      },
+      "notes": [
+        "`struct` の構築時に必須フィールドを1つでも書き忘れた場合も、コンパイラが実行前に不足フィールドのエラー表示を出してくれます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson6Exercise,
     exerciseExpectedOutput: (lesson6ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1408,49 +1297,71 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson6DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "unit-literal",
+    id: "adt-definition",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/unit-literal/main.ssrg",
+    sourcePath: "examples/tour/lessons/adt-definition/main.ssrg",
     source: lesson7Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson7Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Boolが`True`と`False`の二つのvalueを持つことを確認しました。",
+      "prerequisite": "タプル、無名レコード、`struct` で複数の値を同時に持つデータを表現できるようになりました。ここからは取りうるケースを列挙する代数的データ型（ADT）を学びます。",
       "walkthrough": [
         {
-          "heading": "情報を持たないvalueを書く",
-          "body": "`()`はUnit型の唯一のvalueです。返す情報がないことを型として表したい場所で使います。",
+          "heading": "type で取りうるケースを列挙する",
+          "body": "`type Delivery` は配送の状態を `|` で区切って列挙します。`Preparing` は値を持たないコンストラクター、`Shipped String` は配送先、`Delivered (String, Int)` は配送先と経由数のタプルを中身の値として持つコンストラクターです。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 4
+          }
+        },
+        {
+          "heading": "コンストラクターで値を作る",
+          "body": "定義したコンストラクター名をそのまま書いて `Delivery` 型の値を作ります。`Shipped \"Osaka\"` や `Delivered (\"Kyoto\", 2)` のように、コンストラクターごとに必要な型の値を渡します。",
+          "sourceRange": {
+            "startLine": 6,
+            "endLine": 8
+          }
+        },
+        {
+          "heading": "deriving Show で文字列に変換して確かめる",
+          "body": "型定義に付けた `deriving Show` により `show` 関数が自動生成されます。`println (show ...)` で各コンストラクターがどのような値として作られているかを `Output` で確認できます。",
+          "sourceRange": {
+            "startLine": 10,
+            "endLine": 14
           }
         }
       ],
       "introduced": [
         {
           "kind": "type",
-          "name": "Unit",
-          "body": "唯一のvalue`()`を持つ型です。表示もsourceと同じ`()`になります。"
+          "name": "type による代数的データ型（ADT）",
+          "body": "`type` と `|` を使って、値がいずれか1つのコンストラクターになる型を定義します。コンストラクターごとに中身の値を持たせることもできます。"
+        },
+        {
+          "kind": "api",
+          "name": "deriving Show と show",
+          "body": "型宣言に `deriving Show` を添えると、値を `show` で表示用文字列に変換できるようになります。"
         }
       ],
       "exercise": {
-        "instruction": "固定textを`Unit value`へ変更し、埋め込んだ`()`はそのままでRunしてください。",
+        "instruction": "エディターの7行目にある `Shipped \"Osaka\"` を `Shipped \"Kobe\"` に書き換えて `Run` し、`Output` の2行目が `Shipped Kobe` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "UnitへIntを入れる",
-        "body": "UnitとIntは別の型です。Unitを期待するbindingへ`42`を置いたときの型差分を先取りして読みます。"
+        "heading": "コンストラクターの中身の型を取り違える",
+        "body": "失敗例では `String` を保持するはずの `Shipped` に `Int` の `2` を渡しています。コンストラクター定義で宣言した型と実際に渡す値の型を確認してください。"
       },
       "recap": [
-        "Unitのvalueは`()`一つだけである。",
-        "Unitは情報を返さないことを型で表せる。"
+        "`type` と `|` で、値がいずれか1つになるケースをコンストラクターとして列挙できる。",
+        "`Shipped String` のようにコンストラクターごとに異なる型の中身の値を持たせられる。",
+        "`deriving Show` を付けると `show` でコンストラクターの表現を `Output` に出力できる。"
       ],
       "next": {
-        "lessonId": "02-values-and-bindings",
-        "body": "次は作ったvalueへ`let`で名前を付け、同じvalueを参照します。"
+        "lessonId": "07-adts-and-patterns",
+        "body": "次は定義した代数的データ型を `match` でケースごとに分け、中身の値を取り出す方法を学びます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson7Exercise,
@@ -1459,59 +1370,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson7DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "02-values-and-bindings",
+    id: "07-adts-and-patterns",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/02-values-and-bindings/main.ssrg",
+    sourcePath: "examples/tour/lessons/07-adts-and-patterns/main.ssrg",
     source: lesson8Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson8Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "String、Int、Float、Bool、Unitのliteralを一つずつ作りました。ここではString valueだけへ名前を付けます。",
+      "prerequisite": "`type` を使って複数のケースと中身の値を持つ代数的データ型を定義できるようになりました。ここでは `match` で中身を取り出して分岐します。",
       "walkthrough": [
         {
-          "heading": "Top-level valueへ名前を付ける",
-          "body": "`let language = \"Seseragi\"`はString valueを`language`へ結び付けます。programのどこからでも同じ名前で参照できます。",
+          "heading": "match でコンストラクターごとに分岐する",
+          "body": "`match delivery { ... }` は受け取った `Delivery` がどのコンストラクターかを見分け、一致した行の式を評価します。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 6,
+            "endLine": 10
           }
         },
         {
-          "heading": "名前でvalueを参照する",
-          "body": "`println language`はliteralを書き直さず、`language`が指すString valueを渡します。",
+          "heading": "パターン束縛で中身の値を取り出して使う",
+          "body": "`Shipped city` と書くと、`Shipped \"Osaka\"` に含まれる文字列が `city` に束縛されます。右辺の `` `Shipped to ${city}` `` のように、取り出した変数は必ず処理の中で使います。",
           "sourceRange": {
-            "startLine": 3,
-            "endLine": 3
+            "startLine": 8,
+            "endLine": 8
+          }
+        },
+        {
+          "heading": "入れ子の分解とワイルドカード",
+          "body": "`Delivered (city, _)` のようにタプルを入れ子で同時に分解できます。右側の経由数が不要なときは変数名を付けず、ワイルドカード `_` を書いて使わないことを明示します。",
+          "sourceRange": {
+            "startLine": 9,
+            "endLine": 9
           }
         }
       ],
       "introduced": [
         {
           "kind": "syntax",
-          "name": "top-level let",
-          "body": "`let name = value`でimmutableなtop-level bindingを作ります。同じbindingへ別の値を再代入しません。"
+          "name": "match によるパターン分解",
+          "body": "`match` はコンストラクターの種類に応じて処理を分岐し、同時に中身の値へ名前を付けて取り出します。"
+        },
+        {
+          "kind": "syntax",
+          "name": "ワイルドカード _",
+          "body": "パターンの位置に `_` を書くと、どんな値にも一致させつつ変数束縛を作らずに無視する意図を明確に示せます。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceの`language`へ結び付けるStringだけを`Tour`へ変更し、参照側を変えずにRunしてください。",
+        "instruction": "エディターの9行目にある `Delivered (city, _)` を `Delivered (city, stops)` に、同じ行の右辺を `` `Delivered to ${city} in ${stops} stops` `` に書き換えて `Run` し、`Output` の3行目が `Delivered to Kyoto in 2 stops` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "同じ名前を二度宣言する",
-        "body": "同じscopeに同名のtop-level bindingを二つ置くと、どちらを参照するか曖昧になるためcompilerが拒否します。"
+        "heading": "分岐ごとに異なる型を返してしまう",
+        "body": "失敗例では `Delivered (_, stops)` の結果として `Int` 型の `stops` をそのまま返しています。`match` のすべての分岐は関数が宣言した戻り型（ここでは `String`）と揃える必要があります。"
       },
       "recap": [
-        "`let`でvalueへ名前を付けられる。",
-        "bindingはimmutableで、参照側は名前を使う。",
-        "top-level bindingはmodule全体から参照できる。"
+        "`match` でコンストラクターを判別し、中身の値を変数に束縛して利用できる。",
+        "パターンで束縛した変数は右辺で必ず使い、不要な位置には `_` を書く。",
+        "タプルなどを入れ子にしたパターンでも一度に値を取り出せる。"
       ],
       "next": {
-        "lessonId": "local-let",
-        "body": "次は、blockの外へ漏らさない一時的な名前をlocal `let`で作ります。"
-      }
+        "lessonId": "exhaustive-match",
+        "body": "次は `match` がすべてのケースを漏れなく扱っているかをコンパイラが実行前に確かめる仕組みを見ます。"
+      },
+      "notes": [
+        "すべての分岐は同じ型の値を返す必要があります。どれか1つの分岐だけ別の型を返すと実行前にエラー表示が出ます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson8Exercise,
     exerciseExpectedOutput: (lesson8ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1519,50 +1446,62 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson8DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "local-let",
+    id: "exhaustive-match",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/local-let/main.ssrg",
+    sourcePath: "examples/tour/lessons/exhaustive-match/main.ssrg",
     source: lesson9Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson9Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "top-level `let`でmodule全体から参照できる名前を作りました。",
+      "prerequisite": "`match` を使って複数のコンストラクターに分岐できるようになりました。ここでは書き漏らしを防ぐ網羅性チェックを確認します。",
       "walkthrough": [
         {
-          "heading": "Blockの内側だけで名前を使う",
-          "body": "波括弧のpure blockではlocal `let`を順に置けます。`adjective`はblockの最後のtemplateから参照され、blockの外には出ません。",
+          "heading": "取りうるケースをすべて並べる",
+          "body": "`Choice` には `One`、`Two`、`Three` の3つのコンストラクターがあります。`choose` の `match` はその3つすべてを並べているため、どの `Choice` が渡されても必ず `Int` の結果が決まります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 1
+            "endLine": 10
+          }
+        },
+        {
+          "heading": "新しいケースを増やしても漏れに気付ける",
+          "body": "あとから `Choice` に新しいコンストラクターを追加したときも、対応し忘れた `match` をコンパイラがすべて検出してくれるため、実行時の取りこぼしを心配せずに変更できます。",
+          "sourceRange": {
+            "startLine": 12,
+            "endLine": 15
           }
         }
       ],
       "introduced": [
         {
-          "kind": "syntax",
-          "name": "pure blockとlocal let",
-          "body": "`{ let name = value; result }`は中間valueをlocal scopeへ置き、最後のexpressionをblockの結果にします。"
+          "kind": "type",
+          "name": "網羅性チェック",
+          "body": "`match` が対象となる型のすべてのコンストラクターを扱っているかをコンパイラが実行前に検証する仕組みです。"
         }
       ],
       "exercise": {
-        "instruction": "local bindingのStringを`small`へ変更し、blockの最終結果だけが変わることを確認してください。",
+        "instruction": "エディターの14行目にある `choose Two` を `choose Three` に書き換えて `Run` し、`Output` の2行目が `3` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Local nameをblock外から参照する",
-        "body": "local bindingは宣言されたblock内だけで有効です。外側のbindingから参照したときのunknown name diagnosticを読みます。"
+        "heading": "ケースを1つ書き忘れる",
+        "body": "失敗例では `One` と `Two` だけを書き、`Three` の分岐を省略しています。`match` が全ケースを網羅していないため実行前にエラーとなり、不足している `Three` が示されます。"
       },
       "recap": [
-        "local `let`はblock内だけで参照できる。",
-        "pure blockの最後のexpressionがblock全体のvalueになる。"
+        "`match` は対象型のすべてのコンストラクターを網羅して書く。",
+        "ケースを1つでも書き忘れると、実行前にコンパイラが未処理のコンストラクターを教えてくれる。",
+        "型に新しいケースを追加しても、漏れのある箇所をエラー表示からすぐに見つけられる。"
       ],
       "next": {
-        "lessonId": "type-annotations",
-        "body": "次はbindingへ期待する型を明記し、compilerと約束を作ります。"
-      }
+        "lessonId": "08-collections-and-ranges",
+        "body": "データ型とパターン分岐の基礎はここまでです。次は複数の値を並べて扱うコレクションへ進みます。"
+      },
+      "notes": [
+        "コードから `Three -> 3` の行を消してみると、エディターの波線と出力側の `Problems` タブに未処理のパターン（`missing patterns: Three`）と修正のヒント（`Help`）が表示されます。確認後は `Reset` で元のコードに戻せます。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson9Exercise,
     exerciseExpectedOutput: (lesson9ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1570,50 +1509,75 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson9DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "type-annotations",
+    id: "08-collections-and-ranges",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/type-annotations/main.ssrg",
+    sourcePath: "examples/tour/lessons/08-collections-and-ranges/main.ssrg",
     source: lesson10Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson10Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "top-levelとlocalの`let`でvalueへ名前を付けられます。Int literalも既に作りました。",
+      "prerequisite": "ADT とパターンマッチで値の種類を判別できるようになりました。ここからは同じ型の値を複数まとめて扱います。",
       "walkthrough": [
         {
-          "heading": "Bindingの期待型を明記する",
-          "body": "`answer: Int = 42`ではcolonの後ろが型注釈です。右辺がIntであることをcompilerが照合します。",
+          "heading": "Array と Range を作る",
+          "body": "`[10, 20, 30]` は同じ型の要素を順に並べる `Array` リテラル、`1 ..= 5` は開始と終端を含む整数範囲 `Range` です。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 3,
+            "endLine": 4
+          }
+        },
+        {
+          "heading": "境界チェック付きで要素を取り出す",
+          "body": "`arrays.length scores` で要素数を調べ、`arrays.get 1 scores` で先頭から 2 番目の要素を取り出します。存在する位置なら `Just 20`、範囲外の `3` なら `Nothing` の `Maybe` 値が返ります。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 9
+          }
+        },
+        {
+          "heading": "Range をそのまま集計に渡す",
+          "body": "`Range` はすべての要素を配列へ展開しなくても、`sum numbers` のような集計関数へそのまま渡せます。",
+          "sourceRange": {
+            "startLine": 10,
+            "endLine": 10
           }
         }
       ],
       "introduced": [
         {
-          "kind": "syntax",
-          "name": "type annotation",
-          "body": "`name: Type = value`でbindingが受け入れる型を明示します。型は値ではなくcompile時の契約です。"
+          "kind": "type",
+          "name": "Array と Range",
+          "body": "`Array<A>` は同じ型の要素を順序付きで持つ配列、`Range<Int>` は開始と終端で整数の範囲を表す型です。"
+        },
+        {
+          "kind": "api",
+          "name": "arrays.get と Maybe",
+          "body": "`arrays.get index array` は境界チェック付きの添字アクセスを行い、範囲内なら `Just 値`、範囲外なら `Nothing` を返します。"
         }
       ],
       "exercise": {
-        "instruction": "Int型注釈を残したまま右辺を`7`へ変更し、契約を満たす別のIntとしてRunしてください。",
+        "instruction": "エディターの `scores` の値 `[10, 20, 30]` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の長さと `arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "Int annotationへStringを入れる",
-        "body": "宣言したIntと右辺のStringが一致しないため、compilerがexpectedとactualを分けて表示します。"
+        "heading": "配列に異なる型の値を混ぜる",
+        "body": "失敗例では `Array<Int>` に `String` の `\"twenty\"` を混ぜています。`Array` のすべての要素は同じ型に揃える必要があります。"
       },
       "recap": [
-        "colonの後ろへbindingの型注釈を書く。",
-        "annotationと右辺の型が違うとcompile時に分かる。"
+        "`Array` リテラルは `[10, 20, 30]` のように書き、すべての要素を同じ型に揃える。",
+        "`arrays.get` による添字アクセスは 0 から数え、結果は `Just` または `Nothing` の `Maybe` になる。",
+        "`1 ..= 5` は終端を含む `Range` を作り、そのまま `sum` などの集計に渡せる。"
       ],
       "next": {
-        "lessonId": "type-inference",
-        "body": "次は同じbindingからannotationを外し、compilerが右辺から型を決める様子を見ます。"
-      }
+        "lessonId": "collection-pipeline",
+        "body": "次は `map`・`filter`・`reduce` をパイプラインでつないで配列を集計します。"
+      },
+      "notes": [
+        "`1 .. 5` のように `=` を省くと、終端の `5` を含まない `Range`（`1` から `4` まで）になります。"
+      ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson10Exercise,
     exerciseExpectedOutput: (lesson10ExerciseOutput).replace(/\r?\n$/u, ""),
@@ -1621,49 +1585,71 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson10DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "type-inference",
+    id: "collection-pipeline",
     challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/type-inference/main.ssrg",
+    sourcePath: "examples/tour/lessons/collection-pipeline/main.ssrg",
     source: lesson11Source,
     guide: "",
     stdin: "",
     expectedOutput: (lesson11Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "`answer: Int = 42`でbindingの期待型を明示し、不一致のdiagnosticを読みました。",
+      "prerequisite": "`Array` と `Range` の作り方や、`arrays.get` による安全な要素の取り出し方を学びました。ここでは複数の処理をパイプラインでつないで集計します。",
       "walkthrough": [
         {
-          "heading": "右辺からIntを推論する",
-          "body": "`answer = 42`には型注釈がありません。それでもInt literalの型から`answer`もIntだとcompilerが決めます。",
+          "heading": "絞り込み、変換、集計をパイプラインでつなぐ",
+          "body": "`values` は `|>` に沿って上から順に流れます。`arrays.filter even` で偶数だけを残し、`map double` でそれぞれ 2 倍にして、`reduce 0 (+)` で合計します。",
           "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
+            "startLine": 6,
+            "endLine": 10
+          }
+        },
+        {
+          "heading": "処理関数を先に渡し、配列を最後に流す",
+          "body": "`arrays.filter`・`map`・`reduce` は判定や変換の関数を先に受け取り、対象の配列を最後の引数で受け取るため、部分適用のまま `|>` に並べられます。",
+          "sourceRange": {
+            "startLine": 8,
+            "endLine": 10
+          }
+        },
+        {
+          "heading": "演算子表記でも各要素を変換できる",
+          "body": "`double <$> numbers` は `map double numbers` と同じ要素変換です。演算子の左に関数、右に配列を置いて書けます。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 13
           }
         }
       ],
       "introduced": [
         {
-          "kind": "type",
-          "name": "type inference",
-          "body": "明示された型がない場所で、expressionと利用箇所からcompilerが型を決めます。runtimeで推測する動作ではありません。"
+          "kind": "api",
+          "name": "filter、map、reduce の連携",
+          "body": "配列を最後の引数に取る関数へ条件や変換の関数を先に渡し、`|>` で絞り込み・変換・集計を順に組み合わせます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "演算子 <$>",
+          "body": "`f <$> values` は `map f values` と同じ意味の演算子表記で、配列の各要素に関数 `f` を適用します。"
         }
       ],
       "exercise": {
-        "instruction": "annotationのない右辺を`100`へ変え、引き続きIntとして表示できることを確認してください。",
+        "instruction": "エディターの `numbers` を `[1, 2, 3, 4]` に、`reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
-        "heading": "推論されたStringをIntとして加算する",
-        "body": "annotationがなくても`\"40\"`はStringだと決まります。Intとの加算に使うと型の不一致を検出できます。"
+        "heading": "パイプラインの途中で要素の型が合わない",
+        "body": "失敗例では `map label` で要素を `String` に変えた後で、`Int -> Bool` を受け取る `arrays.filter even` をつないでいます。各段が返す型と次の段が受け取る型を揃えてください。"
       },
       "recap": [
-        "annotationがなくてもliteralからbindingの型を推論できる。",
-        "推論はcompile時に行われ、その後も型の不一致を検出する。"
+        "配列を最後の引数に取る `arrays.filter`・`map`・`reduce` は、`|>` で縦に並べて自然につなげる。",
+        "`f <$> values` は `map f values` と同じ要素変換を表す演算子表記である。",
+        "パイプラインの各段が出力する型と、次の段が受け取る型を一致させる必要がある。"
       ],
       "next": {
-        "lessonId": "primitive-arithmetic",
-        "body": "次は二つのIntへ`+`を使い、新しいInt valueを作ります。"
+        "lessonId": "maybe-role",
+        "body": "配列の作成と集計の流れが身につきました。次は `arrays.get` でも現れた「値があるかないか」を表す `Maybe` 型を詳しく学びます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson11Exercise,
@@ -1672,2431 +1658,14 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson11DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "primitive-arithmetic",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/primitive-arithmetic/main.ssrg",
-    source: lesson12Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson12Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Int literalと`let`を使い、annotationなしでもInt型を推論できました。",
-      "walkthrough": [
-        {
-          "heading": "二つのIntを加算する",
-          "body": "`20 + 22`は左と右のIntを受け取り、新しいInt value `42`を作ります。元のliteralは変化しません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "primitive arithmetic",
-          "body": "数値の`+`、`-`、`*`、`/`は同じ数値型のvalueを計算します。このlessonではInt加算だけを扱います。"
-        }
-      ],
-      "exercise": {
-        "instruction": "右側のIntを`2`から`3`へ変更し、合計が`43`になることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "IntとStringを加算する",
-        "body": "primitive加算の左右は同じ数値型が必要です。Stringを渡した位置と型差分を読みます。"
-      },
-      "recap": [
-        "`+`は二つのIntから新しいIntを作る。",
-        "左右のvalueには演算が要求する型がある。"
-      ],
-      "next": {
-        "lessonId": "primitive-comparison",
-        "body": "次はIntを計算する代わりに大小を比較し、Bool resultを作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson12Exercise,
-    exerciseExpectedOutput: (lesson12ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson12Diagnostic,
-    diagnosticOutput: (lesson12DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "primitive-comparison",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/primitive-comparison/main.ssrg",
-    source: lesson13Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson13Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "二つのIntを`+`で計算し、Int resultを作りました。Boolの二つのvalueも既知です。",
-      "walkthrough": [
-        {
-          "heading": "大小からBoolを作る",
-          "body": "`42 > 40`は二つのIntを比較します。resultは数値ではなく、条件が成立したことを示すBoolの`True`です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "comparison",
-          "body": "`<`、`<=`、`>`、`>=`は大小を比較し、Bool valueを返します。このlessonでは同じInt型の二つのvalueを`>`で比較します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "右辺を`50`へ変え、同じ比較が`False`になることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "IntとStringを比較する",
-        "body": "この比較では左辺のIntと右辺のStringが一致していません。右辺を指すdiagnosticを読み、左右を同じInt型へ揃えます。"
-      },
-      "recap": [
-        "大小比較はBool resultを返す。",
-        "比較する左右のvalueにも型の契約がある。"
-      ],
-      "next": {
-        "lessonId": "comments-and-tools",
-        "body": "次はここまでのsourceを安全に試すため、comment、Format、Reset、diagnosticの操作をまとめます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson13Exercise,
-    exerciseExpectedOutput: (lesson13ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson13Diagnostic,
-    diagnosticOutput: (lesson13DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "comments-and-tools",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/comments-and-tools/main.ssrg",
-    source: lesson14Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson14Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "literal、binding、型注釈、型推論、Int加算、比較までを一箇所ずつ変更してきました。",
-      "walkthrough": [
-        {
-          "heading": "Commentをprogramから除外する",
-          "body": "`//`から行末まではcommentです。人へ意図を残せますが、valueや実行結果にはなりません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        },
-        {
-          "heading": "変更・整形・復元を使い分ける",
-          "body": "Formatは意味を変えず整形し、Resetはlessonのcanonical sourceへ戻します。失敗例ではdiagnosticからsource位置と型差分を読みます。",
-          "sourceRange": {
-            "startLine": 2,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "line comment",
-          "body": "`//`から行末までをcompilerがprogramとして評価しないtextにします。"
-        },
-        {
-          "kind": "api",
-          "name": "Format",
-          "body": "現在のsourceをSeseragi formatterで整形します。programの意味は変えません。"
-        },
-        {
-          "kind": "api",
-          "name": "Reset",
-          "body": "編集・課題・失敗例から、現在lessonのcanonical sourceへ戻します。"
-        },
-        {
-          "kind": "api",
-          "name": "compiler diagnostic",
-          "body": "compileできない理由をsource位置、expected type、actual typeなどの構造で示します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceを開き、FormatしてからRunしてください。その後Resetでcanonical sourceへ戻ることも確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "String annotationへIntを入れる",
-        "body": "失敗例を開いてRunし、source位置とexpected String、actual Intを確認してからResetしてください。"
-      },
-      "recap": [
-        "`//`で実行されない説明を残せる。",
-        "Formatは整形、Resetはcanonical sourceへの復元を行う。",
-        "diagnosticから失敗位置と型差分を読める。"
-      ],
-      "next": {
-        "lessonId": "03-function-definitions",
-        "body": "基礎のvalueと型を読めるようになりました。次は処理へ名前とparameterを与えるfunction定義へ進みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson14Exercise,
-    exerciseExpectedOutput: (lesson14ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson14Diagnostic,
-    diagnosticOutput: (lesson14DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "03-function-definitions",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/03-function-definitions/main.ssrg",
-    source: lesson15Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson15Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "値、型注釈、型推論、primitive演算、Playgroundの基本操作までを学びました。",
-      "walkthrough": [
-        {
-          "heading": "fnでpure functionへ名前を付ける",
-          "body": "`fn greeting`は計算へ名前を付けます。parameterを書かない関数は、呼ぶときにUnit valueを一つ受け取る関数として扱われます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        },
-        {
-          "heading": "このlessonでは定義だけに集中する",
-          "body": "mainは関数の型を文字列として表示します。関数へ値を渡すsyntaxは後続lessonで一段ずつ学びます。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "fn",
-          "body": "`fn`は副作用を持たないpure functionを定義します。"
-        },
-        {
-          "kind": "type",
-          "name": "pure function",
-          "body": "pure functionは同じ引数から同じ結果を作り、ConsoleなどのEffectを直接実行しません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで`greeting`が返すStringを変え、定義が引き続きcompileできることを確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "宣言したString以外を返す",
-        "body": "失敗例では`greeting`の本文をIntにしています。関数定義の戻り型と本文の型差分を確認してください。"
-      },
-      "recap": [
-        "`fn`でpure functionを定義できる。",
-        "parameterなしの関数はUnitを受け取る関数として扱われる。",
-        "この段階では関数の呼び方をまだ導入していない。"
-      ],
-      "next": {
-        "lessonId": "one-parameter-function",
-        "body": "次は関数名の後ろへ一つのparameterを追加します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson15Exercise,
-    exerciseExpectedOutput: (lesson15ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson15Diagnostic,
-    diagnosticOutput: (lesson15DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "one-parameter-function",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/one-parameter-function/main.ssrg",
-    source: lesson16Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson16Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "`fn`でparameterなしのpure functionを定義できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "関数名の後ろへparameterを書く",
-          "body": "`name: String`は、この関数がString valueを一つ受け取ることを示します。`name`は関数本文の中で使える名前です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        },
-        {
-          "heading": "受け取った値を本文で使う",
-          "body": "templateの`${name}`はparameterへ渡されたStringを埋め込みます。このlessonでは定義だけを行い、適用は後で扱います。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "parameter",
-          "body": "関数名の後ろに`name: Type`を書くと、その型の値を受け取るparameterになります。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでparameter名とtemplate内の参照を一緒に変え、compileできることを確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "StringへIntを加算する",
-        "body": "失敗例ではString parameterへIntを加えています。operatorが要求する型とparameterの型を確認してください。"
-      },
-      "recap": [
-        "`name: String`で一つのString parameterを宣言できる。",
-        "parameter名は関数本文でvalueとして参照できる。",
-        "parameterの型が本文の演算にも使われる。"
-      ],
-      "next": {
-        "lessonId": "function-return-type",
-        "body": "次は矢印の右側にある関数全体の戻り型を読み分けます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson16Exercise,
-    exerciseExpectedOutput: (lesson16ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson16Diagnostic,
-    diagnosticOutput: (lesson16DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "function-return-type",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/function-return-type/main.ssrg",
-    source: lesson17Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson17Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "一つのString parameterを持つ関数定義を読めるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "最後の矢印の右を戻り型として読む",
-          "body": "`label: String -> Int`ではStringがparameterの型、最後のIntが関数全体の戻り型です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        },
-        {
-          "heading": "本文の型を戻り型へ合わせる",
-          "body": "本文の`8`はIntなので、宣言した戻り型Intと一致します。parameterを使わない場合でも型の契約は変わりません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "return type",
-          "body": "関数signatureの最後にある型は、関数本文が返さなければならないvalueの型です。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのInt valueを別のIntへ変え、戻り型の契約を保ってcompileしてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Intを返す関数からStringを返す",
-        "body": "失敗例では宣言したIntと本文のStringが一致しません。expectedとactualの型を確認してください。"
-      },
-      "recap": [
-        "parameterの型はparameter名の直後に書く。",
-        "最後の矢印の右側が関数全体の戻り型になる。",
-        "関数本文の型は戻り型と一致する必要がある。"
-      ],
-      "next": {
-        "lessonId": "04-function-calls",
-        "body": "定義の読み方がそろいました。次は関数名と値を空白で並べて適用します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson17Exercise,
-    exerciseExpectedOutput: (lesson17ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson17Diagnostic,
-    diagnosticOutput: (lesson17DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "04-function-calls",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/04-function-calls/main.ssrg",
-    source: lesson18Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson18Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "一parameter関数の定義と、最後の矢印の右側にある戻り型を読めます。",
-      "walkthrough": [
-        {
-          "heading": "関数名と値を空白で並べる",
-          "body": "`greeting \"Mio\"`はgreeting関数へString valueを一つ渡します。Seseragiではこの空白がfunction applicationを表します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        },
-        {
-          "heading": "適用結果を通常のvalueとして使う",
-          "body": "関数の戻り型はStringなので、`message`もStringです。mainはそのvalueをprintlnへ渡します。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "function application",
-          "body": "関数の右へ空白を置いてvalueを書くと、そのvalueを一つの引数として関数へ渡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで`greeting`へ渡す名前を変え、Outputが対応して変わることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "String parameterへIntを渡す",
-        "body": "失敗例では`greeting 42`としています。関数が要求するparameter型と引数の型を確認してください。"
-      },
-      "recap": [
-        "関数名と引数を空白で並べるとfunction applicationになる。",
-        "一parameter関数へは一つのvalueを渡す。",
-        "適用結果は戻り型を持つ通常のvalueとして使える。"
-      ],
-      "next": {
-        "lessonId": "multiple-parameter-function",
-        "body": "次はparameterを増やし、値が左からどの順に対応するか確かめます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson18Exercise,
-    exerciseExpectedOutput: (lesson18ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson18Diagnostic,
-    diagnosticOutput: (lesson18DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "multiple-parameter-function",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/multiple-parameter-function/main.ssrg",
-    source: lesson19Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson19Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "空白で一parameter関数へ一つの値を渡せるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "parameterを矢印で続ける",
-          "body": "`surround`はleft、right、valueの三parameterを持ちます。各parameterはStringで、最後のStringが戻り型です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
-          }
-        },
-        {
-          "heading": "引数を左から対応させる",
-          "body": "`surround \"[\" \"]\" \"Seseragi\"`では三つの値がleft、right、valueへ左から順に渡されます。",
-          "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "multiple parameters",
-          "body": "`name: Type ->`を続けると複数parameterを宣言でき、適用する値は左から対応します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのleftとrightへ別のStringを渡し、Outputで引数の順序を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "二番目のString parameterへIntを渡す",
-        "body": "失敗例ではrightへIntを渡しています。二番目のparameter位置に対する型差分を確認してください。"
-      },
-      "recap": [
-        "複数parameterは矢印で左から右へ宣言する。",
-        "複数の引数も空白で左から順に渡す。",
-        "最後の矢印の右側だけが関数全体の戻り型になる。"
-      ],
-      "next": {
-        "lessonId": "function-value",
-        "body": "次は三つすべてを渡さず、途中で止めた適用結果を観察します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson19Exercise,
-    exerciseExpectedOutput: (lesson19ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson19Diagnostic,
-    diagnosticOutput: (lesson19DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "function-value",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/function-value/main.ssrg",
-    source: lesson20Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson20Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "三parameter関数へ三つのvalueを左から順に渡せます。",
-      "walkthrough": [
-        {
-          "heading": "二つだけ値を渡して止める",
-          "body": "`surround \"[\" \"]\"`はleftとrightだけを受け取り、valueをまだ待っている関数になります。その関数値へ`bracket`という名前を付けます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        },
-        {
-          "heading": "残りの一つを後から渡す",
-          "body": "`bracket \"Seseragi\"`で最後のvalueを渡すと、初めてString resultが作られます。",
-          "sourceRange": {
-            "startLine": 7,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "function value",
-          "body": "すべての引数を受け取る前の適用結果も、残りの引数を待つ型を持ったvalueです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで二つの引数を固定した`angle`関数値を実行し、残りの値だけを後から渡してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "関数値をStringとして注釈する",
-        "body": "失敗例では残りの引数を待つ`bracket`をStringと宣言しています。function typeとStringの差分を確認してください。"
-      },
-      "recap": [
-        "すべての引数を一度に渡す必要はない。",
-        "途中の適用結果は残りの引数を待つfunction valueになる。",
-        "function valueへ後から残りのvalueを渡せる。"
-      ],
-      "next": {
-        "lessonId": "currying-from-code",
-        "body": "次は同じ適用を一引数ずつ完全に分け、curryingという名前へ結び付けます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson20Exercise,
-    exerciseExpectedOutput: (lesson20ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson20Diagnostic,
-    diagnosticOutput: (lesson20DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "currying-from-code",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/currying-from-code/main.ssrg",
-    source: lesson21Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson21Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "途中まで適用した結果が、残りの引数を待つfunction valueになることをcodeで確認しました。",
-      "walkthrough": [
-        {
-          "heading": "一つ渡すたびに次の関数を得る",
-          "body": "`surround \"[\"`はrightとvalueを待つ関数、`withLeft \"]\"`はvalueだけを待つ関数になります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 8
-          }
-        },
-        {
-          "heading": "観察した現象をcurryingと呼ぶ",
-          "body": "複数parameterの関数を、一引数を受け取って次の関数を返す形として扱うことがcurryingです。最後の適用でStringになります。",
-          "sourceRange": {
-            "startLine": 8,
-            "endLine": 8
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "currying",
-          "body": "複数の引数を、一引数ごとに次のfunction valueを返す連続した適用として扱う仕組みです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの三段階を上から実行し、left、right、valueが一つずつ固定されることをOutputで確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "最後の引数を待つ関数をStringにする",
-        "body": "失敗例では`withSides`へ最後のvalueを渡さずString注釈を付けています。残っているfunction typeを確認してください。"
-      },
-      "recap": [
-        "一つの引数を渡すたびに残りを待つ関数が得られる。",
-        "この連続した一引数適用をcurryingと呼ぶ。",
-        "最後の引数を渡した時点で戻り値のStringになる。"
-      ],
-      "next": {
-        "lessonId": "partial-application",
-        "body": "次は途中のfunction valueを再利用し、partial applicationの用途を確かめます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson21Exercise,
-    exerciseExpectedOutput: (lesson21ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson21Diagnostic,
-    diagnosticOutput: (lesson21DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "partial-application",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/partial-application/main.ssrg",
-    source: lesson22Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson22Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "curryingによって一引数ずつfunction valueが得られることを確認しました。",
-      "walkthrough": [
-        {
-          "heading": "共通の引数を先に固定する",
-          "body": "`bracket`と`quote`はsurroundのleftとrightを先に固定し、valueだけを待つ専用関数です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        },
-        {
-          "heading": "専用関数を何度でも使う",
-          "body": "すべての引数を渡さず途中のfunction valueを利用することをpartial applicationと呼びます。mainでは残りの値だけを渡します。",
-          "sourceRange": {
-            "startLine": 7,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "partial application",
-          "body": "複数parameterの一部だけへ引数を渡し、残りを待つ専用function valueを作る使い方です。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでleftとrightを固定した二種類の専用関数を使い、Outputの囲み方を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "専用関数へ型の違う値を渡す",
-        "body": "失敗例ではStringを待つ`bracket`へIntを渡しています。固定済み引数ではなく残りのparameter型を確認してください。"
-      },
-      "recap": [
-        "共通の引数を先に固定した専用関数を作れる。",
-        "一部だけ適用する使い方をpartial applicationと呼ぶ。",
-        "専用関数も元の残りparameter型を守る。"
-      ],
-      "next": {
-        "lessonId": "application-grouping",
-        "body": "次は関数適用を入れ子にし、どちらを先に計算するか括弧で示します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson22Exercise,
-    exerciseExpectedOutput: (lesson22ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson22Diagnostic,
-    diagnosticOutput: (lesson22DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "application-grouping",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/application-grouping/main.ssrg",
-    source: lesson23Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson23Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "複数引数のcurryingとpartial applicationをcode上のfunction valueとして説明できます。",
-      "walkthrough": [
-        {
-          "heading": "内側の適用を括弧で囲む",
-          "body": "`(surround \"<\" \">\" \"Seseragi\")`を先に計算すると、`<Seseragi>`という一つのString valueになります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
-          }
-        },
-        {
-          "heading": "内側の結果を外側へ渡す",
-          "body": "内側で作ったStringを外側の`surround \"[\" \"]\"`へ渡します。括弧が適用順を明示しています。",
-          "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "application grouping",
-          "body": "括弧で囲んだ内側のfunction applicationを先に計算し、そのresultを外側へ渡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで内側と外側の囲みを入れ替え、Outputが適用順どおり変わることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "内側からIntを渡す",
-        "body": "失敗例では括弧内の加算結果IntをString parameterへ渡しています。内側resultの型を確認してください。"
-      },
-      "recap": [
-        "括弧内のfunction applicationが先に計算される。",
-        "内側のresultが外側の一引数になる。",
-        "括弧で複数の適用順を明示できる。"
-      ],
-      "next": {
-        "lessonId": "dollar-application",
-        "body": "次は同じ内外の適用順を、低優先順位の`$`で表します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson23Exercise,
-    exerciseExpectedOutput: (lesson23ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson23Diagnostic,
-    diagnosticOutput: (lesson23DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "dollar-application",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/dollar-application/main.ssrg",
-    source: lesson24Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson24Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "括弧で内側のfunction applicationを先に計算し、そのresultを外側へ渡せます。",
-      "walkthrough": [
-        {
-          "heading": "$の右側全体を先に計算する",
-          "body": "`$`は優先順位の低いfunction applicationです。右側の`surround \"<\" \">\" \"Seseragi\"`全体が一つのStringになります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 6
-          }
-        },
-        {
-          "heading": "右側resultを左の関数へ渡す",
-          "body": "右側の`<Seseragi>`を左側の`surround \"[\" \"]\"`へ渡します。直前lessonの括弧と同じ適用順です。",
-          "sourceRange": {
-            "startLine": 6,
-            "endLine": 6
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "$",
-          "body": "`function $ expression`は右側expression全体を一つのvalueとして左のfunctionへ渡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで`$`の左右にある囲みを入れ替え、括弧版と同じ適用順になることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "$の右側からIntを渡す",
-        "body": "失敗例ではStringを待つ左の関数へIntを渡します。`$`が右側全体を引数にすることを型差分から確認してください。"
-      },
-      "recap": [
-        "`$`は右側全体を一つの引数として扱う。",
-        "`$`の右側を先に計算してから左のfunctionへ渡す。",
-        "括弧の入れ子と同じ順序を短く書ける。"
-      ],
-      "next": {
-        "lessonId": "pipeline-application",
-        "body": "次はvalueを左に置き、右のfunctionへ流す`|>`を学びます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson24Exercise,
-    exerciseExpectedOutput: (lesson24ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson24Diagnostic,
-    diagnosticOutput: (lesson24DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "pipeline-application",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/pipeline-application/main.ssrg",
-    source: lesson25Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson25Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "`$`で右側expression全体を左のfunctionへ一つの引数として渡せます。",
-      "walkthrough": [
-        {
-          "heading": "valueから読み始める",
-          "body": "`|>`は左側の`\"Seseragi\"`を右側の`surround \"[\" \"]\"`へ最後の引数として渡します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        },
-        {
-          "heading": "resultを次のfunctionへ渡す",
-          "body": "一段目の`[Seseragi]`が次の`println`へ渡されます。pipelineは左から右、上から下へvalueを追えます。",
-          "sourceRange": {
-            "startLine": 4,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "|>",
-          "body": "`value |> function`は左のvalueを右のfunctionが待つ最後の引数へ渡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでpartial application側のleftとrightを変え、同じvalueが新しい囲みへ流れることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "IntをString用pipelineへ流す",
-        "body": "失敗例ではIntをString parameterへ流します。pipelineの左側valueがどのparameterへ渡るか確認してください。"
-      },
-      "recap": [
-        "`|>`は左のvalueを右のfunctionへ渡す。",
-        "partial application済みのfunctionでは残りの最後のparameterへ入る。",
-        "pipeline chainは左から右、上から下へresultを追える。"
-      ],
-      "next": {
-        "lessonId": "mixed-application",
-        "body": "次は`$`の右側へpipeline chainを置き、二つの優先順位を一緒に読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson25Exercise,
-    exerciseExpectedOutput: (lesson25ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson25Diagnostic,
-    diagnosticOutput: (lesson25DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "mixed-application",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/mixed-application/main.ssrg",
-    source: lesson26Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson26Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "`$`は右側全体を引数にし、`|>`は左のvalueを右のfunctionへ渡すと説明できます。",
-      "walkthrough": [
-        {
-          "heading": "右側のpipelineを先に読む",
-          "body": "`\"Seseragi\" |> greeting |> emphasize`は左から順に進み、最後に`**Hello, Seseragi!**`というStringを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "$でpipeline全体をprintlnへ渡す",
-          "body": "`$`は`|>`より優先順位が低いため、右側のpipeline result全体がprintlnの一引数になります。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "mixed $ and |>",
-          "body": "`function $ value |> next`ではpipelineを先に計算し、そのresult全体を`$`左側のfunctionへ渡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの最初のvalueと二つのfunction本文を変え、pipeline全体がprintlnへ渡ることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "String pipelineの途中へInt関数を置く",
-        "body": "失敗例ではgreetingのString resultをInt用addOneへ渡します。`$`より先にpipeline内で型が合わなくなる位置を確認してください。"
-      },
-      "recap": [
-        "`|>`のchainは左から順にresultを作る。",
-        "`$`は右側のpipeline全体より後に適用される。",
-        "二つを混ぜてもvalueとfunctionの型を順に追えば読める。"
-      ],
-      "next": {
-        "lessonId": "05-pipelines",
-        "body": "最後に小さな関数を一つの処理として組み合わせます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson26Exercise,
-    exerciseExpectedOutput: (lesson26ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson26Diagnostic,
-    diagnosticOutput: (lesson26DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "05-pipelines",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/05-pipelines/main.ssrg",
-    source: lesson27Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson27Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "関数定義、空白による適用、currying、partial application、括弧、`$`、`|>`を別々に確認しました。",
-      "walkthrough": [
-        {
-          "heading": "一つの仕事を持つ関数を用意する",
-          "body": "`greeting`は挨拶を作り、`emphasize`は受け取ったStringを強調します。それぞれの戻り型が次の関数のparameter型と一致します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        },
-        {
-          "heading": "小さな関数をmessageへ組み合わせる",
-          "body": "`message`はgreeting resultを`$`でemphasizeへ渡します。mainは名前をmessageへ流し、そのresultをprintlnへ流します。",
-          "sourceRange": {
-            "startLine": 5,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "function composition",
-          "body": "小さなfunctionの戻り値を次のfunctionへ渡し、複数の一段処理から一つの処理を組み立てます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで最初の名前と二つの小さな関数を変え、同じ接続で新しいmessageが出ることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "関数同士の接続型をずらす",
-        "body": "失敗例ではemphasizeがIntを返すと宣言しながらStringを作ります。小さな関数の境界にある型差分を確認してください。"
-      },
-      "recap": [
-        "小さなpure functionへ一つずつ仕事を分けられる。",
-        "戻り型と次のparameter型を合わせてfunctionをつなげられる。",
-        "`$`と`|>`でvalueが進む順を明示できる。"
-      ],
-      "next": {
-        "lessonId": "tuple-values",
-        "body": "関数の段階学習は完了です。次は複数のvalueを一つのtupleへまとめます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson27Exercise,
-    exerciseExpectedOutput: (lesson27ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson27Diagnostic,
-    diagnosticOutput: (lesson27DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "tuple-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/tuple-values/main.ssrg",
-    source: lesson28Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson28Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "複数のvalueを関数へ流せるようになりました。ここからはvalue自体の形を学びます。",
-      "walkthrough": [
-        {
-          "heading": "位置でvalueをまとめる",
-          "body": "`(String, Int)`は一番目がString、二番目がIntのtuple typeです。literalも同じ順番で書きます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "tuple",
-          "body": "`(A, B)`は位置ごとに型を持つ一つのvalueです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでcityとstop数を変え、tuple typeを保ったままRunしてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "二番目の型を取り違える",
-        "body": "失敗例ではIntの位置へStringを置いています。tuple typeとliteralを位置ごとに比較してください。"
-      },
-      "recap": [
-        "tupleは複数のvalueを位置でまとめる。",
-        "tuple typeとliteralは同じ順序で対応する。"
-      ],
-      "next": {
-        "lessonId": "tuple-pattern-binding",
-        "body": "次はtupleをpatternで二つの名前へ分解します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson28Exercise,
-    exerciseExpectedOutput: (lesson28ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson28Diagnostic,
-    diagnosticOutput: (lesson28DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "tuple-pattern-binding",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/tuple-pattern-binding/main.ssrg",
-    source: lesson29Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson29Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "tuple typeとtuple literalで位置付きのvalueを作れるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Tupleの位置へ名前を付ける",
-          "body": "`let (city, stops) = route`は二つの位置を同時に分解し、それぞれを通常のvalueとして使えるようにします。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "tuple pattern",
-          "body": "tupleと同じ形のpatternで各位置へ名前を束縛します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのtupleを別のcityとstop数へ変え、分解後の出力を確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Patternの要素数を増やす",
-        "body": "失敗例では二要素tupleを三つの名前へ分解します。valueとpatternの形を揃えてください。"
-      },
-      "recap": [
-        "tuple patternは位置ごとに名前を束縛する。",
-        "patternの形はvalueの形と一致させる。"
-      ],
-      "next": {
-        "lessonId": "record-values",
-        "body": "次は位置ではなくfield名でdataを組み立てます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson29Exercise,
-    exerciseExpectedOutput: (lesson29ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson29Diagnostic,
-    diagnosticOutput: (lesson29DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "record-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/record-values/main.ssrg",
-    source: lesson30Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson30Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "tupleを位置で組み立て、patternで分解できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Field名でvalueをまとめる",
-          "body": "Record literalは`name`と`role`のようなfield名をvalueへ結び付けます。宣言済みの型名は不要です。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 3
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Record",
-          "body": "Recordはfield名と型の組み合わせで決まる構造的なvalueです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでRecordのnameとroleを変え、同じfield構造のvalueを作ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Fieldの型を取り違える",
-        "body": "失敗例ではString fieldへIntを置いています。annotationと各field valueを比較してください。"
-      },
-      "recap": [
-        "Recordはfield名でvalueをまとめる。",
-        "同じfield構造なら事前の型宣言なしで使える。"
-      ],
-      "next": {
-        "lessonId": "record-access-update",
-        "body": "次はRecordのfieldを読み、spreadで新しいRecordを作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson30Exercise,
-    exerciseExpectedOutput: (lesson30ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson30Diagnostic,
-    diagnosticOutput: (lesson30DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "record-access-update",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/record-access-update/main.ssrg",
-    source: lesson31Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson31Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "field名を持つRecord literalを組み立てられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Fieldを読み、spreadで更新する",
-          "body": "`profile.name`はfield accessです。`{ ...profile, name: \"Aoi\" }`は元のRecordを変えず、nameだけ違う新しいRecordを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "field access",
-          "body": "dotの後ろにfield名を書いてRecordのvalueを選びます。"
-        },
-        {
-          "kind": "syntax",
-          "name": "record spread",
-          "body": "`...record`で既存fieldを引き継ぎ、後ろのfieldでimmutableに上書きします。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで更新後のnameを変え、元と更新後の両方を出力してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "存在しないfieldを読む",
-        "body": "失敗例ではRecordにないageを選びます。利用できるfield名をdiagnosticで確認してください。"
-      },
-      "recap": [
-        "dotでRecord fieldを読める。",
-        "spread更新は元のRecordを変更しない。"
-      ],
-      "next": {
-        "lessonId": "06-records-and-structs",
-        "body": "次は型名を先に宣言するStructを組み立てます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson31Exercise,
-    exerciseExpectedOutput: (lesson31ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson31Diagnostic,
-    diagnosticOutput: (lesson31DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "06-records-and-structs",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/06-records-and-structs/main.ssrg",
-    source: lesson32Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson32Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Recordをfield構造だけで作り、immutableに更新できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "型名のある構造を宣言する",
-          "body": "`struct Profile`はnameとroleを持つ新しい型を宣言します。`Profile { ... }`だけがその型のvalueを構築します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Struct",
-          "body": "Structは宣言した型名で区別されるnamed data typeです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでProfileのfield valueを変え、同じStruct型のvalueを構築してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "必要なfieldを省く",
-        "body": "失敗例ではProfileのroleを省略しています。Struct declarationが要求するfieldを確認してください。"
-      },
-      "recap": [
-        "Structは型名とfieldを先に宣言する。",
-        "Struct valueは同じ型名のconstructorで組み立てる。"
-      ],
-      "next": {
-        "lessonId": "struct-field-access",
-        "body": "次は構築したStructからfieldを読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson32Exercise,
-    exerciseExpectedOutput: (lesson32ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson32Diagnostic,
-    diagnosticOutput: (lesson32DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "struct-field-access",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/struct-field-access/main.ssrg",
-    source: lesson33Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson33Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Structを宣言し、その型名でvalueを構築できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Structのfieldを選ぶ",
-          "body": "Struct valueもdotでfieldを読めます。field集合はProfile declarationから決まります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "Struct field access",
-          "body": "Struct declarationにあるfieldをdotで選びます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceで別のProfileを構築し、nameとroleをfield accessで表示してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "宣言にないfieldを読む",
-        "body": "失敗例ではProfileにないcityを選びます。Struct declarationのfield一覧を確認してください。"
-      },
-      "recap": [
-        "Struct fieldもdotで読める。",
-        "利用できるfieldはStruct declarationで固定される。"
-      ],
-      "next": {
-        "lessonId": "simple-adt",
-        "body": "次は同時に持つfieldではなく、取りうる状態を型へ列挙します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson33Exercise,
-    exerciseExpectedOutput: (lesson33ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson33Diagnostic,
-    diagnosticOutput: (lesson33DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "simple-adt",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/simple-adt/main.ssrg",
-    source: lesson34Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson34Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Tuple、Record、Structで同時に持つdataを組み立てられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "取りうる状態を列挙する",
-          "body": "`Delivery`はPreparingまたはShippedのどちらかです。このlessonのconstructorは追加dataを持ちません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "ADT",
-          "body": "ADTは`|`で並べたconstructorのうち一つをvalueとして持つ型です。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでDelivery valueをShippedへ変え、simple ADTの別状態を作ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "ADTへStringを代入する",
-        "body": "失敗例ではDeliveryにconstructorではないStringを置いています。型名とconstructor名を区別してください。"
-      },
-      "recap": [
-        "ADTは取りうる状態をconstructorで列挙する。",
-        "payloadなしのconstructorはその名前だけでvalueになる。"
-      ],
-      "next": {
-        "lessonId": "payload-adt",
-        "body": "次は状態と一緒にcityを保持するconstructorを作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson34Exercise,
-    exerciseExpectedOutput: (lesson34ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson34Diagnostic,
-    diagnosticOutput: (lesson34DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "payload-adt",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/payload-adt/main.ssrg",
-    source: lesson35Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson35Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "payloadを持たないconstructorでADTの状態を表せるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "状態と一緒にvalueを保持する",
-          "body": "`Shipped String`はShipped状態へcityを一つ保持します。`Shipped \"Osaka\"`でDelivery valueを構築します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "payload constructor",
-          "body": "constructor名の後ろへ型を書き、適用時にその型のvalueを渡します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでShippedへ別のcityを渡し、payloadを持つvalueを作ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Payloadの型を取り違える",
-        "body": "失敗例ではString payloadへIntを渡しています。constructor declarationの型を確認してください。"
-      },
-      "recap": [
-        "constructorは状態とpayloadを一つのvalueへまとめられる。",
-        "payloadの型はADT declarationに書く。"
-      ],
-      "next": {
-        "lessonId": "single-constructor-match",
-        "body": "次は一種類だけのADTをmatchで分解します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson35Exercise,
-    exerciseExpectedOutput: (lesson35ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson35Diagnostic,
-    diagnosticOutput: (lesson35DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "single-constructor-match",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/single-constructor-match/main.ssrg",
-    source: lesson36Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson36Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "payload constructorで状態とStringを一つのADT valueへまとめられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "一つの形をpatternで受ける",
-          "body": "`match`はvalueのconstructorをpatternと比較します。TicketはReadyだけなのでarmは一つです。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 4
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "match",
-          "body": "`match value { pattern -> result }`でvalueの形に応じたresultを作ります。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでReadyのpayloadを変え、同じ一つのarmから表示してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Payload patternを省く",
-        "body": "失敗例ではpayloadを持つReadyを名前だけでpatternにしています。constructorの形とpatternを揃えてください。"
-      },
-      "recap": [
-        "matchはvalueをpatternと比較する。",
-        "一種類だけのADTなら一つのarmで網羅できる。"
-      ],
-      "next": {
-        "lessonId": "07-adts-and-patterns",
-        "body": "次は二つのconstructorから別々のarmを選びます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson36Exercise,
-    exerciseExpectedOutput: (lesson36ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson36Diagnostic,
-    diagnosticOutput: (lesson36DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "07-adts-and-patterns",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/07-adts-and-patterns/main.ssrg",
-    source: lesson37Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson37Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "一種類のconstructorをmatch armで判別できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "状態ごとにarmを分ける",
-          "body": "DeliveryにはPreparingとShippedがあります。上からpatternを比較し、一致したarmだけがresultを返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "multi-constructor match",
-          "body": "ADTのconstructorごとにarmを並べ、状態ごとのresultを選びます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceをPreparingへ変え、別のmatch armが選ばれることを確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Armのresult型をずらす",
-        "body": "失敗例では一方のarmだけIntを返します。すべてのarmが同じresult型になるよう確認してください。"
-      },
-      "recap": [
-        "複数のconstructorは別々のarmで扱える。",
-        "選ばれるarmはvalueのconstructorで決まる。"
-      ],
-      "next": {
-        "lessonId": "payload-pattern-binding",
-        "body": "次はShippedのpayloadへ名前を付けてarm内で使います。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson37Exercise,
-    exerciseExpectedOutput: (lesson37ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson37Diagnostic,
-    diagnosticOutput: (lesson37DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "payload-pattern-binding",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/payload-pattern-binding/main.ssrg",
-    source: lesson38Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson38Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "複数のconstructorを別々のmatch armへ分けられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Payloadへ名前を付ける",
-          "body": "`Shipped city`のcityはconstructor payloadへ束縛され、選ばれたarmの中でString valueとして使えます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "payload pattern binding",
-          "body": "constructor patternの内側へ名前を書き、payloadをarm内へ取り出します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでcityを変え、pattern bindingを通じて出力へ反映してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Bound valueを違う型で使う",
-        "body": "失敗例ではStringのcityをInt演算へ渡します。payload declarationから束縛名の型を追ってください。"
-      },
-      "recap": [
-        "constructor patternはpayloadへ名前を束縛できる。",
-        "束縛したvalueの型はpayload declarationから決まる。"
-      ],
-      "next": {
-        "lessonId": "nested-pattern-wildcard",
-        "body": "次はpayload内のtupleをさらに分解し、不要な位置を無視します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson38Exercise,
-    exerciseExpectedOutput: (lesson38ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson38Diagnostic,
-    diagnosticOutput: (lesson38DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "nested-pattern-wildcard",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/nested-pattern-wildcard/main.ssrg",
-    source: lesson39Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson39Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "constructor patternから一つのpayloadへ名前を束縛できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "内側のtupleまでpatternで分解する",
-          "body": "`Delivered (city, _)`はconstructorの内側にあるtupleへ同じ形のpatternを重ねます。`_`は使わないstop数を束縛しません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "nested pattern",
-          "body": "外側と内側のdata shapeを重ねて一度に分解します。"
-        },
-        {
-          "kind": "syntax",
-          "name": "wildcard pattern",
-          "body": "`_`はその位置に何があっても一致し、名前を作りません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでwildcardの位置を入れ替え、stop数だけを表示してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Nested patternの形をずらす",
-        "body": "失敗例では二要素tupleを三要素patternで受けます。constructor payloadの内側まで形を揃えてください。"
-      },
-      "recap": [
-        "nested patternは内側のdataも一度に分解する。",
-        "wildcardは不要なvalueを束縛せずに一致する。"
-      ],
-      "next": {
-        "lessonId": "exhaustive-match",
-        "body": "次はすべてのconstructorを扱う網羅性を確認します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson39Exercise,
-    exerciseExpectedOutput: (lesson39ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson39Diagnostic,
-    diagnosticOutput: (lesson39DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "exhaustive-match",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/exhaustive-match/main.ssrg",
-    source: lesson40Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson40Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "constructor pattern、payload binding、nested pattern、wildcardを使えるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "すべてのconstructorをarmへ並べる",
-          "body": "ChoiceはOneまたはTwoです。両方のarmがあるため、どのChoice valueにもresultが決まります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "exhaustive match",
-          "body": "ADTが取りうるすべてのconstructorを扱うmatchです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceでChoice valueをTwoへ変え、二つ目のarmが選ばれることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Two armを省く",
-        "body": "失敗例はOneだけを扱います。compilerが示すmissing constructorを追加してください。"
-      },
-      "recap": [
-        "網羅的なmatchはすべてのconstructorを扱う。",
-        "missing armはcompiler diagnosticから確認できる。"
-      ],
-      "next": {
-        "lessonId": "data-shape-selection",
-        "body": "最後にTuple、Record、Struct、ADTの選び方を比較します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson40Exercise,
-    exerciseExpectedOutput: (lesson40ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson40Diagnostic,
-    diagnosticOutput: (lesson40DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "data-shape-selection",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/data-shape-selection/main.ssrg",
-    source: lesson41Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson41Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Tuple、Record、Struct、ADTを組み立て、patternで分解できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "目的からdata shapeを選ぶ",
-          "body": "位置だけならtuple、field名ならRecord、固有の型名ならStruct、取りうる状態ならADTを選びます。このsourceは四つを隣に置いて比較します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "data shape selection",
-          "body": "dataの意味が位置、field、型名、状態のどこにあるかで表現を選びます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのroute、profile、account、deliveryを変更し、四つのdata shapeを同じ出力で比較してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Structの契約にfieldが足りない",
-        "body": "失敗例ではAccountが要求するplan fieldを省いています。自由に組み立てるRecordと宣言済みStructのfield契約を比較してください。"
-      },
-      "recap": [
-        "Tupleは位置、Recordはfield構造を表す。",
-        "Structは固有の型名、ADTは取りうる状態を表す。"
-      ],
-      "next": {
-        "lessonId": "array-values",
-        "body": "data shapeの基礎は完了です。次は複数の同種valueをArrayへ並べます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson41Exercise,
-    exerciseExpectedOutput: (lesson41ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson41Diagnostic,
-    diagnosticOutput: (lesson41DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "array-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/array-values/main.ssrg",
-    source: lesson42Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson42Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "dataの形を選べるようになりました。ここから同じ型のvalueを複数扱います。",
-      "walkthrough": [
-        {
-          "heading": "角括弧へ同じ型のvalueを並べる",
-          "body": "`Array<Int>`は順序付きのInt collectionです。`[10, 20, 30]`で三要素を作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Array",
-          "body": "Arrayは同じ型のvalueを順序付きで保持するindexed collectionです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの要素を変え、同じArray typeのvalueを作ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "異なる型を混ぜる",
-        "body": "失敗例ではArray<Int>へStringを混ぜています。要素型を揃えてください。"
-      },
-      "recap": [
-        "Array literalは角括弧で書く。",
-        "すべての要素は同じ型になる。"
-      ],
-      "next": {
-        "lessonId": "array-access",
-        "body": "次はArrayのlengthと先頭要素を読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson42Exercise,
-    exerciseExpectedOutput: (lesson42ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson42Diagnostic,
-    diagnosticOutput: (lesson42DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "array-access",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/array-access/main.ssrg",
-    source: lesson43Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson43Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Array literalとArray typeを書けるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "添字からMaybeを受け取る",
-          "body": "`values[1]`は0から数えた2番目の要素をJustで返します。負の添字や範囲外はNothingです。`arrays.length`は要素数です。",
-          "sourceRange": {
-            "startLine": 4,
-            "endLine": 8
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "array[index]",
-          "body": "ArrayのInt添字アクセスはMaybeを返します。Listは添字アクセスを持ちません。"
-        }
-      ],
-      "exercise": {
-        "instruction": "配列を4要素に増やすとvalues[3]がどう変わるか実行して確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "添字はInt",
-        "body": "Stringの添字は使えません。0から数えるIntを指定します。"
-      },
-      "recap": [
-        "Arrayの添字は0から始まり、結果はMaybeになる。",
-        "負の添字と範囲外はNothing。",
-        "Listの要素は次のlessonでpatternから読む。"
-      ],
-      "next": {
-        "lessonId": "list-values",
-        "body": "次はpersistentなList literalを作ります。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson43Exercise,
-    exerciseExpectedOutput: (lesson43ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson43Diagnostic,
-    diagnosticOutput: (lesson43DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "list-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/list-values/main.ssrg",
-    source: lesson44Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson44Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "contiguousなArrayを作り、読み取れるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Backtick付き角括弧でListを作る",
-          "body": "`List<Int>`のliteralは`` `[1, 2, 3] ``です。Arrayと別の型として区別されます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "List",
-          "body": "Listは先頭と残りを共有しやすいpersistent collectionです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのList要素を変え、List typeを保ってRunしてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "ArrayをListへ代入する",
-        "body": "失敗例では角括弧だけのArrayをList annotationへ置きます。literalの違いを確認してください。"
-      },
-      "recap": [
-        "List literalはbacktick付き角括弧で書く。",
-        "ListとArrayは異なるcollection typeである。"
-      ],
-      "next": {
-        "lessonId": "list-decomposition",
-        "body": "次はListをheadとtailへ分解します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson44Exercise,
-    exerciseExpectedOutput: (lesson44ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson44Diagnostic,
-    diagnosticOutput: (lesson44DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "list-decomposition",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/list-decomposition/main.ssrg",
-    source: lesson45Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson45Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "List literalとList typeを書けるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "空とconsの二つの形をmatchする",
-          "body": "`` `[head, ...tail] ``は先頭と残り、`` `[] ``は空Listへ一致します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "List decomposition",
-          "body": "List patternでemptyまたはheadとtailへ安全に分解します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの先頭を変え、head bindingの出力を確かめてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Array patternでListを受ける",
-        "body": "失敗例はList valueへArray patternを使います。collectionとpatternの形を揃えてください。"
-      },
-      "recap": [
-        "Listはemptyとconsのpatternで分解できる。",
-        "tailは元と同じList typeになる。"
-      ],
-      "next": {
-        "lessonId": "range-values",
-        "body": "次は要素列ではなく開始と終端で範囲を表します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson45Exercise,
-    exerciseExpectedOutput: (lesson45ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson45Diagnostic,
-    diagnosticOutput: (lesson45DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "range-values",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/range-values/main.ssrg",
-    source: lesson46Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson46Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "ArrayとListをliteralで列挙できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "開始と終端だけを持つ",
-          "body": "`1..4`は4を含まず、`1..=4`は4を含みます。Rangeは要素を先にArrayへ展開しません。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "Range",
-          "body": "Range<Int>は開始と終端から必要時にIntを反復するcollectionです。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの終端を変え、exclusiveとinclusiveの違いを保ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "終端へStringを置く",
-        "body": "失敗例ではInt Rangeの終端へStringを置いています。endpoint型を揃えてください。"
-      },
-      "recap": [
-        "`..`は終端を含まず、`..=`は含む。",
-        "Rangeは開始と終端で遅延的な範囲を表す。"
-      ],
-      "next": {
-        "lessonId": "collection-map",
-        "body": "次は各要素をcallbackで変換します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson46Exercise,
-    exerciseExpectedOutput: (lesson46ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson46Diagnostic,
-    diagnosticOutput: (lesson46DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-map",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-map/main.ssrg",
-    source: lesson47Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson47Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "ArrayとListを別のdata shapeとして組み立てられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Named mapでArrayとListを変換する",
-          "body": "`map double value`はcallbackを先、collectionを後に受け取り、ArrayとListそれぞれのshapeを保ちます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "同じ変換を<$>へ書き換える",
-          "body": "`double <$> value`は同じmap operationのinfix表記です。Named形とoperator形で結果のshapeは変わりません。",
-          "sourceRange": {
-            "startLine": 3,
-            "endLine": 5
-          }
-        },
-        {
-          "heading": "二つのshapeを実行結果で比べる",
-          "body": "Arrayは`[...]`、persistent Listは`` `[...] ``の表示を保ったまま、どちらも2倍になります。",
-          "sourceRange": {
-            "startLine": 7,
-            "endLine": 7
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "mapと<$>",
-          "body": "`map f value`と`f <$> value`は同じ要素変換です。ArrayでもListでもcontainerのshapeを保ちます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのtripleまたは要素を変え、ArrayとListのnamed形・operator形が一致することを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Callbackの入力型をずらす",
-        "body": "失敗例ではString callbackをArray<Int>へ適用します。callback parameterと要素型を揃えてください。"
-      },
-      "recap": [
-        "mapと<$>は同じ要素変換である。",
-        "ArrayとListは同じ表記を使ってもそれぞれのshapeを保つ。"
-      ],
-      "next": {
-        "lessonId": "collection-filter",
-        "body": "次はBool callbackで残す要素を選びます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson47Exercise,
-    exerciseExpectedOutput: (lesson47ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson47Diagnostic,
-    diagnosticOutput: (lesson47DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-filter",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-filter/main.ssrg",
-    source: lesson48Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson48Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "mapのcallbackとcollectionの引数位置を読めるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "PredicateがTrueにする要素だけ残す",
-          "body": "`arrays.filter even values`は順序を変えず、evenがTrueを返すIntだけの新しいArrayを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "filter",
-          "body": "filterはBool predicateを先、collectionを最後に受け取ります。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのpredicateを3より大きい条件へ変えてください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "PredicateがIntを返す",
-        "body": "失敗例のcallbackはBoolではなくIntを返します。filterのcallback戻り型を確認してください。"
-      },
-      "recap": [
-        "filterはTrueになった要素だけ残す。",
-        "入力collectionは変更しない。"
-      ],
-      "next": {
-        "lessonId": "collection-reduce-step",
-        "body": "次は複数要素を一つへ集約するstepを書きます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson48Exercise,
-    exerciseExpectedOutput: (lesson48ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson48Diagnostic,
-    diagnosticOutput: (lesson48DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-reduce-step",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-reduce-step/main.ssrg",
-    source: lesson49Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson49Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "各要素を変換し、条件で残す操作を分けて書けるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Accumulatorと次の要素を受け取る",
-          "body": "`add total value`は現在のtotalと次のvalueから新しいtotalを返すpure functionです。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "reducer step",
-          "body": "reducer stepはaccumulatorを先、次の要素を後に受け取り、新しいaccumulatorを返します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのstepを加算から乗算へ変え、二parameterの役割を保ってください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "戻り型を変える",
-        "body": "失敗例ではInt accumulatorにStringを返します。stepの入力と戻り型を揃えてください。"
-      },
-      "recap": [
-        "stepはaccumulatorと次の要素を受け取る。",
-        "stepのresultが次のaccumulatorになる。"
-      ],
-      "next": {
-        "lessonId": "collection-reduce",
-        "body": "次はinitial value、step、collectionをreduceへ渡します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson49Exercise,
-    exerciseExpectedOutput: (lesson49ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson49Diagnostic,
-    diagnosticOutput: (lesson49DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-reduce",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-reduce/main.ssrg",
-    source: lesson50Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson50Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "accumulatorを更新する二parameterのstepを書けるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Initial valueからsource順に集約する",
-          "body": "`reduce 0 add values`は0から始め、各要素へaddを順番に適用して一つのIntを返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "reduce",
-          "body": "reduceはinitial、step、collectionの順で一つのresultへ集約します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのArrayとinitial valueを変え、集約resultを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Initial valueの型をずらす",
-        "body": "失敗例ではInt stepへString initialを渡します。accumulator型を一貫させてください。"
-      },
-      "recap": [
-        "reduceはinitial valueから始める。",
-        "stepをsource順に適用し一つのresultを返す。"
-      ],
-      "next": {
-        "lessonId": "collection-append-concat",
-        "body": "次はcollection同士をつなぎます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson50Exercise,
-    exerciseExpectedOutput: (lesson50ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson50Diagnostic,
-    diagnosticOutput: (lesson50DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-append-concat",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-append-concat/main.ssrg",
-    source: lesson51Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson51Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "collectionを一つのresultへ集約できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Suffixまたはnested collectionをつなぐ",
-          "body": "appendはsuffixを既存collectionへ足し、concatはcollection of collectionsを一段平らにします。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "append and concat",
-          "body": "appendは二collection、concatはnested collectionを入力として新しいcollectionを返します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのsuffixとnested Arrayを変え、順序を確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "要素をsuffixとして渡す",
-        "body": "失敗例はappendへArrayではなくIntを渡します。suffixのcollection型を確認してください。"
-      },
-      "recap": [
-        "appendはsuffixをつなぐ。",
-        "concatは一段nestedなcollectionを平らにつなぐ。"
-      ],
-      "next": {
-        "lessonId": "collection-comprehension",
-        "body": "次はsource、条件、resultを一つのcomprehensionで読みます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson51Exercise,
-    exerciseExpectedOutput: (lesson51ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson51Diagnostic,
-    diagnosticOutput: (lesson51DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-comprehension",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-comprehension/main.ssrg",
-    source: lesson52Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson52Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "map、filter、Rangeを別々に使えるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Result、source、条件の順を読む",
-          "body": "`[value * value | value <- 1..=4, value % 2 == 0]`はRangeからeven valueを選びsquare Arrayを作ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "syntax",
-          "name": "collection comprehension",
-          "body": "comprehensionはresult expression、generator、optional filterを一つのcollection literalへ書きます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのRange終端と条件を変え、生成されるArrayを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "反復できないsourceを使う",
-        "body": "失敗例ではIntそのものをgenerator sourceにします。Iterableなcollectionを渡してください。"
-      },
-      "recap": [
-        "generatorはsourceからbindingを作る。",
-        "条件を通ったbindingだけresult expressionへ進む。"
-      ],
-      "next": {
-        "lessonId": "collection-pipeline",
-        "body": "次はdata-last APIをpipelineへ並べます。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson52Exercise,
-    exerciseExpectedOutput: (lesson52ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson52Diagnostic,
-    diagnosticOutput: (lesson52DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "collection-pipeline",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/collection-pipeline/main.ssrg",
-    source: lesson53Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson53Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "filter、map、reduceを個別に使い、引数位置を説明できるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Collection本体を最後のparameterへ流す",
-          "body": "Arrayはfilter、map、reduceへ左から右へ流れます。各functionはcallbackやinitialだけを先に受け取ります。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "collection pipeline",
-          "body": "data-last collection APIをpartial applicationし、`|>`で同じvalueを順に流します。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのpredicate、変換、initialを一つずつ変えてresultを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "Pipelineの途中で型を変えすぎる",
-        "body": "失敗例ではStringへmapした後にInt predicateを適用します。各段の出力型と次の入力型を合わせてください。"
-      },
-      "recap": [
-        "data-last APIはpipelineへ自然につながる。",
-        "各段のresult型が次のcollection要素型になる。"
-      ],
-      "next": {
-        "lessonId": "empty-collections",
-        "body": "次は要素がない場合のtotal operationを確認します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson53Exercise,
-    exerciseExpectedOutput: (lesson53ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson53Diagnostic,
-    diagnosticOutput: (lesson53DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "empty-collections",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/empty-collections/main.ssrg",
-    source: lesson54Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson54Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "collection pipelineで変換から集約までつなげられるようになりました。",
-      "walkthrough": [
-        {
-          "heading": "Emptyでもresultが決まるoperationを使う",
-          "body": "empty Arrayのlengthは0です。reduceは要素がなければinitial valueをそのまま返します。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 1
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "api",
-          "name": "empty collection",
-          "body": "空collectionではlengthやinitial付きreduceのように常にresultが決まるoperationを使えます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceのreduce initialを変え、空Arrayではその値がresultになることを確認してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "型を推論できないempty literal",
-        "body": "失敗例では型情報なしのempty Arrayだけを定義します。annotationまたは利用文脈を追加してください。"
-      },
-      "recap": [
-        "empty collectionのlengthは0になる。",
-        "initial付きreduceはemptyでもtotalである。"
-      ],
-      "next": {
-        "lessonId": "08-collections-and-ranges",
-        "body": "最後にArray、List、Rangeの用途を比較します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson54Exercise,
-    exerciseExpectedOutput: (lesson54ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson54Diagnostic,
-    diagnosticOutput: (lesson54DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
-    id: "08-collections-and-ranges",
-    challenge: "",
-    interactive: false,
-    sourcePath: "examples/tour/lessons/08-collections-and-ranges/main.ssrg",
-    source: lesson55Source,
-    guide: "",
-    stdin: "",
-    expectedOutput: (lesson55Output).replace(/\r?\n$/u, ""),
-    expectedFailure: ("").replace(/\r?\n$/u, ""),
-    format: {
-      "prerequisite": "Array、List、Rangeの作成、変換、絞り込み、集約を段階的に確認しました。",
-      "walkthrough": [
-        {
-          "heading": "用途でcollectionを選ぶ",
-          "body": "index中心ならArray、head/tail共有ならList、連続Intを遅延反復するならRangeを選びます。",
-          "sourceRange": {
-            "startLine": 1,
-            "endLine": 2
-          }
-        }
-      ],
-      "introduced": [
-        {
-          "kind": "type",
-          "name": "collection selection",
-          "body": "access patternと生成方法からArray、List、Rangeを選びます。"
-        }
-      ],
-      "exercise": {
-        "instruction": "課題sourceの三collectionを変え、それぞれのresultを同じ出力で比較してください。",
-        "reset": "restore-lesson-source"
-      },
-      "diagnostic": {
-        "heading": "ArrayとListを取り違える",
-        "body": "失敗例ではList annotationへArray literalを置きます。用途だけでなく型とliteralも揃えてください。"
-      },
-      "recap": [
-        "Arrayはindexed sequence、Listはpersistent linked sequenceである。",
-        "Rangeは連続Intを開始と終端から遅延反復する。"
-      ],
-      "next": {
-        "lessonId": "maybe-role",
-        "body": "collectionの基礎は完了です。次は値がない場合をMaybe型で表します。"
-      }
-    } as unknown as TourLessonFormat,
-    exerciseSource: lesson55Exercise,
-    exerciseExpectedOutput: (lesson55ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson55Diagnostic,
-    diagnosticOutput: (lesson55DiagnosticOutput).replace(/\r?\n$/u, ""),
-  },
-  {
     id: "maybe-role",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/maybe-role/main.ssrg",
-    source: lesson56Source,
+    source: lesson12Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson56Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson12Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "collectionのshapeとempty caseを扱えるようになりました。",
@@ -4134,20 +1703,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は値ありと値なしをconstructorで作ります。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson56Exercise,
-    exerciseExpectedOutput: (lesson56ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson56Diagnostic,
-    diagnosticOutput: (lesson56DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson12Exercise,
+    exerciseExpectedOutput: (lesson12ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson12Diagnostic,
+    diagnosticOutput: (lesson12DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "maybe-constructors",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/maybe-constructors/main.ssrg",
-    source: lesson57Source,
+    source: lesson13Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson57Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson13Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybe<A>が値の有無を表す型だと分かりました。",
@@ -4185,20 +1754,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は二constructorをmatchで取り出します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson57Exercise,
-    exerciseExpectedOutput: (lesson57ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson57Diagnostic,
-    diagnosticOutput: (lesson57DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson13Exercise,
+    exerciseExpectedOutput: (lesson13ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson13Diagnostic,
+    diagnosticOutput: (lesson13DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "maybe-match",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/maybe-match/main.ssrg",
-    source: lesson58Source,
+    source: lesson14Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson58Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson14Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "JustとNothingのMaybe valueを作れるようになりました。",
@@ -4236,20 +1805,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はmatchを書かずdefault valueへ変換します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson58Exercise,
-    exerciseExpectedOutput: (lesson58ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson58Diagnostic,
-    diagnosticOutput: (lesson58DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson14Exercise,
+    exerciseExpectedOutput: (lesson14ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson14Diagnostic,
+    diagnosticOutput: (lesson14DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "maybe-default",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/maybe-default/main.ssrg",
-    source: lesson59Source,
+    source: lesson15Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson59Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson15Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybeをmatchして通常値へ変換できるようになりました。",
@@ -4287,20 +1856,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はMaybeの形を保ったままpayloadだけ変換します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson59Exercise,
-    exerciseExpectedOutput: (lesson59ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson59Diagnostic,
-    diagnosticOutput: (lesson59DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson15Exercise,
+    exerciseExpectedOutput: (lesson15ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson15Diagnostic,
+    diagnosticOutput: (lesson15DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "maybe-map",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/maybe-map/main.ssrg",
-    source: lesson60Source,
+    source: lesson16Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson60Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson16Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Collectionで`map f value`と`f <$> value`を相互に書き換えました。",
@@ -4354,20 +1923,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は二つの独立したMaybeをapplyと<*>で組み合わせます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson60Exercise,
-    exerciseExpectedOutput: (lesson60ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson60Diagnostic,
-    diagnosticOutput: (lesson60DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson16Exercise,
+    exerciseExpectedOutput: (lesson16ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson16Diagnostic,
+    diagnosticOutput: (lesson16DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "maybe-combine",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/maybe-combine/main.ssrg",
-    source: lesson61Source,
+    source: lesson17Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson61Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson17Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybeのmapと<$>で一つのpayloadを変換しました。",
@@ -4429,20 +1998,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はflatMapと>>=で前のpayloadから次のMaybeを選び、Nothingの短絡を確認します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson61Exercise,
-    exerciseExpectedOutput: (lesson61ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson61Diagnostic,
-    diagnosticOutput: (lesson61DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson17Exercise,
+    exerciseExpectedOutput: (lesson17ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson17Diagnostic,
+    diagnosticOutput: (lesson17DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "maybe-short-circuit",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/maybe-short-circuit/main.ssrg",
-    source: lesson62Source,
+    source: lesson18Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson62Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson18Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "独立した二つのMaybeをapplyと<*>で組み合わせました。",
@@ -4504,20 +2073,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は失敗理由も値へ残すEitherを学びます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson62Exercise,
-    exerciseExpectedOutput: (lesson62ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson62Diagnostic,
-    diagnosticOutput: (lesson62DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson18Exercise,
+    exerciseExpectedOutput: (lesson18ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson18Diagnostic,
+    diagnosticOutput: (lesson18DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "either-role",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/either-role/main.ssrg",
-    source: lesson63Source,
+    source: lesson19Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson63Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson19Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybeで値の有無とNothing短絡を扱えるようになりました。",
@@ -4555,20 +2124,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はLeftとRightで両caseを作ります。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson63Exercise,
-    exerciseExpectedOutput: (lesson63ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson63Diagnostic,
-    diagnosticOutput: (lesson63DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson19Exercise,
+    exerciseExpectedOutput: (lesson19ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson19Diagnostic,
+    diagnosticOutput: (lesson19DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "either-constructors",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/either-constructors/main.ssrg",
-    source: lesson64Source,
+    source: lesson20Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson64Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson20Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Eitherの二parameterがerrorとsuccessを表すと分かりました。",
@@ -4606,20 +2175,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はLeftとRightをmatchで取り出します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson64Exercise,
-    exerciseExpectedOutput: (lesson64ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson64Diagnostic,
-    diagnosticOutput: (lesson64DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson20Exercise,
+    exerciseExpectedOutput: (lesson20ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson20Diagnostic,
+    diagnosticOutput: (lesson20DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "either-match",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/either-match/main.ssrg",
-    source: lesson65Source,
+    source: lesson21Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson65Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson21Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "LeftとRightのEither valueを作れるようになりました。",
@@ -4657,20 +2226,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はsuccessを保ったままerror型を変換します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson65Exercise,
-    exerciseExpectedOutput: (lesson65ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson65Diagnostic,
-    diagnosticOutput: (lesson65DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson21Exercise,
+    exerciseExpectedOutput: (lesson21ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson21Diagnostic,
+    diagnosticOutput: (lesson21DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "either-map-error",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/either-map-error/main.ssrg",
-    source: lesson66Source,
+    source: lesson22Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson66Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson22Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "EitherをmatchしてLeftとRightを取り出せるようになりました。Maybeではmapと<$>がsuccess payloadだけを変換しました。",
@@ -4732,20 +2301,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はMaybeとEitherを情報量で使い分けます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson66Exercise,
-    exerciseExpectedOutput: (lesson66ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson66Diagnostic,
-    diagnosticOutput: (lesson66DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson22Exercise,
+    exerciseExpectedOutput: (lesson22ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson22Diagnostic,
+    diagnosticOutput: (lesson22DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "09-maybe-and-either",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/09-maybe-and-either/main.ssrg",
-    source: lesson67Source,
+    source: lesson23Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson67Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson23Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "MaybeとEitherを構築し、matchし、payloadを変換できるようになりました。",
@@ -4783,20 +2352,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はvalueとしての失敗と実行中のfailureの境界を整理します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson67Exercise,
-    exerciseExpectedOutput: (lesson67ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson67Diagnostic,
-    diagnosticOutput: (lesson67DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson23Exercise,
+    exerciseExpectedOutput: (lesson23ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson23Diagnostic,
+    diagnosticOutput: (lesson23DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-failure-bridge",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-failure-bridge/main.ssrg",
-    source: lesson68Source,
+    source: lesson24Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson68Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson24Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "MaybeとEitherを通常のpure valueとして使い分けられるようになりました。",
@@ -4834,20 +2403,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はpure関数とeffect fnの役割を分けます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson68Exercise,
-    exerciseExpectedOutput: (lesson68ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson68Diagnostic,
-    diagnosticOutput: (lesson68DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson24Exercise,
+    exerciseExpectedOutput: (lesson24ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson24Diagnostic,
+    diagnosticOutput: (lesson24DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-pure-vs-effect",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-pure-vs-effect/main.ssrg",
-    source: lesson69Source,
+    source: lesson25Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson69Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson25Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Either valueとEffect failureの役割差を整理しました。",
@@ -4885,20 +2454,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は一つのEffect operationを実行します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson69Exercise,
-    exerciseExpectedOutput: (lesson69ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson69Diagnostic,
-    diagnosticOutput: (lesson69DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson25Exercise,
+    exerciseExpectedOutput: (lesson25ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson25Diagnostic,
+    diagnosticOutput: (lesson25DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-single-operation",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-single-operation/main.ssrg",
-    source: lesson70Source,
+    source: lesson26Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson70Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson26Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "pure関数とeffect fnの戻り値の違いが分かりました。",
@@ -4936,20 +2505,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は複数Effectを置けるdo blockを読みます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson70Exercise,
-    exerciseExpectedOutput: (lesson70ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson70Diagnostic,
-    diagnosticOutput: (lesson70DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson26Exercise,
+    exerciseExpectedOutput: (lesson26ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson26Diagnostic,
+    diagnosticOutput: (lesson26DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-do-block",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-do-block/main.ssrg",
-    source: lesson71Source,
+    source: lesson27Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson71Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson27Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "一つのEffect operationを実行できました。",
@@ -4987,20 +2556,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は実行順を出力で固定します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson71Exercise,
-    exerciseExpectedOutput: (lesson71ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson71Diagnostic,
-    diagnosticOutput: (lesson71DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson27Exercise,
+    exerciseExpectedOutput: (lesson27ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson27Diagnostic,
+    diagnosticOutput: (lesson27DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-sequence",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-sequence/main.ssrg",
-    source: lesson72Source,
+    source: lesson28Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson72Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson28Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "do blockの各行がEffectだと分かりました。",
@@ -5038,20 +2607,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はEffectの成功値を受け取ります。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson72Exercise,
-    exerciseExpectedOutput: (lesson72ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson72Diagnostic,
-    diagnosticOutput: (lesson72DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson28Exercise,
+    exerciseExpectedOutput: (lesson28ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson28Diagnostic,
+    diagnosticOutput: (lesson28DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-bind-success",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-bind-success/main.ssrg",
-    source: lesson73Source,
+    source: lesson29Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson73Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson29Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "複数Effectがsource順に実行されると確認しました。",
@@ -5089,20 +2658,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は通常値を成功Effectへ持ち上げます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson73Exercise,
-    exerciseExpectedOutput: (lesson73ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson73Diagnostic,
-    diagnosticOutput: (lesson73DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson29Exercise,
+    exerciseExpectedOutput: (lesson29ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson29Diagnostic,
+    diagnosticOutput: (lesson29DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-succeed-value",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-succeed-value/main.ssrg",
-    source: lesson74Source,
+    source: lesson30Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson74Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson30Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "<-でEffectの成功値を受け取れるようになりました。",
@@ -5140,21 +2709,21 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はEffectが失敗した場合を実行します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson74Exercise,
-    exerciseExpectedOutput: (lesson74ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson74Diagnostic,
-    diagnosticOutput: (lesson74DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson30Exercise,
+    exerciseExpectedOutput: (lesson30ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson30Diagnostic,
+    diagnosticOutput: (lesson30DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-failure-short-circuit",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-failure-short-circuit/main.ssrg",
-    source: lesson75Source,
+    source: lesson31Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson75Output).replace(/\r?\n$/u, ""),
-    expectedFailure: (lesson75Failure).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson31Output).replace(/\r?\n$/u, ""),
+    expectedFailure: (lesson31Failure).replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "succeedでEffectのsuccess valueを作れるようになりました。",
       "walkthrough": [
@@ -5194,20 +2763,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "このlessonのmapErrorはfailure型を一つへ揃えるためだけに使い、変換規則はeffect-map-errorで説明します。"
       ]
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson75Exercise,
-    exerciseExpectedOutput: (lesson75ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson75Diagnostic,
-    diagnosticOutput: (lesson75DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson31Exercise,
+    exerciseExpectedOutput: (lesson31ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson31Diagnostic,
+    diagnosticOutput: (lesson31DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-fails-type",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-fails-type/main.ssrg",
-    source: lesson76Source,
+    source: lesson32Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson76Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson32Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "failがdoの後続を止めることを実行しました。",
@@ -5245,20 +2814,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はEffectが必要とするcapabilityを読みます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson76Exercise,
-    exerciseExpectedOutput: (lesson76ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson76Diagnostic,
-    diagnosticOutput: (lesson76DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson32Exercise,
+    exerciseExpectedOutput: (lesson32ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson32Diagnostic,
+    diagnosticOutput: (lesson32DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-with-capability",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-with-capability/main.ssrg",
-    source: lesson77Source,
+    source: lesson33Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson77Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson33Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "failsがEffectのfailure型を表すと分かりました。",
@@ -5296,20 +2865,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はbodyからcontractを推論させます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson77Exercise,
-    exerciseExpectedOutput: (lesson77ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson77Diagnostic,
-    diagnosticOutput: (lesson77DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson33Exercise,
+    exerciseExpectedOutput: (lesson33ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson33Diagnostic,
+    diagnosticOutput: (lesson33DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-inferred-contract",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-inferred-contract/main.ssrg",
-    source: lesson78Source,
+    source: lesson34Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson78Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson34Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "with Consoleがenvironment requirementだと分かりました。",
@@ -5347,20 +2916,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は同じEffect contractをsourceへ明示します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson78Exercise,
-    exerciseExpectedOutput: (lesson78ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson78Diagnostic,
-    diagnosticOutput: (lesson78DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson34Exercise,
+    exerciseExpectedOutput: (lesson34ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson34Diagnostic,
+    diagnosticOutput: (lesson34DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-explicit-contract",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-explicit-contract/main.ssrg",
-    source: lesson79Source,
+    source: lesson35Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson79Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson35Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Compact effect fnがcontractを推論すると分かりました。",
@@ -5398,21 +2967,21 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は異なるfailure型をapplication errorへ揃えます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson79Exercise,
-    exerciseExpectedOutput: (lesson79ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson79Diagnostic,
-    diagnosticOutput: (lesson79DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson35Exercise,
+    exerciseExpectedOutput: (lesson35ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson35Diagnostic,
+    diagnosticOutput: (lesson35DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-map-error",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-map-error/main.ssrg",
-    source: lesson80Source,
+    source: lesson36Source,
     guide: "",
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
-    expectedFailure: (lesson80Failure).replace(/\r?\n$/u, ""),
+    expectedFailure: (lesson36Failure).replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Effect contractの推論と明示を使い分けられるようになりました。",
       "walkthrough": [
@@ -5449,20 +3018,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はEither valueをEffect failureへ変換します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson80Exercise,
-    exerciseExpectedOutput: (lesson80ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson80Diagnostic,
-    diagnosticOutput: (lesson80DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson36Exercise,
+    exerciseExpectedOutput: (lesson36ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson36Diagnostic,
+    diagnosticOutput: (lesson36DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "effect-value-boundary",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/effect-value-boundary/main.ssrg",
-    source: lesson81Source,
+    source: lesson37Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson81Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson37Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "mapErrorでEffect failure型をapplication errorへ揃えました。",
@@ -5500,20 +3069,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "最後に小さなEffect関数を一つのprogramへ組み合わせます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson81Exercise,
-    exerciseExpectedOutput: (lesson81ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson81Diagnostic,
-    diagnosticOutput: (lesson81DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson37Exercise,
+    exerciseExpectedOutput: (lesson37ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson37Diagnostic,
+    diagnosticOutput: (lesson37DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "10-effects-and-do",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
-    source: lesson82Source,
+    source: lesson38Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson82Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson38Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "MaybeでflatMapと>>=を相互に書き換え、Effectではdoと<-でsuccess valueを受け取りました。",
@@ -5575,20 +3144,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は具体型で使ったoperationを共通Traitとして回収する準備をします。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson82Exercise,
-    exerciseExpectedOutput: (lesson82ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson82Diagnostic,
-    diagnosticOutput: (lesson82DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson38Exercise,
+    exerciseExpectedOutput: (lesson38ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson38Diagnostic,
+    diagnosticOutput: (lesson38DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-concrete-generic",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-concrete-generic/main.ssrg",
-    source: lesson83Source,
+    source: lesson39Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson83Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson39Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "concrete型の関数を定義して呼び出せます。",
@@ -5626,20 +3195,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はsignature内の`A`がどこで同じ型を表すか読みます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson83Exercise,
-    exerciseExpectedOutput: (lesson83ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson83Diagnostic,
-    diagnosticOutput: (lesson83DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson39Exercise,
+    exerciseExpectedOutput: (lesson39ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson39Diagnostic,
+    diagnosticOutput: (lesson39DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-type-parameter",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-type-parameter/main.ssrg",
-    source: lesson84Source,
+    source: lesson40Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson84Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson40Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "型だけが違うconcrete関数をgenericへまとめました。",
@@ -5677,20 +3246,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はtype parameterをdataのpayloadへ使います。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson84Exercise,
-    exerciseExpectedOutput: (lesson84ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson84Diagnostic,
-    diagnosticOutput: (lesson84DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson40Exercise,
+    exerciseExpectedOutput: (lesson40ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson40Diagnostic,
+    diagnosticOutput: (lesson40DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-generic-adt-definition",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-generic-adt-definition/main.ssrg",
-    source: lesson85Source,
+    source: lesson41Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson85Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson41Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "generic signatureのtype parameterを読めます。",
@@ -5728,20 +3297,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はBoxの具体型に依存せずpayloadを取り出します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson85Exercise,
-    exerciseExpectedOutput: (lesson85ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson85Diagnostic,
-    diagnosticOutput: (lesson85DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson41Exercise,
+    exerciseExpectedOutput: (lesson41ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson41Diagnostic,
+    diagnosticOutput: (lesson41DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-generic-adt-use",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-generic-adt-use/main.ssrg",
-    source: lesson86Source,
+    source: lesson42Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson86Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson42Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "type parameterを持つBox ADTを定義しました。",
@@ -5779,20 +3348,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はfailureとsuccessを別々のparameterで表します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson86Exercise,
-    exerciseExpectedOutput: (lesson86ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson86Diagnostic,
-    diagnosticOutput: (lesson86DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson42Exercise,
+    exerciseExpectedOutput: (lesson42ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson42Diagnostic,
+    diagnosticOutput: (lesson42DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-multiple-type-parameters",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-multiple-type-parameters/main.ssrg",
-    source: lesson87Source,
+    source: lesson43Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson87Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson43Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "一つのpayload型を持つgeneric ADTを利用しました。",
@@ -5830,20 +3399,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はpayload型ではなくcontainerの形をparameterにします。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson87Exercise,
-    exerciseExpectedOutput: (lesson87ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson87Diagnostic,
-    diagnosticOutput: (lesson87DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson43Exercise,
+    exerciseExpectedOutput: (lesson43ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson43Diagnostic,
+    diagnosticOutput: (lesson43DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-type-constructor-parameter",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-type-constructor-parameter/main.ssrg",
-    source: lesson88Source,
+    source: lesson44Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson88Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson44Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "複数のpayload type parameterを使いました。",
@@ -5881,20 +3450,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は型が提供すべきoperationをTraitとして宣言します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson88Exercise,
-    exerciseExpectedOutput: (lesson88ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson88Diagnostic,
-    diagnosticOutput: (lesson88DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson44Exercise,
+    exerciseExpectedOutput: (lesson44ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson44Diagnostic,
+    diagnosticOutput: (lesson44DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-trait-operation",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-trait-operation/main.ssrg",
-    source: lesson89Source,
+    source: lesson45Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson89Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson45Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "payload型とtype constructor parameterを区別できます。",
@@ -5932,20 +3501,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はBadge型へLabelの実装を与えます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson89Exercise,
-    exerciseExpectedOutput: (lesson89ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson89Diagnostic,
-    diagnosticOutput: (lesson89DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson45Exercise,
+    exerciseExpectedOutput: (lesson45ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson45Diagnostic,
+    diagnosticOutput: (lesson45DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-user-instance",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-user-instance/main.ssrg",
-    source: lesson90Source,
+    source: lesson46Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson90Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson46Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Trait declarationから必要なoperationを読めます。",
@@ -5983,20 +3552,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はinstanceを必要とするgeneric関数を書きます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson90Exercise,
-    exerciseExpectedOutput: (lesson90ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson90Diagnostic,
-    diagnosticOutput: (lesson90DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson46Exercise,
+    exerciseExpectedOutput: (lesson46ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson46Diagnostic,
+    diagnosticOutput: (lesson46DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-where-constraint",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-where-constraint/main.ssrg",
-    source: lesson91Source,
+    source: lesson47Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson91Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson47Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "concrete型へuserland instanceを定義しました。",
@@ -6034,20 +3603,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はinstanceがある型とない型を同じ関数へ渡して比べます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson91Exercise,
-    exerciseExpectedOutput: (lesson91ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson91Diagnostic,
-    diagnosticOutput: (lesson91DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson47Exercise,
+    exerciseExpectedOutput: (lesson47ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson47Diagnostic,
+    diagnosticOutput: (lesson47DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-instance-selection",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-instance-selection/main.ssrg",
-    source: lesson92Source,
+    source: lesson48Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson92Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson48Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "where constraintを持つgeneric関数を書きました。",
@@ -6085,20 +3654,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はcontainerの形を保つ標準Trait Functorへ進みます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson92Exercise,
-    exerciseExpectedOutput: (lesson92ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson92Diagnostic,
-    diagnosticOutput: (lesson92DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson48Exercise,
+    exerciseExpectedOutput: (lesson48ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson48Diagnostic,
+    diagnosticOutput: (lesson48DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-functor-map",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-functor-map/main.ssrg",
-    source: lesson93Source,
+    source: lesson49Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson93Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson49Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Array・List・Maybe・Eitherでnamed `map`を`<$>`へ書き換え、Traitのinstance選択も確認しました。",
@@ -6160,20 +3729,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はMaybeで使ったapplyと<*>の途中型をApplicative contractとして回収します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson93Exercise,
-    exerciseExpectedOutput: (lesson93ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson93Diagnostic,
-    diagnosticOutput: (lesson93DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson49Exercise,
+    exerciseExpectedOutput: (lesson49ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson49Diagnostic,
+    diagnosticOutput: (lesson49DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-applicative-apply",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-applicative-apply/main.ssrg",
-    source: lesson94Source,
+    source: lesson50Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson94Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson50Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybeで`map add left`の途中型を作り、named `apply`を`<*>`へ書き換えました。",
@@ -6235,20 +3804,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はMaybeとEffectで使ったflatMap・>>=・doをMonad contractとして回収します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson94Exercise,
-    exerciseExpectedOutput: (lesson94ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson94Diagnostic,
-    diagnosticOutput: (lesson94DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson50Exercise,
+    exerciseExpectedOutput: (lesson50ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson50Diagnostic,
+    diagnosticOutput: (lesson50DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-monad-bind",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-monad-bind/main.ssrg",
-    source: lesson95Source,
+    source: lesson51Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson95Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson51Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "MaybeとEffectの両方でflatMap・>>=・doを使い、success-dependent compositionを実行しました。",
@@ -6310,20 +3879,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は同じFunctor operationが複数の標準containerへ広がることを実行比較します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson95Exercise,
-    exerciseExpectedOutput: (lesson95ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson95Diagnostic,
-    diagnosticOutput: (lesson95DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson51Exercise,
+    exerciseExpectedOutput: (lesson51ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson51Diagnostic,
+    diagnosticOutput: (lesson51DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-type-comparison",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-type-comparison/main.ssrg",
-    source: lesson96Source,
+    source: lesson52Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson96Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson52Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Functor、Applicative、MonadをMaybeで使いました。",
@@ -6361,20 +3930,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はSignalが持つFunctor・Applicativeと持たないMonadを区別します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson96Exercise,
-    exerciseExpectedOutput: (lesson96ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson96Diagnostic,
-    diagnosticOutput: (lesson96DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson52Exercise,
+    exerciseExpectedOutput: (lesson52ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson52Diagnostic,
+    diagnosticOutput: (lesson52DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-signal-contract",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-signal-contract/main.ssrg",
-    source: lesson97Source,
+    source: lesson53Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson97Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson53Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "複数の標準型でFunctor operationを比較しました。",
@@ -6412,20 +3981,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はgeneric nominal型へinherent methodを追加します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson97Exercise,
-    exerciseExpectedOutput: (lesson97ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson97Diagnostic,
-    diagnosticOutput: (lesson97DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson53Exercise,
+    exerciseExpectedOutput: (lesson53ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson53Diagnostic,
+    diagnosticOutput: (lesson53DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-impl-method",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-impl-method/main.ssrg",
-    source: lesson98Source,
+    source: lesson54Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson98Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson54Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "generic dataとTraitによる外部contractを学びました。",
@@ -6463,20 +4032,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は通常関数と同じ型を持つcustom operatorを定義します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson98Exercise,
-    exerciseExpectedOutput: (lesson98ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson98Diagnostic,
-    diagnosticOutput: (lesson98DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson54Exercise,
+    exerciseExpectedOutput: (lesson54ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson54Diagnostic,
+    diagnosticOutput: (lesson54DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "abstraction-custom-operator",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/abstraction-custom-operator/main.ssrg",
-    source: lesson99Source,
+    source: lesson55Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson99Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson55Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "impl methodを通常のfunction signatureとして読みました。",
@@ -6514,20 +4083,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は通常の値と時間変化するSignalを区別します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson99Exercise,
-    exerciseExpectedOutput: (lesson99ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson99Diagnostic,
-    diagnosticOutput: (lesson99DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson55Exercise,
+    exerciseExpectedOutput: (lesson55ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson55Diagnostic,
+    diagnosticOutput: (lesson55DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-value-difference",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-value-difference/main.ssrg",
-    source: lesson100Source,
+    source: lesson56Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson100Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson56Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "FunctorとApplicativeを含む抽象化を段階的に学びました。",
@@ -6565,20 +4134,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は更新可能なMutableSignalを作ります。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson100Exercise,
-    exerciseExpectedOutput: (lesson100ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson100Diagnostic,
-    diagnosticOutput: (lesson100DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson56Exercise,
+    exerciseExpectedOutput: (lesson56ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson56Diagnostic,
+    diagnosticOutput: (lesson56DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-make",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-make/main.ssrg",
-    source: lesson101Source,
+    source: lesson57Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson101Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson57Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "通常の値とSignalの現在値を区別しました。",
@@ -6616,20 +4185,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は更新権限を隠してSignalとして渡します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson101Exercise,
-    exerciseExpectedOutput: (lesson101ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson101Diagnostic,
-    diagnosticOutput: (lesson101DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson57Exercise,
+    exerciseExpectedOutput: (lesson57ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson57Diagnostic,
+    diagnosticOutput: (lesson57DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-readonly-coercion",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-readonly-coercion/main.ssrg",
-    source: lesson102Source,
+    source: lesson58Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson102Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson58Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "signals.makeでMutableSignalを生成しました。",
@@ -6667,20 +4236,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はsignals.readをprefix *へ書き換えます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson102Exercise,
-    exerciseExpectedOutput: (lesson102ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson102Diagnostic,
-    diagnosticOutput: (lesson102DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson58Exercise,
+    exerciseExpectedOutput: (lesson58ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson58Diagnostic,
+    diagnosticOutput: (lesson58DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-read-operator",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-read-operator/main.ssrg",
-    source: lesson103Source,
+    source: lesson59Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson103Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson59Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "`signals.read source`でSignalとMutableSignalの現在値をEffectとして読みました。",
@@ -6735,20 +4304,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はnamed APIのsignals.setでMutableSignalを更新します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson103Exercise,
-    exerciseExpectedOutput: (lesson103ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson103Diagnostic,
-    diagnosticOutput: (lesson103DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson59Exercise,
+    exerciseExpectedOutput: (lesson59ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson59Diagnostic,
+    diagnosticOutput: (lesson59DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-set",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-set/main.ssrg",
-    source: lesson104Source,
+    source: lesson60Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson104Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson60Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "MutableSignalをread-onlyなSignalとして渡し、signals.readとprefix *を対応付けました。",
@@ -6786,20 +4355,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はsignals.setをMutableSignal専用の:=へ書き換えます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson104Exercise,
-    exerciseExpectedOutput: (lesson104ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson104Diagnostic,
-    diagnosticOutput: (lesson104DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson60Exercise,
+    exerciseExpectedOutput: (lesson60ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson60Diagnostic,
+    diagnosticOutput: (lesson60DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-write-operator",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-write-operator/main.ssrg",
-    source: lesson105Source,
+    source: lesson61Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson105Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson61Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "`signals.set value state`でMutableSignalの現在値をEffectとして置き換えました。",
@@ -6854,20 +4423,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はreadとwriteを並べ、Effectの実行順で更新前後を観測します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson105Exercise,
-    exerciseExpectedOutput: (lesson105ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson105Diagnostic,
-    diagnosticOutput: (lesson105DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson61Exercise,
+    exerciseExpectedOutput: (lesson61ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson61Diagnostic,
+    diagnosticOutput: (lesson61DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-observable-update",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-observable-update/main.ssrg",
-    source: lesson106Source,
+    source: lesson62Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson106Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson62Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "signals.setと:=でMutableSignalの値を置き換えました。",
@@ -6905,20 +4474,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は元のstateを変えず表示用Signalを導出します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson106Exercise,
-    exerciseExpectedOutput: (lesson106ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson106Diagnostic,
-    diagnosticOutput: (lesson106DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson62Exercise,
+    exerciseExpectedOutput: (lesson62ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson62Diagnostic,
+    diagnosticOutput: (lesson62DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-map",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-map/main.ssrg",
-    source: lesson107Source,
+    source: lesson63Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson107Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson63Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "setの前後でSignalの現在値を観測しました。",
@@ -6956,20 +4525,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はsignals.mapと<$>を対応付けます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson107Exercise,
-    exerciseExpectedOutput: (lesson107ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson107Diagnostic,
-    diagnosticOutput: (lesson107DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson63Exercise,
+    exerciseExpectedOutput: (lesson63ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson63Diagnostic,
+    diagnosticOutput: (lesson63DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-functor-operator",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-functor-operator/main.ssrg",
-    source: lesson108Source,
+    source: lesson64Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson108Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson64Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "signals.mapでderived Signalを作りました。",
@@ -7007,20 +4576,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は固定値をSignalのshapeへ持ち上げます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson108Exercise,
-    exerciseExpectedOutput: (lesson108ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson108Diagnostic,
-    diagnosticOutput: (lesson108DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson64Exercise,
+    exerciseExpectedOutput: (lesson64ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson64Diagnostic,
+    diagnosticOutput: (lesson64DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-constant-pure",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-constant-pure/main.ssrg",
-    source: lesson109Source,
+    source: lesson65Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson109Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson65Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "signals.mapと<$>を同じFunctor operationとして使いました。",
@@ -7058,20 +4627,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は二つのSignalを一つへ合成します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson109Exercise,
-    exerciseExpectedOutput: (lesson109ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson109Diagnostic,
-    diagnosticOutput: (lesson109DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson65Exercise,
+    exerciseExpectedOutput: (lesson65ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson65Diagnostic,
+    diagnosticOutput: (lesson65DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-combine",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-combine/main.ssrg",
-    source: lesson110Source,
+    source: lesson66Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson110Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson66Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "constantとpureで固定値をSignalへ持ち上げました。",
@@ -7109,20 +4678,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は<*>とtransactionで複数更新をまとめます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson110Exercise,
-    exerciseExpectedOutput: (lesson110ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson110Diagnostic,
-    diagnosticOutput: (lesson110DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson66Exercise,
+    exerciseExpectedOutput: (lesson66ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson66Diagnostic,
+    diagnosticOutput: (lesson66DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-applicative-glitch-free",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-applicative-glitch-free/main.ssrg",
-    source: lesson111Source,
+    source: lesson67Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson111Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson67Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "signals.combineで二つのdependencyを合成しました。",
@@ -7168,20 +4737,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はSignalをMonadとして扱わない理由を確認します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson111Exercise,
-    exerciseExpectedOutput: (lesson111ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson111Diagnostic,
-    diagnosticOutput: (lesson111DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson67Exercise,
+    exerciseExpectedOutput: (lesson67ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson67Diagnostic,
+    diagnosticOutput: (lesson67DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-monad-boundary",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-monad-boundary/main.ssrg",
-    source: lesson112Source,
+    source: lesson68Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson112Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson68Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "<*>とtransactionでglitch-freeな合成を確認しました。",
@@ -7219,20 +4788,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は動的な切替を専用APIで明示します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson112Exercise,
-    exerciseExpectedOutput: (lesson112ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson112Diagnostic,
-    diagnosticOutput: (lesson112DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson68Exercise,
+    exerciseExpectedOutput: (lesson68ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson68Diagnostic,
+    diagnosticOutput: (lesson68DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-switch-map",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-switch-map/main.ssrg",
-    source: lesson113Source,
+    source: lesson69Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson113Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson69Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "SignalへMonadの>>=を使わない境界を確認しました。",
@@ -7270,20 +4839,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "最後に更新権限をhandlerの内側へ閉じます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson113Exercise,
-    exerciseExpectedOutput: (lesson113ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson113Diagnostic,
-    diagnosticOutput: (lesson113DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson69Exercise,
+    exerciseExpectedOutput: (lesson69ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson69Diagnostic,
+    diagnosticOutput: (lesson69DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "signals-handler-boundary",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/signals-handler-boundary/main.ssrg",
-    source: lesson114Source,
+    source: lesson70Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson114Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson70Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "switchMapで動的dependency切替を明示しました。",
@@ -7321,20 +4890,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はSignalの更新境界を保ったままpureなHtml valueを作ります。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson114Exercise,
-    exerciseExpectedOutput: (lesson114ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson114Diagnostic,
-    diagnosticOutput: (lesson114DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson70Exercise,
+    exerciseExpectedOutput: (lesson70ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson70Diagnostic,
+    diagnosticOutput: (lesson70DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-html-value",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-html-value/main.ssrg",
-    source: lesson115Source,
+    source: lesson71Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson115Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson71Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Signalの更新権限とread-only viewを分離しました。",
@@ -7372,20 +4941,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はtextとattributeを分けて指定します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson115Exercise,
-    exerciseExpectedOutput: (lesson115ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson115Diagnostic,
-    diagnosticOutput: (lesson115DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson71Exercise,
+    exerciseExpectedOutput: (lesson71ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson71Diagnostic,
+    diagnosticOutput: (lesson71DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-text-attributes",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-text-attributes/main.ssrg",
-    source: lesson116Source,
+    source: lesson72Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson116Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson72Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "html namespaceから静的elementを作りました。",
@@ -7423,20 +4992,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はtyped StyleとclassNameを追加します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson116Exercise,
-    exerciseExpectedOutput: (lesson116ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson116Diagnostic,
-    diagnosticOutput: (lesson116DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson72Exercise,
+    exerciseExpectedOutput: (lesson72ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson72Diagnostic,
+    diagnosticOutput: (lesson72DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-style-class",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-style-class/main.ssrg",
-    source: lesson117Source,
+    source: lesson73Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson117Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson73Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Textとglobal attributeを指定しました。",
@@ -7474,20 +5043,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は複数tagをchildrenへ並べます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson117Exercise,
-    exerciseExpectedOutput: (lesson117ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson117Diagnostic,
-    diagnosticOutput: (lesson117DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson73Exercise,
+    exerciseExpectedOutput: (lesson73ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson73Diagnostic,
+    diagnosticOutput: (lesson73DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-tags-children",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-tags-children/main.ssrg",
-    source: lesson118Source,
+    source: lesson74Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson118Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson74Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "StyleとclassNameをelementへ指定しました。",
@@ -7525,20 +5094,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はHtml treeをpure関数へ切り出します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson118Exercise,
-    exerciseExpectedOutput: (lesson118ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson118Diagnostic,
-    diagnosticOutput: (lesson118DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson74Exercise,
+    exerciseExpectedOutput: (lesson74ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson74Diagnostic,
+    diagnosticOutput: (lesson74DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-component-definition",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-component-definition/main.ssrg",
-    source: lesson119Source,
+    source: lesson75Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson119Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson75Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "複数tagをchildrenでdocument treeへ並べました。",
@@ -7576,20 +5145,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はcomponentを親のchildrenから呼び出します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson119Exercise,
-    exerciseExpectedOutput: (lesson119ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson119Diagnostic,
-    diagnosticOutput: (lesson119DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson75Exercise,
+    exerciseExpectedOutput: (lesson75ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson75Diagnostic,
+    diagnosticOutput: (lesson75DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-component-children",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-component-children/main.ssrg",
-    source: lesson120Source,
+    source: lesson76Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson120Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson76Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Htmlを返すFunction componentを定義しました。",
@@ -7627,20 +5196,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はcomponentへ表示用propsを渡します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson120Exercise,
-    exerciseExpectedOutput: (lesson120ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson120Diagnostic,
-    diagnosticOutput: (lesson120DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson76Exercise,
+    exerciseExpectedOutput: (lesson76ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson76Diagnostic,
+    diagnosticOutput: (lesson76DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-component-props",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-component-props/main.ssrg",
-    source: lesson121Source,
+    source: lesson77Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson121Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson77Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Function componentをchildrenから呼び出しました。",
@@ -7678,20 +5247,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はWebUrlをlinkとimageへ渡します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson121Exercise,
-    exerciseExpectedOutput: (lesson121ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson121Diagnostic,
-    diagnosticOutput: (lesson121DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson77Exercise,
+    exerciseExpectedOutput: (lesson77ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson77Diagnostic,
+    diagnosticOutput: (lesson77DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-link-image",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-link-image/main.ssrg",
-    source: lesson122Source,
+    source: lesson78Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson122Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson78Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Componentへtyped propsを渡しました。",
@@ -7737,20 +5306,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はbuttonからtyped Actionを送ります。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson122Exercise,
-    exerciseExpectedOutput: (lesson122ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson122Diagnostic,
-    diagnosticOutput: (lesson122DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson78Exercise,
+    exerciseExpectedOutput: (lesson78ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson78Diagnostic,
+    diagnosticOutput: (lesson78DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-click-action",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-click-action/main.ssrg",
-    source: lesson123Source,
+    source: lesson79Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson123Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson79Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Linkとimageへ検証済みWebUrlを渡しました。",
@@ -7788,20 +5357,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はInputEventのvalueをAction payloadへします。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson123Exercise,
-    exerciseExpectedOutput: (lesson123ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson123Diagnostic,
-    diagnosticOutput: (lesson123DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson79Exercise,
+    exerciseExpectedOutput: (lesson79ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson79Diagnostic,
+    diagnosticOutput: (lesson79DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-input-action",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-input-action/main.ssrg",
-    source: lesson124Source,
+    source: lesson80Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson124Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson80Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "OnClickからpayloadなしActionを送りました。",
@@ -7839,20 +5408,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はcheckboxのchecked snapshotを受け取ります。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson124Exercise,
-    exerciseExpectedOutput: (lesson124ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson124Diagnostic,
-    diagnosticOutput: (lesson124DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson80Exercise,
+    exerciseExpectedOutput: (lesson80ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson80Diagnostic,
+    diagnosticOutput: (lesson80DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-change-action",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-change-action/main.ssrg",
-    source: lesson125Source,
+    source: lesson81Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson125Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson81Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "InputEventのvalueをString Actionへ包みました。",
@@ -7890,20 +5459,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はinputをform submitへ接続します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson125Exercise,
-    exerciseExpectedOutput: (lesson125ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson125Diagnostic,
-    diagnosticOutput: (lesson125DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson81Exercise,
+    exerciseExpectedOutput: (lesson81ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson81Diagnostic,
+    diagnosticOutput: (lesson81DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-form-submit",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-form-submit/main.ssrg",
-    source: lesson126Source,
+    source: lesson82Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson126Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson82Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Inputとcheckboxからtyped Actionを作りました。",
@@ -7941,20 +5510,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はform viewをSignal<Html>へ持ち上げます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson126Exercise,
-    exerciseExpectedOutput: (lesson126ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson126Diagnostic,
-    diagnosticOutput: (lesson126DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson82Exercise,
+    exerciseExpectedOutput: (lesson82ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson82Diagnostic,
+    diagnosticOutput: (lesson82DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-signal-preview",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-signal-preview/main.ssrg",
-    source: lesson127Source,
+    source: lesson83Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson127Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson83Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Form inputとsubmitをtyped Actionへ接続しました。",
@@ -8000,17 +5569,17 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はSignal<Html>をbrowser runtimeへmountします。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson127Exercise,
-    exerciseExpectedOutput: (lesson127ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson127Diagnostic,
-    diagnosticOutput: (lesson127DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson83Exercise,
+    exerciseExpectedOutput: (lesson83ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson83Diagnostic,
+    diagnosticOutput: (lesson83DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-dom-run",
     challenge: "",
     interactive: true,
     sourcePath: "examples/tour/lessons/web-dom-run/main.ssrg",
-    source: lesson128Source,
+    source: lesson84Source,
     guide: "",
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
@@ -8059,20 +5628,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は複数Actionをmatchしてstateへ反映します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson128Exercise,
-    exerciseExpectedOutput: (lesson128ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson128Diagnostic,
-    diagnosticOutput: (lesson128DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson84Exercise,
+    exerciseExpectedOutput: (lesson84ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson84Diagnostic,
+    diagnosticOutput: (lesson84DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-typed-action",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-typed-action/main.ssrg",
-    source: lesson129Source,
+    source: lesson85Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson129Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson85Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "dom.runへ一つのAction handlerを渡しました。",
@@ -8118,20 +5687,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はformへlabelとARIA状態を追加します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson129Exercise,
-    exerciseExpectedOutput: (lesson129ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson129Diagnostic,
-    diagnosticOutput: (lesson129DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson85Exercise,
+    exerciseExpectedOutput: (lesson85ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson85Diagnostic,
+    diagnosticOutput: (lesson85DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-accessibility-label",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/web-accessibility-label/main.ssrg",
-    source: lesson130Source,
+    source: lesson86Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson130Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson86Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Typed ActionをmatchしてMutableSignalへ反映しました。",
@@ -8177,17 +5746,17 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "最後にcomponentとstateの所有境界をまとめます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson130Exercise,
-    exerciseExpectedOutput: (lesson130ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson130Diagnostic,
-    diagnosticOutput: (lesson130DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson86Exercise,
+    exerciseExpectedOutput: (lesson86ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson86Diagnostic,
+    diagnosticOutput: (lesson86DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "web-feature-state",
     challenge: "",
     interactive: true,
     sourcePath: "examples/tour/lessons/web-feature-state/main.ssrg",
-    source: lesson131Source,
+    source: lesson87Source,
     guide: "",
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
@@ -8236,20 +5805,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は既習概念を同じconsole applicationへ一段ずつ統合します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson131Exercise,
-    exerciseExpectedOutput: (lesson131ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson131Diagnostic,
-    diagnosticOutput: (lesson131DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson87Exercise,
+    exerciseExpectedOutput: (lesson87ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson87Diagnostic,
+    diagnosticOutput: (lesson87DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-console-data",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-console-data/main.ssrg",
-    source: lesson132Source,
+    source: lesson88Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson132Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson88Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "個別lessonでStruct、Array、map、template、Effect出力を学びました。ここから同じsales reportへ概念を一つずつ足します。",
@@ -8296,20 +5865,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は同じsales sourceへcollectionのfilterとmapを追加します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson132Exercise,
-    exerciseExpectedOutput: (lesson132ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson132Diagnostic,
-    diagnosticOutput: (lesson132DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson88Exercise,
+    exerciseExpectedOutput: (lesson88ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson88Diagnostic,
+    diagnosticOutput: (lesson88DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-console-transform",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-console-transform/main.ssrg",
-    source: lesson133Source,
+    source: lesson89Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson133Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson89Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Step 1でSale inputとそのままの一覧出力を固定しました。",
@@ -8355,20 +5924,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は欠損をMaybe、validation失敗をEitherで扱います。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson133Exercise,
-    exerciseExpectedOutput: (lesson133ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson133Diagnostic,
-    diagnosticOutput: (lesson133DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson89Exercise,
+    exerciseExpectedOutput: (lesson89ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson89Diagnostic,
+    diagnosticOutput: (lesson89DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-console-fallibility",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-console-fallibility/main.ssrg",
-    source: lesson134Source,
+    source: lesson90Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson134Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson90Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Step 2で同じsales inputをfilter・mapして表示しました。",
@@ -8422,20 +5991,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はreport生成をpure関数へ閉じ、Effect境界で一度だけ出力します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson134Exercise,
-    exerciseExpectedOutput: (lesson134ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson134Diagnostic,
-    diagnosticOutput: (lesson134DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson90Exercise,
+    exerciseExpectedOutput: (lesson90ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson90Diagnostic,
+    diagnosticOutput: (lesson90DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-console-output",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-console-output/main.ssrg",
-    source: lesson135Source,
+    source: lesson91Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson135Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson91Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Step 3でsalesの欠損とvalidation失敗をMaybe / Eitherの型に保ちました。",
@@ -8482,20 +6051,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はWeb UI到達課題をstatic viewからfeature ownershipまで段階的に積み上げます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson135Exercise,
-    exerciseExpectedOutput: (lesson135ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson135Diagnostic,
-    diagnosticOutput: (lesson135DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson91Exercise,
+    exerciseExpectedOutput: (lesson91ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson91Diagnostic,
+    diagnosticOutput: (lesson91DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-web-static",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-web-static/main.ssrg",
-    source: lesson136Source,
+    source: lesson92Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson136Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson92Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Console到達課題を四stepで完成させました。Web UI側も同じPlan boardへ差分を一つずつ加えます。",
@@ -8541,20 +6110,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は同じformをFunction componentへ分割します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson136Exercise,
-    exerciseExpectedOutput: (lesson136ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson136Diagnostic,
-    diagnosticOutput: (lesson136DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson92Exercise,
+    exerciseExpectedOutput: (lesson92ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson92Diagnostic,
+    diagnosticOutput: (lesson92DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-web-component",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-web-component/main.ssrg",
-    source: lesson137Source,
+    source: lesson93Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson137Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson93Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Web Step 1でPlan boardのstatic Html treeを固定しました。",
@@ -8600,20 +6169,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は同じformのdraftをSignal stateから表示します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson137Exercise,
-    exerciseExpectedOutput: (lesson137ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson137Diagnostic,
-    diagnosticOutput: (lesson137DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson93Exercise,
+    exerciseExpectedOutput: (lesson93ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson93Diagnostic,
+    diagnosticOutput: (lesson93DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-web-signal",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-web-signal/main.ssrg",
-    source: lesson138Source,
+    source: lesson94Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson138Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson94Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Web Step 2でstatic formをFunction componentへ分けました。",
@@ -8659,20 +6228,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は同じinputへtyped form eventを追加します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson138Exercise,
-    exerciseExpectedOutput: (lesson138ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson138Diagnostic,
-    diagnosticOutput: (lesson138DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson94Exercise,
+    exerciseExpectedOutput: (lesson94ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson94Diagnostic,
+    diagnosticOutput: (lesson94DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-web-form-event",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-web-form-event/main.ssrg",
-    source: lesson139Source,
+    source: lesson95Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson139Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson95Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Web Step 3でcomponentをSignal stateから描画しました。",
@@ -8718,20 +6287,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はTyped Actionをhandlerでstate更新へ接続します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson139Exercise,
-    exerciseExpectedOutput: (lesson139ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson139Diagnostic,
-    diagnosticOutput: (lesson139DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson95Exercise,
+    exerciseExpectedOutput: (lesson95ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson95Diagnostic,
+    diagnosticOutput: (lesson95DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-web-action",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-web-action/main.ssrg",
-    source: lesson140Source,
+    source: lesson96Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson140Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson96Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Web Step 4でInputEventをDraftChanged Actionへ変換しました。",
@@ -8785,20 +6354,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はSubmittedへvalidationとfailure表示を追加します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson140Exercise,
-    exerciseExpectedOutput: (lesson140ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson140Diagnostic,
-    diagnosticOutput: (lesson140DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson96Exercise,
+    exerciseExpectedOutput: (lesson96ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson96Diagnostic,
+    diagnosticOutput: (lesson96DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-web-validation",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-web-validation/main.ssrg",
-    source: lesson141Source,
+    source: lesson97Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson141Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson97Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Web Step 5でTyped Actionをpure reducerとeffectful handlerへ接続しました。",
@@ -8844,20 +6413,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "最後にfeature単位のstate ownershipと階層合成へ進みます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson141Exercise,
-    exerciseExpectedOutput: (lesson141ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson141Diagnostic,
-    diagnosticOutput: (lesson141DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson97Exercise,
+    exerciseExpectedOutput: (lesson97ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson97Diagnostic,
+    diagnosticOutput: (lesson97DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "applications-web-feature-ownership",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/applications-web-feature-ownership/main.ssrg",
-    source: lesson142Source,
+    source: lesson98Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson142Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson98Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Web Step 6で一つのformへtyped validationとfailure表示を追加しました。",
@@ -8904,18 +6473,18 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "最後に既存のcompactなdom.app完成例を比較し、到達課題を終えます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson142Exercise,
-    exerciseExpectedOutput: (lesson142ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson142Diagnostic,
-    diagnosticOutput: (lesson142DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson98Exercise,
+    exerciseExpectedOutput: (lesson98ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson98Diagnostic,
+    diagnosticOutput: (lesson98DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "14-integrated-app",
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson143Source,
-    guide: lesson143Guide,
+    source: lesson99Source,
+    guide: lesson99Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
@@ -8929,10 +6498,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/design-learning-map/main.ssrg",
-    source: lesson144Source,
+    source: lesson100Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson144Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson100Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Typed Action applicationまでを実行し、Tourのeditor・Run・Output・diagnosticを使いました。",
@@ -8978,20 +6547,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は通常のtype parameterと`F<_>`のkind差を実行します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson144Exercise,
-    exerciseExpectedOutput: (lesson144ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson144Diagnostic,
-    diagnosticOutput: (lesson144DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson100Exercise,
+    exerciseExpectedOutput: (lesson100ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson100Diagnostic,
+    diagnosticOutput: (lesson100DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "design-type-constructor-kinds",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/design-type-constructor-kinds/main.ssrg",
-    source: lesson145Source,
+    source: lesson101Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson145Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson101Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "`A`と`F<_>`を個別に使い、generic containerの形を保てます。",
@@ -9037,20 +6606,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はwhere制約を満たすTrait evidenceの選択を追います。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson145Exercise,
-    exerciseExpectedOutput: (lesson145ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson145Diagnostic,
-    diagnosticOutput: (lesson145DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson101Exercise,
+    exerciseExpectedOutput: (lesson101ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson101Diagnostic,
+    diagnosticOutput: (lesson101DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "design-trait-evidence",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/design-trait-evidence/main.ssrg",
-    source: lesson146Source,
+    source: lesson102Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson146Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson102Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Trait、instance、where制約を使ってgeneric functionを呼びました。",
@@ -9096,20 +6665,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次はFunctor・Applicative・Monadをoperationとlawで比較します。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson146Exercise,
-    exerciseExpectedOutput: (lesson146ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson146Diagnostic,
-    diagnosticOutput: (lesson146DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson102Exercise,
+    exerciseExpectedOutput: (lesson102ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson102Diagnostic,
+    diagnosticOutput: (lesson102DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "design-abstraction-laws",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/design-abstraction-laws/main.ssrg",
-    source: lesson147Source,
+    source: lesson103Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson147Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson103Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Functorのmap、Applicativeのapply、Monadのbindを具体型で実行しました。",
@@ -9155,20 +6724,20 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "最後に具体的な重複からTrait境界を切り出す判断を行います。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson147Exercise,
-    exerciseExpectedOutput: (lesson147ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson147Diagnostic,
-    diagnosticOutput: (lesson147DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson103Exercise,
+    exerciseExpectedOutput: (lesson103ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson103Diagnostic,
+    diagnosticOutput: (lesson103DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "design-trait-boundary",
     challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/design-trait-boundary/main.ssrg",
-    source: lesson148Source,
+    source: lesson104Source,
     guide: "",
     stdin: "",
-    expectedOutput: (lesson148Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson104Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Trait evidenceとlawがgeneric codeの置換可能性を支えることを確認しました。",
@@ -9210,13 +6779,320 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "Consumer、複数instance、lawを説明できる最小contractを選ぶ。"
       ],
       "next": {
-        "lessonId": null,
-        "body": "Tourはここで終わりです。設計背景と内部は関連記事から必要なtopicを選んで読めます。"
+        "lessonId": "list-values",
+        "body": "本編の内容はここまでです。必要に応じて、補足トラックのコレクション操作や関連記事へ進めます。"
       }
     } as unknown as TourLessonFormat,
-    exerciseSource: lesson148Exercise,
-    exerciseExpectedOutput: (lesson148ExerciseOutput).replace(/\r?\n$/u, ""),
-    diagnosticSource: lesson148Diagnostic,
-    diagnosticOutput: (lesson148DiagnosticOutput).replace(/\r?\n$/u, ""),
+    exerciseSource: lesson104Exercise,
+    exerciseExpectedOutput: (lesson104ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson104Diagnostic,
+    diagnosticOutput: (lesson104DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "list-values",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/list-values/main.ssrg",
+    source: lesson105Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson105Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "連続配置で添字アクセスできる `Array` の基本を学びました。ここでは連結リスト型の `List` を作ります。",
+      "walkthrough": [
+        {
+          "heading": "バッククォート付き角括弧で List を作る",
+          "body": "`List<Int>` のリテラルは `` `[1, 2, 3] `` です。`Array` の `[1, 2, 3]` とは別の型として区別されます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "List",
+          "body": "先頭要素と残りの部分を共有しやすい、連結リスト型のコレクションです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `` `[1, 2, 3] `` を `` `[4, 5, 6] `` に書き換えて `Run` し、`List` の出力が変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Array を List に代入する",
+        "body": "失敗例ではバッククォートの付かない `Array` リテラル `[1, 2, 3]` を、`List<Int>` の型注釈が付いた束縛へ置いています。リテラルの書き方を確認してください。"
+      },
+      "recap": [
+        "`List` リテラルはバッククォートの付いた角括弧で書く。",
+        "`List` と `Array` は異なるコレクション型として区別される。"
+      ],
+      "next": {
+        "lessonId": "list-decomposition",
+        "body": "次は `List` を先頭要素と残りのリストへ分解して読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson105Exercise,
+    exerciseExpectedOutput: (lesson105ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson105Diagnostic,
+    diagnosticOutput: (lesson105DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "list-decomposition",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/list-decomposition/main.ssrg",
+    source: lesson106Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson106Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`List` リテラルと `List` 型を書けるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "空のリストと先頭・残りのパターンで match する",
+          "body": "`` `[] `` は空の `List` に一致し、`` `[head, ...tail] `` は先頭要素 `head` と残りのリスト `tail` に一致します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 4
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "List パターン分解",
+          "body": "`List` 専用のパターンを使い、空のリストか先頭と残りの組かを安全に分解します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `` `[1, 2, 3] `` を `` `[9, 8, 7] `` に書き換えて `Run` し、先頭要素 `head` と残り `tail` の出力が変わることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Array パターンで List を受ける",
+        "body": "失敗例では `List` の値に対して、バッククォートの付かない `Array` パターンを書いています。対象の値とパターンの形を揃えてください。"
+      },
+      "recap": [
+        "`List` は空パターンと先頭・残りパターンで分解できる。",
+        "取り出した `tail` も元と同じ `List` 型になる。"
+      ],
+      "next": {
+        "lessonId": "collection-reduce-step",
+        "body": "次は `reduce` に渡すたたみ込み関数の引数の仕組みを詳しく見ます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson106Exercise,
+    exerciseExpectedOutput: (lesson106ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson106Diagnostic,
+    diagnosticOutput: (lesson106DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-reduce-step",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-reduce-step/main.ssrg",
+    source: lesson107Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson107Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "パイプラインで `reduce` を使って配列を集計できるようになりました。ここでは `reduce` に渡す計算関数の仕組みを詳しく見ます。",
+      "walkthrough": [
+        {
+          "heading": "途中の累積値と次の要素を受け取る",
+          "body": "`add total value` は、ここまでの累積値 `total` と次の要素 `value` を受け取り、新しい累積値を返す純粋関数です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "たたみ込み関数",
+          "body": "`reduce` に渡す関数は、第 1 引数に途中の累積値、第 2 引数に次の要素を受け取り、新しい累積値を返します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `add` を `multiply` に、`total + value` を `total * value` に書き換えて `Run` し、加算でも乗算でも同じ `Int -> Int -> Int` 型の関数になることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "戻り値の型をずらす",
+        "body": "失敗例では累積値の型が `Int` なのに `String` を返しています。入力の累積値と戻り値の型を揃えてください。"
+      },
+      "recap": [
+        "たたみ込み関数は、累積値と次の要素の 2 つの引数を受け取る。",
+        "関数の戻り値が、次の要素を処理するときの累積値になる。"
+      ],
+      "next": {
+        "lessonId": "collection-append-concat",
+        "body": "次は配列同士をつないだり、入れ子の配列を平らにしたりする操作を学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson107Exercise,
+    exerciseExpectedOutput: (lesson107ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson107Diagnostic,
+    diagnosticOutput: (lesson107DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-append-concat",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-append-concat/main.ssrg",
+    source: lesson108Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson108Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "たたみ込み関数の引数の並びと戻り値の役割を確認しました。ここでは複数の配列をつなぐ操作を見ます。",
+      "walkthrough": [
+        {
+          "heading": "後ろにつなぐ append と入れ子を平らにする concat",
+          "body": "`arrays.append` は後ろに別の配列をつなぎ、`arrays.concat` は配列の配列を 1 段平らに連結します。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 4
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "append と concat",
+          "body": "`append` は 2 つのコレクションをつなぎ、`concat` は入れ子になったコレクションを 1 段平らにした新しいコレクションを返します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `arrays.append [3, 4]` を `arrays.append [5, 6]` に、`[[1, 2], [3, 4]]` を `[[1], [2, 3], [4]]` に書き換えて `Run` し、`Output` の変化を確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "配列ではなく単一の要素を渡す",
+        "body": "失敗例では `arrays.append` に配列ではなく `Int` の値 `3` をそのまま渡しています。つなぐ値もコレクション型にしてください。"
+      },
+      "recap": [
+        "`append` は後ろに別のコレクションをつなぐ。",
+        "`concat` は 1 段入れ子になったコレクションを平らに連結する。"
+      ],
+      "next": {
+        "lessonId": "collection-comprehension",
+        "body": "次は要素の取り出し、絞り込み条件、変換の式を 1 つにまとめる内包表記を読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson108Exercise,
+    exerciseExpectedOutput: (lesson108ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson108Diagnostic,
+    diagnosticOutput: (lesson108DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-comprehension",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-comprehension/main.ssrg",
+    source: lesson109Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson109Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`map`、`filter`、`Range` の働きを理解しました。ここではそれらを 1 つの式にまとめる書き方を見ます。",
+      "walkthrough": [
+        {
+          "heading": "結果の式、取り出し元、絞り込み条件の順に読む",
+          "body": "`[value * value | value <- 1 ..= 4, value % 2 == 0]` は、`1 ..= 4` から偶数だけを取り出し、それぞれを 2 乗した新しい `Array` を作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "内包表記",
+          "body": "内包表記（comprehension）は、結果の式・値を取り出す元・省略可能な絞り込み条件を 1 つのコレクションリテラルにまとめます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `1 ..= 4` を `1 ..= 5` に、条件の `value % 2 == 0` を `value % 2 == 1` に書き換えて `Run` し、`Output` に奇数の 2 乗だけが残ることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "反復できない値を指定する",
+        "body": "失敗例では `Range` などのコレクションではなく `Int` の `42` を取り出し元に置いています。反復できるコレクションを渡してください。"
+      },
+      "recap": [
+        "`<-` の右側に置いたコレクションから要素を順番に取り出して束縛する。",
+        "カンマ後の条件を満たす要素だけが左側の結果の式へ進む。"
+      ],
+      "next": {
+        "lessonId": "empty-collections",
+        "body": "次は要素が 1 つもない空のコレクションを安全に扱う方法を確認します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson109Exercise,
+    exerciseExpectedOutput: (lesson109ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson109Diagnostic,
+    diagnosticOutput: (lesson109DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "empty-collections",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/empty-collections/main.ssrg",
+    source: lesson110Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson110Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "配列の連結や内包表記でコレクションを作れるようになりました。ここでは要素が 1 つもない空のコレクションの扱いを確認します。",
+      "walkthrough": [
+        {
+          "heading": "空でも結果が決まる操作を使う",
+          "body": "空の `Array` でも `arrays.length` は `0` を返し、`reduce` は要素がないときに初期値の `0` をそのまま返します。",
+          "sourceRange": {
+            "startLine": 3,
+            "endLine": 4
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "空のコレクション",
+          "body": "要素がない空のコレクションでも、長さを測る処理や初期値付きの `reduce` なら例外なく結果が決まります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "エディターの `reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、空の `Array` では初期値がそのまま結果になることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "要素の型が分からない空の配列",
+        "body": "失敗例では型注釈や使われる文脈のない空の `Array` `[]` だけを定義しています。`Array<Int>` のような型注釈を付けるか、要素型が決まる処理と組み合わせてください。"
+      },
+      "recap": [
+        "空のコレクションの `arrays.length` は `0` になる。",
+        "初期値付きの `reduce` は、コレクションが空でも安全に初期値を返す。",
+        "空のリテラル `[]` だけを単独で置くときは、型注釈で要素の型を示す。"
+      ],
+      "next": {
+        "lessonId": null,
+        "body": "コレクションの細目はこれで完了です。本編の次のステップへ進みましょう。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson110Exercise,
+    exerciseExpectedOutput: (lesson110ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson110Diagnostic,
+    diagnosticOutput: (lesson110DiagnosticOutput).replace(/\r?\n$/u, ""),
   }
 ]

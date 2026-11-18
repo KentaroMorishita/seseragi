@@ -3,17 +3,72 @@
   "id": "06-records-and-structs",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "Recordをfield構造だけで作り、immutableに更新できるようになりました。",
-    "walkthrough": [{
-      "heading": "型名のある構造を宣言する",
-      "body": "`struct Profile`はnameとroleを持つ新しい型を宣言します。`Profile { ... }`だけがその型のvalueを構築します。",
-      "sourceRange": { "startLine": 1, "endLine": 1 }
-    }],
-    "introduced": [{ "kind": "type", "name": "Struct", "body": "Structは宣言した型名で区別されるnamed data typeです。" }],
-    "exercise": { "instruction": "課題sourceでProfileのfield valueを変え、同じStruct型のvalueを構築してください。", "reset": "restore-lesson-source" },
-    "diagnostic": { "heading": "必要なfieldを省く", "body": "失敗例ではProfileのroleを省略しています。Struct declarationが要求するfieldを確認してください。" },
-    "recap": ["Structは型名とfieldを先に宣言する。", "Struct valueは同じ型名のconstructorで組み立てる。"],
-    "next": { "lessonId": "struct-field-access", "body": "次は構築したStructからfieldを読みます。" }
+    "prerequisite": "無名レコードを組み立て、必要なフィールドが揃えば同じ関数に渡せることを確認しました。ここでは型名で区別される名前付きデータ `struct` を学びます。",
+    "walkthrough": [
+      {
+        "heading": "名前付きの型 struct を宣言する",
+        "body": "`struct Customer` と `struct Staff` は同じ `name` と `plan` フィールドを持ちますが、型名が異なる別の型として扱われます。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 3
+        }
+      },
+      {
+        "heading": "特定の struct 型だけを受け取る関数",
+        "body": "`formatCustomer` は `Customer` 型を引数に取ります。無名レコードと違い、フィールドの形が同じでも `Staff` 型の値は受け取りません。フィールドの読み取りは同じく `.name` のように書きます。",
+        "sourceRange": {
+          "startLine": 5,
+          "endLine": 5
+        }
+      },
+      {
+        "heading": "型名を明示して値を組み立てる",
+        "body": "`Customer { ... }` のように宣言した型名を先頭に書いて値を作ります。宣言にあるすべてのフィールドが揃っていなければ作成できません。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 8
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "struct による名前付きデータ",
+        "body": "`struct` は型名によって区別されるデータ型です。フィールド構成が同じでも異なる型名同士は互換しません。"
+      },
+      {
+        "kind": "syntax",
+        "name": "struct の宣言と生成",
+        "body": "`struct Name { field: Type }` で型を定義し、`Name { field: value }` で値を組み立てます。参照は `.field` を使います。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの7行目にある `name: \"Mio\", plan: \"Pro\"` を `name: \"Ren\", plan: \"Team\"` に書き換えて `Run` し、`Output` の1行目が `Customer -> Ren: Team` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "フィールドが同じでも別の struct 型は渡せない",
+      "body": "失敗例では同じ `name` と `plan` を持つ `Staff` 型の `staff` を `formatCustomer` に渡しています。無名レコードなら形で通りますが、`struct` では型名の違いをコンパイラが実行前に防ぎます。"
+    },
+    "recap": [
+      "同じフィールド構成でも別のデータとして区別したいときは `struct` を使い、形で柔軟に受けたいときは無名レコードを使う。",
+      "`struct` の値を作るときは型名を明示し、宣言されたフィールドをすべて指定する。",
+      "フィールドへのアクセスはどちらも `.field` で同じように書ける。"
+    ],
+    "next": {
+      "lessonId": "adt-definition",
+      "body": "次はすべてのフィールドを同時に持つのではなく、いくつかの状態のうちどれか1つになるデータを表す代数的データ型（ADT）を学びます。"
+    },
+    "notes": [
+      "`struct` の構築時に必須フィールドを1つでも書き忘れた場合も、コンパイラが実行前に不足フィールドのエラー表示を出してくれます。"
+    ]
   },
-  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
 }

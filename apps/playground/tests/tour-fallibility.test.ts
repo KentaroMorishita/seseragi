@@ -19,7 +19,7 @@ const fallibilityIds = [
 
 describe("Tour fallibility curriculum", () => {
   test("stages Maybe and Either before the Effect chapter", () => {
-    const lessons = tourLessons.slice(56, 56 + fallibilityIds.length)
+    const lessons = tourLessons.slice(12, 12 + fallibilityIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...fallibilityIds])
     const redesigned = new Set([
@@ -35,7 +35,7 @@ describe("Tour fallibility curriculum", () => {
     ).toBe(true)
     for (const [index, lesson] of lessons.entries()) {
       expect(lesson.prerequisites).toEqual([
-        index === 0 ? "08-collections-and-ranges" : fallibilityIds[index - 1]!,
+        index === 0 ? "collection-pipeline" : fallibilityIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
         fallibilityIds[index + 1] ?? "effect-pure-vs-effect"

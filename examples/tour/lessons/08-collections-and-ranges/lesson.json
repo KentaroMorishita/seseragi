@@ -1,1 +1,74 @@
-{"$schema":"../../lesson.schema.json","id":"08-collections-and-ranges","formatVersion":2,"sections":{"prerequisite":"Array、List、Rangeの作成、変換、絞り込み、集約を段階的に確認しました。","walkthrough":[{"heading":"用途でcollectionを選ぶ","body":"index中心ならArray、head/tail共有ならList、連続Intを遅延反復するならRangeを選びます。","sourceRange":{"startLine":1,"endLine":2}}],"introduced":[{"kind":"type","name":"collection selection","body":"access patternと生成方法からArray、List、Rangeを選びます。"}],"exercise":{"instruction":"課題sourceの三collectionを変え、それぞれのresultを同じ出力で比較してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"ArrayとListを取り違える","body":"失敗例ではList annotationへArray literalを置きます。用途だけでなく型とliteralも揃えてください。"},"recap":["Arrayはindexed sequence、Listはpersistent linked sequenceである。","Rangeは連続Intを開始と終端から遅延反復する。"],"next":{"lessonId":"maybe-role","body":"collectionの基礎は完了です。次は値がない場合をMaybe型で表します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "08-collections-and-ranges",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "ADT とパターンマッチで値の種類を判別できるようになりました。ここからは同じ型の値を複数まとめて扱います。",
+    "walkthrough": [
+      {
+        "heading": "Array と Range を作る",
+        "body": "`[10, 20, 30]` は同じ型の要素を順に並べる `Array` リテラル、`1 ..= 5` は開始と終端を含む整数範囲 `Range` です。",
+        "sourceRange": {
+          "startLine": 3,
+          "endLine": 4
+        }
+      },
+      {
+        "heading": "境界チェック付きで要素を取り出す",
+        "body": "`arrays.length scores` で要素数を調べ、`arrays.get 1 scores` で先頭から 2 番目の要素を取り出します。存在する位置なら `Just 20`、範囲外の `3` なら `Nothing` の `Maybe` 値が返ります。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 9
+        }
+      },
+      {
+        "heading": "Range をそのまま集計に渡す",
+        "body": "`Range` はすべての要素を配列へ展開しなくても、`sum numbers` のような集計関数へそのまま渡せます。",
+        "sourceRange": {
+          "startLine": 10,
+          "endLine": 10
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Array と Range",
+        "body": "`Array<A>` は同じ型の要素を順序付きで持つ配列、`Range<Int>` は開始と終端で整数の範囲を表す型です。"
+      },
+      {
+        "kind": "api",
+        "name": "arrays.get と Maybe",
+        "body": "`arrays.get index array` は境界チェック付きの添字アクセスを行い、範囲内なら `Just 値`、範囲外なら `Nothing` を返します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの `scores` の値 `[10, 20, 30]` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の長さと `arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "配列に異なる型の値を混ぜる",
+      "body": "失敗例では `Array<Int>` に `String` の `\"twenty\"` を混ぜています。`Array` のすべての要素は同じ型に揃える必要があります。"
+    },
+    "recap": [
+      "`Array` リテラルは `[10, 20, 30]` のように書き、すべての要素を同じ型に揃える。",
+      "`arrays.get` による添字アクセスは 0 から数え、結果は `Just` または `Nothing` の `Maybe` になる。",
+      "`1 ..= 5` は終端を含む `Range` を作り、そのまま `sum` などの集計に渡せる。"
+    ],
+    "next": {
+      "lessonId": "collection-pipeline",
+      "body": "次は `map`・`filter`・`reduce` をパイプラインでつないで配列を集計します。"
+    },
+    "notes": [
+      "`1 .. 5` のように `=` を省くと、終端の `5` を含まない `Range`（`1` から `4` まで）になります。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

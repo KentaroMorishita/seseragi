@@ -3,48 +3,71 @@
   "id": "03-function-definitions",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "値、型注釈、型推論、primitive演算、Playgroundの基本操作までを学びました。",
+    "prerequisite": "ここまでで `let` 束縛、型注釈、`if` 式を使った値の組み立て方を学びました。",
     "walkthrough": [
       {
-        "heading": "fnでpure functionへ名前を付ける",
-        "body": "`fn greeting`は計算へ名前を付けます。parameterを書かない関数は、呼ぶときにUnit valueを一つ受け取る関数として扱われます。",
-        "sourceRange": { "startLine": 1, "endLine": 1 }
+        "heading": "fn で関数を定義し、引数と戻り型を読む",
+        "body": "1 行目の `fn add` は副作用を持たない純粋な関数を定義します。`left: Int -> right: Int -> Int` は、`Int` 型の引数 `left` と `right` を受け取り、最後の `->` の後にある `Int` 型を返すという意味です。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 1
+        }
       },
       {
-        "heading": "このlessonでは定義だけに集中する",
-        "body": "mainは関数の型を文字列として表示します。関数へ値を渡すsyntaxは後続lessonで一段ずつ学びます。",
-        "sourceRange": { "startLine": 3, "endLine": 3 }
+        "heading": "空白区切りの呼び出しと部分適用",
+        "body": "4 行目の `add 10 20` のように、Seseragi では関数名と引数を空白で並べて呼び出します。3 行目の `let add10 = add 10` のように 1 つ目の引数だけを渡すと、残りの引数を受け取る新しい関数（`add10`）ができ、5 行目で `add10 22` のように呼び出せます。",
+        "sourceRange": {
+          "startLine": 3,
+          "endLine": 5
+        }
+      },
+      {
+        "heading": "計算した結果を出力する",
+        "body": "純粋な関数 `add` が返した値（`30` と `32`）を、`main` の中でテンプレート文字列に埋め込んで `Output` へ出力しています。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 7
+        }
       }
     ],
     "introduced": [
       {
         "kind": "syntax",
-        "name": "fn",
-        "body": "`fn`は副作用を持たないpure functionを定義します。"
+        "name": "fn と引数・戻り型",
+        "body": "`fn 名前 引数1: 型 -> 引数2: 型 -> 戻り型 = 式` で関数を定義します。`->` で区切った最後が戻り型で、`=` の右側の式がそのまま戻り値になります。"
       },
       {
-        "kind": "type",
-        "name": "pure function",
-        "body": "pure functionは同じ引数から同じ結果を作り、ConsoleなどのEffectを直接実行しません。"
+        "kind": "syntax",
+        "name": "括弧なしの関数呼び出し",
+        "body": "`add 10 20` のように関数と引数を空白で区切って渡します。式を引数に渡したいときだけ `(add 1 2)` のように括弧でまとめます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "部分適用",
+        "body": "複数引数の関数に先頭の一部の引数だけを渡すと、残りの引数を受け取る関数値が得られます。"
       }
     ],
     "exercise": {
-      "instruction": "課題sourceで`greeting`が返すStringを変え、定義が引き続きcompileできることを確かめてください。",
+      "instruction": "3 行目の `let add10 = add 10` を `let add20 = add 20` に、5 行目の `add10 22` を `add20 22` に書き換えて `Run` し、`second: 42` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "宣言したString以外を返す",
-      "body": "失敗例では`greeting`の本文をIntにしています。関数定義の戻り型と本文の型差分を確認してください。"
+      "heading": "括弧とカンマで引数を渡してしまう",
+      "body": "失敗例では `add(10, 20)` と書いています。Seseragi では `(10, 20)` が 2 つの引数ではなく 1 つのまとまった値 `(Int, Int)` として扱われるため、`Int` を期待する 1 番目の引数と型が合いません。"
     },
     "recap": [
-      "`fn`でpure functionを定義できる。",
-      "parameterなしの関数はUnitを受け取る関数として扱われる。",
-      "この段階では関数の呼び方をまだ導入していない。"
+      "`fn` で関数を定義し、`引数: 型 -> ... -> 戻り型` の順で型を読みます。",
+      "関数呼び出しは `add 10 20` のように括弧を使わず空白で引数を並べます。",
+      "1 つ目の引数だけを渡して `let add10 = add 10` のように専用の関数を作れます（部分適用）。"
     ],
     "next": {
-      "lessonId": "one-parameter-function",
-      "body": "次は関数名の後ろへ一つのparameterを追加します。"
-    }
+      "lessonId": "05-pipelines",
+      "body": "次は関数同士をつないでデータの流れをわかりやすく書く演算子 `|>` と `$` を学びます。"
+    },
+    "notes": [
+      "引数を 1 つも取らない関数を定義したいときは `fn greeting -> String = \"Hello\"` のように書き、呼び出すときは `greeting ()` のように `Unit` を渡します。",
+      "入出力などの副作用を伴う `main` のような処理には Effectを返す関数（`effect fn`）を使いますが、ふだんの計算は副作用のない `fn` で書きます。"
+    ]
   },
   "files": {
     "source": "main.ssrg",

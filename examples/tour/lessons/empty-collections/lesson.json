@@ -1,1 +1,50 @@
-{"$schema":"../../lesson.schema.json","id":"empty-collections","formatVersion":2,"sections":{"prerequisite":"collection pipelineで変換から集約までつなげられるようになりました。","walkthrough":[{"heading":"Emptyでもresultが決まるoperationを使う","body":"empty Arrayのlengthは0です。reduceは要素がなければinitial valueをそのまま返します。","sourceRange":{"startLine":1,"endLine":1}}],"introduced":[{"kind":"api","name":"empty collection","body":"空collectionではlengthやinitial付きreduceのように常にresultが決まるoperationを使えます。"}],"exercise":{"instruction":"課題sourceのreduce initialを変え、空Arrayではその値がresultになることを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"型を推論できないempty literal","body":"失敗例では型情報なしのempty Arrayだけを定義します。annotationまたは利用文脈を追加してください。"},"recap":["empty collectionのlengthは0になる。","initial付きreduceはemptyでもtotalである。"],"next":{"lessonId":"08-collections-and-ranges","body":"最後にArray、List、Rangeの用途を比較します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "empty-collections",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "配列の連結や内包表記でコレクションを作れるようになりました。ここでは要素が 1 つもない空のコレクションの扱いを確認します。",
+    "walkthrough": [
+      {
+        "heading": "空でも結果が決まる操作を使う",
+        "body": "空の `Array` でも `arrays.length` は `0` を返し、`reduce` は要素がないときに初期値の `0` をそのまま返します。",
+        "sourceRange": {
+          "startLine": 3,
+          "endLine": 4
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "空のコレクション",
+        "body": "要素がない空のコレクションでも、長さを測る処理や初期値付きの `reduce` なら例外なく結果が決まります。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの `reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、空の `Array` では初期値がそのまま結果になることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "要素の型が分からない空の配列",
+      "body": "失敗例では型注釈や使われる文脈のない空の `Array` `[]` だけを定義しています。`Array<Int>` のような型注釈を付けるか、要素型が決まる処理と組み合わせてください。"
+    },
+    "recap": [
+      "空のコレクションの `arrays.length` は `0` になる。",
+      "初期値付きの `reduce` は、コレクションが空でも安全に初期値を返す。",
+      "空のリテラル `[]` だけを単独で置くときは、型注釈で要素の型を示す。"
+    ],
+    "next": {
+      "lessonId": null,
+      "body": "コレクションの細目はこれで完了です。本編の次のステップへ進みましょう。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}
