@@ -841,7 +841,14 @@ function sendApplicationRequest(
 
 function yieldForSocketIo(): Promise<void> {
   return new Promise((resolve) => {
-    setImmediate(resolve)
+    // Bun and Node read an early final response before this callback.
+    // A browser schedules the same pause with a timer.
+    const schedule = globalThis.setImmediate
+    if (typeof schedule === "function") {
+      schedule(resolve)
+      return
+    }
+    setTimeout(resolve, 0)
   })
 }
 

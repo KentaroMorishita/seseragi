@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- On Bun and Node, an `exchange` whose request body keeps producing chunks, including empty chunks, finishes when the server sends a final response before the body ends. The sender yields while it skips empty chunks, so the response is read and the request body is cancelled.
+- On Bun and Node, an `exchange` whose request body keeps producing chunks, including empty chunks, finishes when the server sends a final response before the body ends. The sender yields while it skips empty chunks, so the response is read and the request body is cancelled. A browser schedules that pause with a timer, so the same upload still finishes where `setImmediate` is absent.
 
 ## [0.61.183] - 2026-11-18
 
