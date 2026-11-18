@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.61.187] - 2026-11-18
+
+### Changed
+
+- Three Playground Web samples are rebuilt (#1376). The trail planner (`interactive-app`) now uses Signal and `dom.run` instead of the Elm-style `dom.app`, keeps each trail's text and colors in one struct, marks the chosen trail with `aria-pressed`, and draws an SVG elevation profile instead of an external photo. `html-components` becomes a reading-notes shelf built from a struct array with one function component, named styles, and SVG book covers. None of the three loads an external image any more.
+- `seseragi new web` creates the refreshed starter: named style functions, a struct update in `update`, a large count, and a hint on what to edit next, without the external photo. The labels `Count: N` and `Count one more` are unchanged.
+- The Playground sample catalog now requires a minimal Signal and `dom.run` Web sample instead of a `dom.app` one.
+
 ## [0.61.186] - 2026-11-18
 
 ### Added
