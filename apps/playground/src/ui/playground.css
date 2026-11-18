@@ -418,7 +418,9 @@ body.preview-fullscreen-fallback-open {
 }
 
 .pg-output[data-preview-fullscreen] .pg-input,
-.pg-output[data-preview-fullscreen] .pg-io-resizer {
+.pg-output[data-preview-fullscreen] .pg-io-resizer,
+.pg-output[data-preview-fullscreen] #stdin-toggle-button,
+.pg-output[data-preview-fullscreen] #clear-output-button {
   display: none;
 }
 
