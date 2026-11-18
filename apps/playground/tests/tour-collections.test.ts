@@ -1,39 +1,50 @@
 import { describe, expect, test } from "bun:test"
 import { tourLessons } from "../src/tour/curriculum"
 
-const collectionIds = [
-  "array-values",
-  "array-access",
-  "list-values",
-  "list-decomposition",
-  "range-values",
-  "collection-map",
-  "collection-filter",
-  "collection-reduce-step",
-  "collection-reduce",
-  "collection-append-concat",
-  "collection-comprehension",
-  "collection-pipeline",
-  "empty-collections",
+const coreCollectionIds = [
   "08-collections-and-ranges",
+  "collection-pipeline",
 ] as const
 
-describe("Tour collection curriculum", () => {
-  test("teaches construction, transformation and reduction sequentially", () => {
-    const lessons = tourLessons.slice(42, 42 + collectionIds.length)
+const sideTripCollectionIds = [
+  "list-values",
+  "list-decomposition",
+  "collection-reduce-step",
+  "collection-append-concat",
+  "collection-comprehension",
+  "empty-collections",
+] as const
 
-    expect(lessons.map(({ id }) => id)).toEqual([...collectionIds])
+const collectionIds = [...coreCollectionIds, ...sideTripCollectionIds] as const
+
+describe("Tour collection curriculum", () => {
+  test("teaches core Array/Range pipelines and keeps List/detail lessons in side trips", () => {
+    const coreLessons = tourLessons.slice(10, 10 + coreCollectionIds.length)
+    const sideTripLessons = tourLessons.slice(-sideTripCollectionIds.length)
+
+    expect(coreLessons.map(({ id }) => id)).toEqual([...coreCollectionIds])
+    expect(sideTripLessons.map(({ id }) => id)).toEqual([
+      ...sideTripCollectionIds,
+    ])
     expect(
-      lessons.every(({ id, deliveryIssue }) =>
-        id === "collection-map" ? deliveryIssue === 262 : deliveryIssue === 175
+      [...coreLessons, ...sideTripLessons].every(
+        ({ deliveryIssue }) => deliveryIssue === 1348
       )
     ).toBe(true)
-    for (const [index, lesson] of lessons.entries()) {
+    for (const [index, lesson] of coreLessons.entries()) {
       expect(lesson.prerequisites).toEqual([
-        index === 0 ? "data-shape-selection" : collectionIds[index - 1]!,
+        index === 0 ? "exhaustive-match" : coreCollectionIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        collectionIds[index + 1] ?? "maybe-role"
+        coreCollectionIds[index + 1] ?? "maybe-match"
+      )
+    }
+    for (const [index, lesson] of sideTripLessons.entries()) {
+      expect(lesson.prerequisites).toEqual([
+        index === 0 ? "collection-pipeline" : sideTripCollectionIds[index - 1]!,
+      ])
+      expect(lesson.format?.next.lessonId).toBe(
+        sideTripCollectionIds[index + 1] ?? null
       )
     }
   })
@@ -53,22 +64,12 @@ describe("Tour collection curriculum", () => {
   })
 
   test("keeps callback-first and collection-last flow visible", () => {
-    const map = lessonById("collection-map")
-    expect(map.source).toContain("map double [")
-    expect(map.source).toContain("double <$> [")
-    expect(map.source).toContain("map double `[1, 2, 3]")
-    expect(map.source).toContain("double <$> `[1, 2, 3]")
-    expect(map.introducedSurfaces).toContain("collection-functor-operator")
-    expect(lessonById("collection-filter").source).toContain(
-      "arrays.filter even ["
-    )
-    expect(lessonById("collection-pipeline").source).toContain(
-      "|> arrays.filter even"
-    )
-    expect(lessonById("collection-pipeline").source).toContain("|> map double")
-    expect(lessonById("collection-pipeline").source).toContain(
-      "|> reduce 0 (+)"
-    )
+    const pipeline = lessonById("collection-pipeline")
+    expect(pipeline.source).toContain("|> arrays.filter even")
+    expect(pipeline.source).toContain("|> map double")
+    expect(pipeline.source).toContain("|> reduce 0 (+)")
+    expect(pipeline.source).toContain("double <$> numbers")
+    expect(pipeline.introducedSurfaces).toContain("collection-functor-operator")
   })
 })
 

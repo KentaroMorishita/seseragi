@@ -13,15 +13,13 @@ const operatorCoverage = [
 
 describe("Tour concrete operator progression", () => {
   test("introduces operators in concrete chapters before abstraction", () => {
-    expect(firstLessonContaining("<$>")?.id).toBe("collection-map")
-    expect(firstLessonContaining("<*>")?.id).toBe("maybe-combine")
+    expect(firstLessonContaining("<$>")?.id).toBe("collection-pipeline")
+    expect(firstLessonContaining("<*>")?.id).toBe("maybe-short-circuit")
     expect(firstLessonContaining(">>=")?.id).toBe("maybe-short-circuit")
 
     const abstractionOrder = lessonById("abstraction-functor-map").order
     for (const id of [
-      "collection-map",
-      "maybe-map",
-      "maybe-combine",
+      "collection-pipeline",
       "maybe-short-circuit",
       "either-map-error",
       "10-effects-and-do",
@@ -62,7 +60,7 @@ describe("Tour concrete operator progression", () => {
     ]) {
       expect(audit).toContain(`| ${type} |`)
     }
-    expect(audit).toContain("Arrayだけのcoverageを禁止")
+    expect(audit).toContain("Arrayだけ、Maybeだけ")
     expect(audit).toContain("現行必修Tour外")
   })
 })

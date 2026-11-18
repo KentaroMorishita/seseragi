@@ -1,1 +1,62 @@
-{"$schema":"../../lesson.schema.json","id":"web-component-props","formatVersion":2,"sections":{"prerequisite":"Function componentをchildrenから呼び出しました。","walkthrough":[{"heading":"Parametersをpropsとして受け取る","body":"`card`はtitleとdetailを通常のString parameterとして受け取り、異なるHtmlを返します。","sourceRange":{"startLine":1,"endLine":10}}],"introduced":[{"kind":"syntax","name":"component props as parameters","body":"Function componentのpropsは通常のtyped parameterです。呼び出しと部分適用も通常関数と同じです。"}],"exercise":{"instruction":"二つのpropsを変更し、cardの表示内容を確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"String propsへIntを渡す","body":"失敗例はtitle parameterへIntを渡します。"},"recap":["Component propsは通常のtyped parameterである。","Propsからchildrenを組み立ててもcomponentはpureなままである。"],"next":{"lessonId":"web-link-image","body":"次はWebUrlをlinkとimageへ渡します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.html","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "web-component-props",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`html` 名前空間を使って属性や `Style`、子要素を持つ静的な `Html` ツリーを作れるようになりました。ここでは部品を再利用する関数コンポーネントを学びます。",
+    "walkthrough": [
+      {
+        "heading": "Html を返す純粋な関数として定義する",
+        "body": "6〜8 行目の `card` は `title` と `detail` を受け取り、`Html<Action>` を返す通常の純粋な関数です。コンポーネント専用の特別な構文は必要ありません。",
+        "sourceRange": {
+          "startLine": 6,
+          "endLine": 8
+        }
+      },
+      {
+        "heading": "引数（props）を変えて親の子要素から呼び出す",
+        "body": "10 行目の `page` では異なる文字列を渡して `card` を 2 回呼び出し、`html.main` の `children` 配列に並べてから `html.renderToString` で出力します。",
+        "sourceRange": {
+          "startLine": 10,
+          "endLine": 12
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "関数コンポーネント",
+        "body": "`Html<Action>` を返す通常の純粋な関数です。戻り値がそのまま `Html` の値なので、親要素の `children` にそのまま並べられます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "引数（props）",
+        "body": "コンポーネントへ渡す表示データも通常の型付き引数として受け取ります。部分適用や型の検査も通常の関数と同じように働きます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 10 行目にある `\"Welcome\"` を `\"Components\"` に、`\"Seseragi\"` を `\"Reusable UI\"` に書き換えて `Run` し、`Output` と `Preview` の表示が変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "文字列の引数（props）に数値を渡す",
+      "body": "失敗例では `String` 型を期待する第 1 引数 `title` に数値 `42` を渡しています。コンポーネントの引数も通常の関数と同様に型が検査され、実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "関数コンポーネントは `Html<Action>` を返す純粋な関数であり、通常の関数呼び出しとして `children` の中に配置できる。",
+      "コンポーネントの引数（props）は通常の型付き引数として扱われ、型違いは実行前に検出される。"
+    ],
+    "next": {
+      "lessonId": "web-typed-action",
+      "body": "次はボタンクリックなどの操作を型付きの `Action` で表し、ハンドラーで `MutableSignal` を更新する方法を学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.html",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

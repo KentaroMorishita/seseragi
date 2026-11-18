@@ -118,7 +118,17 @@ fn rendering_an_unannotated_global_uses_its_checked_initializer_type() {
     let core = compile_core_module(CompileInput::new(
         "html.ssrg",
         "native/html",
-        include_str!("../../../examples/tour/lessons/web-component-children/exercise.ssrg"),
+        r#"import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+fn badge -> html.Html<Action> = html.strong { children: "Reusable" }
+
+let page = html.p { children: [html.text "Status: ", badge ()] }
+
+pub effect fn main = html.renderToString page |> println
+"#,
     ))
     .unwrap()
     .core_ir;

@@ -3,41 +3,60 @@
   "id": "design-type-constructor-kinds",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "`A`と`F<_>`を個別に使い、generic containerの形を保てます。",
+    "prerequisite": "これまで型パラメーター `<A>` と `<F<_>>` をそれぞれ使ってきました。ここでは型引数の数（kind）の違いが、どんな制約を作るのかを確かめます。",
     "walkthrough": [
       {
-        "heading": "完成した型と型constructorを分ける",
-        "body": "`A`はIntのような完成した型、`F<_>`はMaybeのように型を一つ受け取る型constructorです。",
-        "sourceRange": { "startLine": 1, "endLine": 1 }
+        "heading": "完成した型と型コンストラクターを分ける",
+        "body": "`keepValue` の `A` は `Int` のような完成した型を受け取ります。一方 `keepShape` の `F<_>` は、`Maybe` や `Array` のように型引数を 1 つ取る型コンストラクターを受け取ります。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 3
+        }
       },
       {
-        "heading": "Parametricityでshapeを保つ",
-        "body": "`keepShape`はFの中身を観察できないため、受け取った`F<A>`を同じshapeで返します。",
-        "sourceRange": { "startLine": 1, "endLine": 8 }
+        "heading": "型パラメーターによる制約が形を保つ",
+        "body": "`keepShape` は `F` や `A` の中身を覗けないため、受け取った `F<A>` の外枠を変えずにそのまま返すことしかできません。`inspectShape` はその結果を縦のパイプラインで文字列化します。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 11
+        }
+      },
+      {
+        "heading": "同じ関数で異なる型の形を保つ",
+        "body": "`main` では `Maybe` と `Array` を同じ `inspectShape` に渡しています。どちらも元の構造が保たれたまま `Output` に出力されます。",
+        "sourceRange": {
+          "startLine": 13,
+          "endLine": 18
+        }
       }
     ],
     "introduced": [
       {
         "kind": "type",
-        "name": "type constructor kind",
-        "body": "`F<_>`はkind `Type -> Type`を要求し、完成した型のkind `Type`と区別されます。"
+        "name": "型引数の数（kind）",
+        "body": "完成した型（`Int` など）は引数なしの `Type`、`Maybe` や `Array` のように型を 1 つ取る型コンストラクターは `Type -> Type` として区別されます。"
+      },
+      {
+        "kind": "type",
+        "name": "型パラメーターによる制約",
+        "body": "具体的な型を隠すほど関数に許される操作が減り、外側の形を壊さないという保証が強くなります。"
       }
     ],
     "exercise": {
-      "instruction": "Maybe payloadを変更し、`keepShape`がcontainerの形を保つことを確認してください。",
+      "instruction": "エディターの 16 行目にある `Just 42` を `Just 7` に、17 行目の `[1, 2, 3]` を `[7, 8]` に書き換えて `Run` し、`Output` がそれぞれの形を保ったまま変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "完成した型をtype constructor位置へ置く",
-      "body": "失敗例は`Container<F<_>>`へIntを渡し、kindの違いを示します。"
+      "heading": "型コンストラクターの位置に完成した型を書く",
+      "body": "失敗例では `Container<F<_>>` の `F` の位置に `Int` を渡しています。`Type -> Type` が必要な場所に `Type` を置いたため、型引数の数の不一致として `Problems` にエラー表示が出ます。"
     },
     "recap": [
-      "型parameterのarityはgeneric contractの一部である。",
-      "Parametricな実装は知らないcontainer shapeを勝手に変えられない。"
+      "型引数を受け取る数（kind）は、`A`（`Type`）と `F<_>`（`Type -> Type`）を分ける約束になっている。",
+      "型パラメーターによる制約により、中身を知らない関数は受け取った外側の形を勝手に変えられない。"
     ],
     "next": {
       "lessonId": "design-trait-evidence",
-      "body": "次はwhere制約を満たすTrait evidenceの選択を追います。"
+      "body": "次は `where` 制約を満たす実装の証拠（`instance`）がどのように選ばれ、なぜ一意性が必要なのかを確かめます。"
     }
   },
   "files": {

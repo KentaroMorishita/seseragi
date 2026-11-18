@@ -1,1 +1,0 @@
-<p>Status: <strong>Reusable</strong></p>

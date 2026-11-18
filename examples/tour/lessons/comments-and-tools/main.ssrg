@@ -1,4 +1,0 @@
-// このcommentは実行結果へ含まれません。
-let message = "Tools ready"
-
-pub effect fn main = println message

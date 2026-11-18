@@ -4,9 +4,9 @@ type Action =
   | Increment
 
 let preview: html.Html<Action> = html.button {
-  id: "increment",
+  id: "step-up",
   onClick: Increment,
-  children: "Count: 0"
+  children: "Add 1"
 }
 
 pub effect fn main = html.renderToString preview |> println

@@ -1,3 +1,0 @@
-let message: String = 42
-
-pub effect fn main = println message

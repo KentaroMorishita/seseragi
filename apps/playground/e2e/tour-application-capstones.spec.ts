@@ -7,28 +7,27 @@ test("runs the console capstone and reaches the Web Preview sequence", async ({
   await page.goto("/tour/?lesson=applications-console-data")
 
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Step 1: input dataを定義する"
+    "総合演習 1: 検証付き集計コンソール"
   )
   await page.locator("#tour-run-button").click()
   await expect(page.locator("#tour-output")).toContainText("Book: 2400")
-  await expect(page.locator("#tour-output")).toContainText("Cancelled: 0")
+  await expect(page.locator("#tour-output")).toContainText(
+    "error: Cancelled: invalid amount"
+  )
 
-  await page.goto("/tour/?lesson=applications-web-static")
+  await page.goto("/tour/?lesson=14-integrated-app")
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Web Step 1: static viewを作る"
+    "総合演習 2: 型付き Action の対話型 Web UI"
   )
   await page.locator("#tour-run-button").click()
   await expect(page.locator("#tour-html-preview")).toBeVisible()
-  await expect(
-    page.locator("#tour-html-preview").contentFrame().getByRole("heading")
-  ).toHaveText("Plan board")
-
-  await page.goto("/tour/?lesson=applications-web-feature-ownership")
-  await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Web Step 7: feature stateを階層合成する"
-  )
-  await page.locator("#tour-run-button").click()
   const preview = page.locator("#tour-html-preview").contentFrame()
-  await expect(preview.getByRole("heading", { name: "Personal" })).toBeVisible()
-  await expect(preview.getByRole("heading", { name: "Release" })).toBeVisible()
+  const counterButton = preview.getByRole("button", {
+    name: "Count: 0 — click to add 1",
+  })
+  await expect(counterButton).toBeVisible()
+  await counterButton.click()
+  await expect(
+    preview.getByRole("button", { name: "Count: 1 — click to add 1" })
+  ).toBeVisible()
 })

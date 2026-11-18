@@ -481,6 +481,17 @@ impl Backend<'_> {
         }
         match name.as_str() {
             "std/path::Path"
+            | "std/http::Method"
+            | "std/http::Status"
+            | "std/http::Headers"
+            | "std/http::HttpUrl"
+            | "std/http::Request"
+            | "std/http::Response"
+            | "std/http::HttpBodyLimit"
+            | "std/http::HttpVersion"
+            | "std/http::HttpClient"
+            | "std/http::HttpEvent"
+            | "std/http::ResponseHead"
             | "std/bytes::Byte"
             | "std/bytes::Bytes"
             | "std/bytes::ByteError"
@@ -555,7 +566,8 @@ impl Backend<'_> {
             | "std/map::Map"
             | "std/effect::Fiber"
             | "std/effect::FiberExit"
-            | "std/deferred::Deferred" => Some(vec![0, 0]),
+            | "std/deferred::Deferred"
+            | "std/http::Body" => Some(vec![0, 0]),
             "std/prelude::Effect" | "std/stream::Stream" => Some(vec![0, 0, 0]),
             "std/transformer/maybe::MaybeT" => Some(vec![1, 0]),
             "std/transformer/either::EitherT"

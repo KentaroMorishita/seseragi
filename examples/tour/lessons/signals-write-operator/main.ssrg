@@ -1,11 +1,16 @@
 import * as signals from "std/signal"
 
 pub effect fn main = do {
-  state <- signals.make 1
-  signals.set 21 state
-  afterNamed <- signals.read state
-  state := 42
-  afterOperator <- *state
-  println `signals.set: ${afterNamed}`
-  println `:=: ${afterOperator}`
+  state <- signals.make 10
+  before <- *state
+  signals.set 20 state
+  afterSet <- *state
+  state := 30
+  afterOp <- *state
+  signals.update (\v: Int -> v + 12) state
+  afterUpdate <- *state
+  println `before: ${before}`
+  println `afterSet: ${afterSet}`
+  println `afterOp: ${afterOp}`
+  println `afterUpdate: ${afterUpdate}`
 }

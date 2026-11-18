@@ -1,2 +1,3 @@
-Just 42
-Just 42
+flatMap + map: Just 45
+apply: Just 45
+<*>: Just 45

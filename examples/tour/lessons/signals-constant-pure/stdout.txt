@@ -1,2 +1,0 @@
-constant: 40
-pure: 2

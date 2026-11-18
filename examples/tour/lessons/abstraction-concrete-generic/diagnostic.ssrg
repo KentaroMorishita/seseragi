@@ -1,3 +1,0 @@
-fn duplicate<A> value: A -> A = value + value
-
-pub effect fn main = duplicate 21 |> println

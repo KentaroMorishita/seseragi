@@ -430,9 +430,10 @@ function validateWebCatalogCoverage(samples: readonly CatalogSample[]): void {
         sample.experience === "minimal" && sample.architecture === "static",
     },
     {
-      label: "minimal dom.app",
+      // UI samples are written with Signal and dom.run, not the Elm-style dom.app.
+      label: "minimal Signal + dom.run",
       matches: (sample: (typeof webSamples)[number]) =>
-        sample.experience === "minimal" && sample.architecture === "dom-app",
+        sample.experience === "minimal" && sample.architecture === "signal-run",
     },
     {
       label: "explicit Signal + dom.run",
