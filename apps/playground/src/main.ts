@@ -33,6 +33,7 @@ import {
 import { resolveEditorLineWidth } from "./editor/format-width"
 import { createEditorPreferencesStore } from "./preferences/editor-preferences"
 import { createPreviewDocument } from "./preview-document"
+import { connectPreviewLinks } from "./runtime/preview-links"
 import type { BrowserExecution } from "./runtime/browser-execution"
 import { prepareBrowserForeignRuntime } from "./runtime/foreign-runtime"
 import {
@@ -282,6 +283,12 @@ const sampleGuideSource = requiredElement("#sample-guide-source", HTMLElement)
 const stdinInput = requiredElement("#stdin-input", HTMLTextAreaElement)
 const output = requiredElement("#output", HTMLElement)
 const htmlPreview = requiredElement("#html-preview", HTMLIFrameElement)
+// Preview の中で押された外部リンクを、確かめてから新しいタブで開く（#1375）
+const previewLinks = connectPreviewLinks({
+  frame: htmlPreview,
+  notice: requiredElement("#preview-link-notice", HTMLElement),
+  createDocument: createPreviewDocument,
+})
 const showTextOutputButton = requiredElement(
   "#show-text-output-button",
   HTMLButtonElement
@@ -1405,7 +1412,7 @@ function renderHtmlPreview(html: string): void {
   if (html === "") return
 
   const url = URL.createObjectURL(
-    new Blob([createPreviewDocument(html, executionSettings.allowed())], {
+    new Blob([previewLinks.staticDocument(html, executionSettings.allowed())], {
       type: "text/html",
     })
   )
@@ -1433,6 +1440,7 @@ async function prepareIsolatedExecution(
     const execution = await startIsolatedProject(htmlPreview, request, {
       signal: preparation.signal,
       onDomMounted,
+      onOpenLink: previewLinks.openLink,
       networkAllowed: executionSettings.allowed(),
     })
     if (
@@ -1452,6 +1460,7 @@ async function prepareIsolatedExecution(
 function clearHtmlPreview(): void {
   activePreviewPreparation?.abort()
   activePreviewPreparation = undefined
+  previewLinks.release()
   if (htmlPreviewUrl !== undefined) URL.revokeObjectURL(htmlPreviewUrl)
   htmlPreviewUrl = undefined
   htmlPreview.removeAttribute("srcdoc")

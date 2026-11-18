@@ -492,9 +492,32 @@ body.preview-fullscreen-fallback-open {
   overflow: hidden;
 }
 
-.pg-output-body > * {
+.pg-output-body > :not(.preview-link-notice) {
   width: 100%;
   height: 100%;
+}
+
+/* Preview の中のリンクを新しいタブで開いたときの知らせ（#1375）。
+   プレビューの上部に重ね、押せば利用者自身の操作として開ける */
+.preview-link-notice {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-3);
+  right: var(--space-3);
+  z-index: 2;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-float);
+  color: var(--fg-2);
+  font-size: var(--text-xs);
+  overflow-wrap: anywhere;
+}
+
+.preview-link-notice a {
+  color: var(--accent-ink);
 }
 
 .output-text {

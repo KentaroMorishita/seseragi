@@ -3314,14 +3314,19 @@ fails dom.DomRuntimeError<Never> =
     expect(html).toContain('sandbox="allow-scripts allow-forms"')
     expect(html).toContain('referrerpolicy="no-referrer"')
     expect(main).toContain(
-      "createPreviewDocument(html, executionSettings.allowed())"
+      "previewLinks.staticDocument(html, executionSettings.allowed())"
     )
+    expect(main).toContain("createDocument: createPreviewDocument")
     expect(main).toContain("startIsolatedProject(htmlPreview")
     expect(main).not.toContain("startGeneratedProject(")
     expect(main).toContain("runtime-preview.html")
     expect(main).not.toContain("document.head.replaceChildren")
     expect(runtimePreview).toContain("Seseragi Runtime Preview")
-    expect(previewDocument).toContain("script-src 'none'")
+    // Scripts stay off unless the shell asks for its own link script (#1375).
+    expect(createPreviewDocument("")).toContain("script-src 'none'")
+    expect(createPreviewDocument("", false, "token-1")).toContain(
+      "script-src 'nonce-token-1'"
+    )
     expect(previewDocument).toContain("form-action 'none'")
     expect(createPreviewDocument("", true)).toContain(
       "img-src 'self' https: data: blob:"

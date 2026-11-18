@@ -23,6 +23,7 @@ import { resolveEditorLineWidth } from "../editor/format-width"
 import { highlightSeseragi } from "../editor/seseragi-language"
 import { createEditorPreferencesStore } from "../preferences/editor-preferences"
 import { createPreviewDocument } from "../preview-document"
+import { connectPreviewLinks } from "../runtime/preview-links"
 import type { BrowserExecution } from "../runtime/browser-execution"
 import {
   type IsolatedExecutionRequest,
@@ -198,6 +199,12 @@ const stdinInput = requiredElement("#tour-stdin-input", HTMLTextAreaElement)
 const outputSection = requiredElement("#tour-output-section", HTMLElement)
 const output = requiredElement("#tour-output", HTMLElement)
 const htmlPreview = requiredElement("#tour-html-preview", HTMLIFrameElement)
+// Preview の中で押された外部リンクを、確かめてから新しいタブで開く（#1375）
+const previewLinks = connectPreviewLinks({
+  frame: htmlPreview,
+  notice: requiredElement("#tour-preview-link-notice", HTMLElement),
+  createDocument: createPreviewDocument,
+})
 const showTextButton = requiredElement(
   "#tour-show-text-button",
   HTMLButtonElement
@@ -1231,7 +1238,7 @@ function renderHtmlPreview(html: string): void {
   clearHtmlPreview()
   if (html === "") return
   const url = URL.createObjectURL(
-    new Blob([createPreviewDocument(html, executionSettings.allowed())], {
+    new Blob([previewLinks.staticDocument(html, executionSettings.allowed())], {
       type: "text/html",
     })
   )
@@ -1259,6 +1266,7 @@ async function prepareIsolatedExecution(
     const execution = await startIsolatedProject(htmlPreview, request, {
       signal: preparation.signal,
       onDomMounted,
+      onOpenLink: previewLinks.openLink,
       networkAllowed: executionSettings.allowed(),
     })
     if (
@@ -1278,6 +1286,7 @@ async function prepareIsolatedExecution(
 function clearHtmlPreview(): void {
   activePreviewPreparation?.abort()
   activePreviewPreparation = undefined
+  previewLinks.release()
   if (htmlPreviewUrl !== undefined) URL.revokeObjectURL(htmlPreviewUrl)
   htmlPreviewUrl = undefined
   htmlPreview.removeAttribute("srcdoc")
