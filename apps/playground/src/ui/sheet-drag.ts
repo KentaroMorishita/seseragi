@@ -1,6 +1,7 @@
 // 狭い画面の出力のシートを、指で引き上げ・引き下げできるようにする。
 // - 持ち手と出力の見出し（ボタンなどの操作部品の上は除く）を掴むと、シートが指に合わせて伸び縮みする。
-// - 指を離すと、動かした向きと距離で、顔を出した状態（"code"）か開いた状態（"io"）に収まる。
+// - 指を離すと、動かした向きと距離で、畳んだ状態（"closed"）、顔を出した状態（"code"）、
+//   開いた状態（"io"）のどれかに収まる。
 // - ほとんど動かさずに離したときは、タップとして扱う（持ち手のタップは開閉を切り替える）。
 import type { MobilePanel } from "./mobile-panels"
 
@@ -9,22 +10,41 @@ export const sheetDragSlop = 6
 /** これ以上動かしたら、その向きの状態に収める */
 export const sheetSnapDistance = 40
 
+export type SheetHeights = Readonly<Record<MobilePanel, number>>
+
 export type SheetSnapInput = Readonly<{
   /** 掴んでから上に動かした量（px）。下に動かすと負 */
   deltaY: number
   /** 指を離したときのシートの高さ（px） */
   height: number
-  /** 顔を出した状態の高さ（px） */
-  peekHeight: number
-  /** 開いた状態の高さ（px） */
-  openHeight: number
+  /** それぞれの止まる位置の高さ（px） */
+  heights: SheetHeights
 }>
 
+/**
+ * 指を離した位置から、収まる状態を決める。
+ * はっきり上へ動かしたときは今より高い一番近い位置へ、下へ動かしたときは
+ * 今より低い一番近い位置へ。短い動きは、いちばん近い位置へ戻す。
+ */
 export function sheetSnapTarget(input: SheetSnapInput): MobilePanel {
-  if (input.deltaY >= sheetSnapDistance) return "io"
-  if (input.deltaY <= -sheetSnapDistance) return "code"
-  const middle = (input.peekHeight + input.openHeight) / 2
-  return input.height >= middle ? "io" : "code"
+  const stops = (Object.entries(input.heights) as [MobilePanel, number][]).sort(
+    (left, right) => left[1] - right[1]
+  )
+  if (input.deltaY >= sheetSnapDistance)
+    return (
+      stops.find(([, height]) => height >= input.height)?.[0] ??
+      stops[stops.length - 1]![0]
+    )
+  if (input.deltaY <= -sheetSnapDistance)
+    return (
+      [...stops].reverse().find(([, height]) => height <= input.height)?.[0] ??
+      stops[0]![0]
+    )
+  return stops.reduce((nearest, stop) =>
+    Math.abs(stop[1] - input.height) < Math.abs(nearest[1] - input.height)
+      ? stop
+      : nearest
+  )[0]
 }
 
 export function clampSheetHeight(
@@ -47,8 +67,7 @@ export function connectSheetDrag(
       current: () => MobilePanel
     }>
     isSheet: () => boolean
-    peekHeight: () => number
-    openHeight: () => number
+    heights: () => SheetHeights
   }>
 ): void {
   let drag:
@@ -84,10 +103,11 @@ export function connectSheetDrag(
     drag.moved = true
     event.preventDefault()
     options.sheet.dataset.dragging = "true"
+    const heights = options.heights()
     const height = clampSheetHeight(
       drag.startHeight + deltaY,
-      options.peekHeight(),
-      Math.max(options.openHeight(), window.innerHeight * 0.9)
+      heights.closed,
+      Math.max(heights.io, window.innerHeight * 0.9)
     )
     options.sheet.style.height = `${height}px`
   }
@@ -110,8 +130,7 @@ export function connectSheetDrag(
       sheetSnapTarget({
         deltaY: current.startY - event.clientY,
         height,
-        peekHeight: options.peekHeight(),
-        openHeight: options.openHeight(),
+        heights: options.heights(),
       })
     )
   }

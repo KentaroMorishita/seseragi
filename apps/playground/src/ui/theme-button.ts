@@ -1,40 +1,40 @@
-// 上のバーのテーマの切り替え。押すたびに System → Light → Dark → System と進む。
-import type { ThemeController, ThemePreference } from "./theme"
+// 上のバーのテーマの切り替え。
+// - 押すと、今見えているテーマの反対（ライト ↔ ダーク）に切り替え、その選択を保存する。
+//   OS の設定に合わせている（System）ときも、押せば必ず見た目が変わる。
+// - ラベルは押したときの動作を表す（"Switch to dark theme"）。
+// - System に戻す操作は More メニューに置き、System 以外を選んでいるときだけ出す。
+import type { ThemeController, ThemeState } from "./theme"
 
-const order: readonly ThemePreference[] = ["system", "light", "dark"]
-const names: Readonly<Record<ThemePreference, string>> = {
-  system: "System",
-  light: "Light",
-  dark: "Dark",
+export function themeToggleTarget(state: ThemeState): "light" | "dark" {
+  return state.theme === "dark" ? "light" : "dark"
 }
 
-export function nextThemePreference(
-  preference: ThemePreference
-): ThemePreference {
-  return order[(order.indexOf(preference) + 1) % order.length]!
-}
-
-export function themeButtonLabel(preference: ThemePreference): string {
-  return `Theme: ${names[preference]}`
+export function themeButtonLabel(state: ThemeState): string {
+  return `Switch to ${themeToggleTarget(state)} theme`
 }
 
 export function connectThemeButton(
   button: HTMLButtonElement,
-  theme: ThemeController
+  theme: ThemeController,
+  systemButton?: HTMLButtonElement
 ): () => void {
   const render = (): void => {
-    const label = themeButtonLabel(theme.get().preference)
+    const state = theme.get()
+    const label = themeButtonLabel(state)
     button.setAttribute("aria-label", label)
     button.title = label
-    button.dataset.themePreference = theme.get().preference
+    button.dataset.theme = state.theme
+    if (systemButton) systemButton.hidden = state.preference === "system"
   }
-  const onClick = (): void =>
-    theme.set(nextThemePreference(theme.get().preference))
+  const onClick = (): void => theme.set(themeToggleTarget(theme.get()))
+  const onSystem = (): void => theme.set("system")
   button.addEventListener("click", onClick)
+  systemButton?.addEventListener("click", onSystem)
   const unsubscribe = theme.subscribe(render)
   render()
   return () => {
     button.removeEventListener("click", onClick)
+    systemButton?.removeEventListener("click", onSystem)
     unsubscribe()
   }
 }

@@ -79,6 +79,8 @@ body.preview-fullscreen-fallback-open {
 /* ============ 骨格 ============ */
 
 .pg-shell {
+  /* 畳んだシートの高さ: 持ち手 20px と見出し 44px */
+  --pg-sheet-closed: 64px;
   --safe-area-top: env(safe-area-inset-top);
   --safe-area-right: env(safe-area-inset-right);
   --safe-area-bottom: env(safe-area-inset-bottom);
@@ -244,6 +246,19 @@ body.preview-fullscreen-fallback-open {
 .pg-picker:hover,
 .pg-picker[aria-expanded="true"] {
   background: var(--surface-2);
+}
+
+/* 例の印は、実寸でも読めるよう大きめ・太めにする */
+.pg-picker .ui-badge--brand {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+}
+
+.pg-picker .ui-badge--brand .ui-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
 }
 
 .pg-picker-name {
@@ -2269,6 +2284,7 @@ body.preview-fullscreen-fallback-open {
 
   .pg-code-card {
     height: calc(100% - 196px + var(--radius-lg));
+    transition: height var(--duration) var(--ease);
     border-width: 1px 0 0;
     border-radius: 0;
     box-shadow: none;
@@ -2338,14 +2354,50 @@ body.preview-fullscreen-fallback-open {
     height: 70dvh;
   }
 
+  /* 畳んだ状態: 持ち手と見出しだけを残し、エディターを広く使う */
+  .workspace[data-mobile-panel="closed"] .pg-output-card {
+    height: calc(var(--pg-sheet-closed) + var(--safe-area-bottom, 0px));
+  }
+
+  .workspace[data-mobile-panel="closed"] .pg-code-card {
+    height: calc(100% - var(--pg-sheet-closed) + var(--radius-lg));
+  }
+
+  .workspace[data-mobile-panel="closed"] .pg-flow {
+    bottom: calc(
+      var(--pg-sheet-closed) +
+      var(--space-4) +
+      var(--safe-area-bottom, 0px)
+    );
+  }
+
+  .workspace[data-mobile-panel="closed"] .pg-output-body,
+  .workspace[data-mobile-panel="closed"] .pg-input,
+  .workspace[data-mobile-panel="closed"] .pg-io-resizer {
+    display: none;
+  }
+
   /* 指で動かしているあいだは、指に合わせて伸び縮みさせる */
   .pg-output-card[data-dragging="true"] {
     transition: none;
   }
 
+  /* 掴む場所では、ページのスクロールにも文字の選択にも指の動きを取られない */
   .pg-sheet-handle,
   .pg-output-head {
     touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .ui-app:has(.pg-output-card[data-dragging="true"]) {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* 代替の全画面では、シートを上のバーと浮かぶ Run より上に出す */
+  .pg-output-card:has([data-preview-fullscreen="fallback"]) {
+    z-index: 1000;
   }
 
   .workspace[data-mobile-panel="io"] .pg-flow {

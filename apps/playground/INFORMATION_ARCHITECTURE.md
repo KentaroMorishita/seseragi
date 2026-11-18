@@ -101,7 +101,7 @@ desktopはworkspace、editor、paneの横幅を活かしてlocal headerと境界
 
 Playgroundのmobileは、global headerを`ロゴ / Playground・Tour / Search / テーマ / More`の一行に保ち、
 コードのカードの見出し（workspace selector、Guide、Format）を二段目にします。Outputは下から顔を出すシートにし、
-引き上げると画面の7割まで広げます。Runは右下に浮かべます。Tourのmobileは#1359で作り直すまで、
+畳む（見出しだけ）・顔を出す・画面の7割まで開く、の三段で止めます。Runは右下に浮かべます。Tourのmobileは#1359で作り直すまで、
 global headerを`surface switcher / overflow / Run`の一行に保ち、その下へlocal pane navigationを置きます。
 
 compact layoutで配置を変えても名称、作用範囲、遷移先、catalog内容は変えません。

@@ -220,6 +220,10 @@ const mobileToolsButton = requiredElement(
 const mobileToolsMenu = requiredElement("#mobile-tools-menu", HTMLElement)
 const searchButton = requiredElement("#search-button", HTMLButtonElement)
 const themeButton = requiredElement("#theme-button", HTMLButtonElement)
+const themeSystemButton = requiredElement(
+  "#theme-system-button",
+  HTMLButtonElement
+)
 const runStatus = requiredElement("#run-status", HTMLElement)
 const explorerToggleButton = requiredElement(
   "#explorer-toggle-button",
@@ -426,7 +430,8 @@ connectThemeButton(
     root: document.documentElement,
     query: window.matchMedia("(prefers-color-scheme: dark)"),
     eventTarget: window,
-  })
+  }),
+  themeSystemButton
 )
 // Search（⌘K）は、例・レッスン・API・設定を一つにまとめる入口（#1358）。
 // 今は例の一覧を開く。
@@ -739,8 +744,12 @@ connectSheetDrag({
     window.matchMedia(
       "(max-width: 760px), (max-width: 960px) and (max-height: 520px)"
     ).matches,
-  peekHeight: () => 196,
-  openHeight: () => window.innerHeight * 0.7,
+  // 畳んだ状態は、持ち手と見出しだけ（CSS の --pg-sheet-closed と同じ 64px）
+  heights: () => ({
+    closed: 64,
+    code: 196,
+    io: window.innerHeight * 0.7,
+  }),
 })
 connectPanelLayout({ workspace, workspaceResizer, ioPanel, ioResizer })
 connectWorkspaceFocusNavigation(
@@ -760,7 +769,10 @@ connectWorkspaceFocusNavigation(
         editor.focus()
       }
     },
-    showCode: () => mobilePanels.show("code"),
+    // 畳んでいるときは、エディターがすでに見えているので畳んだままにする
+    showCode: () => {
+      if (mobilePanels.current() !== "closed") mobilePanels.show("code")
+    },
     showIo: () => mobilePanels.show("io"),
   }
 )

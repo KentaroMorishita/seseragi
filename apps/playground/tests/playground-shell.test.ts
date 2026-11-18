@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import { renderRunStatus, runStatusView } from "../src/ui/run-status"
-import { nextThemePreference, themeButtonLabel } from "../src/ui/theme-button"
+import { themeButtonLabel, themeToggleTarget } from "../src/ui/theme-button"
 
 const root = new URL("..", import.meta.url)
 const html = await Bun.file(new URL("index.html", root)).text()
@@ -172,48 +172,69 @@ describe("run status chip", () => {
 })
 
 describe("theme button", () => {
-  test("cycles System, Light and Dark", () => {
-    expect(nextThemePreference("system")).toBe("light")
-    expect(nextThemePreference("light")).toBe("dark")
-    expect(nextThemePreference("dark")).toBe("system")
-    expect(themeButtonLabel("system")).toBe("Theme: System")
-    expect(themeButtonLabel("dark")).toBe("Theme: Dark")
+  test("switches to the opposite of the theme on screen and says so", () => {
+    expect(themeToggleTarget({ preference: "system", theme: "light" })).toBe(
+      "dark"
+    )
+    expect(themeToggleTarget({ preference: "system", theme: "dark" })).toBe(
+      "light"
+    )
+    expect(themeToggleTarget({ preference: "light", theme: "light" })).toBe(
+      "dark"
+    )
+    expect(themeButtonLabel({ preference: "dark", theme: "dark" })).toBe(
+      "Switch to light theme"
+    )
+  })
+
+  test("offers a way back to the system theme in More", () => {
+    expect(html).toContain(
+      '<button id="theme-system-button" type="button" role="menuitem" hidden>Use system theme</button>'
+    )
+    expect(main).toContain("themeSystemButton")
   })
 })
 
 describe("mobile output sheet dragging", () => {
-  test("snaps in the direction of a deliberate drag", async () => {
-    const { sheetSnapTarget, sheetSnapDistance } = await import(
-      "../src/ui/sheet-drag"
-    )
-    const base = { peekHeight: 196, openHeight: 590 }
-    expect(
-      sheetSnapTarget({ ...base, deltaY: sheetSnapDistance, height: 236 })
-    ).toBe("io")
-    expect(
-      sheetSnapTarget({ ...base, deltaY: -sheetSnapDistance, height: 550 })
-    ).toBe("code")
-  })
+  const heights = { closed: 64, code: 196, io: 590 }
 
-  test("settles a short drag on the nearer state", async () => {
+  test("moves to the next stop in the direction of a deliberate drag", async () => {
     const { sheetSnapTarget } = await import("../src/ui/sheet-drag")
-    const base = { peekHeight: 196, openHeight: 590 }
-    expect(sheetSnapTarget({ ...base, deltaY: 20, height: 420 })).toBe("io")
-    expect(sheetSnapTarget({ ...base, deltaY: -20, height: 300 })).toBe("code")
+    expect(sheetSnapTarget({ heights, deltaY: 60, height: 124 })).toBe("code")
+    expect(sheetSnapTarget({ heights, deltaY: 50, height: 246 })).toBe("io")
+    expect(sheetSnapTarget({ heights, deltaY: -50, height: 540 })).toBe("code")
+    expect(sheetSnapTarget({ heights, deltaY: -50, height: 146 })).toBe(
+      "closed"
+    )
   })
 
-  test("keeps the sheet between its peek and maximum heights", async () => {
+  test("settles a short drag on the nearest stop", async () => {
+    const { sheetSnapTarget } = await import("../src/ui/sheet-drag")
+    expect(sheetSnapTarget({ heights, deltaY: 20, height: 420 })).toBe("io")
+    expect(sheetSnapTarget({ heights, deltaY: -20, height: 210 })).toBe("code")
+    expect(sheetSnapTarget({ heights, deltaY: -20, height: 90 })).toBe("closed")
+  })
+
+  test("keeps the sheet between its closed and maximum heights", async () => {
     const { clampSheetHeight } = await import("../src/ui/sheet-drag")
-    expect(clampSheetHeight(120, 196, 760)).toBe(196)
-    expect(clampSheetHeight(400, 196, 760)).toBe(400)
-    expect(clampSheetHeight(900, 196, 760)).toBe(760)
+    expect(clampSheetHeight(20, 64, 760)).toBe(64)
+    expect(clampSheetHeight(400, 64, 760)).toBe(400)
+    expect(clampSheetHeight(900, 64, 760)).toBe(760)
+  })
+
+  test("can fold down to the handle and heading so the editor gets the room", () => {
+    expect(styles).toContain("--pg-sheet-closed: 64px;")
+    expect(styles).toMatch(
+      /\.workspace\[data-mobile-panel="closed"\] \.pg-code-card \{\s*height: calc\(100% - var\(--pg-sheet-closed\) \+ var\(--radius-lg\)\);/
+    )
+    expect(main).toContain("closed: 64,")
   })
 
   test("is wired to the handle and the output heading", () => {
     expect(main).toContain("connectSheetDrag({")
     expect(main).toContain('grips: [requiredElement(".pg-output-head"')
     expect(styles).toMatch(
-      /\.pg-sheet-handle,\s*\.pg-output-head \{\s*touch-action: none;/
+      /\.pg-sheet-handle,\s*\.pg-output-head \{\s*touch-action: none;\s*user-select: none;/
     )
   })
 })
