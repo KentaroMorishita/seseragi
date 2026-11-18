@@ -1,4 +1,0 @@
-Tuple: position
-Record: fields
-Struct: Account
-ADT: Shipped Osaka

@@ -1,9 +1,0 @@
-fn multiply left: Int -> right: Int -> Int = left * right
-
-let left: Maybe<Int> = Just 6
-let right: Maybe<Int> = Just 7
-let partial: Maybe<Int -> Int> = map multiply left
-let named: Maybe<Int> = apply partial right
-let viaOperator: Maybe<Int> = multiply <$> left <*> right
-
-pub effect fn main = println $ `apply: ${named} / <*>: ${viaOperator}`

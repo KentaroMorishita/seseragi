@@ -1,0 +1,131 @@
+// std/http values that need no HttpClient: methods, statuses, URLs, headers,
+// requests, body limits and error messages, including every refusal.
+import * as http from "std/http"
+import * as arrays from "std/array"
+
+effect fn say text: String -> Unit with Console = println text |> effects.recover ignore
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+
+import * as effects from "std/effect"
+
+fn built<A> label: String
+  -> render: (A -> String)
+  -> result: Either<http.HttpBuildError, A>
+  -> String =
+  match result {
+    Right value -> label + " ok " + render value
+    Left error -> label + " error " + show error
+  }
+
+fn headerText headers: http.Headers -> String = show (
+  map (\entry: (String, String) -> fst entry + "=" + snd entry)
+    (http.headerEntries headers)
+)
+
+fn fst pair: (String, String) -> String = match pair { (first, _) -> first }
+fn snd pair: (String, String) -> String = match pair { (_, second) -> second }
+
+fn urlText url: http.HttpUrl -> String = http.renderUrl url
+
+fn statusText status: http.Status -> String =
+  show (http.statusCode status) + " " + show (http.isInformational status) + " " + show (http.isSuccess status) + " " + show (http.isRedirection status) + " " + show (http.isClientError status) + " " + show (http.isServerError status)
+
+fn limitText _limit: http.HttpBodyLimit -> String = "limit"
+
+effect fn requests url: http.HttpUrl -> Unit with Console = do {
+  let request = http.request http.post url
+  say (
+    built "request" (\_: http.Request -> "ok")
+      (http.withRequestHeader "accept" "text/plain" request)
+  )
+  say (
+    built "request" (\_: http.Request -> "ok")
+      (http.withRequestHeader "connection" "close" request)
+  )
+  let _without = http.withoutRequestHeader "accept" request
+  say "request done"
+}
+
+pub effect fn main -> Unit with Console = do {
+  say (
+    show (
+      map http.methodText [
+        http.get,
+        http.head,
+        http.post,
+        http.put,
+        http.patch,
+        http.delete,
+        http.options,
+        http.connect,
+        http.trace
+      ]
+    )
+  )
+  say (built "custom" http.methodText (http.customMethod "PURGE"))
+  say (built "custom" http.methodText (http.customMethod "get"))
+  say (built "custom" http.methodText (http.customMethod "BAD METHOD"))
+  say (built "status" statusText (http.status 100))
+  say (built "status" statusText (http.status 204))
+  say (built "status" statusText (http.status 302))
+  say (built "status" statusText (http.status 404))
+  say (built "status" statusText (http.status 503))
+  say (built "status" statusText (http.status 999))
+  say (built "status" statusText (http.status 99))
+  say (built "status" statusText (http.status 1000))
+  say (built "url" urlText (http.parseUrl "HTTP://Example.COM:80/a/../b/%7e?q=a b"))
+  say (built "url" urlText (http.parseUrl "https://[0:0::1]:8443/x"))
+  say (built "url" urlText (http.parseUrl "http://0x7f.1/"))
+  say (built "url" urlText (http.parseUrl "http://xn--58d.com/"))
+  say (built "url" urlText (http.parseUrl "http://%C3%A9.com/"))
+  say (built "url" urlText (http.parseUrl "http://%EF%BD%81.com/"))
+  say (built "url" urlText (http.parseUrl "http://a%E3%80%82b/"))
+  say (built "url" urlText (http.parseUrl "http://M%C3%BCnchen.DE/"))
+  say (built "url" urlText (http.parseUrl "http://a/^{}`|"))
+  say (built "url" urlText (http.parseUrl "file://a:80/"))
+  say (built "url" urlText (http.parseUrl "foo://:1/"))
+  say (built "url" urlText (http.parseUrl "foo://a\u{7f}b/"))
+  say (built "url" urlText (http.parseUrl "http://a/é"))
+  say (built "url" urlText (http.parseUrl "http://a/%zz"))
+  say (built "url" urlText (http.parseUrl "nothing"))
+  say (built "url" urlText (http.parseUrl "ftp://a/"))
+  say (built "url" urlText (http.parseUrl "http://user:pw@a/"))
+  say (built "url" urlText (http.parseUrl "http://a/#part"))
+  say (built "url" urlText (http.parseUrl "http://a:99999/"))
+  let headers =
+    match http.appendHeader "X-One" "1" http.emptyHeaders { Right value -> value;
+      Left _ -> http.emptyHeaders }
+  let more =
+    match http.appendHeader "x-two" "2" headers { Right value -> value;
+      Left _ -> headers }
+  let again =
+    match http.appendHeader "X-ONE" "3" more { Right value -> value; Left _ -> more }
+  say (headerText again)
+  say (built "set" headerText (http.setHeader "x-one" "4" again))
+  say (headerText (http.removeHeader "X-One" again))
+  say (show (http.headerValues "x-one" again))
+  say (built "append" headerText (http.appendHeader "Bad Name" "v" again))
+  say (built "append" headerText (http.appendHeader "Host" "v" again))
+  say (built "append" headerText (http.appendHeader "x" "a\r\nb" again))
+  say (built "append" headerText (http.appendHeader "x" "雪" again))
+  say (built "append" headerText (http.appendHeader ":path" "/" again))
+  match http.parseUrl "http://example.com/" {
+    Right url -> requests url
+    Left error -> say (show error)
+  }
+  say (built "limit" limitText (http.bodyLimit 1))
+  say (built "limit" limitText (http.bodyLimit 0))
+  say (built "limit" limitText (http.bodyLimit (-5)))
+  let _default = http.defaultBodyLimit ()
+  say (http.errorMessage (http.HttpDnsFailure "no host"))
+  say (http.errorMessage (http.HttpRequestLengthMismatch { declared: 3, actual: 2 }))
+  say (http.errorMessage (http.HttpResponseBodyLimitExceeded { limitBytes: 10 }))
+  say (http.errorMessage http.HttpClientUnavailable)
+  // HTTP values pass through generic Array and Effect operations.
+  say (show (map http.methodText (arrays.reverse [http.get, http.post])))
+  attempted <- effects.attempt (effects.succeed http.get)
+  say (match attempted {
+    Right method -> http.methodText method
+    Left _ -> "failed"
+  })
+}

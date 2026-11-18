@@ -1,12 +1,31 @@
-type Badge =
-  | Active
+type Status deriving Eq, Show =
+  | Draft
+  | Ready
+
+struct Task deriving Eq, Show { title: String, done: Bool, }
 
 trait Label<A> {
   fn label value: A -> String
 }
 
-fn labelBadge value: Badge -> String = match value {
-  Active -> "ACTIVE"
+instance Label<Status> {
+  fn label value: Status -> String = match value {
+    Draft -> "draft"
+    Ready -> "ready"
+  }
 }
 
-pub effect fn main = labelBadge Active |> println
+instance Label<Task> {
+  fn label value: Task -> String =
+    if value.done then `done: ${value.title}` else `todo: ${value.title}`
+}
+
+fn formatTag<A> value: A -> String where Label<A> = `(${label value})`
+
+pub effect fn main = do {
+  let current = Ready
+  let task = Task { title: "Docs", done: True }
+  println $ formatTag current
+  println $ formatTag task
+  println `ready: ${current == Ready}, text: ${show task}`
+}

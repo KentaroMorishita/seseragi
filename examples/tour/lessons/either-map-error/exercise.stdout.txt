@@ -1,3 +1,5 @@
-Right 42
-Right 42
-error: input: invalid
+map: Right 42
+<$>: Right 42
+left kept: Left empty input
+success: 41
+error: empty input

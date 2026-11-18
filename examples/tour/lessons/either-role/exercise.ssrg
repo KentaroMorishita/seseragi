@@ -1,3 +1,0 @@
-let result: Either<String, String> = Left "missing name"
-
-pub effect fn main = println "Either<String, String>: error or success"

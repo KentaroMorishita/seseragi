@@ -41,8 +41,8 @@ const $ssrg$source2055 = { file: "main.ssrg", line: 48, column: 3, uri: "seserag
 const $ssrg$source2065 = { file: "main.ssrg", line: 48, column: 13, uri: "seseragi://artifact/user-ord-operator", start: 2065, end: 2086 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_tupleShow<readonly [boolean, boolean, boolean, boolean]>(_ssrg_show_boolShow, _ssrg_show_boolShow, _ssrg_show_boolShow, _ssrg_show_boolShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_show_tupleShow<readonly [boolean, boolean, boolean]>(_ssrg_show_boolShow, _ssrg_show_boolShow, _ssrg_show_boolShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_tupleShow<readonly [boolean, boolean, boolean, boolean]>(_ssrg_show_boolShow, _ssrg_show_boolShow, _ssrg_show_boolShow, _ssrg_show_boolShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_show_tupleShow<readonly [boolean, boolean, boolean]>(_ssrg_show_boolShow, _ssrg_show_boolShow, _ssrg_show_boolShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 declare const __ssrg$brand$Score: unique symbol;
 type Score = {
   readonly "value": number;

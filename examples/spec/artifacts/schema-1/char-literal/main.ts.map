@@ -9,6 +9,9 @@
     "\nfn identity<A> value: A -> A = value\nfn character value: Char -> Char = value\nlet account' = '瀬'\nfn classify value: Char -> Int = match value { 'a' -> 1; '\\u{03BB}' -> 2; _ -> 0 }\nlet escaped: Char = '\\u{03BB}'\nlet nested: Array<Maybe<Char>> = [Just 'a', Just escaped]\nlet tuple: (Char, Char) = (identity account', character '\\'')\npub let result: String = `${tuple}, ${nested}, ${'λ'}`\n"
   ],
   "names": [
+    "arrayShow",
+    "maybeShow",
+    "charShow",
     "tupleShow",
     "charShow",
     "charShow",
@@ -29,10 +32,8 @@
     "character",
     "result",
     "$ssrg$closedDisplay$0",
-    "arrayShow",
-    "maybeShow",
-    "charShow",
+    "$ssrg$closedDisplay$1",
     "charShow"
   ],
-  "mappings": ";;;;;;;;;;;AACAG;AACAC;AAEAC;AADAC;AAEAC;AACAC;AACAK;AACAK"
+  "mappings": ";;;;;;;;;;;;AACAM;AACAC;AAEAC;AADAC;AAEAC;AACAC;AACAK;AACAK"
 }

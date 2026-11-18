@@ -1,1 +1,74 @@
-{"$schema":"../../lesson.schema.json","id":"effect-pure-vs-effect","formatVersion":2,"sections":{"prerequisite":"Either valueとEffect failureの役割差を整理しました。","walkthrough":[{"heading":"計算と処理を分ける","body":"pureなlabelはStringを返し、effect fn mainはprintlnするEffectを返します。","sourceRange":{"startLine":1,"endLine":3}}],"introduced":[{"kind":"syntax","name":"pure and effect function","body":"fnはpure value、effect fnは実行時の処理を表すEffectを返します。"}],"exercise":{"instruction":"課題sourceのproject名を変え、pureなlabel結果が実行時出力へ渡ることを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Pure関数からEffectを返す","body":"失敗例は通常のfnへprintlnを置きます。Effectを返す関数はeffect fnで宣言してください。"},"recap":["pure関数は通常値を返す。","effect fnは実行する処理をEffectとして返す。"],"next":{"lessonId":"effect-single-operation","body":"次は一つのEffect operationを実行します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "effect-pure-vs-effect",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "ここまでで `Maybe` や `Either` を使い、欠如や失敗理由を通常の値として表す方法を学びました。ここからは入出力などの副作用を扱う `Effect` へ進みます。",
+    "walkthrough": [
+      {
+        "heading": "純粋な fn と effect fn の違い",
+        "body": "1 行目の `formatTag` は引数から `String` を組み立てる純粋な関数です。3 行目の `announce` は `println` で画面へ出力する処理を表すため、Effectを返す関数として `effect fn` で宣言します。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 3
+        }
+      },
+      {
+        "heading": "Effect は作っただけでは実行されない",
+        "body": "5・6 行目では `announce` を呼んで `Effect` 型の値を `second` と `first` に束縛しています。この時点では手順を表す値を作っただけであり、まだ `Output` には何も出力されません。",
+        "sourceRange": {
+          "startLine": 5,
+          "endLine": 6
+        }
+      },
+      {
+        "heading": "main で使われて初めて実行される",
+        "body": "実行したときに動き出すのは `main` の `do` ブロックです。並び順に `first`・`second`・`first` が実行されるため、2 回使った `first` は 2 回とも出力されます。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 12
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Effect と構築・実行の分離",
+        "body": "`Effect` は「これから行う処理」を表す値です。関数を呼んで値を作っただけでは動かず、`main` などの実行境界へ渡されて初めて動きます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "effect fn",
+        "body": "Effectを返す関数を宣言する構文です。`println` のような副作用を扱う処理は通常の `fn` ではなく `effect fn` の中で組み立てます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 11 行目にある `first` を `second` に書き換えて `Run` し、`Output` の 3 行目が `step: second` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "純粋な fn の中に println を書く",
+      "body": "失敗例では `fn` で宣言した関数の本体に `println` を置いています。`println` は `Unit` ではなく `Effect` 値を返すため、実行前に `Problems` へ型の不一致が表示されます。"
+    },
+    "recap": [
+      "通常の `fn` は計算結果の値そのものを返し、`effect fn` は実行すべき処理を表す `Effect` 値を返します。",
+      "`Effect` は作っただけでは動かず、`main` の `do` ブロックに置かれて初めて実行されます。",
+      "同じ `Effect` 値を 2 回使えば、その副作用も 2 回実行されます。"
+    ],
+    "next": {
+      "lessonId": "10-effects-and-do",
+      "body": "次は `do` ブロックと `<-` を使って複数の `Effect` を上から順に実行し、成功値を受け渡す方法を学びます。"
+    },
+    "notes": [
+      "純粋な関数（`fn`）の内部から `println` のような `Effect` を暗黙に実行することはできません。計算と入出力を分けることで、テストや再利用がしやすくなります。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

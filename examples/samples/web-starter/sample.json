@@ -1,17 +1,26 @@
 {
   "$schema": "../sample.schema.json",
   "id": "web-starter",
-  "title": "Web starter — 最初のlocal package",
-  "summary": "seseragi new webが生成するものと同じsourceで、Signal counterをlocal Web packageとして動かします。",
+  "title": "最初の Web プロジェクト（seseragi new web）",
+  "summary": "seseragi new web が作るものと同じソースで、Signal のカウンターを手元の Web プロジェクトとして動かします。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["project", "Signal", "typed Action", "dom.run"],
-  "capabilities": ["dom"],
+  "topics": [
+    "project",
+    "Signal",
+    "typed Action",
+    "dom.run"
+  ],
+  "capabilities": [
+    "dom"
+  ],
   "outputMode": "html",
   "experience": "minimal",
   "architecture": "multi-module",
   "focus": "project",
-  "prerequisites": ["interactive-app"],
+  "prerequisites": [
+    "interactive-app"
+  ],
   "featured": false,
   "isNew": true,
   "interactive": true,
@@ -21,7 +30,10 @@
   },
   "workspace": {
     "active": "app.ssrg",
-    "open": ["main.ssrg", "app.ssrg"],
+    "open": [
+      "main.ssrg",
+      "app.ssrg"
+    ],
     "expanded": []
   }
 }

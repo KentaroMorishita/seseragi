@@ -1,1 +1,3 @@
-Label requires: A -> String
+(draft)
+(todo: Docs)
+ready: False, text: Task { title: Docs, done: False }

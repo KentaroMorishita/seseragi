@@ -1,3 +1,0 @@
-let values: Array<Int> = [10, "twenty", 30]
-
-pub effect fn main = println "Array"

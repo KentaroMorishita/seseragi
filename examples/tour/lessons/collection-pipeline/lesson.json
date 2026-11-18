@@ -1,1 +1,71 @@
-{"$schema":"../../lesson.schema.json","id":"collection-pipeline","formatVersion":2,"sections":{"prerequisite":"filter、map、reduceを個別に使い、引数位置を説明できるようになりました。","walkthrough":[{"heading":"Collection本体を最後のparameterへ流す","body":"Arrayはfilter、map、reduceへ左から右へ流れます。各functionはcallbackやinitialだけを先に受け取ります。","sourceRange":{"startLine":1,"endLine":1}}],"introduced":[{"kind":"api","name":"collection pipeline","body":"data-last collection APIをpartial applicationし、`|>`で同じvalueを順に流します。"}],"exercise":{"instruction":"課題sourceのpredicate、変換、initialを一つずつ変えてresultを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Pipelineの途中で型を変えすぎる","body":"失敗例ではStringへmapした後にInt predicateを適用します。各段の出力型と次の入力型を合わせてください。"},"recap":["data-last APIはpipelineへ自然につながる。","各段のresult型が次のcollection要素型になる。"],"next":{"lessonId":"empty-collections","body":"次は要素がない場合のtotal operationを確認します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "collection-pipeline",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`Array` と `Range` の作り方や、`arrays.get` による安全な要素の取り出し方を学びました。ここでは複数の処理をパイプラインでつないで集計します。",
+    "walkthrough": [
+      {
+        "heading": "絞り込み、変換、集計をパイプラインでつなぐ",
+        "body": "`values` は `|>` に沿って上から順に流れます。`arrays.filter even` で偶数だけを残し、`map double` でそれぞれ 2 倍にして、`reduce 0 (+)` で合計します。",
+        "sourceRange": {
+          "startLine": 6,
+          "endLine": 10
+        }
+      },
+      {
+        "heading": "処理関数を先に渡し、配列を最後に流す",
+        "body": "`arrays.filter`・`map`・`reduce` は判定や変換の関数を先に受け取り、対象の配列を最後の引数で受け取るため、部分適用のまま `|>` に並べられます。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 10
+        }
+      },
+      {
+        "heading": "演算子表記でも各要素を変換できる",
+        "body": "`double <$> numbers` は `map double numbers` と同じ要素変換です。演算子の左に関数、右に配列を置いて書けます。",
+        "sourceRange": {
+          "startLine": 13,
+          "endLine": 13
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "filter、map、reduce の連携",
+        "body": "配列を最後の引数に取る関数へ条件や変換の関数を先に渡し、`|>` で絞り込み・変換・集計を順に組み合わせます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "演算子 <$>",
+        "body": "`f <$> values` は `map f values` と同じ意味の演算子表記で、配列の各要素に関数 `f` を適用します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの `numbers` を `[1, 2, 3, 4]` に、`reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "パイプラインの途中で要素の型が合わない",
+      "body": "失敗例では `map label` で要素を `String` に変えた後で、`Int -> Bool` を受け取る `arrays.filter even` をつないでいます。各段が返す型と次の段が受け取る型を揃えてください。"
+    },
+    "recap": [
+      "配列を最後の引数に取る `arrays.filter`・`map`・`reduce` は、`|>` で縦に並べて自然につなげる。",
+      "`f <$> values` は `map f values` と同じ要素変換を表す演算子表記である。",
+      "パイプラインの各段が出力する型と、次の段が受け取る型を一致させる必要がある。"
+    ],
+    "next": {
+      "lessonId": "maybe-match",
+      "body": "配列の作成と集計の流れが身につきました。次は `arrays.get` でも現れた「値があるかないか」を表す `Maybe` 型を詳しく学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

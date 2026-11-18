@@ -1,1 +1,49 @@
-{"$schema":"../../lesson.schema.json","id":"list-values","formatVersion":2,"sections":{"prerequisite":"contiguousなArrayを作り、読み取れるようになりました。","walkthrough":[{"heading":"Backtick付き角括弧でListを作る","body":"`List<Int>`のliteralは`` `[1, 2, 3] ``です。Arrayと別の型として区別されます。","sourceRange":{"startLine":1,"endLine":1}}],"introduced":[{"kind":"type","name":"List","body":"Listは先頭と残りを共有しやすいpersistent collectionです。"}],"exercise":{"instruction":"課題sourceのList要素を変え、List typeを保ってRunしてください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"ArrayをListへ代入する","body":"失敗例では角括弧だけのArrayをList annotationへ置きます。literalの違いを確認してください。"},"recap":["List literalはbacktick付き角括弧で書く。","ListとArrayは異なるcollection typeである。"],"next":{"lessonId":"list-decomposition","body":"次はListをheadとtailへ分解します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "list-values",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "連続配置で添字アクセスできる `Array` の基本を学びました。ここでは連結リスト型の `List` を作ります。",
+    "walkthrough": [
+      {
+        "heading": "バッククォート付き角括弧で List を作る",
+        "body": "`List<Int>` のリテラルは `` `[1, 2, 3] `` です。`Array` の `[1, 2, 3]` とは別の型として区別されます。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "List",
+        "body": "先頭要素と残りの部分を共有しやすい、連結リスト型のコレクションです。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの `` `[1, 2, 3] `` を `` `[4, 5, 6] `` に書き換えて `Run` し、`List` の出力が変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Array を List に代入する",
+      "body": "失敗例ではバッククォートの付かない `[1, 2, 3]` を `List<Int>` 型の束縛へ置いています。リテラルの書き方を確認してください。"
+    },
+    "recap": [
+      "`List` リテラルはバッククォートの付いた角括弧で書く。",
+      "`List` と `Array` は異なるコレクション型として区別される。"
+    ],
+    "next": {
+      "lessonId": "list-decomposition",
+      "body": "次は `List` を先頭要素と残りのリストへ分解して読みます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

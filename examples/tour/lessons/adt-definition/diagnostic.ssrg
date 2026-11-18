@@ -1,0 +1,8 @@
+type Delivery deriving Show =
+  | Preparing
+  | Shipped String
+  | Delivered (String, Int)
+
+let transit: Delivery = Shipped 2
+
+pub effect fn main = println (show transit)

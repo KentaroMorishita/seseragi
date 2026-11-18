@@ -9,6 +9,10 @@
     "type Token = | Token\ntype Box<A> = | Box A\n\ninstance<A> Show<Box<A>> where Show<A> {\n  fn show value: Box<A> -> String = match value { Box item -> \"box=\" + show item }\n}\n\nfn prefix<A> value: A -> suffix: String -> String where Show<A> = show value + suffix\n\ntrait Render<T> {\n  fn render<A> tag: T -> value: A -> suffix: String -> String where Show<A>\n  fn returned<A> tag: T -> value: A -> (String -> String) where Show<A>\n}\n\ninstance Render<Token> {\n  fn render<A> tag: Token -> value: A -> suffix: String -> String where Show<A> =\n    show value + suffix\n\n  fn returned<A> tag: Token -> value: A -> (String -> String) where Show<A> =\n    \\suffix: String -> show value + suffix\n}\n\nfn higher<F<_>> value: F<Int> -> String where Show<F<Int>> = {\n  fn local<A> item: A -> suffix: String -> String where Show<A> = show item + suffix\n  let saved = local value\n  saved \"!\" + saved \"?\"\n}\n\npub fn probe -> Array<String> = {\n  let saved = prefix [41][0]\n  fn local<A> value: A -> suffix: String -> String where Show<A> = show value + suffix\n  let localSaved = local (Box 'λ')\n  let methodSaved = render Token [True, False]\n  let returnedSaved = returned Token (Box 2)\n  let renderValue = \\value -> show value\n  [\n    saved \"!\",\n    saved \"?\",\n    localSaved \"!\",\n    localSaved \"?\",\n    methodSaved \"!\",\n    methodSaved \"?\",\n    returnedSaved \"!\",\n    returnedSaved \"?\",\n    higher (Box 42),\n    renderValue 7,\n    renderValue '🙂'\n  ]\n}\n\n"
   ],
   "names": [
+    "arrayShow",
+    "boolShow",
+    "maybeShow",
+    "intShow",
     "Token",
     "Token",
     "Box",
@@ -45,8 +49,7 @@
     "$ssrg$atSource",
     "_ssrg_array_index",
     "__ssrg$partial$stage",
-    "maybeShow",
-    "intShow",
+    "$ssrg$closedDisplay$0",
     "local",
     "$ssrg$atSource",
     "stringAdd",
@@ -66,8 +69,7 @@
     "__ssrg$partial$stage",
     "__ssrg$instance$Render$1",
     "__ssrg$partial$stage",
-    "arrayShow",
-    "boolShow",
+    "$ssrg$closedDisplay$1",
     "returnedSaved",
     "$ssrg$atSource",
     "__ssrg$instance$Render$1",
@@ -107,5 +109,5 @@
     "renderValue",
     "charShow"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA;;AAAeC;AACfC;;AAAgBC;AAEhBC;AAWAC;AAPAC;AAeAK;AAMAiB"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAI;;AAAeC;AACfC;;AAAgBC;AAEhBC;AAWAC;AAPAC;AAeAK;AAMAiB"
 }
