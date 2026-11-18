@@ -94,7 +94,7 @@
     },
     {
       "id": "web-starter",
-      "pickerLabel": "Web starter — 最初のlocal package",
+      "pickerLabel": "最初の Web プロジェクト（seseragi new web）",
       "heading": "Hello from Seseragi",
       "architecture": "multi-module",
       "requiredSurfaces": [
@@ -104,7 +104,7 @@
         "code",
         "preview"
       ],
-      "requiredStates": ["initial", "incremented", "image-fallback"]
+      "requiredStates": ["initial", "incremented"]
     },
     {
       "id": "seseragi-landing-page",

@@ -1108,8 +1108,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "web-starter",
-      "title": "Web starter — 最初のlocal package",
-      "summary": "seseragi new webが生成するものと同じsourceで、Signal counterをlocal Web packageとして動かします。",
+      "title": "最初の Web プロジェクト（seseragi new web）",
+      "summary": "seseragi new web が作るものと同じソースで、Signal のカウンターを手元の Web プロジェクトとして動かします。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -1136,7 +1136,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:819372a6322dc873a827e4e3199da2da28f11f0af9a8083f38e4f285d00a3c75",
       "guidePath": "examples/samples/web-starter/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:c43b7129981a0e5a23193d54834d7b82c7e31bf5bc3193f79620595e6b1dd279",
+      "workspaceHash": "sha256:d90ab3792b65582dee8d2a34bb2f8a4052c9fd714ce9ff13fafe6fe3b27d2245",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1154,7 +1154,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/web-starter/src/app.ssrg",
-            "sourceHash": "sha256:43fe910b9cc3f1c6c509011cea97b784257d693592bd50277e2212e7a35ac6ac"
+            "sourceHash": "sha256:e48372ccc5c1a468dba357080e02a16c50ba8f393a4ae4ce68e7e2ebe4a85f96"
           }
         ]
       }

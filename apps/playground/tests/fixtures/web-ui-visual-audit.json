@@ -80,15 +80,16 @@
     },
     {
       "id": "web-starter",
-      "identity": "quiet indigo starter desk with one typed counter action",
-      "photoId": "photo-1499750310107-5fef28a66643",
+      "identity": "calm teal starter card that counts with one Signal",
+      "photoId": null,
       "photoGroup": "web-starter",
-      "layoutMarkers": ["objectFit: \"cover\"", "minHeight: \"100vh\""],
+      "layoutMarkers": ["placeItems: \"center\"", "minHeight: \"100vh\""],
       "states": ["initial", "incremented"],
       "artifacts": [
-        "docs/reviews/issue-368/visual/web-starter-desktop.png",
-        "docs/reviews/issue-368/visual/web-starter-iphone-390.png",
-        "docs/reviews/issue-368/visual/web-starter-android-360.png"
+        "docs/reviews/issue-1376/visual/web-starter-desktop.png",
+        "docs/reviews/issue-1376/visual/web-starter-incremented.png",
+        "docs/reviews/issue-1376/visual/web-starter-iphone-390.png",
+        "docs/reviews/issue-1376/visual/web-starter-android-360.png"
       ]
     },
     {
