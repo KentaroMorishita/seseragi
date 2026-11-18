@@ -124,17 +124,118 @@ function fileAtOptional(
   return result.exitCode === 0 ? result.stdout : null
 }
 
-export function stripRustInlineTestModule(source: string): string {
-  const marker = /\r?\n#\[cfg\(test\)\][ \t]*\r?\nmod tests\b/u.exec(source)
-  if (!marker) return source
-  const rest = source.slice(marker.index + marker[0].length)
-  if (
-    /\r?\n(?:pub\b|fn\b|struct\b|enum\b|trait\b|impl\b|type\b|const\b|static\b|mod\b)/u.test(
-      rest
-    )
-  ) {
-    return source
+function findMatchingRustBrace(source: string, openBraceIndex: number): number {
+  let depth = 0
+  let i = openBraceIndex
+  while (i < source.length) {
+    const ch = source[i]
+    const next = source[i + 1]
+    if (ch === "/" && next === "/") {
+      i += 2
+      while (i < source.length && source[i] !== "\n") i += 1
+      continue
+    }
+    if (ch === "/" && next === "*") {
+      let commentDepth = 1
+      i += 2
+      while (i < source.length && commentDepth > 0) {
+        if (source[i] === "/" && source[i + 1] === "*") {
+          commentDepth += 1
+          i += 2
+        } else if (source[i] === "*" && source[i + 1] === "/") {
+          commentDepth -= 1
+          i += 2
+        } else {
+          i += 1
+        }
+      }
+      continue
+    }
+    if (ch === "r" || (ch === "b" && next === "r")) {
+      let cursor = ch === "b" ? i + 2 : i + 1
+      let hashes = 0
+      while (source[cursor] === "#") {
+        hashes += 1
+        cursor += 1
+      }
+      if (source[cursor] === '"') {
+        cursor += 1
+        const closing = `"${"#".repeat(hashes)}`
+        const end = source.indexOf(closing, cursor)
+        if (end === -1) return -1
+        i = end + closing.length
+        continue
+      }
+    }
+    if (ch === '"') {
+      i += 1
+      while (i < source.length && source[i] !== '"') {
+        i += source[i] === "\\" ? 2 : 1
+      }
+      i += 1
+      continue
+    }
+    if (ch === "'") {
+      const charMatch = /^'(?:\\.|[^'\\\r\n])'/u.exec(source.slice(i))
+      if (charMatch) {
+        i += charMatch[0].length
+        continue
+      }
+    }
+    if (ch === "{") depth += 1
+    else if (ch === "}") {
+      depth -= 1
+      if (depth === 0) return i
+    }
+    i += 1
   }
+  return -1
+}
+
+function isOnlyWhitespaceOrRustComments(suffix: string): boolean {
+  let i = 0
+  while (i < suffix.length) {
+    if (/\s/u.test(suffix[i]!)) {
+      i += 1
+      continue
+    }
+    if (suffix[i] === "/" && suffix[i + 1] === "/") {
+      i += 2
+      while (i < suffix.length && suffix[i] !== "\n") i += 1
+      continue
+    }
+    if (suffix[i] === "/" && suffix[i + 1] === "*") {
+      let commentDepth = 1
+      i += 2
+      while (i < suffix.length && commentDepth > 0) {
+        if (suffix[i] === "/" && suffix[i + 1] === "*") {
+          commentDepth += 1
+          i += 2
+        } else if (suffix[i] === "*" && suffix[i + 1] === "/") {
+          commentDepth -= 1
+          i += 2
+        } else {
+          i += 1
+        }
+      }
+      if (commentDepth > 0) return false
+      continue
+    }
+    return false
+  }
+  return true
+}
+
+export function stripRustInlineTestModule(source: string): string {
+  const marker = /\r?\n#\[cfg\(test\)\][ \t]*\r?\nmod tests[ \t]*\{/u.exec(
+    source
+  )
+  if (!marker) return source
+  const openBraceIndex = marker.index + marker[0].length - 1
+  const closeBraceIndex = findMatchingRustBrace(source, openBraceIndex)
+  if (closeBraceIndex === -1) return source
+  const trailing = source.slice(closeBraceIndex + 1)
+  if (!isOnlyWhitespaceOrRustComments(trailing)) return source
   return source.slice(0, marker.index).trimEnd()
 }
 

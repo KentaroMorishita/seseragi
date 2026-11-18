@@ -297,6 +297,9 @@ describe("release readiness", () => {
 
     const withTrailingProd = `${withTests}\npub fn extra() {}\n`
     expect(stripRustInlineTestModule(withTrailingProd)).toBe(withTrailingProd)
+
+    const withTrailingMacro = `${withTests}\ninclude!("new_impl.rs");\n`
+    expect(stripRustInlineTestModule(withTrailingMacro)).toBe(withTrailingMacro)
   })
 
   test("allows Rust inline #[cfg(test)] mod tests changes without a version bump", async () => {
