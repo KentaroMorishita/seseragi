@@ -4,4 +4,4 @@
 
 暖色のdocument surfaceはStatic HTML / SSRの入口であることを示し、headerはmobileで自然にwrapし、desktopではtitleとsource linkを同じ行に保ちます。image、copy、listを一枚のreusable cardへ閉じるので、表示のためのstructureとcomponentの責務を一緒に追えます。
 
-次は`interactive-app`で、同じcomponentの考え方をState / Action / pure `update` / `view`と`dom.app`へ広げます。同じappのSignal生成、query、options、runを自分で制御する最小例は`signal-run-route`、複数featureの合成は`feature-composition`を選びます。
+次は`interactive-app`で、同じcomponentの考え方をState / Action / pure `update` / `view`と`dom.app`へ広げます。明示的な`signals.make`と`dom.run`の最小構成は`web-starter`、複数featureの合成は`feature-composition`を選びます。

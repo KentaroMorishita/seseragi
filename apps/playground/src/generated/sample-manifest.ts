@@ -9,142 +9,103 @@ import sample1Source from "../../../../examples/samples/collections/main.ssrg?ra
 import sample1Guide from "../../../../examples/samples/collections/guide.md?raw"
 import sample1Output from "../../../../examples/samples/collections/stdout.txt?raw"
 
-import sample2Source from "../../../../examples/samples/data-and-patterns/main.ssrg?raw"
-import sample2Guide from "../../../../examples/samples/data-and-patterns/guide.md?raw"
-import sample2Output from "../../../../examples/samples/data-and-patterns/stdout.txt?raw"
+import sample2Source from "../../../../examples/samples/either-and-monad/main.ssrg?raw"
+import sample2Guide from "../../../../examples/samples/either-and-monad/guide.md?raw"
+import sample2Output from "../../../../examples/samples/either-and-monad/stdout.txt?raw"
 
-import sample3Source from "../../../../examples/samples/effects-and-do/main.ssrg?raw"
-import sample3Guide from "../../../../examples/samples/effects-and-do/guide.md?raw"
-import sample3Output from "../../../../examples/samples/effects-and-do/stdout.txt?raw"
+import sample3Source from "../../../../examples/samples/feature-composition/main.ssrg?raw"
+import sample3Guide from "../../../../examples/samples/feature-composition/guide.md?raw"
 
-import sample4Source from "../../../../examples/samples/either-and-monad/main.ssrg?raw"
-import sample4Guide from "../../../../examples/samples/either-and-monad/guide.md?raw"
-import sample4Output from "../../../../examples/samples/either-and-monad/stdout.txt?raw"
+import sample4Source from "../../../../examples/samples/fibonacci-sequence/main.ssrg?raw"
+import sample4Guide from "../../../../examples/samples/fibonacci-sequence/guide.md?raw"
+import sample4Output from "../../../../examples/samples/fibonacci-sequence/stdout.txt?raw"
 
-import sample5Source from "../../../../examples/samples/feature-composition/main.ssrg?raw"
-import sample5Guide from "../../../../examples/samples/feature-composition/guide.md?raw"
+import sample5Source from "../../../../examples/samples/fizzbuzz/main.ssrg?raw"
+import sample5Guide from "../../../../examples/samples/fizzbuzz/guide.md?raw"
+import sample5Output from "../../../../examples/samples/fizzbuzz/stdout.txt?raw"
 
-import sample6Source from "../../../../examples/samples/fibonacci-sequence/main.ssrg?raw"
-import sample6Guide from "../../../../examples/samples/fibonacci-sequence/guide.md?raw"
-import sample6Output from "../../../../examples/samples/fibonacci-sequence/stdout.txt?raw"
+import sample6Source from "../../../../examples/samples/form-todo/main.ssrg?raw"
+import sample6Guide from "../../../../examples/samples/form-todo/guide.md?raw"
 
-import sample7Source from "../../../../examples/samples/fizzbuzz/main.ssrg?raw"
-import sample7Guide from "../../../../examples/samples/fizzbuzz/guide.md?raw"
-import sample7Output from "../../../../examples/samples/fizzbuzz/stdout.txt?raw"
+import sample7Source from "../../../../examples/samples/hello-world/main.ssrg?raw"
+import sample7Guide from "../../../../examples/samples/hello-world/guide.md?raw"
+import sample7Output from "../../../../examples/samples/hello-world/stdout.txt?raw"
 
-import sample8Source from "../../../../examples/samples/form-todo/main.ssrg?raw"
-import sample8Guide from "../../../../examples/samples/form-todo/guide.md?raw"
+import sample8Source from "../../../../examples/samples/html-components/main.ssrg?raw"
+import sample8Guide from "../../../../examples/samples/html-components/guide.md?raw"
+import sample8Output from "../../../../examples/samples/html-components/stdout.html?raw"
 
-import sample9Source from "../../../../examples/samples/functions-and-pipelines/main.ssrg?raw"
-import sample9Guide from "../../../../examples/samples/functions-and-pipelines/guide.md?raw"
-import sample9Output from "../../../../examples/samples/functions-and-pipelines/stdout.txt?raw"
+import sample9Source from "../../../../examples/samples/impl-and-operators/main.ssrg?raw"
+import sample9Guide from "../../../../examples/samples/impl-and-operators/guide.md?raw"
+import sample9Output from "../../../../examples/samples/impl-and-operators/stdout.txt?raw"
 
-import sample10Source from "../../../../examples/samples/generic-structs/main.ssrg?raw"
-import sample10Guide from "../../../../examples/samples/generic-structs/guide.md?raw"
-import sample10Output from "../../../../examples/samples/generic-structs/stdout.txt?raw"
+import sample10Source from "../../../../examples/samples/interactive-app/main.ssrg?raw"
+import sample10Guide from "../../../../examples/samples/interactive-app/guide.md?raw"
 
-import sample11Source from "../../../../examples/samples/hello-world/main.ssrg?raw"
-import sample11Guide from "../../../../examples/samples/hello-world/guide.md?raw"
-import sample11Output from "../../../../examples/samples/hello-world/stdout.txt?raw"
+import sample11Source from "../../../../examples/samples/local-functions/main.ssrg?raw"
+import sample11Guide from "../../../../examples/samples/local-functions/guide.md?raw"
+import sample11Output from "../../../../examples/samples/local-functions/stdout.txt?raw"
 
-import sample12Source from "../../../../examples/samples/html-components/main.ssrg?raw"
-import sample12Guide from "../../../../examples/samples/html-components/guide.md?raw"
-import sample12Output from "../../../../examples/samples/html-components/stdout.html?raw"
+import sample12Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
+import sample12Guide from "../../../../examples/samples/newtypes/guide.md?raw"
+import sample12Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
 
-import sample13Source from "../../../../examples/samples/impl-and-operators/main.ssrg?raw"
-import sample13Guide from "../../../../examples/samples/impl-and-operators/guide.md?raw"
-import sample13Output from "../../../../examples/samples/impl-and-operators/stdout.txt?raw"
+import sample13Manifest from "../../../../examples/samples/project-flow-app/seseragi.toml?raw"
+import sample13Source from "../../../../examples/samples/project-flow-app/src/main.ssrg?raw"
+import sample13Source2 from "../../../../examples/samples/project-flow-app/src/app.ssrg?raw"
+import sample13Source3 from "../../../../examples/samples/project-flow-app/src/focus/model.ssrg?raw"
+import sample13Source4 from "../../../../examples/samples/project-flow-app/src/focus/view.ssrg?raw"
+import sample13Source5 from "../../../../examples/samples/project-flow-app/src/notes/form.ssrg?raw"
+import sample13Source6 from "../../../../examples/samples/project-flow-app/src/notes/model.ssrg?raw"
+import sample13Source7 from "../../../../examples/samples/project-flow-app/src/notes/view.ssrg?raw"
+import sample13Source8 from "../../../../examples/samples/project-flow-app/src/ui/components.ssrg?raw"
+import sample13Source9 from "../../../../examples/samples/project-flow-app/src/ui/styles.ssrg?raw"
+import sample13Guide from "../../../../examples/samples/project-flow-app/guide.md?raw"
 
-import sample14Source from "../../../../examples/samples/interactive-app/main.ssrg?raw"
-import sample14Guide from "../../../../examples/samples/interactive-app/guide.md?raw"
+import sample14Manifest from "../../../../examples/samples/project-greeting/seseragi.toml?raw"
+import sample14Source from "../../../../examples/samples/project-greeting/src/main.ssrg?raw"
+import sample14Source2 from "../../../../examples/samples/project-greeting/src/feature/greeting.ssrg?raw"
+import sample14Guide from "../../../../examples/samples/project-greeting/guide.md?raw"
+import sample14Stdin from "../../../../examples/samples/project-greeting/stdin.txt?raw"
+import sample14Output from "../../../../examples/samples/project-greeting/stdout.txt?raw"
 
-import sample15Source from "../../../../examples/samples/local-functions/main.ssrg?raw"
-import sample15Guide from "../../../../examples/samples/local-functions/guide.md?raw"
-import sample15Output from "../../../../examples/samples/local-functions/stdout.txt?raw"
+import sample15Source from "../../../../examples/samples/records/main.ssrg?raw"
+import sample15Guide from "../../../../examples/samples/records/guide.md?raw"
+import sample15Output from "../../../../examples/samples/records/stdout.txt?raw"
 
-import sample16Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
-import sample16Guide from "../../../../examples/samples/newtypes/guide.md?raw"
-import sample16Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
+import sample16Manifest from "../../../../examples/samples/seseragi-landing-page/seseragi.toml?raw"
+import sample16Source from "../../../../examples/samples/seseragi-landing-page/src/main.ssrg?raw"
+import sample16Source2 from "../../../../examples/samples/seseragi-landing-page/src/app.ssrg?raw"
+import sample16Source3 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg?raw"
+import sample16Source4 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg?raw"
+import sample16Source5 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg?raw"
+import sample16Source6 from "../../../../examples/samples/seseragi-landing-page/src/components/closing.ssrg?raw"
+import sample16Source7 from "../../../../examples/samples/seseragi-landing-page/src/components/footer.ssrg?raw"
+import sample16Source8 from "../../../../examples/samples/seseragi-landing-page/src/components/header.ssrg?raw"
+import sample16Source9 from "../../../../examples/samples/seseragi-landing-page/src/components/hero.ssrg?raw"
+import sample16Source10 from "../../../../examples/samples/seseragi-landing-page/src/components/image-statement.ssrg?raw"
+import sample16Source11 from "../../../../examples/samples/seseragi-landing-page/src/components/principles.ssrg?raw"
+import sample16Source12 from "../../../../examples/samples/seseragi-landing-page/src/ui/styles.ssrg?raw"
+import sample16Source13 from "../../../../examples/samples/seseragi-landing-page/src/url.ssrg?raw"
+import sample16Guide from "../../../../examples/samples/seseragi-landing-page/guide.md?raw"
 
-import sample17Manifest from "../../../../examples/samples/project-flow-app/seseragi.toml?raw"
-import sample17Source from "../../../../examples/samples/project-flow-app/src/main.ssrg?raw"
-import sample17Source2 from "../../../../examples/samples/project-flow-app/src/app.ssrg?raw"
-import sample17Source3 from "../../../../examples/samples/project-flow-app/src/focus/model.ssrg?raw"
-import sample17Source4 from "../../../../examples/samples/project-flow-app/src/focus/view.ssrg?raw"
-import sample17Source5 from "../../../../examples/samples/project-flow-app/src/notes/form.ssrg?raw"
-import sample17Source6 from "../../../../examples/samples/project-flow-app/src/notes/model.ssrg?raw"
-import sample17Source7 from "../../../../examples/samples/project-flow-app/src/notes/view.ssrg?raw"
-import sample17Source8 from "../../../../examples/samples/project-flow-app/src/ui/components.ssrg?raw"
-import sample17Source9 from "../../../../examples/samples/project-flow-app/src/ui/styles.ssrg?raw"
-import sample17Guide from "../../../../examples/samples/project-flow-app/guide.md?raw"
+import sample17Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
+import sample17Guide from "../../../../examples/samples/signal-state/guide.md?raw"
+import sample17Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
 
-import sample18Manifest from "../../../../examples/samples/project-greeting/seseragi.toml?raw"
-import sample18Source from "../../../../examples/samples/project-greeting/src/main.ssrg?raw"
-import sample18Source2 from "../../../../examples/samples/project-greeting/src/feature/greeting.ssrg?raw"
-import sample18Guide from "../../../../examples/samples/project-greeting/guide.md?raw"
-import sample18Stdin from "../../../../examples/samples/project-greeting/stdin.txt?raw"
-import sample18Output from "../../../../examples/samples/project-greeting/stdout.txt?raw"
+import sample18Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
+import sample18Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
+import sample18Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
+import sample18Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
 
-import sample19Source from "../../../../examples/samples/records/main.ssrg?raw"
-import sample19Guide from "../../../../examples/samples/records/guide.md?raw"
-import sample19Output from "../../../../examples/samples/records/stdout.txt?raw"
+import sample19Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
+import sample19Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
+import sample19Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
 
-import sample20Manifest from "../../../../examples/samples/seseragi-landing-page/seseragi.toml?raw"
-import sample20Source from "../../../../examples/samples/seseragi-landing-page/src/main.ssrg?raw"
-import sample20Source2 from "../../../../examples/samples/seseragi-landing-page/src/app.ssrg?raw"
-import sample20Source3 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg?raw"
-import sample20Source4 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg?raw"
-import sample20Source5 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg?raw"
-import sample20Source6 from "../../../../examples/samples/seseragi-landing-page/src/components/closing.ssrg?raw"
-import sample20Source7 from "../../../../examples/samples/seseragi-landing-page/src/components/footer.ssrg?raw"
-import sample20Source8 from "../../../../examples/samples/seseragi-landing-page/src/components/header.ssrg?raw"
-import sample20Source9 from "../../../../examples/samples/seseragi-landing-page/src/components/hero.ssrg?raw"
-import sample20Source10 from "../../../../examples/samples/seseragi-landing-page/src/components/image-statement.ssrg?raw"
-import sample20Source11 from "../../../../examples/samples/seseragi-landing-page/src/components/principles.ssrg?raw"
-import sample20Source12 from "../../../../examples/samples/seseragi-landing-page/src/ui/styles.ssrg?raw"
-import sample20Source13 from "../../../../examples/samples/seseragi-landing-page/src/url.ssrg?raw"
-import sample20Guide from "../../../../examples/samples/seseragi-landing-page/guide.md?raw"
-
-import sample21Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
-import sample21Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
-import sample21Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
-
-import sample22Source from "../../../../examples/samples/signal-run-route/main.ssrg?raw"
-import sample22Guide from "../../../../examples/samples/signal-run-route/guide.md?raw"
-
-import sample23Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
-import sample23Guide from "../../../../examples/samples/signal-state/guide.md?raw"
-import sample23Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
-
-import sample24Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
-import sample24Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
-import sample24Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
-import sample24Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
-
-import sample25Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
-import sample25Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
-import sample25Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
-
-import sample26Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
-import sample26Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
-import sample26Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
-
-import sample27Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
-import sample27Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
-import sample27Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
-
-import sample28Source from "../../../../examples/samples/typeclass-operator-parity/main.ssrg?raw"
-import sample28Guide from "../../../../examples/samples/typeclass-operator-parity/guide.md?raw"
-import sample28Output from "../../../../examples/samples/typeclass-operator-parity/stdout.txt?raw"
-
-import sample29Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
-import sample29Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
-import sample29Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
-
-import sample30Manifest from "../../../../examples/samples/web-starter/seseragi.toml?raw"
-import sample30Source from "../../../../examples/samples/web-starter/src/main.ssrg?raw"
-import sample30Source2 from "../../../../examples/samples/web-starter/src/app.ssrg?raw"
-import sample30Guide from "../../../../examples/samples/web-starter/guide.md?raw"
+import sample20Manifest from "../../../../examples/samples/web-starter/seseragi.toml?raw"
+import sample20Source from "../../../../examples/samples/web-starter/src/main.ssrg?raw"
+import sample20Source2 from "../../../../examples/samples/web-starter/src/app.ssrg?raw"
+import sample20Guide from "../../../../examples/samples/web-starter/guide.md?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -207,7 +168,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "data-and-patterns"
+        "hello-world"
       ],
       "featured": true,
       "isNew": false,
@@ -229,80 +190,6 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
-      "id": "data-and-patterns",
-      "title": "データ型とPattern match",
-      "summary": "取り得る状態をADTで表し、matchで漏れなく値を取り出します。",
-      "kind": "lesson",
-      "difficulty": "beginner",
-      "topics": [
-        "ADT",
-        "constructor",
-        "match"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "functions-and-pipelines"
-      ],
-      "featured": false,
-      "isNew": false,
-      "interactive": false,
-      "sourcePath": "examples/samples/data-and-patterns/main.ssrg",
-      "guidePath": "examples/samples/data-and-patterns/guide.md",
-      "expectedOutputPath": "examples/samples/data-and-patterns/stdout.txt",
-      "sourceHash": "sha256:b6d8db52a58a1d53e5c46da2a78aa0aa022f4bfc8ce70bb63ad2f8888addf9fc",
-      "workspaceHash": "sha256:1f2ae8ec9012b503fb380264dd1788b890ffbba2eb3e197f6ef8d924c4fcd597"
-    },
-    source: sample2Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample2Source },
-    ],
-    guide: sample2Guide,
-    stdin: "",
-    expectedOutput: (sample2Output).replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "effects-and-do",
-      "title": "Effectをdoで合成",
-      "summary": "複数のEffectとpureなletを、do blockの中で順番に合成します。",
-      "kind": "lesson",
-      "difficulty": "intermediate",
-      "topics": [
-        "Effect",
-        "do",
-        "let"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "functions-and-pipelines"
-      ],
-      "featured": false,
-      "isNew": false,
-      "interactive": false,
-      "sourcePath": "examples/samples/effects-and-do/main.ssrg",
-      "guidePath": "examples/samples/effects-and-do/guide.md",
-      "expectedOutputPath": "examples/samples/effects-and-do/stdout.txt",
-      "sourceHash": "sha256:523a49d6900c32233227e25e175e6c9a1d8b506c021f717ea48fabd7545aa2ab",
-      "workspaceHash": "sha256:354edfc34a0f716c1eb072650d652604974e5f12f8fa13490644bd4b5f68d666"
-    },
-    source: sample3Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample3Source },
-    ],
-    guide: sample3Guide,
-    stdin: "",
-    expectedOutput: (sample3Output).replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
       "id": "either-and-monad",
       "title": "EitherとMonad",
       "summary": "段階的な入力検証をEitherとdoで組み立て、成功時と失敗時の分岐を確認します。",
@@ -319,8 +206,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "data-and-patterns",
-        "effects-and-do"
+        "hello-world"
       ],
       "featured": false,
       "isNew": false,
@@ -331,14 +217,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:52f6f3be54b5364df66965194c7ed1c2c80f4e0ac91dcd2665a0441eebea2f1c",
       "workspaceHash": "sha256:6d609d7d0746fe55aa0946cabfe507f9f5bbcf5fdf686bdc15a85aa3d4dee079"
     },
-    source: sample4Source,
+    source: sample2Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample4Source },
+      { path: "main.ssrg", source: sample2Source },
     ],
-    guide: sample4Guide,
+    guide: sample2Guide,
     stdin: "",
-    expectedOutput: (sample4Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample2Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -362,8 +248,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "focus": "composition",
       "prerequisites": [
         "signal-state",
-        "interactive-app",
-        "signal-run-route"
+        "interactive-app"
       ],
       "featured": false,
       "isNew": true,
@@ -373,12 +258,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:31789d7e4b9c5583d6fe15769a60eb3c488a18c674a8e325d075aa1f11f73d0d",
       "workspaceHash": "sha256:bb10cf8936431d8a6a932117dbd626962a58824ddd34a773474df84e7957d26e"
     },
-    source: sample5Source,
+    source: sample3Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample5Source },
+      { path: "main.ssrg", source: sample3Source },
     ],
-    guide: sample5Guide,
+    guide: sample3Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
@@ -411,14 +296,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:6e6ebff183abf43123b78a164f9e55e81887a81770edaf078d92fa8b13040db0",
       "workspaceHash": "sha256:94d5643382bb664831f7f158842761dda682f4374fba111ff1416e5c99d6d2db"
     },
-    source: sample6Source,
+    source: sample4Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample6Source },
+      { path: "main.ssrg", source: sample4Source },
     ],
-    guide: sample6Guide,
+    guide: sample4Guide,
     stdin: "",
-    expectedOutput: (sample6Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample4Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -438,7 +323,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "data-and-patterns"
+        "hello-world"
       ],
       "featured": false,
       "isNew": true,
@@ -449,14 +334,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:2735ef3a66a0591005e71e7ebc28dd8d77ea5aab73f7352fbfc5dc155f1b37c2",
       "workspaceHash": "sha256:0bdbd092c38a4da29993f10365ced63c73aa6d66ab670fd96d4d4ac54dcd9424"
     },
-    source: sample7Source,
+    source: sample5Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample7Source },
+      { path: "main.ssrg", source: sample5Source },
     ],
-    guide: sample7Guide,
+    guide: sample5Guide,
     stdin: "",
-    expectedOutput: (sample7Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample5Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -488,7 +373,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "focus": "form",
       "prerequisites": [
         "interactive-app",
-        "signal-run-route"
+        "web-starter"
       ],
       "featured": true,
       "isNew": true,
@@ -498,88 +383,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:279a6c5fde288ce855cff63b789482e7120609eb0d37eea48430034edca79712",
       "workspaceHash": "sha256:4768e03902abc8cd8f9601bd6c9c8de9518b6fa0a9b3db68d379aceb9832db61"
     },
-    source: sample8Source,
+    source: sample6Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample8Source },
+      { path: "main.ssrg", source: sample6Source },
     ],
-    guide: sample8Guide,
+    guide: sample6Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "functions-and-pipelines",
-      "title": "関数とパイプライン",
-      "summary": "小さな関数を定義し、値を|>で左から右へ流して組み立てます。",
-      "kind": "lesson",
-      "difficulty": "beginner",
-      "topics": [
-        "fn",
-        "curry",
-        "pipeline"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "hello-world"
-      ],
-      "featured": false,
-      "isNew": false,
-      "interactive": false,
-      "sourcePath": "examples/samples/functions-and-pipelines/main.ssrg",
-      "guidePath": "examples/samples/functions-and-pipelines/guide.md",
-      "expectedOutputPath": "examples/samples/functions-and-pipelines/stdout.txt",
-      "sourceHash": "sha256:97d5a8ad45974f7cd877687c3a90ffb179d408889062c524ec24ee052fc37c02",
-      "workspaceHash": "sha256:e28479b4448dc334c91ed278c4d7ab9d983681daa897f5231f4987df42050540"
-    },
-    source: sample9Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample9Source },
-    ],
-    guide: sample9Guide,
-    stdin: "",
-    expectedOutput: (sample9Output).replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "generic-structs",
-      "title": "Generic Structとimpl",
-      "summary": "Box<Int>の推論と、genericなmethodが型を保つ流れを確認します。",
-      "kind": "lesson",
-      "difficulty": "intermediate",
-      "topics": [
-        "Struct",
-        "generic inference",
-        "impl"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "records"
-      ],
-      "featured": false,
-      "isNew": false,
-      "interactive": false,
-      "sourcePath": "examples/samples/generic-structs/main.ssrg",
-      "guidePath": "examples/samples/generic-structs/guide.md",
-      "expectedOutputPath": "examples/samples/generic-structs/stdout.txt",
-      "sourceHash": "sha256:48cf8fa66a38b657e4fb916d9e853c48683e1eac73c66adca642639c27022732",
-      "workspaceHash": "sha256:9aef047c2dc8cffd4e59077d17d2f26ff44c5be284e97e12c212fa3de1f09611"
-    },
-    source: sample10Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample10Source },
-    ],
-    guide: sample10Guide,
-    stdin: "",
-    expectedOutput: (sample10Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -608,14 +419,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:0fe8937712e696ed914ed89019f570c24bced9c1e7e3578fe18d239402eddf3d",
       "workspaceHash": "sha256:49924ca6588e2d7415efa94a42cd070201b35c85decdeafbd4c4e71782692583"
     },
-    source: sample11Source,
+    source: sample7Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample11Source },
+      { path: "main.ssrg", source: sample7Source },
     ],
-    guide: sample11Guide,
+    guide: sample7Guide,
     stdin: "",
-    expectedOutput: (sample11Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample7Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -641,7 +452,6 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "architecture": "static",
       "focus": "component",
       "prerequisites": [
-        "functions-and-pipelines",
         "records"
       ],
       "featured": true,
@@ -653,14 +463,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:0be939f6ed3e6e71798fdfa15155ec3ab50cbfdabf01c62e3f8d0bba1f999022",
       "workspaceHash": "sha256:5dc380d0cdf1ba6adc1c17486ab5441f7287c2e851967ad89641202af087c2ec"
     },
-    source: sample12Source,
+    source: sample8Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample12Source },
+      { path: "main.ssrg", source: sample8Source },
     ],
-    guide: sample12Guide,
+    guide: sample8Guide,
     stdin: "",
-    expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample8Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -680,8 +490,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "generic-structs",
-        "traits-and-instances"
+        "records",
+        "newtypes"
       ],
       "featured": false,
       "isNew": false,
@@ -692,14 +502,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:c88337e4c713a861bdad89303d6be1e91212c76e60ffb3a90f938e11eee1996a",
       "workspaceHash": "sha256:2f04246291b9024a89449a0da8e6fc655f762b6a445c69f85b6f18e7026dea2b"
     },
-    source: sample13Source,
+    source: sample9Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample13Source },
+      { path: "main.ssrg", source: sample9Source },
     ],
-    guide: sample13Guide,
+    guide: sample9Guide,
     stdin: "",
-    expectedOutput: (sample13Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample9Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -721,7 +531,6 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "experience": "minimal",
       "architecture": "dom-app",
       "focus": "state",
-      "comparisonSample": "signal-run-route",
       "prerequisites": [
         "signal-state",
         "html-components"
@@ -734,12 +543,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:bd260247692d5452ce94d10ea7f3eb0b8dccefa1131bf2695d716bc0b280fd16",
       "workspaceHash": "sha256:fba79375b63eed9bde223ac21e1994a97967f8a986c349b7a6b9d4732f931b3f"
     },
-    source: sample14Source,
+    source: sample10Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample14Source },
+      { path: "main.ssrg", source: sample10Source },
     ],
-    guide: sample14Guide,
+    guide: sample10Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
@@ -762,7 +571,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "functions-and-pipelines"
+        "hello-world"
       ],
       "featured": false,
       "isNew": true,
@@ -773,14 +582,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:dfa83bfe8cc623bd7bf37fb03c375a22d9dc813f12567808b2803f1596f9c8ea",
       "workspaceHash": "sha256:e28f2898b1bc24aea37b48c497b57cfb226e554b2d3deb46b449430a59333646"
     },
-    source: sample15Source,
+    source: sample11Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample15Source },
+      { path: "main.ssrg", source: sample11Source },
     ],
-    guide: sample15Guide,
+    guide: sample11Guide,
     stdin: "",
-    expectedOutput: (sample15Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample11Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -799,7 +608,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "data-and-patterns"
+        "hello-world"
       ],
       "featured": false,
       "isNew": false,
@@ -810,14 +619,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:b3c4693ad5fa119b312c2bafa4635573a882f0ad5728d916fe4404afb3db0c0a",
       "workspaceHash": "sha256:7145483a01035009c91898c420b7086dc967cdfbb1a511253c4282e8aba279c4"
     },
-    source: sample16Source,
+    source: sample12Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample16Source },
+      { path: "main.ssrg", source: sample12Source },
     ],
-    guide: sample16Guide,
+    guide: sample12Guide,
     stdin: "",
-    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -920,20 +729,20 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample17Source,
-    manifest: sample17Manifest,
+    source: sample13Source,
+    manifest: sample13Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample17Source },
-      { path: "app.ssrg", source: sample17Source2 },
-      { path: "focus/model.ssrg", source: sample17Source3 },
-      { path: "focus/view.ssrg", source: sample17Source4 },
-      { path: "notes/form.ssrg", source: sample17Source5 },
-      { path: "notes/model.ssrg", source: sample17Source6 },
-      { path: "notes/view.ssrg", source: sample17Source7 },
-      { path: "ui/components.ssrg", source: sample17Source8 },
-      { path: "ui/styles.ssrg", source: sample17Source9 },
+      { path: "main.ssrg", source: sample13Source },
+      { path: "app.ssrg", source: sample13Source2 },
+      { path: "focus/model.ssrg", source: sample13Source3 },
+      { path: "focus/view.ssrg", source: sample13Source4 },
+      { path: "notes/form.ssrg", source: sample13Source5 },
+      { path: "notes/model.ssrg", source: sample13Source6 },
+      { path: "notes/view.ssrg", source: sample13Source7 },
+      { path: "ui/components.ssrg", source: sample13Source8 },
+      { path: "ui/styles.ssrg", source: sample13Source9 },
     ],
-    guide: sample17Guide,
+    guide: sample13Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
@@ -993,15 +802,15 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample18Source,
-    manifest: sample18Manifest,
+    source: sample14Source,
+    manifest: sample14Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample18Source },
-      { path: "feature/greeting.ssrg", source: sample18Source2 },
+      { path: "main.ssrg", source: sample14Source },
+      { path: "feature/greeting.ssrg", source: sample14Source2 },
     ],
-    guide: sample18Guide,
-    stdin: sample18Stdin,
-    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
+    guide: sample14Guide,
+    stdin: sample14Stdin,
+    expectedOutput: (sample14Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1020,7 +829,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "data-and-patterns"
+        "hello-world"
       ],
       "featured": false,
       "isNew": false,
@@ -1031,14 +840,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:83c2ba746060a0e815b5e34dd3a2db09a8a29b38cadfaf2d797d322fc75b72c0",
       "workspaceHash": "sha256:d6c3566df89c577d5105e7c882158a6129b8b6eb01af2fd444ae98749f4a4b52"
     },
-    source: sample19Source,
+    source: sample15Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample19Source },
+      { path: "main.ssrg", source: sample15Source },
     ],
-    guide: sample19Guide,
+    guide: sample15Guide,
     stdin: "",
-    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample15Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1066,7 +875,6 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "focus": "composition",
       "prerequisites": [
         "html-components",
-        "signal-run-route",
         "feature-composition"
       ],
       "featured": true,
@@ -1162,105 +970,24 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample20Source,
-    manifest: sample20Manifest,
+    source: sample16Source,
+    manifest: sample16Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample20Source },
-      { path: "app.ssrg", source: sample20Source2 },
-      { path: "components/chapter/code-panel.ssrg", source: sample20Source3 },
-      { path: "components/chapter/model.ssrg", source: sample20Source4 },
-      { path: "components/chapter/view.ssrg", source: sample20Source5 },
-      { path: "components/closing.ssrg", source: sample20Source6 },
-      { path: "components/footer.ssrg", source: sample20Source7 },
-      { path: "components/header.ssrg", source: sample20Source8 },
-      { path: "components/hero.ssrg", source: sample20Source9 },
-      { path: "components/image-statement.ssrg", source: sample20Source10 },
-      { path: "components/principles.ssrg", source: sample20Source11 },
-      { path: "ui/styles.ssrg", source: sample20Source12 },
-      { path: "url.ssrg", source: sample20Source13 },
+      { path: "main.ssrg", source: sample16Source },
+      { path: "app.ssrg", source: sample16Source2 },
+      { path: "components/chapter/code-panel.ssrg", source: sample16Source3 },
+      { path: "components/chapter/model.ssrg", source: sample16Source4 },
+      { path: "components/chapter/view.ssrg", source: sample16Source5 },
+      { path: "components/closing.ssrg", source: sample16Source6 },
+      { path: "components/footer.ssrg", source: sample16Source7 },
+      { path: "components/header.ssrg", source: sample16Source8 },
+      { path: "components/hero.ssrg", source: sample16Source9 },
+      { path: "components/image-statement.ssrg", source: sample16Source10 },
+      { path: "components/principles.ssrg", source: sample16Source11 },
+      { path: "ui/styles.ssrg", source: sample16Source12 },
+      { path: "url.ssrg", source: sample16Source13 },
     ],
-    guide: sample20Guide,
-    stdin: "",
-    expectedOutput: ("").replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "signal-composition",
-      "title": "Signalの<$> / <*>",
-      "summary": "SignalのFunctor / Applicative instanceを演算子から利用します。",
-      "kind": "lesson",
-      "difficulty": "advanced",
-      "topics": [
-        "Signal",
-        "Functor",
-        "Applicative",
-        "<$>",
-        "<*>"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "traits-and-instances"
-      ],
-      "featured": false,
-      "isNew": false,
-      "interactive": false,
-      "sourcePath": "examples/samples/signal-composition/main.ssrg",
-      "guidePath": "examples/samples/signal-composition/guide.md",
-      "expectedOutputPath": "examples/samples/signal-composition/stdout.txt",
-      "sourceHash": "sha256:b8467b68b5eda6cdaf00948906a578eca29c67c8bb927c614f94dd87587d9337",
-      "workspaceHash": "sha256:1c88c677c2e0815ce0a918aa604eddc471c100d8ac9c797ed491003f75fce9ae"
-    },
-    source: sample21Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample21Source },
-    ],
-    guide: sample21Guide,
-    stdin: "",
-    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "signal-run-route",
-      "title": "Trail plannerをSignal + dom.runで動かす",
-      "summary": "Signal作成、Action handler、target query、options、dom.runを明示する最小appです。",
-      "kind": "recipe",
-      "difficulty": "intermediate",
-      "topics": [
-        "typed Action",
-        "pure reducer",
-        "MutableSignal",
-        "dom.run"
-      ],
-      "capabilities": [
-        "dom"
-      ],
-      "outputMode": "html",
-      "experience": "minimal",
-      "architecture": "signal-run",
-      "focus": "state",
-      "comparisonSample": "interactive-app",
-      "prerequisites": [
-        "signal-state",
-        "interactive-app"
-      ],
-      "featured": true,
-      "isNew": true,
-      "interactive": true,
-      "sourcePath": "examples/samples/signal-run-route/main.ssrg",
-      "guidePath": "examples/samples/signal-run-route/guide.md",
-      "sourceHash": "sha256:2875af5b16f648d9b047164ac3beae1ed1b831594916c6f67404b4e47da532d4",
-      "workspaceHash": "sha256:18e5ca22243ea5903623cb635bcc7f663d2dd436aa1775c1aa92ae400bb17ac2"
-    },
-    source: sample22Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample22Source },
-    ],
-    guide: sample22Guide,
+    guide: sample16Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
@@ -1281,7 +1008,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "signal-composition"
+        "type-aliases"
       ],
       "featured": false,
       "isNew": false,
@@ -1292,14 +1019,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:f5ecbf0e887c574881e24e312e9a57161aea381479bd5ab369eae66713f54f86",
       "workspaceHash": "sha256:5086e44587ccffb1bda5b6fdb7066662c54b947b3ac2f9d0fdee46a81aeaf586"
     },
-    source: sample23Source,
+    source: sample17Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample23Source },
+      { path: "main.ssrg", source: sample17Source },
     ],
-    guide: sample23Guide,
+    guide: sample17Guide,
     stdin: "",
-    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1320,8 +1047,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "data-and-patterns",
-        "effects-and-do"
+        "hello-world"
       ],
       "featured": false,
       "isNew": true,
@@ -1333,88 +1059,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:7079c9993feaf754ce2e0ea2f4cee620f10ecdf0e2b375be74c5aaacaa2a30aa",
       "workspaceHash": "sha256:7919f17c7a3165621e7f70703e07bec3a0f1b9e19a7b5b3a137cc5f9588ebb98"
     },
-    source: sample24Source,
+    source: sample18Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample24Source },
+      { path: "main.ssrg", source: sample18Source },
     ],
-    guide: sample24Guide,
-    stdin: sample24Stdin,
-    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "strings-and-templates",
-      "title": "Stringとtemplate",
-      "summary": "escapeとtemplate interpolationで文字列を安全に組み立てます。",
-      "kind": "lesson",
-      "difficulty": "beginner",
-      "topics": [
-        "String",
-        "escape",
-        "template"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "hello-world"
-      ],
-      "featured": false,
-      "isNew": false,
-      "interactive": false,
-      "sourcePath": "examples/samples/strings-and-templates/main.ssrg",
-      "guidePath": "examples/samples/strings-and-templates/guide.md",
-      "expectedOutputPath": "examples/samples/strings-and-templates/stdout.txt",
-      "sourceHash": "sha256:66322b640b2d97a25b89ee39ab49217b96fdef4886bb9e7d9a281c7135654832",
-      "workspaceHash": "sha256:8646ea40d3735e41c2e678b6f95317c2fb08e646e1a75ac46fcf7ddf3532e1d1"
-    },
-    source: sample25Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample25Source },
-    ],
-    guide: sample25Guide,
-    stdin: "",
-    expectedOutput: (sample25Output).replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "traits-and-instances",
-      "title": "Traitとinstance",
-      "summary": "型が満たす振る舞いをTraitで宣言し、instanceから選択します。",
-      "kind": "lesson",
-      "difficulty": "advanced",
-      "topics": [
-        "trait",
-        "instance",
-        "dictionary"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "generic-structs"
-      ],
-      "featured": false,
-      "isNew": false,
-      "interactive": false,
-      "sourcePath": "examples/samples/traits-and-instances/main.ssrg",
-      "guidePath": "examples/samples/traits-and-instances/guide.md",
-      "expectedOutputPath": "examples/samples/traits-and-instances/stdout.txt",
-      "sourceHash": "sha256:22a18037500a75dea8e3089568afe3f9d192b212f0bd3f313379f26930c984bd",
-      "workspaceHash": "sha256:bd22c78371ab622b09e7d3f22891f66c9e48a9bd831c0f9ee1aa47ea55622c63"
-    },
-    source: sample26Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample26Source },
-    ],
-    guide: sample26Guide,
-    stdin: "",
-    expectedOutput: (sample26Output).replace(/\r?\n$/u, ""),
+    guide: sample18Guide,
+    stdin: sample18Stdin,
+    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1434,8 +1086,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "generic-structs",
-        "effects-and-do"
+        "records",
+        "newtypes"
       ],
       "featured": false,
       "isNew": true,
@@ -1446,98 +1098,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:e1bf42638d6c27a338a0bc286fbf6cb84269413e18a2b07a94f3495e46699c92",
       "workspaceHash": "sha256:f8ee134cc1c0cbf02037e4c0e76087720bb29a486068b37aa9eac1163eabee69"
     },
-    source: sample27Source,
+    source: sample19Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample27Source },
+      { path: "main.ssrg", source: sample19Source },
     ],
-    guide: sample27Guide,
+    guide: sample19Guide,
     stdin: "",
-    expectedOutput: (sample27Output).replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "typeclass-operator-parity",
-      "title": "型クラス演算子の実行 parity",
-      "summary": "Maybe、Either、Collection、Effect、Stream、Signalで<$> / <*> / >>=を実行します。",
-      "kind": "recipe",
-      "difficulty": "advanced",
-      "topics": [
-        "Functor",
-        "Applicative",
-        "Monad",
-        "<$>",
-        "<*>",
-        ">>=",
-        "Stream",
-        "Signal"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "traits-and-instances",
-        "either-and-monad",
-        "signal-composition"
-      ],
-      "featured": false,
-      "isNew": true,
-      "interactive": false,
-      "sourcePath": "examples/samples/typeclass-operator-parity/main.ssrg",
-      "guidePath": "examples/samples/typeclass-operator-parity/guide.md",
-      "expectedOutputPath": "examples/samples/typeclass-operator-parity/stdout.txt",
-      "sourceHash": "sha256:be52cf7940e5d6d0ab9e00ce42e83e779373eb3087172376094c5b025a5332b3",
-      "workspaceHash": "sha256:a5e5e2917ed78a92f8fa41937249a7ec1b25c7698c06f8e97798011617fb1a9c"
-    },
-    source: sample28Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample28Source },
-    ],
-    guide: sample28Guide,
-    stdin: "",
-    expectedOutput: (sample28Output).replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "unary-operators",
-      "title": "単項演算子と値表示",
-      "summary": "unary - / !の型をpipeline・Show・Debugまで保持します。",
-      "kind": "recipe",
-      "difficulty": "intermediate",
-      "topics": [
-        "operator",
-        "Int",
-        "Float",
-        "Bool",
-        "Show",
-        "Debug"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "strings-and-templates"
-      ],
-      "featured": false,
-      "isNew": false,
-      "interactive": false,
-      "sourcePath": "examples/samples/unary-operators/main.ssrg",
-      "guidePath": "examples/samples/unary-operators/guide.md",
-      "expectedOutputPath": "examples/samples/unary-operators/stdout.txt",
-      "sourceHash": "sha256:c7be45a13bb915e1c6f4ddfa8714a3470168034964ce61f08b2ff1195a88b82c",
-      "workspaceHash": "sha256:855506460d718f8e20efe30c22305dd7de47c5cbe030df6e72f9c12b32bb4fa8"
-    },
-    source: sample29Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample29Source },
-    ],
-    guide: sample29Guide,
-    stdin: "",
-    expectedOutput: (sample29Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1593,13 +1161,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample30Source,
-    manifest: sample30Manifest,
+    source: sample20Source,
+    manifest: sample20Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample30Source },
-      { path: "app.ssrg", source: sample30Source2 },
+      { path: "main.ssrg", source: sample20Source },
+      { path: "app.ssrg", source: sample20Source2 },
     ],
-    guide: sample30Guide,
+    guide: sample20Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   }
@@ -1629,8 +1197,7 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
         "records",
         "newtypes",
         "type-aliases",
-        "impl-and-operators",
-        "unary-operators"
+        "impl-and-operators"
       ]
     },
     {
@@ -1641,8 +1208,7 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
       "samples": [
         "stdin-greeting",
         "either-and-monad",
-        "project-greeting",
-        "typeclass-operator-parity"
+        "project-greeting"
       ]
     },
     {
@@ -1653,7 +1219,6 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
       "samples": [
         "html-components",
         "interactive-app",
-        "signal-run-route",
         "web-starter"
       ]
     },

@@ -32,7 +32,6 @@ fn signal_fixtures_and_official_samples_match_bun_node_and_native() {
         ("signal-many-subscribers", false),
         ("signal-scopes", false),
         ("signal-state", true),
-        ("signal-composition", true),
         ("type-aliases", true),
     ] {
         let input = if sample {

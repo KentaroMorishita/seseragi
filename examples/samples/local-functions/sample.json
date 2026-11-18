@@ -8,7 +8,7 @@
   "topics": ["local function", "scope", "capture", "recursion", "generic"],
   "capabilities": ["console"],
   "outputMode": "text",
-  "prerequisites": ["functions-and-pipelines"],
+  "prerequisites": ["hello-world"],
   "featured": false,
   "isNew": true,
   "files": {

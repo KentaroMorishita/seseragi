@@ -106,14 +106,14 @@ HTML サンプルではこの3つが必須で、生成スクリプトは各役�
 | --- | --- | --- | --- | --- |
 | `html-components` | minimal | static | component | 状態なしで props・子要素・サーバー側描画を確認する |
 | `interactive-app` | minimal | dom-app | state | 純粋な更新関数を簡易 API に渡す |
-| `signal-run-route` | minimal | signal-run | state | 同じアプリを Signal・クエリ・`run` で明示的に書く |
+| `web-starter` | minimal | multi-module | project | Signal・`dom.run`・ローカルパッケージの最小構成を確認する |
 | `feature-composition` | guided | signal-run | composition | 複数の Signal と、実行範囲の指定を組み合わせる |
 | `form-todo` | showcase | signal-run | form | フォーム・入力チェック・複数のイベントをまとめる |
 | `project-flow-app` | showcase | multi-module | project | 機能ごとのモジュール分割を Explorer で追う |
 | `seseragi-landing-page` | showcase | multi-module | composition | 完成したページのセクション・状態・スタイルをモジュール単位で追う |
 
 `signal-state` は DOM を使わない Signal の基礎なので、この分類には入れません。
-上の7つはそれぞれ役割が違うので、似ていても重複として削除しないでください。
+上の7つはそれぞれ役割が分かれているため、用途ごとに使い分けます。
 各サンプルの `guide.md` の冒頭には「このサンプルを選ぶ理由」を書き、
 入門 → 解説付き → 1ファイルの完成例 → 複数モジュール、の順に次に見るサンプルを示します。
 

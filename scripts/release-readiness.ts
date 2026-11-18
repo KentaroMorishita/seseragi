@@ -35,10 +35,10 @@ export const USER_VISIBLE_SURFACES = [
 ] as const
 
 const INTERNAL_ONLY_PATHS = [
-  /(^|\/)(?:tests?|[^/]*_tests?)\//u,
+  /(^|\/)(?:tests?|[^/]*_tests?|e2e)\//u,
   /(^|\/)__snapshots__\//u,
-  /(?:^|\/)[^/]*(?:_test|_tests|\.test)\.[^/]+$/u,
-  /\.(?:snap|test)\.[^/]+$/u,
+  /(?:^|\/)[^/]*(?:_test|_tests|\.test|\.spec)\.[^/]+$/u,
+  /\.(?:snap|spec|test)\.[^/]+$/u,
   /^apps\/playground\/src\/generated\/(?:sample|tour|deep-dive)-manifest\.ts$/u,
 ] as const
 
@@ -115,6 +115,146 @@ function fileAt(ref: string, file: string, root: string): string {
   return git(["show", `${ref}:${file}`], root).stdout
 }
 
+function fileAtOptional(
+  ref: string,
+  file: string,
+  root: string
+): string | null {
+  const result = git(["show", `${ref}:${file}`], root, { allowFailure: true })
+  return result.exitCode === 0 ? result.stdout : null
+}
+
+function findMatchingRustBrace(source: string, openBraceIndex: number): number {
+  let depth = 0
+  let i = openBraceIndex
+  while (i < source.length) {
+    const ch = source[i]
+    const next = source[i + 1]
+    if (ch === "/" && next === "/") {
+      i += 2
+      while (i < source.length && source[i] !== "\n") i += 1
+      continue
+    }
+    if (ch === "/" && next === "*") {
+      let commentDepth = 1
+      i += 2
+      while (i < source.length && commentDepth > 0) {
+        if (source[i] === "/" && source[i + 1] === "*") {
+          commentDepth += 1
+          i += 2
+        } else if (source[i] === "*" && source[i + 1] === "/") {
+          commentDepth -= 1
+          i += 2
+        } else {
+          i += 1
+        }
+      }
+      continue
+    }
+    if (ch === "r" || (ch === "b" && next === "r")) {
+      let cursor = ch === "b" ? i + 2 : i + 1
+      let hashes = 0
+      while (source[cursor] === "#") {
+        hashes += 1
+        cursor += 1
+      }
+      if (source[cursor] === '"') {
+        cursor += 1
+        const closing = `"${"#".repeat(hashes)}`
+        const end = source.indexOf(closing, cursor)
+        if (end === -1) return -1
+        i = end + closing.length
+        continue
+      }
+    }
+    if (ch === '"') {
+      i += 1
+      while (i < source.length && source[i] !== '"') {
+        i += source[i] === "\\" ? 2 : 1
+      }
+      i += 1
+      continue
+    }
+    if (ch === "'") {
+      const charMatch = /^'(?:\\.|[^'\\\r\n])'/u.exec(source.slice(i))
+      if (charMatch) {
+        i += charMatch[0].length
+        continue
+      }
+    }
+    if (ch === "{") depth += 1
+    else if (ch === "}") {
+      depth -= 1
+      if (depth === 0) return i
+    }
+    i += 1
+  }
+  return -1
+}
+
+function isOnlyWhitespaceOrRustComments(suffix: string): boolean {
+  let i = 0
+  while (i < suffix.length) {
+    if (/\s/u.test(suffix[i]!)) {
+      i += 1
+      continue
+    }
+    if (suffix[i] === "/" && suffix[i + 1] === "/") {
+      i += 2
+      while (i < suffix.length && suffix[i] !== "\n") i += 1
+      continue
+    }
+    if (suffix[i] === "/" && suffix[i + 1] === "*") {
+      let commentDepth = 1
+      i += 2
+      while (i < suffix.length && commentDepth > 0) {
+        if (suffix[i] === "/" && suffix[i + 1] === "*") {
+          commentDepth += 1
+          i += 2
+        } else if (suffix[i] === "*" && suffix[i + 1] === "/") {
+          commentDepth -= 1
+          i += 2
+        } else {
+          i += 1
+        }
+      }
+      if (commentDepth > 0) return false
+      continue
+    }
+    return false
+  }
+  return true
+}
+
+export function stripRustInlineTestModule(source: string): string {
+  const marker = /\r?\n#\[cfg\(test\)\][ \t]*\r?\nmod tests[ \t]*\{/u.exec(
+    source
+  )
+  if (!marker) return source
+  const openBraceIndex = marker.index + marker[0].length - 1
+  const closeBraceIndex = findMatchingRustBrace(source, openBraceIndex)
+  if (closeBraceIndex === -1) return source
+  const trailing = source.slice(closeBraceIndex + 1)
+  if (!isOnlyWhitespaceOrRustComments(trailing)) return source
+  return source.slice(0, marker.index).trimEnd()
+}
+
+function isRustInlineTestOnlyChange(
+  baseRef: string,
+  headRef: string,
+  file: string,
+  root: string
+): boolean {
+  if (!file.endsWith(".rs")) return false
+  const baseContent = fileAtOptional(baseRef, file, root)
+  const headContent = fileAtOptional(headRef, file, root)
+  if (baseContent === null || headContent === null) return false
+  return (
+    stripRustInlineTestModule(baseContent) ===
+    stripRustInlineTestModule(headContent)
+  )
+}
+
 function compareTags(left: string, right: string): number {
   const leftParts = semverParts(left)
   const rightParts = semverParts(right)
@@ -172,7 +312,13 @@ export function pullRequestReleaseBoundary(
   const files = git(["diff", "--name-only", `${base}...${head}`], root)
     .stdout.split("\n")
     .filter(Boolean)
-  const visibleFiles = userVisibleFiles(files)
+  const mergeBase =
+    git(["merge-base", base, head], root, { allowFailure: true }).stdout || base
+  const visibleFiles = userVisibleFiles(
+    files.filter(
+      (file) => !isRustInlineTestOnlyChange(mergeBase, head, file, root)
+    )
+  )
   const baseVersion = versionFromCargoToml(
     fileAt(base, "Cargo.toml", root),
     base
@@ -224,7 +370,14 @@ export async function releaseReadiness(
   }
 
   const comparisonBase = currentTagCommit ? tag : latestReleaseTag
-  const visibleFiles = userVisibleFiles(changedFiles(comparisonBase, root))
+  const rawChangedFiles = changedFiles(comparisonBase, root)
+  const filteredChangedFiles = comparisonBase
+    ? rawChangedFiles.filter(
+        (file) =>
+          !isRustInlineTestOnlyChange(comparisonBase, "HEAD", file, root)
+      )
+    : rawChangedFiles
+  const visibleFiles = userVisibleFiles(filteredChangedFiles)
   const visibleSurfaces = userVisibleSurfaces(visibleFiles)
   let state: ReleaseReadinessState
   if (!currentTagCommit) {

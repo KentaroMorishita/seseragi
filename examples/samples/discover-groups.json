@@ -20,37 +20,21 @@
       "title": "データの形を設計する（型・不変更新・演算子）",
       "summary": "レコード更新、取り違えを防ぐID型、型エイリアス、独自演算子を設計します。",
       "kind": "recipe",
-      "samples": [
-        "records",
-        "newtypes",
-        "type-aliases",
-        "impl-and-operators",
-        "unary-operators"
-      ]
+      "samples": ["records", "newtypes", "type-aliases", "impl-and-operators"]
     },
     {
       "id": "effects-and-abstraction",
       "title": "入力・エラー・複数ファイルを扱う",
       "summary": "標準入力、Eitherによる段階的な入力検証、複数モジュールの分割を試します。",
       "kind": "recipe",
-      "samples": [
-        "stdin-greeting",
-        "either-and-monad",
-        "project-greeting",
-        "typeclass-operator-parity"
-      ]
+      "samples": ["stdin-greeting", "either-and-monad", "project-greeting"]
     },
     {
       "id": "web-ui-recipes",
       "title": "ブラウザの画面を作る（HTML・状態更新）",
       "summary": "静的なHTMLコンポーネントから、状態を持つ対話UIとWebパッケージの基本へ進みます。",
       "kind": "recipe",
-      "samples": [
-        "html-components",
-        "interactive-app",
-        "signal-run-route",
-        "web-starter"
-      ]
+      "samples": ["html-components", "interactive-app", "web-starter"]
     },
     {
       "id": "signal-showcases",

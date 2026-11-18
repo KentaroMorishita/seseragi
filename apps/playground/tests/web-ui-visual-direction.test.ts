@@ -124,31 +124,24 @@ describe("canonical Web UI visual direction", () => {
       "seseragi-landing-page",
     ])
     expect(groups.get("trail-planner-comparison")?.map(({ id }) => id)).toEqual(
-      ["interactive-app", "signal-run-route"]
+      ["interactive-app"]
     )
-    for (const [group, groupSamples] of groups) {
+    for (const [, groupSamples] of groups) {
       const photoIds = new Set(groupSamples.map(({ photoId }) => photoId))
       expect(photoIds.size).toBe(1)
-      if (group === "trail-planner-comparison") {
-        expect(groupSamples).toHaveLength(2)
-      } else {
-        expect(groupSamples).toHaveLength(1)
-      }
+      expect(groupSamples).toHaveLength(1)
     }
   })
 
   test("keeps responsive layouts and purpose-driven copy in the refreshed samples", () => {
     const htmlComponents = sourceFor("html-components")
     const trail = sourceFor("interactive-app")
-    const explicitTrail = sourceFor("signal-run-route")
     const composition = sourceFor("feature-composition")
 
     expect(htmlComponents).toContain("#fff7ed")
     expect(htmlComponents).toContain('"flex-wrap"')
     expect(trail).toContain('"grid-cols-1"')
     expect(trail).toContain('"sm:grid-cols-3"')
-    expect(explicitTrail).toContain('"grid-cols-1"')
-    expect(explicitTrail).toContain('"sm:grid-cols-3"')
     expect(composition).toContain('"grid-cols-1"')
     expect(composition).toContain('"sm:grid-cols-2"')
     expect(composition).toContain("Compose the release rhythm.")

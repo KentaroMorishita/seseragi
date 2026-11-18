@@ -19,7 +19,7 @@
   "experience": "minimal",
   "architecture": "static",
   "focus": "component",
-  "prerequisites": ["functions-and-pipelines", "records"],
+  "prerequisites": ["records"],
   "featured": true,
   "isNew": true,
   "files": {
