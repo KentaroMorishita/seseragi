@@ -370,6 +370,23 @@ fn compile_project(
         .metadata
         .capabilities
         .iter()
+        .any(|capability| capability == "http-client")
+    {
+        for (_, package) in project.packages().packages() {
+            if package
+                .manifest()
+                .providers
+                .contains_key("std/http::HttpClient")
+                || !package.manifest().provider_artifacts.is_empty()
+            {
+                return Err(format!("{}: SES-RUST-0001: unsupported native HttpClient provider selection/artifact configuration; this target currently uses its built-in HTTP/1.1 host", package.root().join("seseragi.toml").display()));
+            }
+        }
+    }
+    if artifact
+        .metadata
+        .capabilities
+        .iter()
         .any(|capability| capability == "entropy")
     {
         for (_, package) in project.packages().packages() {

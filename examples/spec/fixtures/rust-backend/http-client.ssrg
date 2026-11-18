@@ -1,0 +1,184 @@
+// sendBytes, sendEmpty and exchange against a local test server whose address
+// is the first argument. Errors print only their tag, because the messages come from
+// each host's HTTP stack.
+import * as http from "std/http"
+import * as process from "std/process"
+import * as effects from "std/effect"
+import * as text from "std/text"
+import * as time from "std/time"
+import * as streams from "std/stream"
+import * as deferred from "std/deferred"
+import * as bytes from "std/bytes"
+
+effect fn say message: String -> Unit with Console = println message |> effects.recover ignore
+effect fn ignore _error: ConsoleError -> Unit with Console = effects.succeed ()
+
+fn tag error: http.HttpError -> String = match error {
+  http.HttpDnsFailure _ -> "HttpDnsFailure"
+  http.HttpConnectionFailure _ -> "HttpConnectionFailure"
+  http.HttpTlsFailure _ -> "HttpTlsFailure"
+  http.HttpProtocolFailure _ -> "HttpProtocolFailure"
+  http.HttpRequestBodyFailure _ -> "HttpRequestBodyFailure"
+  http.HttpRequestLengthMismatch _ -> http.errorMessage error
+  http.HttpResponseBodyLimitExceeded _ -> http.errorMessage error
+  http.HttpClientUnavailable -> "HttpClientUnavailable"
+}
+
+fn bodyText response: http.Response -> String =
+  match text.decodeUtf8 (http.responseBody response) {
+    Right value -> value
+    Left _ -> "<binary>"
+  }
+
+fn describe result: Either<http.HttpError, http.Response> -> String = match result {
+  Right response ->
+    show (http.statusCode (http.responseStatus response))
+    + " " + show (http.headerValues "x-multi" (http.responseHeaders response))
+    + " " + bodyText response
+  Left error -> "error " + tag error
+}
+
+fn parsed base: String -> path: String -> Either<http.HttpBuildError, http.Request> =
+  match http.parseUrl (base + path) {
+    Right url -> Right (http.request http.get url)
+    Left error -> Left error
+  }
+
+effect fn get base: String -> path: String -> limit: http.HttpBodyLimit -> Unit with Console, { httpClient: http.HttpClient } =
+  match parsed base path {
+    Right request -> do {
+      result <- effects.attempt (http.sendEmpty limit request)
+      say (path + ": " + describe result)
+    }
+    Left error -> say (path + ": " + show error)
+  }
+
+effect fn post base: String -> limit: http.HttpBodyLimit -> Unit with Console, { httpClient: http.HttpClient } =
+  match http.parseUrl (base + "/echo") {
+    Right url -> do {
+      let request = http.request http.post url
+      result <- effects.attempt (http.sendBytes limit (text.encodeUtf8 "雪abc") request)
+      say ("/echo: " + describe result)
+      match http.withRequestHeader "content-length" "2" request {
+        Right declared -> do {
+          mismatch <- effects.attempt (http.sendBytes limit (text.encodeUtf8 "abc") declared)
+          say ("/echo declared: " + describe mismatch)
+        }
+        Left error -> say (show error)
+      }
+    }
+    Left error -> say (show error)
+  }
+
+fn headerText headers: http.Headers -> String =
+  show (map (\entry: (String, String) -> match entry { (name, value) -> name + "=" + value }) (http.headerEntries headers))
+
+// Body chunks are joined, since hosts may split a body differently.
+fn step text: String -> event: http.HttpEvent -> String = (match event {
+  http.InformationalResponse head -> text + "[informational " + show (http.statusCode head.status) + "]"
+  http.ResponseStarted head -> text + "[started " + show (http.statusCode head.status) + "]"
+  http.ResponseBodyChunk bytes -> text + (match text.decodeUtf8 bytes { Right value -> value; Left _ -> "<binary>" })
+  http.ResponseTrailers headers -> text + "[trailers " + headerText headers + "]"
+})
+
+fn exchanged result: Either<Either<String, http.HttpError>, String> -> String = match result {
+  Right text -> text
+  Left (Right error) -> "error " + tag error
+  Left (Left error) -> "body failed " + error
+}
+
+effect fn exchangeWith label: String -> request: http.Request -> body: http.Body<{}, String> -> Unit with Console, { httpClient: http.HttpClient } = do {
+  result <- effects.attempt (streams.runFold "" step (http.exchange body request))
+  say ("exchange " + label + ": " + exchanged result)
+}
+
+effect fn events base: String -> path: String -> method: http.Method -> body: http.Body<{}, String> -> Unit with Console, { httpClient: http.HttpClient } =
+  match http.parseUrl (base + path) {
+    Right url -> exchangeWith path (http.request method url) body
+    Left error -> say (show error)
+  }
+
+// A body that never ends, as fast as the connection takes it. Only an early
+// final response ends such an exchange.
+fn endless -> http.Body<{}, String> =
+  http.streamBody (streams.unfold (\n: Int -> Just (text.encodeUtf8 "ab", n + 1)) 0)
+
+effect fn boom -> bytes.Bytes fails String = effects.fail "boom"
+
+effect fn wait gate: deferred.Deferred<Never, bytes.Bytes> -> bytes.Bytes = deferred.await gate
+
+effect fn stalled -> bytes.Bytes = do {
+  gate <- deferred.make ()
+  wait gate
+}
+
+// A body whose second pull fails, or never ends.
+fn second outcome: Int -> http.Body<{}, String> =
+  http.streamBody (streams.flatMap (\n: Int ->
+    if n == 0 then streams.singleton (text.encodeUtf8 "ab")
+    else if outcome == 0 then streams.fromEffect (boom ())
+    else streams.fromEffect (effects.mapError (\_never: Never -> "never") (stalled ()))) (streams.fromArray [0, 1]))
+
+// The request body is sent chunk by chunk while the response is read. A
+// final response stops the body, even while it waits for its next chunk.
+effect fn streaming base: String -> Unit with Console, { httpClient: http.HttpClient } = do {
+  events base "/framing" http.put (http.streamBody (streams.fromArray [text.encodeUtf8 "ab", text.encodeUtf8 "", text.encodeUtf8 "c"]))
+  events base "/framing" http.post (http.bytesBody (text.encodeUtf8 "abc"))
+  events base "/framing" http.get (http.emptyBody ())
+  events base "/reject" http.post (second 1)
+  events base "/first" http.post (second 1)
+  events base "/echo" http.post (second 0)
+  match http.parseUrl (base + "/echo") {
+    Right url -> match http.withRequestHeader "content-length" "5" (http.request http.post url) {
+      Right declared -> exchangeWith "/echo declared" declared (http.streamBody (streams.fromArray [text.encodeUtf8 "abc"]))
+      Left error -> say (show error)
+    }
+    Left error -> say (show error)
+  }
+  events base "/reject" http.post (endless ())
+  events base "/first" http.post (endless ())
+}
+
+fn millis value: Int -> time.Duration = match time.milliseconds value {
+  Right duration -> duration
+  Left _ -> millis 0
+}
+
+// A cancelled exchange closes its connection before the program goes on.
+effect fn cancelled base: String -> limit: http.HttpBodyLimit -> Unit with Console, Clock, { httpClient: http.HttpClient } =
+  match parsed base "/hang" {
+    Right request -> do {
+      result <- effects.timeout (millis 200) (effects.attempt (http.sendEmpty limit request))
+      say ("/hang: " + match result {
+        Just _ -> "answered"
+        Nothing -> "timed out"
+      })
+      get base "/closed" limit
+    }
+    Left error -> say (show error)
+  }
+
+pub effect fn main -> Unit with Console, Clock, { httpClient: http.HttpClient, process: process.Process } fails String = do {
+  args <- process.arguments () |> effects.mapError show
+  let base = match args { [first, ..._] -> first; _ -> "http://127.0.0.1:9" }
+  let limit = http.defaultBodyLimit ()
+  get base "/text" limit
+  get base "/chunked" limit
+  get base "/empty" limit
+  get base "/headers" limit
+  get base "/missing" limit
+  match http.bodyLimit 10 {
+    Right small -> get base "/big" small
+    Left error -> say (show error)
+  }
+  post base limit
+  get "http://127.0.0.1:9" "/refused" limit
+  cancelled base limit
+  events base "/headers" http.get (http.emptyBody ())
+  events base "/echo" http.post (http.bytesBody (text.encodeUtf8 "雪"))
+  events base "/echo" http.put (http.streamBody (streams.fromArray [text.encodeUtf8 "ab", text.encodeUtf8 "c"]))
+  events base "/trailers" http.get (http.emptyBody ())
+  events base "/early" http.get (http.emptyBody ())
+  events "http://127.0.0.1:9" "/refused" http.get (http.emptyBody ())
+  streaming base
+}
