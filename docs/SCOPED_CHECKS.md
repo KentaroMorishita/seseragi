@@ -25,7 +25,7 @@
 | VS Code の拡張機能 | `bun run check:extension` |
 | 本番用のビルドの成果物 | `bun run check:production`。ブラウザーで動かすなら `bun run check:production:browser` |
 | 版、配布物の名前、リリースの手順 | `bun run check:release` |
-| 利用者に見える変更（`crates/`、`runtime/ts/`、`apps/playground/`、`examples/spec/`、`docs/spec/`、拡張機能） | 版を上げて CHANGELOG を書き、`bun run release:check`（[RELEASE.md](./RELEASE.md)） |
+| 利用者に見える変更（`crates/`、`runtime/ts/`、`runtime/providers/`、`apps/playground/`、`examples/spec/`、`docs/spec/`、拡張機能） | 版を上げて CHANGELOG を書き、`bun run release:check`（[RELEASE.md](./RELEASE.md)） |
 
 チェックが足りない変更は、必要なコマンドを個別に実行し、結果を PR に書きます。足りないチェックを加える作業は、別の Issue にします。
 
