@@ -90,3 +90,21 @@ test("removes a remembered answer from Network access", async ({ page }) => {
   await page.locator("#run-button").click()
   await expect(page.locator("#network-consent-dialog")).toBeVisible()
 })
+
+test("keeps the consent dialog and its buttons compact on a phone", async ({
+  page,
+}) => {
+  // iPhone で、ダイアログが画面いっぱいに伸び、ボタンが細い帯になった不具合の再発を防ぐ
+  await page.setViewportSize({ width: 390, height: 844 })
+  await openLandingPage(page)
+  await page.locator("#run-button").click()
+  const consent = page.locator("#network-consent-dialog")
+  await expect(consent).toBeVisible()
+  const dialog = await consent.boundingBox()
+  expect(dialog?.height ?? 0).toBeLessThan(844 * 0.7)
+  for (const name of ["Cancel", "Allow"]) {
+    const box = await consent.getByRole("button", { name }).boundingBox()
+    expect(Math.round(box?.height ?? 0)).toBe(44)
+    expect(box?.width ?? 0).toBeGreaterThan(120)
+  }
+})
