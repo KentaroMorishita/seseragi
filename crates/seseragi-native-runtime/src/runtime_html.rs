@@ -116,13 +116,8 @@ fn native_html_attribute(
     ));
 }
 
-fn native_html_element(tag: &str, value: V, void: bool) -> V {
-    let props = value.record_fields();
-    assert!(
-        !void || !props.contains_key("children"),
-        "Rust ABI: void HTML children"
-    );
-    let mut output = format!("<{tag}");
+/// The attributes every element writes, HTML or SVG, in the TS order.
+fn native_html_common_attributes(output: &mut String, props: &BTreeMap<String, V>) {
     for (property, name, kind) in [
         ("id", "id", "string"),
         ("class", "class", "string"),
@@ -142,8 +137,18 @@ fn native_html_element(tag: &str, value: V, void: bool) -> V {
         ("ariaHidden", "aria-hidden", "enum"),
         ("ariaSelected", "aria-selected", "enum"),
     ] {
-        native_html_attribute(&mut output, props, property, name, kind, None);
+        native_html_attribute(output, props, property, name, kind, None);
     }
+}
+
+fn native_html_element(tag: &str, value: V, void: bool) -> V {
+    let props = value.record_fields();
+    assert!(
+        !void || !props.contains_key("children"),
+        "Rust ABI: void HTML children"
+    );
+    let mut output = format!("<{tag}");
+    native_html_common_attributes(&mut output, props);
     let attributes: &[(&str, &str, &str, Option<&str>)] = match tag {
         "button" => &[
             ("disabled", "disabled", "bool", None),
@@ -282,8 +287,65 @@ fn native_html_element(tag: &str, value: V, void: bool) -> V {
     V::adt("\0html.node", V::text(&output))
 }
 
+/// An SVG scene node, rendered at once like an HTML element. Its text stays
+/// apart from HTML nodes until `toHtml`.
+fn native_svg_element(tag: &str, value: V) -> V {
+    let props = value.record_fields();
+    let mut output = format!("<{tag}");
+    native_html_common_attributes(&mut output, props);
+    for (property, name) in [
+        ("viewBox", "viewBox"),
+        ("preserveAspectRatio", "preserveAspectRatio"),
+        ("transform", "transform"),
+        ("d", "d"),
+        ("points", "points"),
+        ("fill", "fill"),
+        ("stroke", "stroke"),
+        ("strokeWidth", "stroke-width"),
+        ("strokeLinecap", "stroke-linecap"),
+        ("strokeLinejoin", "stroke-linejoin"),
+        ("textAnchor", "text-anchor"),
+        ("dominantBaseline", "dominant-baseline"),
+        ("pointerEvents", "pointer-events"),
+    ] {
+        native_html_attribute(&mut output, props, property, name, "string", None);
+    }
+    for name in [
+        "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "width", "height", "opacity",
+    ] {
+        match props.get(name) {
+            None => {}
+            Some(V::Float(value)) if value.is_finite() => {
+                output.push_str(&format!(" {name}=\"{}\"", native_number_text(*value)));
+            }
+            Some(V::Float(_)) => panic!("SVG attribute {name} must be a finite number"),
+            Some(_) => panic!("Rust ABI: SVG number attribute"),
+        }
+    }
+    output.push('>');
+    match props.get("children") {
+        Some(V::Text(text)) => output.push_str(&native_html_escape(text.get(), false)),
+        Some(V::Array(children)) => {
+            for child in children.get() {
+                output.push_str(native_html_value(child, "\0svg.node"));
+            }
+        }
+        None => {}
+        Some(_) => panic!("Rust ABI: SVG children"),
+    }
+    output.push_str(&format!("</{tag}>"));
+    V::adt("\0svg.node", V::text(&output))
+}
+
 pub fn native_html_operation(name: &str, value: V, void: bool) -> V {
     match name {
+        "std/web/svg::toHtml" => V::adt(
+            "\0html.node",
+            V::text(native_html_value(&value, "\0svg.node")),
+        ),
+        name if name.starts_with("std/web/svg::") => {
+            native_svg_element(&name["std/web/svg::".len()..], value)
+        }
         "style" => native_html_style(value),
         "parseWebUrl" => native_html_parse_url(value),
         "text" => V::adt(

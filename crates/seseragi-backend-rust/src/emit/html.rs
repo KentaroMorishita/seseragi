@@ -1,6 +1,11 @@
 use super::*;
 
 fn operation(name: &str) -> Option<&str> {
+    if svg::operation(name).is_some() {
+        // SVG scene nodes keep their module, so the runtime cannot mistake
+        // `svg.text` for `html.text`.
+        return Some(name);
+    }
     let name = name.strip_prefix("std/web/html::")?;
     (seseragi_project::standard_html_tag(name).is_some()
         || matches!(
@@ -91,6 +96,12 @@ impl Backend<'_> {
         let CoreType::Function { parameter, result } = &ty else {
             return Err("Rust backend: HTML callable contract".into());
         };
+        if let Some(operation) = svg::operation(name) {
+            if !evidence.is_empty() || !svg::valid(operation, parameter, result) {
+                return Err("Rust backend: unproven SVG argument/result type".into());
+            }
+            return Ok(());
+        }
         let string = named("std/prelude::String", vec![]);
         let valid = match name {
             "style" => {

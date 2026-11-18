@@ -1,0 +1,53 @@
+// Every static SVG node and attribute, rendered as HTML text.
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+
+fn label name: String -> svg.Svg<Unit> = svg.text {
+  x: 4.5,
+  y: -2.0,
+  textAnchor: "middle",
+  dominantBaseline: "central",
+  fill: "<&\">",
+  // Not written by either renderer.
+  fontSize: "12",
+  children: name + " <&>"
+}
+
+fn scene shift: Float -> svg.Svg<Unit> = svg.svg {
+  id: "scene",
+  class: "chart",
+  title: "a scene",
+  hidden: False,
+  style: html.style { display: "block", width: "100%" },
+  role: "img",
+  ariaLabel: "chart",
+  viewBox: "0 0 100 50",
+  preserveAspectRatio: "xMidYMid meet",
+  width: 100.0,
+  height: 50.0,
+  children: [
+    svg.g {
+      transform: `translate(${show shift} 0)`,
+      opacity: 0.5,
+      children: [
+        svg.rect { x: 0.0, y: 0.0, width: 10.0, height: 5.0, rx: 1.0, ry: 1.0, fill: "red" },
+        svg.circle { cx: 25.0, cy: 12.5, r: 0.125, stroke: "blue", strokeWidth: "2" },
+        svg.line { x1: 0.0, y1: 0.0, x2: 1e21, y2: 1e-7, strokeLinecap: "round" },
+        svg.path { d: "M0 0 L10 10", strokeLinejoin: "bevel", pointerEvents: "none" },
+        svg.polyline { points: "0,0 1,1 2,0" },
+        svg.polygon { points: "0,0 1,1 2,0", fill: "none" },
+        label "first"
+      ]
+    },
+    svg.g { children: [] },
+    label "second"
+  ]
+}
+
+pub effect fn main = do {
+  let after: html.Html<Unit> = html.text "after"
+  let page: html.Html<Unit> = html.div { children: [svg.toHtml (scene 3.25), after] }
+  println (html.renderToString page)
+  let lone: html.Html<Unit> = svg.toHtml (label "alone")
+  println (html.renderToString lone)
+}

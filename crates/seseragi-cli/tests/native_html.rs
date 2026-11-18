@@ -71,6 +71,13 @@ fn style_image_and_document_match_ts() {
 }
 
 #[test]
+fn static_svg_scenes_match_ts() {
+    let scratch = tempfile::tempdir().unwrap();
+    let fixture = root().join("examples/spec/fixtures/rust-backend/svg-scene.ssrg");
+    compare(&fixture, &fixture.with_extension("stdout"), scratch.path());
+}
+
+#[test]
 fn every_standard_html_element_and_its_attributes_match_ts() {
     let scratch = tempfile::tempdir().unwrap();
     let mut source = String::from("import * as html from \"std/web/html\"\npub effect fn main = match html.parseWebUrl \"/image?a=1&b=2\" { Left error -> println (show error); Right url -> do {\n");
