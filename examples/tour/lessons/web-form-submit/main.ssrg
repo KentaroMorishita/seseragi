@@ -2,14 +2,27 @@ import * as html from "std/web/html"
 
 type Action =
   | DraftChanged String
+  | PinnedChanged Bool
+  | IgnoredChange
   | Submitted
 
 fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
+
+fn pinnedAction event: html.ChangeEvent -> Action = match event.checked {
+  Just checked -> PinnedChanged checked
+  Nothing -> IgnoredChange
+}
 
 let form: html.Html<Action> = html.form {
   onSubmit: Submitted,
   children: [
     html.input { name: "draft", inputType: "text", onInput: draftAction },
+    html.input {
+      name: "pinned",
+      inputType: "checkbox",
+      checked: False,
+      onChange: pinnedAction
+    },
     html.button { buttonType: "submit", children: "Add" },
   ]
 }

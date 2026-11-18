@@ -43,7 +43,14 @@ describe("Web UI visual regression matrix", () => {
       expect(entry.requiredSurfaces).toContain("code")
       expect(entry.requiredSurfaces).toContain("preview")
       expect(entry.requiredStates[0]).toBe("initial")
-      expect(entry.requiredStates).toContain("image-fallback")
+      // Only samples that still show an <img> need the broken-image state;
+      // samples drawn without external images (#1371) do not.
+      const source = sample.workspace.files
+        .map(({ source }) => source)
+        .join("\n")
+      expect(entry.requiredStates.includes("image-fallback")).toBe(
+        source.includes("html.img {")
+      )
       expect(entry.heading.length).toBeGreaterThan(3)
     }
   })
@@ -65,11 +72,12 @@ describe("Web UI visual regression matrix", () => {
           source.includes('minHeight: "100vh"'),
         sample.id
       ).toBe(true)
-      expect(
-        source.includes('"object-cover"') ||
-          source.includes('objectFit: "cover"'),
-        sample.id
-      ).toBe(true)
+      if (source.includes("html.img {"))
+        expect(
+          source.includes('"object-cover"') ||
+            source.includes('objectFit: "cover"'),
+          sample.id
+        ).toBe(true)
     }
   })
 })

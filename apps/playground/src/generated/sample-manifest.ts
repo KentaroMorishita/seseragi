@@ -588,17 +588,15 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "html-components",
-      "title": "HTML componentとSSRの最小例",
-      "summary": "stateを持たず、tag、props、children、link、image、関数componentを順に組み立てます。",
+      "title": "読書メモのカードを HTML の部品で組み立てる",
+      "summary": "本のデータの配列から、同じ関数の部品で三枚のカードを並べ、HTML の文字列として書き出します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
         "Html",
-        "document tags",
-        "link",
-        "image",
         "function component",
         "Style",
+        "SVG",
         "SSR"
       ],
       "capabilities": [
@@ -617,8 +615,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:0be939f6ed3e6e71798fdfa15155ec3ab50cbfdabf01c62e3f8d0bba1f999022",
-      "workspaceHash": "sha256:5dc380d0cdf1ba6adc1c17486ab5441f7287c2e851967ad89641202af087c2ec"
+      "sourceHash": "sha256:b1e1840f1931f275607b6ee6e325dad6b6dd3584cd0834eb84c1c2104b20a93c",
+      "workspaceHash": "sha256:8cf8a3bcc569a134a54faab8b628b16c3a78f44f61cf16d0d95a07e9b1a08b01"
     },
     source: sample9Source,
     manifest: "",
@@ -671,22 +669,22 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "interactive-app",
-      "title": "Trail plannerをdom.appで動かす",
-      "summary": "三つのrouteを選ぶState、Action、pure update、viewをdom.appへ渡す最小appです。",
+      "title": "散歩コースを Signal で切り替える",
+      "summary": "選んだコースを Signal に持ち、見出し、標高の断面、時間と距離を一緒に描き直す小さな画面です。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
-        "typed Action",
-        "pure reducer",
         "Signal",
-        "dom.app"
+        "dom.run",
+        "deriving Eq",
+        "SVG"
       ],
       "capabilities": [
         "dom"
       ],
       "outputMode": "html",
       "experience": "minimal",
-      "architecture": "dom-app",
+      "architecture": "signal-run",
       "focus": "state",
       "prerequisites": [
         "signal-state",
@@ -697,8 +695,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/interactive-app/main.ssrg",
       "guidePath": "examples/samples/interactive-app/guide.md",
-      "sourceHash": "sha256:bd260247692d5452ce94d10ea7f3eb0b8dccefa1131bf2695d716bc0b280fd16",
-      "workspaceHash": "sha256:fba79375b63eed9bde223ac21e1994a97967f8a986c349b7a6b9d4732f931b3f"
+      "sourceHash": "sha256:5db20af60f4f8e9a28432c64848a6037368f990daa960737fdb76c0bbfbec274",
+      "workspaceHash": "sha256:f69d24a817adae688bd6c530b27613289c13fd1ffdd70a26a033304b342e5087"
     },
     source: sample11Source,
     manifest: "",
@@ -1348,8 +1346,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "web-starter",
-      "title": "Web starter — 最初のlocal package",
-      "summary": "seseragi new webが生成するものと同じsourceで、Signal counterをlocal Web packageとして動かします。",
+      "title": "最初の Web プロジェクト（seseragi new web）",
+      "summary": "seseragi new web が作るものと同じソースで、Signal のカウンターを手元の Web プロジェクトとして動かします。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -1376,7 +1374,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:819372a6322dc873a827e4e3199da2da28f11f0af9a8083f38e4f285d00a3c75",
       "guidePath": "examples/samples/web-starter/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:c43b7129981a0e5a23193d54834d7b82c7e31bf5bc3193f79620595e6b1dd279",
+      "workspaceHash": "sha256:58ae694d8c5eb0dee52ab4604ded09e096bbf293beb3d09b82796a92d49745ee",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1394,7 +1392,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/web-starter/src/app.ssrg",
-            "sourceHash": "sha256:43fe910b9cc3f1c6c509011cea97b784257d693592bd50277e2212e7a35ac6ac"
+            "sourceHash": "sha256:d229e9d3cbdf1343e842b72affde1db6fd65def03a18f7944deba854e16704dc"
           }
         ]
       }

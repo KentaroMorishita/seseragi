@@ -95,9 +95,9 @@ const $ssrg$source3237 = { file: "main.ssrg", line: 98, column: 19, uri: "sesera
 const $ssrg$source3249 = { file: "main.ssrg", line: 98, column: 31, uri: "seseragi://artifact/collection-reduce-until", start: 3249, end: 3260 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_show_tupleShow<readonly [number, number, number]>(_ssrg_show_intShow, _ssrg_show_intShow, _ssrg_show_intShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_tupleShow<readonly [number, number]>(_ssrg_show_intShow, _ssrg_show_intShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$2 = (() => { const create = () => _ssrg_show_tupleShow<readonly [number, string]>(_ssrg_show_intShow, _ssrg_show_stringShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_show_tupleShow<readonly [number, number, number]>(_ssrg_show_intShow, _ssrg_show_intShow, _ssrg_show_intShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_tupleShow<readonly [number, number]>(_ssrg_show_intShow, _ssrg_show_intShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$2 = (() => { const create = () => _ssrg_show_tupleShow<readonly [number, string]>(_ssrg_show_intShow, _ssrg_show_stringShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 type Countdown =
   | { readonly tag: "Countdown"; readonly value: number };
 const Countdown = (value: number): Countdown => ({ tag: "Countdown", value } as const);

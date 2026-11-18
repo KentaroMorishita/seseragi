@@ -1,11 +1,19 @@
 import * as signals from "std/signal"
-
-fn multiply left: Int -> right: Int -> Int = left * right
+import { Signal } from "std/signal"
 
 pub effect fn main = do {
-  left <- signals.make 6
-  right <- signals.make 7
-  let result = signals.combine multiply left right
-  current <- signals.read result
-  println `combined: ${current}`
+  price <- signals.make 100
+  count <- signals.make 2
+  let doubled = signals.map (\n: Int -> n * 2) price
+  let viaOp: Signal<Int> = (\n: Int -> n * 2) <$> price
+  let total = signals.combine (\p: Int -> \c: Int -> p * c) price count
+  initialDoubled <- *doubled
+  initialOp <- *viaOp
+  initialTotal <- *total
+  println `doubled: ${initialDoubled}`
+  println `<$>: ${initialOp}`
+  println `initial total: ${initialTotal}`
+  count := 5
+  afterCount <- *total
+  println `after update: ${afterCount}`
 }

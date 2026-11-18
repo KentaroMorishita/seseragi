@@ -1,2 +1,0 @@
-concrete: 42
-generic: Seseragi

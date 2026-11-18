@@ -1,3 +1,5 @@
-fn greeting -> String = 42
+fn add left: Int -> right: Int -> Int = left + right
 
-pub effect fn main = println "greeting: Unit -> String"
+let first = add(10, 20)
+
+pub effect fn main = println `first: ${first}`

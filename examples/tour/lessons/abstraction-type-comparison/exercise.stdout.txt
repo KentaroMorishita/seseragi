@@ -1,1 +1,5 @@
-Just 42
+Maybe: 2
+Either: 4
+Array: [2, 4]
+List: `[6, 8]
+Effect: 8

@@ -1,8 +1,18 @@
+fn keepValue<A> value: A -> A = value
+
 fn keepShape<F<_>, A> value: F<A> -> F<A> = value
 
-fn render value: Maybe<Int> -> String = match value {
-  Nothing -> "Nothing"
-  Just item -> `Just ${item}`
-}
+fn prefix tag: String -> text: String -> String = `${tag}: ${text}`
 
-pub effect fn main = Just 42 |> keepShape |> render |> println
+fn inspectShape<F<_>, A> tag: String -> value: F<A> -> String where Show<F<A>> =
+  value
+  |> keepShape
+  |> show
+  |> prefix tag
+
+pub effect fn main = do {
+  let keptInt = keepValue 42
+  println $ `Int: ${keptInt}`
+  inspectShape "Maybe" (Just 42) |> println
+  inspectShape "Array" [1, 2, 3] |> println
+}

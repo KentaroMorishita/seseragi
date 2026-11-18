@@ -3,29 +3,17 @@ import { tourLessons } from "../src/tour/curriculum"
 
 const foundationIds = [
   "01-hello-world",
-  "program-entry",
-  "string-literal",
-  "string-template",
-  "int-literal",
-  "float-literal",
-  "bool-literal",
-  "unit-literal",
   "02-values-and-bindings",
-  "local-let",
-  "type-annotations",
-  "type-inference",
-  "primitive-arithmetic",
-  "primitive-comparison",
-  "comments-and-tools",
+  "if-expression",
 ] as const
 
 describe("Tour foundation curriculum", () => {
-  test("teaches execution, values, types and tools as a sequential foundation", () => {
+  test("teaches execution, values, types and branching as a sequential foundation", () => {
     const foundations = tourLessons.slice(0, foundationIds.length)
 
     expect(foundations.map(({ id }) => id)).toEqual([...foundationIds])
     expect(
-      foundations.every(({ deliveryIssue }) => deliveryIssue === 172)
+      foundations.every(({ deliveryIssue }) => deliveryIssue === 1348)
     ).toBe(true)
     expect(foundations.every(({ format }) => format !== undefined)).toBe(true)
     for (const [index, lesson] of foundations.entries()) {
@@ -38,21 +26,20 @@ describe("Tour foundation curriculum", () => {
     }
   })
 
-  test("introduces each primitive literal and type concept in its own lesson", () => {
-    expect(introducedBy("string-literal")).toEqual([
-      "string-literal",
-      "println",
-    ])
-    expect(introducedBy("int-literal")).toEqual(["int"])
-    expect(introducedBy("float-literal")).toEqual(["float"])
-    expect(introducedBy("bool-literal")).toEqual(["bool"])
-    expect(introducedBy("unit-literal")).toEqual(["unit"])
-    expect(introducedBy("type-annotations")).toEqual(["type-annotation"])
-    expect(introducedBy("type-inference")).toEqual(["type-inference"])
-    expect(introducedBy("primitive-arithmetic")).toEqual([
-      "primitive-arithmetic",
-    ])
-    expect(introducedBy("primitive-comparison")).toEqual(["comparison"])
+  test("introduces templates, primitive bindings, inference and if expressions", () => {
+    expect(introducedBy("01-hello-world")).toContain("string-template")
+    expect(introducedBy("02-values-and-bindings")).toEqual(
+      expect.arrayContaining([
+        "int",
+        "float",
+        "bool",
+        "unit",
+        "let",
+        "type-annotation",
+        "type-inference",
+      ])
+    )
+    expect(introducedBy("if-expression")).toEqual(["if-expression"])
   })
 
   test("keeps every foundation runnable, changeable and diagnosable", () => {

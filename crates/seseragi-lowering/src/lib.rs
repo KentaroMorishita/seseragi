@@ -1166,9 +1166,13 @@ pub fn listLength values: List<Int> -> Int = {
             "{}",
             bundle.typescript
         );
+        // The closed factory is built once, behind its getter.
+        assert!(bundle.typescript.contains(
+            "const create = () => _ssrg_show_arrayShow_1<string>(_ssrg_show_stringShow);"
+        ));
         assert!(bundle
             .typescript
-            .contains("_ssrg_show_arrayShow_1<string>(_ssrg_show_stringShow)[\"show\"](values)"));
+            .contains("$ssrg$closedDisplay$0()[\"show\"](values)"));
     }
 
     #[test]

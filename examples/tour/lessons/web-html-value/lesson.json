@@ -1,1 +1,79 @@
-{"$schema":"../../lesson.schema.json","id":"web-html-value","formatVersion":2,"sections":{"prerequisite":"Signalの更新権限とread-only viewを分離しました。","walkthrough":[{"heading":"PureなHtml valueを作る","body":"`std/web/html`のnamespaceから`html.main`を呼び、browserを直接変更しないHtml<Action>を作ります。","sourceRange":{"startLine":1,"endLine":8}}],"introduced":[{"kind":"type","name":"html.Html<Action>","body":"Htmlはtypedなpure tree valueで、PreviewはrenderToStringの結果を隔離して表示します。"}],"exercise":{"instruction":"tagとtextを変更し、Previewの静的elementを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"HtmlへIntを代入する","body":"失敗例はHtml<Action>へ通常のIntを代入し、pure treeの型境界を確認します。"},"recap":["Htmlはbrowser操作ではなくpureなtree valueである。","html namespaceのtag builderから最小elementを作れる。"],"next":{"lessonId":"web-text-attributes","body":"次はtextとattributeを分けて指定します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.html","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "web-html-value",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`Signal` の読み取り専用ビューと更新権限の分離までを学びました。ここからはブラウザー向けの画面を純粋な値として組み立てる `Html` を学びます。",
+    "walkthrough": [
+      {
+        "heading": "Html 型と html.style で見た目を準備する",
+        "body": "1〜6 行目では `std/web/html` を読み込み、操作を表す `Action` 型と、`html.style` を使ったインラインスタイル値 `accent` を定義しています。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 6
+        }
+      },
+      {
+        "heading": "属性と子要素をまとめて要素を作る",
+        "body": "8〜16 行目の `html.main` では `id`・`class`・`style` で属性や見た目を指定し、`children` の配列に `html.h1` と `html.p` を並べてツリーを作ります。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 16
+        }
+      },
+      {
+        "heading": "html.renderToString で文字列化して確認する",
+        "body": "18 行目では `html.renderToString` で `page` を HTML 文字列へ変換し、`println` で出力して `Output` や `Preview` で確かめます。",
+        "sourceRange": {
+          "startLine": 18,
+          "endLine": 18
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Html<Action>",
+        "body": "画面の構造を純粋な値として表す型です。実際の画面を直接書き換えずにツリーを組み立て、文字列化や実行環境への受け渡しに使います。"
+      },
+      {
+        "kind": "type",
+        "name": "Style",
+        "body": "`html.style` で作る型付きのインラインスタイル値です。`class` 属性と組み合わせて要素の見た目を指定できます。"
+      },
+      {
+        "kind": "api",
+        "name": "html.renderToString",
+        "body": "`Html<Action>` の値を HTML 文字列へ変換します。`Output` での文字確認や `Preview` 表示に利用できます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 13 行目にある `\"Seseragi Web\"` を `\"Hello HTML\"` に書き換えて `Run` し、`Output` と `Preview` の見出しが変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "子要素の配列に数値を混ぜる",
+      "body": "失敗例では `children` の配列の中に `Html<Action>` ではない数値 `42` を入れています。実行前に型の不一致が見つかり、`Problems` にエラー表示が出ます。"
+    },
+    "recap": [
+      "`Html<Action>` は画面を直接操作しない純粋な値であり、`html` 名前空間の各タグ関数で要素を組み立てる。",
+      "`id`・`class`・`title` などの属性や `html.style` で作った `Style`、`children` の配列を一つのレコードで指定する。",
+      "`html.renderToString` で HTML 文字列に変換して出力や `Preview` を確かめられる。"
+    ],
+    "next": {
+      "lessonId": "web-component-props",
+      "body": "次は `Html` を返す純粋な関数としてコンポーネントを定義し、引数（props）を渡して再利用する方法を学びます。"
+    },
+    "notes": [
+      "`Output` パネルの右上にある `Preview` に切り替えると、生成された HTML の見た目をその場で確認できます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.html",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

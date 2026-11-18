@@ -4,13 +4,17 @@ test("renders structured Tour inline content safely on mobile", async ({
   page,
 }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto("/tour/?lesson=primitive-comparison")
+  await page.goto("/tour/?lesson=02-values-and-bindings")
 
-  await expect(page.locator("#tour-prerequisite-copy code")).toContainText("+")
+  await expect(
+    page.locator("#tour-prerequisite-copy code").first()
+  ).toContainText("let")
   const walkthroughCodes = await page
     .locator(".tour-walkthrough-card > p code")
     .allTextContents()
-  expect(walkthroughCodes).toEqual(expect.arrayContaining(["42 > 40", "True"]))
+  expect(walkthroughCodes).toEqual(
+    expect.arrayContaining(["+", "42 > 40", "True"])
+  )
 
   const inlineAudit = await page.evaluate(async () => {
     const rendererPath = ["", "src", "ui", "guide-markdown.ts"].join("/")
@@ -76,9 +80,9 @@ test("renders structured Tour inline content safely on mobile", async ({
     )
   expect(overflow).toBe(0)
 
-  const screenshot = testInfo.outputPath("primitive-comparison-mobile.png")
+  const screenshot = testInfo.outputPath("02-values-and-bindings-mobile.png")
   await page.screenshot({ path: screenshot, fullPage: true })
-  await testInfo.attach("primitive-comparison-mobile", {
+  await testInfo.attach("02-values-and-bindings-mobile", {
     path: screenshot,
     contentType: "image/png",
   })

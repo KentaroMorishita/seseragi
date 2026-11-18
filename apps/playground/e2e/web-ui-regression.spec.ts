@@ -51,7 +51,6 @@ const mockLogo = readFileSync(
 const visualBaselines = new Set([
   "html-components/desktop/initial",
   "html-components/iphone-390/initial",
-  "html-components/iphone-390/image-fallback",
   "html-components/minimum-320/code",
   "form-todo/desktop/initial",
   "form-todo/desktop/invalid-submit",
@@ -127,7 +126,9 @@ async function run(page: Page, entry: MatrixSample): Promise<FrameLocator> {
   }
   const preview = page.frameLocator("#html-preview")
   await expect(preview.locator("h1")).toContainText(entry.heading)
-  await expect(preview.locator("img").first()).toBeVisible()
+  // Samples drawn without external images (#1371) have no <img> to wait for.
+  if (usesImages(entry))
+    await expect(preview.locator("img").first()).toBeVisible()
   return preview
 }
 
@@ -221,6 +222,10 @@ async function expectNoHorizontalOverflow(
       .locator("html")
       .evaluate((root) => root.scrollWidth <= root.clientWidth)
   ).toBe(true)
+}
+
+function usesImages(entry: MatrixSample): boolean {
+  return entry.requiredStates.includes("image-fallback")
 }
 
 async function expectKeyboardReachable(preview: FrameLocator): Promise<void> {
@@ -394,7 +399,7 @@ test.describe("canonical Web UI browser regression", () => {
         }
 
         const preview = await run(page, entry)
-        await expectLoadedImage(preview)
+        if (usesImages(entry)) await expectLoadedImage(preview)
         await expectNoHorizontalOverflow(page, preview)
         await expectKeyboardReachable(preview)
         await expectNoStickyOrFixedSampleControls(preview)
@@ -692,7 +697,9 @@ test.describe("canonical Web UI browser regression", () => {
     }
   })
 
-  for (const entry of matrix.samples) {
+  for (const entry of matrix.samples.filter(({ requiredStates }) =>
+    requiredStates.includes("image-fallback")
+  )) {
     test(`${entry.id} / iphone-390 keeps descriptive image fallback layout`, async ({
       page,
     }, testInfo) => {

@@ -1,6 +1,23 @@
-fn chooseFirst<A> first: A -> second: A -> A = first
+type Box<A> =
+  | Empty
+  | Box A
+
+type Pair<A, B> =
+  | Pair (A, B)
+
+fn unwrapOr<A> fallback: A -> box: Box<A> -> A = match box {
+  Empty -> fallback
+  Box value -> value
+}
+
+fn swap<A, B> pair: Pair<A, B> -> Pair<B, A> = match pair {
+  Pair (first, second) -> Pair (second, first)
+}
 
 pub effect fn main = do {
-  println $ chooseFirst "left" "right"
-  println `number: ${chooseFirst 40 2}`
+  let label = unwrapOr "none" (Box "Seseragi")
+  let number = unwrapOr 0 Empty
+  let Pair (count, tag) = swap (Pair ("Tour", 22))
+  println `${label}: ${number}`
+  println `${count} / ${tag}`
 }

@@ -1,1 +1,3 @@
-ACTIVE
+(ready)
+(done: Docs)
+ready: True, text: Task { title: Docs, done: True }
