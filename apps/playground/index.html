@@ -3,52 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0b1110" />
+    <meta name="theme-color" content="#f4f6f7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0e10" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
       content="Rust compilerと同じdriverで動くSeseragi Playground"
     />
     <title>Seseragi Playground</title>
   </head>
-  <body>
-    <div id="app" class="app-shell">
-      <header class="topbar">
-        <div class="brand">
+  <body class="ui-app">
+    <div id="app" class="app-shell pg-shell">
+      <header class="pg-top">
+        <a class="pg-brand" href="./" aria-label="Seseragi Playground">
+          <img src="/brand/seseragi-icon.svg" alt="" width="28" height="28" />
           <strong>Seseragi</strong>
-        </div>
-        <div class="surface-switcher">
+          <span class="pg-version">v__SESERAGI_VERSION__</span>
+        </a>
+        <nav class="ui-view-switch pg-views" aria-label="Views">
+          <a href="./" aria-current="page"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5" /></svg><span>Playground</span></a>
+          <a href="./tour/"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h4a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 0-1.5-1.5h-4zM13.5 3.5h-4A1.5 1.5 0 0 0 8 5v8a1.5 1.5 0 0 1 1.5-1.5h4z" /></svg><span>Tour</span></a>
+        </nav>
+        <div class="pg-top-actions">
           <button
-            id="surface-switcher-button"
-            class="surface-switcher-button"
+            id="search-button"
+            class="ui-search-trigger pg-search"
             type="button"
-            aria-haspopup="menu"
-            aria-controls="surface-switcher-menu"
-            aria-expanded="false"
+            aria-haspopup="dialog"
+            aria-controls="sample-browser-dialog"
+            aria-keyshortcuts="Meta+K Control+K"
           >
-            <span>Playground</span>
-            <span aria-hidden="true">⌄</span>
+            <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+            <span class="ui-search-trigger-text">Examples, lessons, API…</span>
+            <kbd class="ui-kbd">⌘K</kbd>
           </button>
-          <div
-            id="surface-switcher-menu"
-            class="surface-switcher-menu"
-            role="menu"
-            hidden
-          >
-            <a href="./" role="menuitem" aria-current="page">Playground</a>
-            <a href="./tour/" role="menuitem">Tour</a>
-          </div>
-        </div>
-        <div class="topbar-actions">
+          <button
+            id="theme-button"
+            class="ui-button ui-button--icon"
+            type="button"
+            aria-label="Theme: System"
+            title="Theme: System"
+          ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" /><path d="M8 2.5v11A5.5 5.5 0 0 0 8 2.5z" fill="currentColor" stroke="none" /></svg></button>
           <button
             id="mobile-tools-button"
-            class="global-tools-button"
+            class="ui-button ui-button--icon"
             type="button"
             aria-haspopup="menu"
             aria-controls="mobile-tools-menu"
             aria-expanded="false"
-            aria-label="Playground menu"
-          >•••</button>
-          <div id="mobile-tools-menu" class="global-tools-menu" role="menu" hidden>
+            aria-label="More"
+          ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="0.75" fill="currentColor" /><circle cx="8" cy="8" r="0.75" fill="currentColor" /><circle cx="12.5" cy="8" r="0.75" fill="currentColor" /></svg></button>
+          <div id="mobile-tools-menu" class="pg-menu" role="menu" hidden>
             <button
               id="reference-browser-button"
               type="button"
@@ -56,23 +60,15 @@
               aria-haspopup="dialog"
               aria-controls="reference-browser-dialog"
               aria-expanded="false"
-            >
-              <span aria-hidden="true">⌘</span> Reference
-            </button>
+            >API reference</button>
             <button
               id="settings-button"
               type="button"
               role="menuitem"
               aria-haspopup="dialog"
-            >
-              <span aria-hidden="true">⚙</span> Settings…
-            </button>
+            >Settings…</button>
+            <button id="clear-source-button" type="button" role="menuitem">Clear file</button>
           </div>
-          <button id="run-button" class="run-button" type="button">
-            <span aria-hidden="true">▶</span>
-            <span>Run</span>
-            <kbd>⌘↵</kbd>
-          </button>
         </div>
       </header>
 
@@ -199,69 +195,61 @@
         <div id="reference-results" class="reference-results"></div>
       </dialog>
 
-      <nav
-        class="mobile-tabs"
-        aria-label="Playground panels"
-        data-testid="mobile-panel-navigation"
-      >
-        <button type="button" data-panel-target="code" aria-pressed="true">Code</button>
-        <button
-          type="button"
-          data-panel-target="io"
-          aria-label="Input / Output"
-          aria-pressed="false"
-        >
-          I/O
-        </button>
-      </nav>
 
       <main
-        class="workspace"
+        class="workspace pg-stage"
         data-mobile-panel="code"
         data-testid="workspace-shell"
       >
-        <div class="workspace-editor-chrome" role="toolbar" aria-label="Workspace and editor controls">
-          <button
-            id="explorer-toggle-button"
-            class="editor-local-button explorer-local-button"
-            type="button"
-            aria-controls="explorer-panel"
-            aria-keyshortcuts="Control+Shift+E Meta+Shift+E"
-            aria-pressed="false"
-            title="Explorerを開く"
+        <section class="ui-card pg-code-card" aria-label="Code">
+          <div
+            class="ui-card-head pg-code-head"
+            role="toolbar"
+            aria-label="Workspace and editor controls"
           >
-            <span aria-hidden="true">▤</span>
-            <span>Explorer</span>
-          </button>
-          <button
-            id="sample-browser-button"
-            class="sample-browser-button"
-            type="button"
-            aria-haspopup="dialog"
-            aria-controls="sample-browser-dialog"
-            aria-expanded="false"
-            aria-label="Workspaceとsampleを選ぶ"
-          >
-            <span class="sample-browser-level">Workspace</span>
-            <span id="current-sample-title" class="sample-browser-title">Hello world</span>
-            <span class="sample-browser-chevron" aria-hidden="true">⌄</span>
-          </button>
-          <div class="editor-local-actions">
-            <button id="interop-inspector-button" hidden class="editor-local-button" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="interop-inspector">Interop</button>
-            <button id="convert-bindings-button" hidden class="editor-local-button" type="button" title="Convert declarations configured in seseragi.toml">Convert bindings</button>
-            <span id="active-file-name" class="file-name">main.ssrg</span>
+            <button
+              id="explorer-toggle-button"
+              class="ui-button ui-button--icon pg-files"
+              type="button"
+              aria-controls="explorer-panel"
+              aria-keyshortcuts="Control+Shift+E Meta+Shift+E"
+              aria-pressed="false"
+              aria-label="Files"
+              title="Files (⇧⌘E)"
+            ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4.5a1 1 0 0 1 1-1h3l1.5 1.5h4.5a1 1 0 0 1 1 1v6.5a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1z" /></svg></button>
+            <button
+              id="sample-browser-button"
+              class="pg-picker"
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls="sample-browser-dialog"
+              aria-expanded="false"
+              aria-label="Choose an example"
+            >
+              <span class="ui-badge ui-badge--brand"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 10c2-3 4-3 6 0s4 3 6 0M2 6c2-3 4-3 6 0s4 3 6 0" /></svg></span>
+              <span id="current-sample-title" class="pg-picker-name">Hello world</span>
+              <span class="pg-picker-chev"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 6.5 3.5 3.5 3.5-3.5" /></svg></span>
+            </button>
+            <span id="active-file-name" class="pg-file-pill file-name">main.ssrg</span>
+            <span class="ui-spacer"></span>
+            <button id="interop-inspector-button" hidden class="ui-button ui-button--ghost" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="interop-inspector">Interop</button>
+            <button id="convert-bindings-button" hidden class="ui-button ui-button--ghost" type="button" title="Convert declarations configured in seseragi.toml">Convert bindings</button>
+            <button
+              id="sample-guide-button"
+              class="ui-button ui-button--ghost"
+              type="button"
+              aria-expanded="false"
+              aria-controls="sample-guide"
+              title="このサンプルの説明"
+            ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" /><path d="M6.4 6.3a1.7 1.7 0 1 1 2.3 1.6c-.5.2-.7.6-.7 1.1M8 11.2v.1" /></svg><span class="pg-label">Guide</span></button>
             <button
               id="format-source-button"
-              class="editor-local-button"
+              class="ui-button ui-button--ghost"
               type="button"
               title="Format code with the shared Seseragi formatter"
-            >
-              <span aria-hidden="true">≡</span>
-              <span>Format</span>
-            </button>
+            ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h10M3 7h7M3 10h10M3 13h5" /></svg><span class="pg-label">Format</span></button>
           </div>
-        </div>
-        <div id="code-workspace" class="code-workspace" data-explorer-visible="false">
+          <div id="code-workspace" class="code-workspace pg-code-body" data-explorer-visible="false">
           <aside
             id="explorer-panel"
             class="explorer-panel"
@@ -320,39 +308,7 @@
             tabindex="0"
             hidden
           ></div>
-
-        <section
-          id="editor-panel"
-          class="editor-panel"
-          aria-label="Seseragi editor"
-        >
-          <div class="panel-heading">
-            <div>
-              <span class="status-dot" id="status-dot"></span>
-              <span id="status-text">Rust compiler ready</span>
-            </div>
-            <div class="panel-heading-actions">
-              <button
-                id="sample-guide-button"
-                class="text-button guide-button"
-                type="button"
-                aria-expanded="false"
-                aria-controls="sample-guide"
-                title="このサンプルの説明"
-              >
-                <span aria-hidden="true">?</span>
-                <span class="guide-button-label">Guide</span>
-              </button>
-              <button
-                id="clear-source-button"
-                class="text-button"
-                type="button"
-                aria-label="Clear current file"
-              >
-                Clear
-              </button>
-            </div>
-          </div>
+            <section id="editor-panel" class="editor-panel pg-editor-panel" aria-label="Seseragi editor">
           <div
             id="workspace-tabs"
             class="workspace-tabs"
@@ -417,98 +373,120 @@
               </button>
             </div>
           </div>
+            </section>
+          </div>
         </section>
-        </div>
 
-        <div
-          id="workspace-resizer"
-          class="panel-resizer panel-resizer--vertical"
-          role="separator"
-          aria-label="コードとI/Oの幅を変更"
-          aria-valuemin="0"
-          aria-valuemax="100"
-          aria-orientation="vertical"
-          aria-controls="editor-panel io-panel"
-          tabindex="0"
-        ></div>
+        <div class="pg-flow">
+          <div
+            id="workspace-resizer"
+            class="pg-flow-line"
+            role="separator"
+            aria-label="コードと出力の幅を変更"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-orientation="vertical"
+            aria-controls="editor-panel io-panel"
+            tabindex="0"
+          ></div>
+          <div class="ui-run pg-run">
+            <button
+              id="run-button"
+              class="ui-run-button"
+              type="button"
+              aria-label="Run"
+              aria-keyshortcuts="Meta+Enter Control+Enter"
+            ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.75v10.5L13 8z" /></svg></button>
+            <span class="ui-run-label" aria-hidden="true">Run <kbd class="ui-kbd">⌘↵</kbd></span>
+          </div>
+        </div>
 
         <aside
           id="io-panel"
-          class="io-panel"
+          class="io-panel ui-card pg-output-card"
           aria-label="Program input and output"
           data-testid="workspace-io"
           tabindex="-1"
         >
-          <section id="input-section" class="input-section">
-            <div class="panel-heading">
-              <span>Input</span>
-              <span class="hint">必要な場合のみ</span>
-            </div>
-            <textarea
-              id="stdin-input"
-              rows="4"
-              spellcheck="false"
-              aria-label="Program input"
-              placeholder="Input passed to the program"
-            ></textarea>
-          </section>
-          <div
-            id="io-resizer"
-            class="panel-resizer panel-resizer--horizontal"
-            role="separator"
-            aria-label="InputとOutputの高さを変更"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            aria-orientation="horizontal"
-            aria-controls="input-section output-section"
-            tabindex="0"
-          ></div>
+          <button
+            class="pg-sheet-handle"
+            type="button"
+            data-panel-toggle
+            aria-controls="io-panel"
+            aria-expanded="false"
+            aria-label="Output"
+          ><span aria-hidden="true"></span></button>
           <section
             id="output-section"
-            class="output-section preview-fullscreen-surface"
+            class="output-section pg-output preview-fullscreen-surface"
           >
-            <div class="panel-heading">
-              <span>Output</span>
-              <div class="output-heading-actions">
+            <div class="ui-card-head pg-output-head">
+              <h2 class="ui-card-title">Output</h2>
+              <div class="ui-segmented" role="group" aria-label="Output view">
                 <button
-                  id="stdin-toggle-button"
-                  class="output-action-button"
+                  id="show-text-output-button"
                   type="button"
-                  aria-controls="input-section"
-                  aria-expanded="false"
-                  title="Show Input"
-                >Input</button>
-                <div class="output-view-toggle" aria-label="出力表示">
-                  <button
-                    id="show-text-output-button"
-                    type="button"
-                    aria-pressed="true"
-                  >Text</button>
-                  <button
-                    id="show-html-preview-button"
-                    type="button"
-                    aria-pressed="false"
-                  >Preview</button>
-                </div>
-                <button id="clear-output-button" class="text-button" type="button">
-                  Clear
-                </button>
+                  aria-pressed="true"
+                >Console</button>
                 <button
-                  id="fullscreen-preview-button"
-                  class="output-action-button"
+                  id="show-html-preview-button"
                   type="button"
                   aria-pressed="false"
-                >Full screen</button>
+                >Preview</button>
               </div>
+              <span class="ui-spacer"></span>
+              <span id="run-status" class="ui-status" role="status" aria-live="polite" hidden></span>
+              <button
+                id="stdin-toggle-button"
+                class="ui-button ui-button--ghost ui-button--sm"
+                type="button"
+                aria-controls="input-section"
+                aria-expanded="false"
+                title="Show Input"
+              >Input</button>
+              <button
+                id="fullscreen-preview-button"
+                class="ui-button ui-button--ghost ui-button--sm"
+                type="button"
+                aria-pressed="false"
+              >Full screen</button>
+              <button
+                id="clear-output-button"
+                class="ui-button ui-button--icon pg-head-icon"
+                type="button"
+                aria-label="Clear output"
+                title="Clear output"
+              ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5" /></svg></button>
             </div>
-            <div class="output-content">
+            <section id="input-section" class="input-section pg-input">
+              <label class="ui-eyebrow" for="stdin-input">Input</label>
+              <textarea
+                id="stdin-input"
+                rows="4"
+                spellcheck="false"
+                aria-label="Program input"
+                placeholder="Input passed to the program"
+              ></textarea>
+            </section>
+            <div
+              id="io-resizer"
+              class="pg-io-resizer"
+              role="separator"
+              aria-label="InputとOutputの高さを変更"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-orientation="horizontal"
+              aria-controls="input-section output-section"
+              tabindex="0"
+            ></div>
+            <div class="output-content pg-output-body">
               <div
                 id="output"
                 class="output-text"
                 tabindex="0"
                 aria-live="polite"
                 data-testid="workspace-output"
-              >Runを押すと結果がここに表示されます。</div>
+              >Run を押すと、結果がここに出ます。</div>
               <iframe
                 id="html-preview"
                 title="Seseragi HTML preview"
@@ -521,8 +499,14 @@
         </aside>
       </main>
 
-      <footer>
-        <span>Shared Rust driver · WASM · browser runtime</span>
+      <footer class="pg-foot">
+        <span class="pg-foot-status">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Ready</span>
+        </span>
+        <span class="pg-foot-saved">Saved in this browser</span>
+        <span class="ui-spacer"></span>
+        <a href="https://seseragi-docs.vercel.app/">Docs</a>
         <a href="https://github.com/KentaroMorishita/seseragi">GitHub</a>
       </footer>
     </div>

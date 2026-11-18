@@ -5,14 +5,21 @@ const root = new URL("..", import.meta.url)
 describe("mobile editing layout contract", () => {
   test("keeps every focused text surface at the iPhone-safe 16px size", async () => {
     const theme = await Bun.file(new URL("src/editor/theme.ts", root)).text()
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
+    const tourStyles = await Bun.file(new URL("src/styles.css", root)).text()
 
-    expect(theme).toContain('fontSize: "16px"')
-    expect(styles).toMatch(/\.sample-browser-title \{[\s\S]*?font-size: 16px;/)
-    expect(styles).toMatch(/textarea \{[\s\S]*?font-size: 16px;/)
+    // エディターは既定で 16px。Playground は狭い画面で 16px に戻す
+    expect(theme).toContain('fontSize: "var(--cm-font-size, 16px)"')
+    expect(styles).toMatch(
+      /@media \(max-width: 760px\)[^{]*\{\s*\.editor-host \{\s*--cm-font-size: 16px;/
+    )
+    expect(styles).toMatch(
+      /\.ui-app input,\s*\.ui-app select,\s*\.ui-app textarea \{\s*font-size: 16px;/
+    )
     expect(styles).toMatch(
       /\.reference-browser-filters input,[\s\S]*?font-size: 16px;/
     )
+    expect(tourStyles).toMatch(/textarea \{[\s\S]*?font-size: 16px;/)
   })
 
   test("does not disable browser zoom to work around focused controls", async () => {
@@ -62,23 +69,23 @@ describe("mobile editing layout contract", () => {
     expect(styles).toContain("--safe-area-left: env(safe-area-inset-left)")
   })
 
-  test("keeps surface switching, overflow, and Run in one mobile topbar row", async () => {
+  test("keeps surface switching, Search and overflow in one mobile topbar row with a floating Run", async () => {
     const html = await Bun.file(new URL("index.html", root)).text()
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
 
     expect(html).toContain('id="mobile-tools-button"')
     expect(html).toContain('id="mobile-tools-menu"')
-    expect(html).toContain('id="surface-switcher-button"')
-    expect(html).toContain('class="surface-switcher-menu"')
+    expect(html).toContain('class="ui-view-switch pg-views"')
+    expect(html).toContain('id="search-button"')
     expect(html).toContain('role="menuitem"')
-    expect(styles).toContain(".global-tools-menu:not([hidden])")
-    expect(styles).toContain(".surface-switcher-menu:not([hidden])")
-    expect(styles).toMatch(/\.topbar \{[\s\S]*?z-index: 30;/)
+    expect(styles).toMatch(/\.pg-top \{[\s\S]*?z-index: 30;/)
     expect(styles).toMatch(
-      /\.global-tools-menu:not\(\[hidden\]\) \{[\s\S]*?top: calc\(100% \+ 7px\);/
+      /\.pg-menu \{[\s\S]*?top: calc\(100% \+ var\(--space-2\)\);/
     )
+    // 狭い画面では Run が右下に浮かぶ
+    expect(styles).toMatch(/\.pg-flow \{\s*position: fixed;/)
     expect(html.indexOf('id="sample-browser-button"')).toBeGreaterThan(
-      html.indexOf('class="workspace-editor-chrome"')
+      html.indexOf('class="ui-card-head pg-code-head"')
     )
   })
 
@@ -126,7 +133,14 @@ describe("mobile editing layout contract", () => {
       '"(max-width: 760px), (max-width: 960px) and (max-height: 520px)"'
     )
     expect(main).toContain('mobilePanels.show("code")')
-    expect(main).toContain("tab?.click()")
+    expect(main).toContain('mobilePanels.show("io")')
+    const html = await Bun.file(new URL("index.html", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
+    // 出力は下から顔を出すシート。引き上げると画面の 7 割まで広がる
+    expect(html).toContain("data-panel-toggle")
+    expect(styles).toMatch(
+      /\.workspace\[data-mobile-panel="io"\] \.pg-output-card \{\s*height: 70dvh;/
+    )
   })
 
   test("removes the inactive mobile panel root from layout", async () => {
@@ -176,11 +190,12 @@ describe("mobile editing layout contract", () => {
   test("moves Input beside Output and keeps its expanded state accessible", async () => {
     const html = await Bun.file(new URL("index.html", root)).text()
     const main = await Bun.file(new URL("src/main.ts", root)).text()
-    const outputHeading = html.indexOf('class="output-heading-actions"')
+    const outputHeading = html.indexOf('class="ui-card-head pg-output-head"')
     const inputToggle = html.indexOf('id="stdin-toggle-button"')
 
+    expect(outputHeading).toBeGreaterThan(-1)
     expect(inputToggle).toBeGreaterThan(outputHeading)
-    expect(html).toContain("<span>Input</span>")
+    expect(html).toContain(">Input</button>")
     expect(html).not.toContain("<span>Stdin</span>")
     expect(html).toContain('aria-expanded="false"')
     expect(main).toContain('setAttribute("aria-expanded", String(visible))')
@@ -220,7 +235,7 @@ describe("mobile editing layout contract", () => {
     const main = await Bun.file(new URL("src/main.ts", root)).text()
 
     expect(html).toContain('id="format-source-button"')
-    expect(html).toContain('class="workspace-editor-chrome"')
+    expect(html).toContain('class="ui-card-head pg-code-head"')
     expect(main).toContain("resolveEditorLineWidth(")
     expect(main).toContain("formatProjectFile(request, requestedFile, {")
     expect(main).toContain("workspaceAnalysisRevision(workspaceState)")

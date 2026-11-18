@@ -3,6 +3,7 @@ import { build as bundleExecutionFrame } from "esbuild"
 import { readFile } from "node:fs/promises"
 import { createRequire } from "node:module"
 import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite"
+import packageManifest from "./package.json" with { type: "json" }
 import { fontPackages } from "./src/ui/design/font-packages"
 import { themeBootScript } from "./src/ui/theme"
 
@@ -148,7 +149,7 @@ const brandSurfacePlugin: Plugin = {
         : `${publicOrigin}/`
 
     return {
-      html,
+      html: html.replaceAll("__SESERAGI_VERSION__", packageManifest.version),
       tags: [
         // Apply the saved theme before the first paint.
         { tag: "script", children: themeBootScript, injectTo: "head-prepend" },

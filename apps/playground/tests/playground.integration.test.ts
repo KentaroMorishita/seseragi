@@ -2687,10 +2687,13 @@ describe("Playground sample catalog", () => {
     ).text()
 
     expect(html).toContain('id="sample-browser-button"')
-    expect(html).toContain('aria-label="Workspaceとsampleを選ぶ"')
-    expect(html).toContain('id="surface-switcher-button"')
-    expect(html).toContain('href="./tour/" role="menuitem"')
-    expect(html).toContain('class="workspace-editor-chrome"')
+    expect(html).toContain('aria-label="Choose an example"')
+    expect(html).toContain('class="ui-view-switch pg-views"')
+    expect(html).toContain('<a href="./tour/">')
+    expect(html).toContain('class="ui-card-head pg-code-head"')
+    // Search の入口（⌘K）は、例の一覧を開く
+    expect(html).toContain('id="search-button"')
+    expect(main).toContain("searchButton.addEventListener(\"click\", () => sampleBrowserButton.click())")
     expect(html).toContain("順序を持つ学習はTour")
     expect(html).toContain("Minimal / GuidedはWeb UI例の説明量")
     expect(html).not.toContain('id="sample-browser-learn-tab"')

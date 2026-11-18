@@ -162,8 +162,8 @@ describe("Tour curriculum UI", () => {
     const tourMain = await Bun.file(new URL("src/tour/main.ts", root)).text()
     const vite = await Bun.file(new URL("vite.config.ts", root)).text()
 
-    expect(playgroundHtml).toContain('id="surface-switcher-menu"')
-    expect(playgroundHtml).toContain('href="./tour/" role="menuitem"')
+    expect(playgroundHtml).toContain('class="ui-view-switch pg-views"')
+    expect(playgroundHtml).toContain('<a href="./tour/">')
     expect(tourHtml).toContain('href="../"')
     expect(tourHtml).toContain('id="tour-surface-switcher-button"')
     expect(tourHtml).toContain('id="tour-chapters"')
@@ -213,7 +213,7 @@ describe("Tour curriculum UI", () => {
     expect(playgroundHtml).toContain('id="fullscreen-preview-button"')
     expect(tourHtml).toContain('id="tour-fullscreen-button"')
     expect(playgroundHtml).toContain(
-      'class="output-section preview-fullscreen-surface"'
+      'class="output-section pg-output preview-fullscreen-surface"'
     )
     expect(tourHtml).toContain(
       'class="tour-output-section preview-fullscreen-surface"'
@@ -224,11 +224,16 @@ describe("Tour curriculum UI", () => {
     expect(controller).toContain('useFallback("rejected")')
     expect(controller).toContain('event.key !== "Escape"')
     expect(controller).not.toContain(".catch(() => undefined)")
-    expect(styles).toContain("body.preview-fullscreen-fallback-open")
-    expect(styles).toContain(
-      '.preview-fullscreen-surface[data-preview-fullscreen="fallback"]'
-    )
-    expect(styles).toContain("env(safe-area-inset-top)")
+    const playgroundStyles = await Bun.file(
+      new URL("src/ui/playground.css", root)
+    ).text()
+    for (const css of [styles, playgroundStyles]) {
+      expect(css).toContain("body.preview-fullscreen-fallback-open")
+      expect(css).toContain(
+        '.preview-fullscreen-surface[data-preview-fullscreen="fallback"]'
+      )
+      expect(css).toContain("env(safe-area-inset-top)")
+    }
   })
 
   test("keeps the Tour usable on narrow and compact landscape screens", async () => {

@@ -54,10 +54,13 @@ import {
   workspaceBindingRequest,
 } from "./workspace/bindings"
 import "./ui/design/index.css"
-import "./styles.css"
+import "./ui/playground.css"
 import { connectEditorSettings } from "./ui/editor-settings"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
+import { renderRunStatus } from "./ui/run-status"
+import { createThemeController } from "./ui/theme"
+import { browserStorage, connectThemeButton } from "./ui/theme-button"
 import { connectOverflowMenu } from "./ui/overflow-menu"
 import { connectPanelLayout } from "./ui/panel-layout"
 import { connectPreviewFullscreen } from "./ui/preview-fullscreen"
@@ -214,14 +217,9 @@ const mobileToolsButton = requiredElement(
   HTMLButtonElement
 )
 const mobileToolsMenu = requiredElement("#mobile-tools-menu", HTMLElement)
-const surfaceSwitcherButton = requiredElement(
-  "#surface-switcher-button",
-  HTMLButtonElement
-)
-const surfaceSwitcherMenu = requiredElement(
-  "#surface-switcher-menu",
-  HTMLElement
-)
+const searchButton = requiredElement("#search-button", HTMLButtonElement)
+const themeButton = requiredElement("#theme-button", HTMLButtonElement)
+const runStatus = requiredElement("#run-status", HTMLElement)
 const explorerToggleButton = requiredElement(
   "#explorer-toggle-button",
   HTMLButtonElement
@@ -420,10 +418,18 @@ connectEditorSettings({
 })
 
 connectOverflowMenu({ button: mobileToolsButton, menu: mobileToolsMenu })
-connectOverflowMenu({
-  button: surfaceSwitcherButton,
-  menu: surfaceSwitcherMenu,
-})
+connectThemeButton(
+  themeButton,
+  createThemeController({
+    storage: browserStorage(),
+    root: document.documentElement,
+    query: window.matchMedia("(prefers-color-scheme: dark)"),
+    eventTarget: window,
+  })
+)
+// Search（⌘K）は、例・レッスン・API・設定を一つにまとめる入口（#1358）。
+// 今は例の一覧を開く。
+searchButton.addEventListener("click", () => sampleBrowserButton.click())
 
 const liveAnalysis: LiveAnalysisController =
   createLiveAnalysis<WorkspaceAnalysisResult>({
@@ -717,6 +723,7 @@ clearOutputButton.addEventListener("click", () => {
   output.textContent = ""
   clearHtmlPreview()
   chooseOutputMode("text")
+  renderRunStatus(runStatus, { kind: "idle" })
   setStatus("ready", "Output cleared")
 })
 showTextOutputButton.addEventListener("click", () => closeInteractivePreview())
@@ -745,9 +752,16 @@ connectWorkspaceFocusNavigation(
   }
 )
 document.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" || (!event.metaKey && !event.ctrlKey)) return
-  event.preventDefault()
-  if (!runButton.disabled) void run()
+  if (!event.metaKey && !event.ctrlKey) return
+  if (event.key === "Enter") {
+    event.preventDefault()
+    if (!runButton.disabled) void run()
+    return
+  }
+  if (event.key.toLowerCase() === "k" && !event.shiftKey && !event.altKey) {
+    event.preventDefault()
+    searchButton.click()
+  }
 })
 window.addEventListener("beforeunload", () => cancelActiveExecution())
 
@@ -789,6 +803,7 @@ function loadSample(
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
   showTextOutput("Runを押すと結果がここに表示されます。")
+  renderRunStatus(runStatus, { kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
   return true
@@ -828,6 +843,7 @@ function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
   showTextOutput("Blank workspaceです。main.ssrgへcodeを書いてRunできます。")
+  renderRunStatus(runStatus, { kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
   return true
@@ -1111,6 +1127,7 @@ async function run(): Promise<void> {
     request = runnableWorkspaceProjectRequest(workspaceState)
   } catch (error) {
     showTextOutput(error instanceof Error ? error.message : String(error))
+    renderRunStatus(runStatus, { kind: "failed" })
     setStatus("error", "Entry required")
     showIoOnSmallScreens()
     return
@@ -1131,6 +1148,7 @@ async function run(): Promise<void> {
   activeRunAnalysisRevision = requestedAnalysisRevision
   runButton.disabled = true
   showTextOutput("Compiling with the shared Rust driver…")
+  renderRunStatus(runStatus, { kind: "running" })
   setStatus("running", "Compiling…")
 
   try {
@@ -1140,6 +1158,7 @@ async function run(): Promise<void> {
       !workspaceProjectIsCurrent(requestedRevision) ||
       JSON.stringify(workspaceState.files) !== runtimeRevision
     ) {
+      renderRunStatus(runStatus, { kind: "idle" })
       setStatus("ready", "Project changed")
       return
     }
@@ -1151,6 +1170,10 @@ async function run(): Promise<void> {
     setActiveEditorDiagnostics(diagnostics)
     if (compiled.status === "failure") {
       showWorkspaceDiagnostics(diagnostics)
+      renderRunStatus(runStatus, {
+        kind: "diagnostics",
+        count: diagnostics.length,
+      })
       setStatus("error", `${diagnostics.length} diagnostic(s)`)
       showIoOnSmallScreens()
       return
@@ -1159,6 +1182,7 @@ async function run(): Promise<void> {
       showTextOutput(
         compiled.entry.error ?? "Compile succeeded. No executable main found."
       )
+      renderRunStatus(runStatus, { kind: "idle" })
       setStatus("ready", "Compile succeeded")
       showIoOnSmallScreens()
       return
@@ -1184,6 +1208,7 @@ async function run(): Promise<void> {
     ) {
       clearHtmlPreview()
       setOutputMode("text")
+      renderRunStatus(runStatus, { kind: "idle" })
       setStatus("ready", "Project changed")
       return
     }
@@ -1221,6 +1246,7 @@ async function run(): Promise<void> {
         output.className = "output-text"
         output.textContent = "Interactive preview is running."
         setOutputMode("html")
+        renderRunStatus(runStatus, { kind: "interactive" })
         setStatus("success", "Interactive")
         showIoOnSmallScreens()
       }
@@ -1230,6 +1256,9 @@ async function run(): Promise<void> {
       return
     }
     activeExecution = execution
+    // チップに出すのはプログラムの実行にかかった時間。コンパイルと、
+    // 実行環境の準備の時間は含めない。
+    const startedAt = performance.now()
     void execution.completion.then(
       (completion) => {
         if (revision !== runRevision || activeExecution !== execution) return
@@ -1240,6 +1269,10 @@ async function run(): Promise<void> {
           return
         }
         showExecutionOutput(completion.result.stdout)
+        renderRunStatus(runStatus, {
+          kind: "completed",
+          milliseconds: performance.now() - startedAt,
+        })
         setStatus("success", "Completed")
         showIoOnSmallScreens()
       },
@@ -1247,6 +1280,7 @@ async function run(): Promise<void> {
         if (revision !== runRevision || activeExecution !== execution) return
         activeExecution = undefined
         showTextOutput(error instanceof Error ? error.message : String(error))
+        renderRunStatus(runStatus, { kind: "failed" })
         setStatus("error", "Execution failed")
         showIoOnSmallScreens()
       }
@@ -1258,10 +1292,12 @@ async function run(): Promise<void> {
       !workspaceProjectIsCurrent(requestedRevision) ||
       JSON.stringify(workspaceState.files) !== runtimeRevision
     ) {
+      renderRunStatus(runStatus, { kind: "idle" })
       setStatus("ready", "Project changed")
       return
     }
     showTextOutput(error instanceof Error ? error.message : String(error))
+    renderRunStatus(runStatus, { kind: "failed" })
     setStatus("error", "Execution failed")
     showIoOnSmallScreens()
   } finally {
@@ -1438,8 +1474,5 @@ function showIoOnSmallScreens(): void {
   ) {
     return
   }
-  const tab = document.querySelector<HTMLButtonElement>(
-    '[data-panel-target="io"]'
-  )
-  tab?.click()
+  mobilePanels.show("io")
 }
