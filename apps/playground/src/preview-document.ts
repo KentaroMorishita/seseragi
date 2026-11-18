@@ -1,3 +1,4 @@
+import { staticPreviewLinkScript } from "./runtime/preview-links"
 export const previewUtilityCss = String.raw`
 :root {
   color-scheme: light;
@@ -140,9 +141,20 @@ img, svg { display: block; max-width: 100%; }
 }
 `
 
+/**
+ * linkToken を渡すと、外部リンクをシェルへ知らせる小さなスクリプトだけを、
+ * その値の nonce で動かす（#1375）。プログラムの出力の中のスクリプトは動かない。
+ */
 export function createPreviewDocument(
   body: string,
-  networkAllowed = false
+  networkAllowed = false,
+  linkToken?: string
 ): string {
-  return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src 'self' ${networkAllowed ? "https: " : ""}data: blob:"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${previewUtilityCss}</style></head><body>${body}</body></html>`
+  const scriptSource =
+    linkToken === undefined ? "'none'" : `'nonce-${linkToken}'`
+  const linkScript =
+    linkToken === undefined
+      ? ""
+      : `<script nonce="${linkToken}">${staticPreviewLinkScript(linkToken)}</script>`
+  return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; script-src ${scriptSource}; style-src 'unsafe-inline'; img-src 'self' ${networkAllowed ? "https: " : ""}data: blob:"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${previewUtilityCss}</style></head><body>${body}${linkScript}</body></html>`
 }

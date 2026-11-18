@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.187] - 2026-11-18
+
+### Fixed
+
+- A link clicked inside the Playground or Tour Preview now opens in a new tab (#1375). The Preview frame keeps its sandbox; a clicked `http:` or `https:` link is passed to the page around it, which checks the URL and opens it with `noopener` and `noreferrer`. A link to the Playground itself (`/` or `/tour/`) opens in the same tab. Relative links and `#` links are still handled by the program, and links the program clicks by itself, links it already handled, and other schemes such as `javascript:` are not opened. Because a browser may block a new tab opened this way without saying so, the output panel briefly shows the link so it can be opened by hand.
+
 ## [0.61.186] - 2026-11-18
 
 ### Added

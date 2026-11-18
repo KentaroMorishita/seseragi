@@ -1,6 +1,7 @@
 // Trusted bootstrap. Program evaluation stays outside the editor realm.
 import { serveExecutionPort } from "./execution-session"
 import type { IsolatedExecutionRequest } from "./isolated-execution"
+import { installPreviewLinkBridge } from "./preview-links"
 declare const __SESERAGI_EXECUTION_WORKER__: string
 
 let connected = false
@@ -34,6 +35,10 @@ window.addEventListener("message", function connect(event: MessageEvent) {
         return
       }
       serveExecutionPort(port, document)
+      // 利用者が押した外部リンクは、シェルに知らせて開いてもらう（#1375）
+      installPreviewLinkBridge(window, (href) =>
+        port.postMessage({ type: "open-link", href })
+      )
       port.dispatchEvent(new MessageEvent("message", { data: message.data }))
       return
     }
