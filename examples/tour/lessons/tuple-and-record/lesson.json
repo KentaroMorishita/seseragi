@@ -23,7 +23,7 @@
       },
       {
         "heading": "フィールド参照と構造による互換性",
-        "body": "`.city` や `.stops` のようにドットでフィールドを取り出せます。`summarize` が要求するのは `{ city: String, stops: Int }` だけなので、余分な `line` がある `route` も、ちょうど2つのフィールドだけを持つ `express` も同じ関数に渡せます。",
+        "body": "`.city` や `.stops` のようにドットでフィールドを取り出せます。`summarize` が要求する型は `city` と `stops` の 2 つだけなので、余分な `line` がある `route` も、最小限の `express` も同じ関数に渡せます。",
         "sourceRange": {
           "startLine": 8,
           "endLine": 12

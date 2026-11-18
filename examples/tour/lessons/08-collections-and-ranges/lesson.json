@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの `scores` の値 `[10, 20, 30]` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の長さと `arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
+      "instruction": "エディターの `scores` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の長さと `arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

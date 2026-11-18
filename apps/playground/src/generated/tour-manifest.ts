@@ -915,7 +915,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "body": "次は `Bool` の比較結果を使って値を選び分ける `if` 式を学びます。"
       },
       "notes": [
-        "一時的な名前を式の中だけに閉じ込めたいときは、`{ let x = 1; x + 2 }` のように波括弧のブロック内で `let` を書くこともできます。"
+        "式の中だけで一時的な名前を使いたいときは、波括弧のブロック内で `let` を書くこともできます。"
       ]
     } as unknown as TourLessonFormat,
     exerciseSource: lesson1Exercise,
@@ -1009,7 +1009,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "空白区切りの呼び出しと部分適用",
-          "body": "4 行目の `add 10 20` のように、Seseragi では関数名と引数を空白で並べて呼び出します。3 行目の `let add10 = add 10` のように 1 つ目の引数だけを渡すと、残りの引数を受け取る新しい関数（`add10`）ができ、5 行目で `add10 22` のように呼び出せます。",
+          "body": "4 行目の `add 10 20` のように、関数名と引数を空白で並べて呼び出します。3 行目の `add 10` のように 1 つ目の引数だけを渡すと、残りの引数を受け取る関数 `add10` ができ、5 行目で `add10 22` のように呼び出せます。",
           "sourceRange": {
             "startLine": 3,
             "endLine": 5
@@ -1047,7 +1047,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       },
       "diagnostic": {
         "heading": "括弧とカンマで引数を渡してしまう",
-        "body": "失敗例では `add(10, 20)` と書いています。Seseragi では `(10, 20)` が 2 つの引数ではなく 1 つのまとまった値 `(Int, Int)` として扱われるため、`Int` を期待する 1 番目の引数と型が合いません。"
+        "body": "失敗例では `add(10, 20)` と書いています。この `(10, 20)` は 2 つの引数ではなく 1 つのタプルとして渡るため、`Int` を受け取る 1 番目の引数と型が合いません。"
       },
       "recap": [
         "`fn` で関数を定義し、`引数: 型 -> ... -> 戻り型` の順で型を読みます。",
@@ -1175,7 +1175,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         },
         {
           "heading": "フィールド参照と構造による互換性",
-          "body": "`.city` や `.stops` のようにドットでフィールドを取り出せます。`summarize` が要求するのは `{ city: String, stops: Int }` だけなので、余分な `line` がある `route` も、ちょうど2つのフィールドだけを持つ `express` も同じ関数に渡せます。",
+          "body": "`.city` や `.stops` のようにドットでフィールドを取り出せます。`summarize` が要求する型は `city` と `stops` の 2 つだけなので、余分な `line` がある `route` も、最小限の `express` も同じ関数に渡せます。",
           "sourceRange": {
             "startLine": 8,
             "endLine": 12
@@ -1559,7 +1559,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "エディターの `scores` の値 `[10, 20, 30]` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の長さと `arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
+        "instruction": "エディターの `scores` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の長さと `arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -6823,7 +6823,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       },
       "diagnostic": {
         "heading": "Array を List に代入する",
-        "body": "失敗例ではバッククォートの付かない `Array` リテラル `[1, 2, 3]` を、`List<Int>` の型注釈が付いた束縛へ置いています。リテラルの書き方を確認してください。"
+        "body": "失敗例ではバッククォートの付かない `[1, 2, 3]` を `List<Int>` 型の束縛へ置いています。リテラルの書き方を確認してください。"
       },
       "recap": [
         "`List` リテラルはバッククォートの付いた角括弧で書く。",
