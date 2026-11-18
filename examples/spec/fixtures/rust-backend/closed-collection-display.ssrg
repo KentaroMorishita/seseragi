@@ -1,5 +1,9 @@
 type Box = | Box Int
 
+// The shared dictionary getters must not read names the module declares.
+type ReturnType = | ReturnType Int
+type T = | T Int
+
 instance Show<Box> {
   fn show value: Box -> String = match value { Box n -> `box=${show n}` }
 }

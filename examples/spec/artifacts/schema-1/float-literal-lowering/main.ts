@@ -15,8 +15,8 @@ const $ssrg$source477 = { file: "main.ssrg", line: 17, column: 5, uri: "seseragi
 const $ssrg$source486 = { file: "main.ssrg", line: 17, column: 14, uri: "seseragi://artifact/float-literal-lowering", start: 486, end: 511 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_debug_arrayDebug<number>(_ssrg_debug_floatDebug); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_debug_tupleDebug<readonly [number, number]>(_ssrg_debug_floatDebug, _ssrg_debug_floatDebug); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_debug_arrayDebug<number>(_ssrg_debug_floatDebug); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_debug_tupleDebug<readonly [number, number]>(_ssrg_debug_floatDebug, _ssrg_debug_floatDebug); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 declare const __ssrg$brand$Measurement: unique symbol;
 type Measurement = {
   readonly "reading": number;

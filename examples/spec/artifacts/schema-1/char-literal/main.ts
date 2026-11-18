@@ -8,8 +8,8 @@ const $ssrg$source299 = { file: "main.ssrg", line: 8, column: 28, uri: "seseragi
 const $ssrg$source318 = { file: "main.ssrg", line: 8, column: 47, uri: "seseragi://artifact/char-literal", start: 318, end: 332 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_show_arrayShow<{ readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: string }>(_ssrg_show_maybeShow<string>(_ssrg_show_charShow)); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_tupleShow<readonly [string, string]>(_ssrg_show_charShow, _ssrg_show_charShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_show_arrayShow<{ readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: string }>(_ssrg_show_maybeShow<string>(_ssrg_show_charShow)); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_tupleShow<readonly [string, string]>(_ssrg_show_charShow, _ssrg_show_charShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 const identity = <A,>(value: A) => value
 const character = (value: string) => value
 const classify = (value: string) => (($ssrg_match: string): number => $ssrg_match === "a" ? 1 : $ssrg_match === "λ" ? 2 : 0)(value)

@@ -38,8 +38,8 @@ $ssrg$assertUnicodeVersion("17.0.0")
 interface $ssrg$Kind<Args extends readonly unknown[] = readonly unknown[]> { readonly args: Args; readonly type: unknown }
 type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & { readonly args: Args })["type"];
 type $ssrg$Apply<F extends $ssrg$Kind, Args extends F["args"]> = $ssrg$Invoke<F, Args>;
-const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_show_arrayShow<boolean>(_ssrg_show_boolShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_maybeShow<number>(_ssrg_show_intShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_show_arrayShow<boolean>(_ssrg_show_boolShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_maybeShow<number>(_ssrg_show_intShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 type Token =
   | { readonly tag: "Token" };
 const Token: Token = { tag: "Token" } as const;

@@ -26,7 +26,7 @@ const $ssrg$source438 = { file: "main.ssrg", line: 18, column: 5, uri: "seseragi
 const $ssrg$source447 = { file: "main.ssrg", line: 18, column: 14, uri: "seseragi://artifact/typescript-precedence-grouping", start: 447, end: 475 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_debug_arrayDebug<number>(_ssrg_debug_floatDebug); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_debug_arrayDebug<number>(_ssrg_debug_floatDebug); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 const ratio = (value: number) => $ssrg$atSource($ssrg$source35, () => _ssrg_float_div_dictionary["div"]($ssrg$atSource($ssrg$source36, () => _ssrg_float_sub_dictionary["sub"](value)(1.0), false))($ssrg$atSource($ssrg$source52, () => _ssrg_float_add_dictionary["add"](value)(1.0), false)), false)
 const averageDifference = (positive: number) => (negative: number) => $ssrg$atSource($ssrg$source135, () => _ssrg_float_div_dictionary["div"]($ssrg$atSource($ssrg$source136, () => _ssrg_float_sub_dictionary["sub"](positive)(negative), false))(2.0), false)
 const double = (value: number) => $ssrg$atSource($ssrg$source200, () => _ssrg_float_mul_dictionary["mul"](value)(2.0), false)

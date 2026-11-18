@@ -22,9 +22,9 @@ const $ssrg$source327 = { file: "main.ssrg", line: 15, column: 21, uri: "seserag
 const $ssrg$source333 = { file: "main.ssrg", line: 15, column: 27, uri: "seseragi://artifact/show-debug-range", start: 333, end: 338 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$2 = (() => { const create = () => _ssrg_debug_arrayDebug<Readonly<{ start: number; end: number; inclusive: boolean }>>(_ssrg_debug_rangeDebug<number>(_ssrg_debug_intDebug)); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_debug_rangeDebug<number>(_ssrg_debug_intDebug); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_rangeShow<number>(_ssrg_show_intShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$2 = (() => { const create = () => _ssrg_debug_arrayDebug<Readonly<{ start: number; end: number; inclusive: boolean }>>(_ssrg_debug_rangeDebug<number>(_ssrg_debug_intDebug)); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_debug_rangeDebug<number>(_ssrg_debug_intDebug); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_rangeShow<number>(_ssrg_show_intShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 export const showRange = (value: Readonly<{ start: number; end: number; inclusive: boolean }>) => $ssrg$atSource($ssrg$source49, () => (($ssrg$closedDisplay$0()["show"](value)) as string), false)
 export const debugRange = (value: Readonly<{ start: number; end: number; inclusive: boolean }>) => $ssrg$atSource($ssrg$source111, () => (($ssrg$closedDisplay$1()["debug"](value)) as string), false)
 export const debugRanges = (values: ReadonlyArray<Readonly<{ start: number; end: number; inclusive: boolean }>>) => $ssrg$atSource($ssrg$source183, () => (($ssrg$closedDisplay$2()["debug"](values)) as string), false)

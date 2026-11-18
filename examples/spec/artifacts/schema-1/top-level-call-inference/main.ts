@@ -37,9 +37,9 @@ type $ssrg$Invoke<F extends $ssrg$Kind, Args extends readonly unknown[]> = (F & 
 type $ssrg$Apply<F extends $ssrg$Kind, Args extends F["args"]> = $ssrg$Invoke<F, Args>;
 export interface $ssrg$kind$Box extends $ssrg$Kind<readonly [unknown]> { readonly type: Box<this["args"][0]> }
 export interface $ssrg$kind$Packet extends $ssrg$Kind<readonly [unknown]> { readonly type: Packet<this["args"][0]> }
-const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_debug_arrayDebug<number>(_ssrg_debug_intDebug); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$2 = (() => { const create = () => _ssrg_debug_listDebug<number>(_ssrg_debug_intDebug); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_debug_maybeDebug<number>(_ssrg_debug_intDebug); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$1 = (() => { const create = () => _ssrg_debug_arrayDebug<number>(_ssrg_debug_intDebug); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$2 = (() => { const create = () => _ssrg_debug_listDebug<number>(_ssrg_debug_intDebug); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_debug_maybeDebug<number>(_ssrg_debug_intDebug); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 export type Packet<A> =
   | { readonly tag: "Packet"; readonly value: A };
 export const Packet = <A>(value: A): Packet<A> => ({ tag: "Packet", value } as const);

@@ -31,7 +31,7 @@ const $ssrg$source1371 = { file: "main.ssrg", line: 63, column: 25, uri: "sesera
 const $ssrg$source1380 = { file: "main.ssrg", line: 64, column: 5, uri: "seseragi://artifact/unary-operators", start: 1380, end: 1382 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_debug_arrayDebug<number>(_ssrg_debug_intDebug); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_debug_arrayDebug<number>(_ssrg_debug_intDebug); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 declare const __ssrg$brand$Snapshot: unique symbol;
 export type Snapshot = {
   readonly "negative": number;

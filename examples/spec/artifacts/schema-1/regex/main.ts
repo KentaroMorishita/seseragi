@@ -69,7 +69,7 @@ const $ssrg$source4080 = { file: "main.ssrg", line: 113, column: 15, uri: "seser
 const $ssrg$source4094 = { file: "main.ssrg", line: 113, column: 29, uri: "seseragi://artifact/regex", start: 4094, end: 4106 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_arrayShow<string>(_ssrg_show_stringShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_arrayShow<string>(_ssrg_show_stringShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 const same = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: import("@seseragi/runtime/equality").Eq<A>) => $ssrg$atSource($ssrg$source141, () => __ssrg$evidence$0["eq"](left)(right), false)
 const earlier = <A,>(left: A) => (right: A) => (__ssrg$evidence$0: import("@seseragi/runtime/equality").Ord<A> & import("@seseragi/runtime/equality").Eq<A>) => (($ssrg_match: { readonly tag: "Less" } | { readonly tag: "Equal" } | { readonly tag: "Greater" }): boolean => $ssrg_match.tag === "Less" ? true : false)($ssrg$atSource($ssrg$source219, () => ((__ssrg$evidence$0["compare"](left)(right)) as { readonly tag: "Less" } | { readonly tag: "Equal" } | { readonly tag: "Greater" }), false))
 const inspect = <A,>(value: A) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => $ssrg$atSource($ssrg$source321, () => ((__ssrg$evidence$0["debug"](value)) as string), false)

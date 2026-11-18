@@ -38,7 +38,7 @@ const $ssrg$source1070 = { file: "main.ssrg", line: 42, column: 31, uri: "sesera
 const $ssrg$source1076 = { file: "main.ssrg", line: 42, column: 37, uri: "seseragi://artifact/strict-comparison-arguments", start: 1076, end: 1084 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_arrayShow<boolean>(_ssrg_show_boolShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_arrayShow<boolean>(_ssrg_show_boolShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 type Mark =
   | { readonly tag: "Mark"; readonly value: number };
 const Mark = (value: number): Mark => ({ tag: "Mark", value } as const);

@@ -81,7 +81,7 @@ const $ssrg$source2261 = { file: "main.ssrg", line: 92, column: 18, uri: "sesera
 const $ssrg$source2280 = { file: "main.ssrg", line: 93, column: 7, uri: "seseragi://artifact/non-empty-list-instances", start: 2280, end: 2305 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_listShow<number>(_ssrg_show_intShow); let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); })()
+const $ssrg$closedDisplay$0 = (() => { const create = () => _ssrg_show_listShow<number>(_ssrg_show_intShow); return (<T,>(make: () => T) => { let value: T | undefined; return (): T => (value ??= make()); })(create); })()
 type Rank =
   | { readonly tag: "Low" }
   | { readonly tag: "High" };

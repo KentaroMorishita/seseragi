@@ -176,9 +176,10 @@ fn render_typescript_with_sources(module: &TypeScriptModule, source_text: &str) 
         // Only the getter is created at module initialization. Its complete
         // proved factory stays at the original first evidence read. Storage
         // belongs to this finite module, with no process-global cache or input
-        // values retained by the standard dictionary.
+        // values retained by the standard dictionary. The getter's type is a
+        // local type parameter, so no name in the module can shadow it.
         output.push_str(&format!(
-            "const {} = (() => {{ const create = () => {}; let value: ReturnType<typeof create> | undefined; return (): ReturnType<typeof create> => (value ??= create()); }})()\n",
+            "const {} = (() => {{ const create = () => {}; return (<T,>(make: () => T) => {{ let value: T | undefined; return (): T => (value ??= make()); }})(create); }})()\n",
             dictionary.name, render_typescript_expr(&dictionary.factory)
         ));
     }
