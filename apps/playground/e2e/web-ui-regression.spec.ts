@@ -675,7 +675,9 @@ test.describe("canonical Web UI browser regression", () => {
     }
   })
 
-  for (const entry of matrix.samples) {
+  for (const entry of matrix.samples.filter(({ requiredStates }) =>
+    requiredStates.includes("image-fallback")
+  )) {
     test(`${entry.id} / iphone-390 keeps descriptive image fallback layout`, async ({
       page,
     }, testInfo) => {

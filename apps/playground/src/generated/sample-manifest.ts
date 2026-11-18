@@ -514,22 +514,22 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "interactive-app",
-      "title": "Trail plannerをdom.appで動かす",
-      "summary": "三つのrouteを選ぶState、Action、pure update、viewをdom.appへ渡す最小appです。",
+      "title": "散歩コースを Signal で切り替える",
+      "summary": "選んだコースを Signal に持ち、見出し、標高の断面、時間と距離を一緒に描き直す小さな画面です。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
-        "typed Action",
-        "pure reducer",
         "Signal",
-        "dom.app"
+        "dom.run",
+        "deriving Eq",
+        "SVG"
       ],
       "capabilities": [
         "dom"
       ],
       "outputMode": "html",
       "experience": "minimal",
-      "architecture": "dom-app",
+      "architecture": "signal-run",
       "focus": "state",
       "prerequisites": [
         "signal-state",
@@ -540,8 +540,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/interactive-app/main.ssrg",
       "guidePath": "examples/samples/interactive-app/guide.md",
-      "sourceHash": "sha256:bd260247692d5452ce94d10ea7f3eb0b8dccefa1131bf2695d716bc0b280fd16",
-      "workspaceHash": "sha256:fba79375b63eed9bde223ac21e1994a97967f8a986c349b7a6b9d4732f931b3f"
+      "sourceHash": "sha256:5db20af60f4f8e9a28432c64848a6037368f990daa960737fdb76c0bbfbec274",
+      "workspaceHash": "sha256:f69d24a817adae688bd6c530b27613289c13fd1ffdd70a26a033304b342e5087"
     },
     source: sample10Source,
     manifest: "",

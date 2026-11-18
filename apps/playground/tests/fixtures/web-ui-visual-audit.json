@@ -18,16 +18,16 @@
     },
     {
       "id": "interactive-app",
-      "identity": "blue trail planner using dom.app",
-      "photoId": "photo-1441974231531-c6227db76b6e",
+      "identity": "warm trail-map planner with an SVG elevation profile per trail",
+      "photoId": null,
       "photoGroup": "trail-planner-comparison",
-      "layoutMarkers": ["object-cover", "min-h-screen"],
-      "states": ["initial", "riverside route"],
+      "layoutMarkers": ["svg.polyline", "minHeight: \"100vh\""],
+      "states": ["initial", "riverside trail", "ridge trail"],
       "artifacts": [
-        "docs/reviews/issue-190/visual/trail-planner-desktop.png",
-        "docs/reviews/issue-190/visual/trail-planner-riverside.png",
-        "docs/reviews/issue-190/visual/trail-planner-iphone-390.png",
-        "docs/reviews/issue-190/visual/trail-planner-android-360.png"
+        "docs/reviews/issue-1376/visual/trail-planner-desktop.png",
+        "docs/reviews/issue-1376/visual/trail-planner-riverside.png",
+        "docs/reviews/issue-1376/visual/trail-planner-iphone-390.png",
+        "docs/reviews/issue-1376/visual/trail-planner-android-360.png"
       ]
     },
     {
