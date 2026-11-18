@@ -35,10 +35,10 @@ export const USER_VISIBLE_SURFACES = [
 ] as const
 
 const INTERNAL_ONLY_PATHS = [
-  /(^|\/)(?:tests?|[^/]*_tests?)\//u,
+  /(^|\/)(?:tests?|[^/]*_tests?|e2e)\//u,
   /(^|\/)__snapshots__\//u,
-  /(?:^|\/)[^/]*(?:_test|_tests|\.test)\.[^/]+$/u,
-  /\.(?:snap|test)\.[^/]+$/u,
+  /(?:^|\/)[^/]*(?:_test|_tests|\.test|\.spec)\.[^/]+$/u,
+  /\.(?:snap|spec|test)\.[^/]+$/u,
   /^apps\/playground\/src\/generated\/(?:sample|tour|deep-dive)-manifest\.ts$/u,
 ] as const
 
@@ -115,6 +115,45 @@ function fileAt(ref: string, file: string, root: string): string {
   return git(["show", `${ref}:${file}`], root).stdout
 }
 
+function fileAtOptional(
+  ref: string,
+  file: string,
+  root: string
+): string | null {
+  const result = git(["show", `${ref}:${file}`], root, { allowFailure: true })
+  return result.exitCode === 0 ? result.stdout : null
+}
+
+export function stripRustInlineTestModule(source: string): string {
+  const marker = /\r?\n#\[cfg\(test\)\][ \t]*\r?\nmod tests\b/u.exec(source)
+  if (!marker) return source
+  const rest = source.slice(marker.index + marker[0].length)
+  if (
+    /\r?\n(?:pub\b|fn\b|struct\b|enum\b|trait\b|impl\b|type\b|const\b|static\b|mod\b)/u.test(
+      rest
+    )
+  ) {
+    return source
+  }
+  return source.slice(0, marker.index).trimEnd()
+}
+
+function isRustInlineTestOnlyChange(
+  baseRef: string,
+  headRef: string,
+  file: string,
+  root: string
+): boolean {
+  if (!file.endsWith(".rs")) return false
+  const baseContent = fileAtOptional(baseRef, file, root)
+  const headContent = fileAtOptional(headRef, file, root)
+  if (baseContent === null || headContent === null) return false
+  return (
+    stripRustInlineTestModule(baseContent) ===
+    stripRustInlineTestModule(headContent)
+  )
+}
+
 function compareTags(left: string, right: string): number {
   const leftParts = semverParts(left)
   const rightParts = semverParts(right)
@@ -172,7 +211,13 @@ export function pullRequestReleaseBoundary(
   const files = git(["diff", "--name-only", `${base}...${head}`], root)
     .stdout.split("\n")
     .filter(Boolean)
-  const visibleFiles = userVisibleFiles(files)
+  const mergeBase =
+    git(["merge-base", base, head], root, { allowFailure: true }).stdout || base
+  const visibleFiles = userVisibleFiles(
+    files.filter(
+      (file) => !isRustInlineTestOnlyChange(mergeBase, head, file, root)
+    )
+  )
   const baseVersion = versionFromCargoToml(
     fileAt(base, "Cargo.toml", root),
     base
@@ -224,7 +269,14 @@ export async function releaseReadiness(
   }
 
   const comparisonBase = currentTagCommit ? tag : latestReleaseTag
-  const visibleFiles = userVisibleFiles(changedFiles(comparisonBase, root))
+  const rawChangedFiles = changedFiles(comparisonBase, root)
+  const filteredChangedFiles = comparisonBase
+    ? rawChangedFiles.filter(
+        (file) =>
+          !isRustInlineTestOnlyChange(comparisonBase, "HEAD", file, root)
+      )
+    : rawChangedFiles
+  const visibleFiles = userVisibleFiles(filteredChangedFiles)
   const visibleSurfaces = userVisibleSurfaces(visibleFiles)
   let state: ReleaseReadinessState
   if (!currentTagCommit) {

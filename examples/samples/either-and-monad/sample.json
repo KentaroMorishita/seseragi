@@ -8,7 +8,7 @@
   "topics": ["Either", "Monad", "do", ">>="],
   "capabilities": ["console"],
   "outputMode": "text",
-  "prerequisites": ["data-and-patterns", "effects-and-do"],
+  "prerequisites": ["hello-world"],
   "featured": false,
   "files": {
     "source": "main.ssrg",

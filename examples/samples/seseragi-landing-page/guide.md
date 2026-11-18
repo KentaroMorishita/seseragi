@@ -49,6 +49,6 @@ named `fn`にします。official logo、Unsplash image、Playground、repositor
 
 ## 前提と次のsample
 
-`html-components`でHtml tree、`signal-run-route`で明示的な`dom.run`、
+`html-components`でHtml tree、`web-starter`で明示的な`dom.run`、
 `feature-composition`でfeature-owned Signalを先に読むと追いやすくなります。form validationを
 中心に見るなら`form-todo`、複数featureのapplication ownershipを見るなら`project-flow-app`へ進みます。

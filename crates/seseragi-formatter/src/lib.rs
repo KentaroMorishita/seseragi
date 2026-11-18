@@ -194,7 +194,9 @@ mod tests {
     fn preserves_record_and_effect_row_braces_in_long_sample_lines() {
         for source in [
             include_str!("../../../examples/samples/html-components/main.ssrg"),
-            include_str!("../../../examples/samples/typeclass-operator-parity/main.ssrg"),
+            include_str!(
+                "../../../examples/spec/fixtures/projects/typeclass-operator-parity/src/main.ssrg"
+            ),
         ] {
             assert_eq!(format(source).text, source);
         }

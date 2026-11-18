@@ -22,7 +22,6 @@
   "focus": "composition",
   "prerequisites": [
     "html-components",
-    "signal-run-route",
     "feature-composition"
   ],
   "featured": true,

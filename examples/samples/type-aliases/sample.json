@@ -8,7 +8,7 @@
   "topics": ["type alias", "generics", "Task", "Signal"],
   "capabilities": ["console"],
   "outputMode": "text",
-  "prerequisites": ["generic-structs", "effects-and-do"],
+  "prerequisites": ["records", "newtypes"],
   "featured": false,
   "isNew": true,
   "files": {

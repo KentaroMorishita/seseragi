@@ -1,4 +1,0 @@
-first line
-second line
-quote: "Seseragi"
-Hello, Seseragi!
