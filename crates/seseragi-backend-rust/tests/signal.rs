@@ -10,7 +10,26 @@ fn official_signal_samples_emit_native_rust() {
         ),
         (
             "signal-composition",
-            include_str!("../../../examples/samples/signal-composition/main.ssrg"),
+            r#"import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+pub effect fn main = do {
+  source <- signals.make 10
+  result <- signals.make 0
+
+  // <$>は現在値を変換し、<*>はSignal内の関数を値へ適用します。
+  let input: Signal<Int> = source
+  let doubled = (\value: Int -> value * 2) <$> input
+  let addTwo = signals.constant (\value: Int -> value + 2)
+  let answer = addTwo <*> doubled
+
+  subscription <- signals.subscribe (\value: Int -> result := value) answer
+  source := 20
+  signals.unsubscribe subscription
+
+  current <- *result
+  println `Signal answer: ${current}`
+}"#,
         ),
         (
             "type-aliases",

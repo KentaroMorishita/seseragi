@@ -8,7 +8,7 @@
   "topics": ["Signal", "derived state", "transaction"],
   "capabilities": ["console"],
   "outputMode": "text",
-  "prerequisites": ["signal-composition"],
+  "prerequisites": ["type-aliases"],
   "featured": false,
   "files": {
     "source": "main.ssrg",

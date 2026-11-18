@@ -31,14 +31,6 @@
       "requiredStates": ["initial", "riverside-route", "image-fallback"]
     },
     {
-      "id": "signal-run-route",
-      "pickerLabel": "Trail plannerをSignal + dom.runで動かす",
-      "heading": "木陰の周回コースを歩く",
-      "architecture": "signal-run",
-      "requiredSurfaces": ["sample-picker", "code", "preview"],
-      "requiredStates": ["initial", "riverside-route", "image-fallback"]
-    },
-    {
       "id": "feature-composition",
       "pickerLabel": "Signal + dom.runでfeatureを合成",
       "heading": "Compose the release rhythm.",

@@ -395,7 +395,7 @@ test.describe("canonical Web UI browser regression", () => {
     }
   }
 
-  for (const id of ["interactive-app", "signal-run-route"] as const) {
+  for (const id of ["interactive-app"] as const) {
     test(`${id} / desktop selects the riverside route`, async ({
       page,
     }, testInfo) => {

@@ -11,7 +11,7 @@
   "experience": "guided",
   "architecture": "signal-run",
   "focus": "composition",
-  "prerequisites": ["signal-state", "interactive-app", "signal-run-route"],
+  "prerequisites": ["signal-state", "interactive-app"],
   "featured": false,
   "isNew": true,
   "interactive": true,
