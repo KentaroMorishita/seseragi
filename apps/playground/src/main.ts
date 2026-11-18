@@ -1309,6 +1309,10 @@ async function run(): Promise<void> {
 }
 
 function cancelActiveExecution(): void {
+  // 実行中（コンパイル中、実行中、対話のプレビューが動いている）に取り消したときだけ、
+  // チップを空に戻す。終わった実行の結果（✓ 18 ms など）は、編集しても残す。
+  const wasActive = runButton.disabled || activeExecution !== undefined
+  if (wasActive) renderRunStatus(runStatus, { kind: "idle" })
   runRevision += 1
   activePreviewPreparation?.abort()
   activePreviewPreparation = undefined

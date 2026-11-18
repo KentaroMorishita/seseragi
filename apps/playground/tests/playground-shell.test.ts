@@ -142,6 +142,19 @@ describe("run status chip", () => {
     expect(classes.size).toBe(0)
   })
 
+  test("is cleared when a run in progress is cancelled", () => {
+    const cancel = main.slice(
+      main.indexOf("function cancelActiveExecution(): void {"),
+      main.indexOf("function showExecutionOutput(")
+    )
+    expect(cancel).toContain(
+      "const wasActive = runButton.disabled || activeExecution !== undefined"
+    )
+    expect(cancel).toContain(
+      'if (wasActive) renderRunStatus(runStatus, { kind: "idle" })'
+    )
+  })
+
   test("is updated by Run, Clear and switching examples", () => {
     for (const outcome of [
       '{ kind: "running" }',
