@@ -234,7 +234,8 @@ class LinePinWidget extends WidgetType {
     const pin = document.createElement("span")
     pin.className = "cm-line-pin"
     pin.setAttribute("aria-hidden", "true")
-    pin.textContent = this.label
+    // 番号は CSS で描く。エディターの文字（コピーや読み上げ）に混ぜない
+    pin.dataset.label = this.label
     return pin
   }
 }
