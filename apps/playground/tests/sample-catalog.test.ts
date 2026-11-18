@@ -384,10 +384,10 @@ describe("sample catalog validation", () => {
     )
     expect(() =>
       validateSampleCatalog(
-        webSamples.filter(({ architecture }) => architecture !== "dom-app"),
+        webSamples.filter(({ id }) => id !== "run"),
         []
       )
-    ).toThrow("minimal dom.app")
+    ).toThrow("minimal Signal + dom.run")
     expect(() =>
       validateSampleCatalog(
         webSamples.map((sample) =>

@@ -1,7 +1,13 @@
 fn greeting name: String -> String = `Hello, ${name}!`
 
-fn emphasize value: String -> String = `**${value}**`
+fn wrap mark: String -> value: String -> String = `${mark}${value}${mark}`
 
-fn message name: String -> String = emphasize $ greeting name
+fn addLabel label: String -> value: String -> String = `${label}: ${value}`
 
-pub effect fn main = "Seseragi" |> message |> println
+fn buildMessage name: String -> String =
+  name
+  |> greeting
+  |> wrap "**"
+  |> addLabel "Welcome"
+
+pub effect fn main = println $ buildMessage "Seseragi"

@@ -1,8 +1,19 @@
 import * as arrays from "std/array"
 
-fn greaterThanTwo value: Int -> Bool = value > 2
-fn triple value: Int -> Int = value * 3
+fn even value: Int -> Bool = value % 2 == 0
+fn double value: Int -> Int = value * 2
 
-let total = [1, 2, 3, 4] |> arrays.filter greaterThanTwo |> map triple |> reduce 10 (+)
+fn summarize values: Array<Int> -> Int =
+  values
+  |> arrays.filter even
+  |> map double
+  |> reduce 10 (+)
 
-pub effect fn main = println $ `pipeline total: ${total}`
+let numbers = [1, 2, 3, 4]
+let doubled = double <$> numbers
+let total = summarize numbers
+
+pub effect fn main = do {
+  println $ `doubled: ${doubled}`
+  println $ `pipeline total: ${total}`
+}

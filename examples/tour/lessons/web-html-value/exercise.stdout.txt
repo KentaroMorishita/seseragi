@@ -1,1 +1,1 @@
-<section>Tour Preview</section>
+<main id="welcome" class="rounded-xl p-4" style="background-color: #ecfeff; color: #155e75"><h1>Hello HTML</h1><p title="Greeting">Pure HTML preview</p></main>

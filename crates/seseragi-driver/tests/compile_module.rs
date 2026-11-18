@@ -110,7 +110,13 @@ fn recursive_effect_callback_arrays_keep_their_inferred_contract() {
 
 #[test]
 fn an_invalid_html_action_keeps_argument_inference_and_reports_the_binding() {
-    let source = include_str!("../../../examples/tour/lessons/web-click-action/diagnostic.ssrg");
+    let source = r#"import * as html from "std/web/html"
+
+type Action =
+  | Increment
+
+let invalid: html.Html<Action> = html.button { onClick: "Increment", children: "+" }
+"#;
     for profile in [
         seseragi_driver::BuildProfile::Development,
         seseragi_driver::BuildProfile::Release,
@@ -136,7 +142,15 @@ fn an_invalid_html_action_keeps_argument_inference_and_reports_the_binding() {
 
 #[test]
 fn either_result_context_still_rejects_a_wrong_right_payload() {
-    let source = include_str!("../../../examples/tour/lessons/either-map-error/diagnostic.ssrg");
+    let source = r#"struct ErrorInfo { message: String }
+
+fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> = match value {
+  Left message -> Left (ErrorInfo { message })
+  Right number -> Right (ErrorInfo { message: "wrong" })
+}
+
+pub effect fn main = println "Either"
+"#;
     for profile in [
         seseragi_driver::BuildProfile::Development,
         seseragi_driver::BuildProfile::Release,

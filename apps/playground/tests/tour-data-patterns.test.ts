@@ -2,28 +2,19 @@ import { describe, expect, test } from "bun:test"
 import { tourLessons } from "../src/tour/curriculum"
 
 const dataPatternIds = [
-  "tuple-values",
-  "tuple-pattern-binding",
-  "record-values",
-  "record-access-update",
+  "tuple-and-record",
   "06-records-and-structs",
-  "struct-field-access",
-  "simple-adt",
-  "payload-adt",
-  "single-constructor-match",
+  "adt-definition",
   "07-adts-and-patterns",
-  "payload-pattern-binding",
-  "nested-pattern-wildcard",
   "exhaustive-match",
-  "data-shape-selection",
 ] as const
 
 describe("Tour data and pattern curriculum", () => {
-  test("teaches construction and decomposition one step at a time", () => {
-    const lessons = tourLessons.slice(28, 28 + dataPatternIds.length)
+  test("teaches records, structs, ADTs, match, and exhaustiveness one step at a time", () => {
+    const lessons = tourLessons.slice(5, 5 + dataPatternIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...dataPatternIds])
-    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 174)).toBe(
+    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 1348)).toBe(
       true
     )
     expect(lessons.every(({ format }) => format !== undefined)).toBe(true)
@@ -33,7 +24,7 @@ describe("Tour data and pattern curriculum", () => {
         index === 0 ? "05-pipelines" : dataPatternIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        dataPatternIds[index + 1] ?? "array-values"
+        dataPatternIds[index + 1] ?? "08-collections-and-ranges"
       )
     }
   })
@@ -55,14 +46,12 @@ describe("Tour data and pattern curriculum", () => {
   })
 
   test("keeps the Shipped Osaka walkthrough traceable", () => {
-    const source = lessonById("payload-pattern-binding").source
+    const lesson = lessonById("07-adts-and-patterns")
     const payloadTemplate = ["Shipped to ", "$", "{city}"].join("")
 
-    expect(source).toContain('Shipped "Osaka"')
-    expect(source).toContain(payloadTemplate)
-    expect(lessonById("payload-pattern-binding").expectedOutput).toContain(
-      "Shipped to Osaka"
-    )
+    expect(lesson.source).toContain('Shipped "Osaka"')
+    expect(lesson.source).toContain(payloadTemplate)
+    expect(lesson.expectedOutput).toContain("Shipped to Osaka")
   })
 })
 

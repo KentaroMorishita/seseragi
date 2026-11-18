@@ -46,7 +46,7 @@ test("resizes and restores every desktop Tour pane", async ({ page }) => {
     )
   await page.locator("#tour-next-button").click()
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "OnClickでtyped Actionを送る"
+    "ラベルとアクセシビリティ属性を付ける"
   )
   expect(
     await page

@@ -1,8 +1,13 @@
 import * as signals from "std/signal"
+import { Signal } from "std/signal"
 
 pub effect fn main = do {
-  let fixed = 40
-  current <- signals.read (signals.constant 2)
-  println `value: ${fixed}`
-  println `Signal current: ${current}`
+  state <- signals.make 42
+  let view: Signal<Int> = state
+  named <- signals.read view
+  viaView <- *view
+  viaState <- *state
+  println `signals.read view: ${named}`
+  println `*view: ${viaView}`
+  println `*state: ${viaState}`
 }

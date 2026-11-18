@@ -3,49 +3,62 @@
   "id": "02-values-and-bindings",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "String、Int、Float、Bool、Unitのliteralを一つずつ作りました。ここではString valueだけへ名前を付けます。",
+    "prerequisite": "最初のレッスンで `let` と文字列の出力、そして `Run` と `Output` の使い方を確かめました。ここでは数値・真偽値・値がないことを表す型をまとめます。",
     "walkthrough": [
       {
-        "heading": "Top-level valueへ名前を付ける",
-        "body": "`let language = \"Seseragi\"`はString valueを`language`へ結び付けます。programのどこからでも同じ名前で参照できます。",
+        "heading": "型注釈・型推論と演算・比較",
+        "body": "1 行目の `let total: Int = 20 + 22` は `: Int` と型注釈を付けながら `+` で整数を計算します。2 行目の `1.5`（`Float`）や 3 行目の `42 > 40`（`Bool`）は型注釈を省略しても右辺から型が推論され、`42 > 40` の結果は `True` になります。4 行目の `()` は値がないことを表す `Unit` 型です。",
         "sourceRange": {
           "startLine": 1,
-          "endLine": 1
+          "endLine": 4
         }
       },
       {
-        "heading": "名前でvalueを参照する",
-        "body": "`println language`はliteralを書き直さず、`language`が指すString valueを渡します。",
+        "heading": "変更できない束縛を参照する",
+        "body": "`let` で付けた名前は後から値を上書きできない変更できない束縛です。`main` の中では名前をそのまま参照し、`Output` へ 4 つの型の値をまとめて表示しています。",
         "sourceRange": {
-          "startLine": 3,
-          "endLine": 3
+          "startLine": 6,
+          "endLine": 7
         }
       }
     ],
     "introduced": [
       {
         "kind": "syntax",
-        "name": "top-level let",
-        "body": "`let name = value`でimmutableなtop-level bindingを作ります。同じbindingへ別の値を再代入しません。"
+        "name": "let と型注釈・型推論",
+        "body": "`let 名前: 型 = 式` のように型注釈を書けます。右辺から型が決まるときは `: 型` を省略してもコンパイラが型推論します。"
+      },
+      {
+        "kind": "type",
+        "name": "Int・Float・Bool・Unit",
+        "body": "`Int` は整数、`Float` は小数、`Bool` は `True` または `False`、`Unit` は意味のある値がないことを表す `()` の型です。"
+      },
+      {
+        "kind": "syntax",
+        "name": "演算子 + と比較 >",
+        "body": "`+` で同じ数値型同士を足し算し、`>`・`<`・`>=`・`<=`・`==` で値を比べて `Bool` を得ます。"
       }
     ],
     "exercise": {
-      "instruction": "課題sourceの`language`へ結び付けるStringだけを`Tour`へ変更し、参照側を変えずにRunしてください。",
+      "instruction": "3 行目の `42 > 40` を `42 > 50` に書き換えて `Run` し、`Output` の `Bool: True` が `Bool: False` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "同じ名前を二度宣言する",
-      "body": "同じscopeに同名のtop-level bindingを二つ置くと、どちらを参照するか曖昧になるためcompilerが拒否します。"
+      "heading": "同じ名前をもう一度宣言してみる",
+      "body": "Seseragi の `let` は変更できない束縛です。失敗例のように同じスコープで `total` を二度宣言すると名前が重複し、コンパイル前に `Problems` へエラー表示が出ます。"
     },
     "recap": [
-      "`let`でvalueへ名前を付けられる。",
-      "bindingはimmutableで、参照側は名前を使う。",
-      "top-level bindingはmodule全体から参照できる。"
+      "`let` は値に名前を付ける変更できない束縛を作り、型注釈がなくても型推論で型が決まります。",
+      "主な基本型として `Int`・`Float`・`Bool`・`Unit` があり、`+` や `>` などの演算で計算・比較できます。",
+      "同じスコープ内で同じ名前を宣言し直すことはできません。"
     ],
     "next": {
-      "lessonId": "local-let",
-      "body": "次は、blockの外へ漏らさない一時的な名前をlocal `let`で作ります。"
-    }
+      "lessonId": "if-expression",
+      "body": "次は `Bool` の比較結果を使って値を選び分ける `if` 式を学びます。"
+    },
+    "notes": [
+      "式の中だけで一時的な名前を使いたいときは、波括弧のブロック内で `let` を書くこともできます。"
+    ]
   },
   "files": {
     "source": "main.ssrg",

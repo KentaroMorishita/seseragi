@@ -1,1 +1,79 @@
-{"$schema":"../../lesson.schema.json","id":"maybe-match","formatVersion":2,"sections":{"prerequisite":"JustとNothingのMaybe valueを作れるようになりました。","walkthrough":[{"heading":"二constructorを網羅する","body":"Nothing armはfallbackを返し、Just nameはpayloadをStringとして取り出します。","sourceRange":{"startLine":1,"endLine":1}}],"introduced":[{"kind":"syntax","name":"Maybe match","body":"NothingとJust payloadの両armでMaybeを網羅的に分解します。"}],"exercise":{"instruction":"課題sourceをNothingへ変え、別armの出力を確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Nothing armを省く","body":"失敗例はJustだけを扱います。missing constructor diagnosticを確認してください。"},"recap":["Maybe matchはNothingとJustを扱う。","Just patternでpayloadへ名前を付ける。"],"next":{"lessonId":"maybe-default","body":"次はmatchを書かずdefault valueへ変換します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "maybe-match",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "コレクションの添字アクセスで、`Just` と `Nothing` を持つ `Maybe` 型に出会いました。ここでは `Maybe` を自分で作り、安全に値を取り出す方法を学びます。",
+    "walkthrough": [
+      {
+        "heading": "Just と Nothing で値の有無を表す",
+        "body": "6〜7 行目の `Maybe<String>` は、`String` 型の値があるかないかを表す型です。値があるときは `Just \"Mio\"`、ないときは `Nothing` で表します。",
+        "sourceRange": {
+          "startLine": 6,
+          "endLine": 7
+        }
+      },
+      {
+        "heading": "match でケースごとに値を取り出す",
+        "body": "1〜4 行目の `match` では、`Nothing` と `Just name` の両方を分岐します。取り出した変数 `name` は右側の文字列の中で使います。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 4
+        }
+      },
+      {
+        "heading": "演算子 ?? で既定値を設定する",
+        "body": "8〜9 行目の `??` は、左側の `Maybe` が `Just` なら中身を取り出し、`Nothing` なら右側の `\"Guest\"` を既定値として返します。",
+        "sourceRange": {
+          "startLine": 8,
+          "endLine": 9
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Maybe<A>",
+        "body": "型引数 `A` の値があるかないかを一つの型で表します。値があるときは `Just`、ないときは `Nothing` のコンストラクターで作ります。"
+      },
+      {
+        "kind": "syntax",
+        "name": "Maybe の match",
+        "body": "`Nothing` と `Just` の両方を書いて分岐すると、値がない場合の処理忘れをコンパイラが実行前に防いでくれます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "既定値演算子 ??",
+        "body": "`値 ?? 既定値` の形で書き、値がないときだけ右側の既定値を返します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 6 行目にある `Just \"Mio\"` を `Nothing` に書き換えて `Run` し、`Output` の 1 行目が `user: none` に、3 行目の `active` の値が `Guest` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Nothing の分岐を書き忘れる",
+      "body": "失敗例では `Just name` の分岐だけを書き、`Nothing` の分岐を省略しています。`match` はすべてのケースを網羅する必要があるため、実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "`Maybe<A>` は「値がある（`Just`）か、ない（`Nothing`）か」を型で明示します。",
+      "`match` で `Nothing` と `Just` を分岐すると、値がないケースの取りこぼしを実行前に防げます。",
+      "ただ既定値へ切り替えたいだけなら `??` 演算子で簡潔に書けます。"
+    ],
+    "next": {
+      "lessonId": "maybe-short-circuit",
+      "body": "次は `Maybe` の値を取り出さずに、欠如を保ったまま次の変換へつなぐ `map` と `flatMap` を学びます。"
+    },
+    "notes": [
+      "標準モジュール `std/maybe` の `maybe.withDefault` 関数でも既定値を設定できますが、`??` 演算子は必要なときだけ右側を計算する便利な構文です。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

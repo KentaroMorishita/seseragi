@@ -1,4 +1,4 @@
-fn rank value: Int -> String = `Rank ${value}`
+fn label value: Int -> String = `Rank ${value}`
 
 fn render value: Maybe<String> -> String = match value {
   Nothing -> "Nothing"
@@ -7,6 +7,8 @@ fn render value: Maybe<String> -> String = match value {
 
 pub effect fn main = do {
   let source: Maybe<Int> = Just 7
-  map rank source |> render |> println
-  rank <$> source |> render |> println
+  let named: Maybe<String> = map label source
+  let operator: Maybe<String> = label <$> source
+  println `map: ${render named}`
+  println `<$>: ${render operator}`
 }

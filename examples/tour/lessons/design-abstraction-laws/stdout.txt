@@ -1,7 +1,7 @@
-Functor identity: ok
-Functor composition: ok
-Applicative identity: ok
-Applicative homomorphism: ok
-Monad left identity: ok
-Monad right identity: ok
-Monad associativity: ok
+Functor identity: Just 21
+Functor composition: Just 42
+Applicative identity: Just 21
+Applicative homomorphism: Just 42
+Monad left identity: Just 41
+Monad right identity: Just 41
+Monad associativity: Just 82

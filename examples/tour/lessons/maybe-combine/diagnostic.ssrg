@@ -1,1 +1,0 @@
-let invalid: Maybe<Int> = Just 42 <*> Just 1

@@ -1,9 +1,14 @@
 use super::{CoreCallEvidence, CoreInstanceEvidence, CoreType};
 use std::collections::BTreeSet;
 
-/// Certify only the compiler's pure tuple Show/Debug factory family. A closed
-/// user instance or an arbitrary Standard identity is not a purity proof.
-/// This permits lazy reuse at the original read, never eager evaluation.
+/// The standard collections whose Show/Debug factories only wrap the element
+/// dictionary in a pure renderer.
+const COLLECTIONS: [&str; 4] = ["Array", "Maybe", "Range", "List"];
+
+/// Certify only the compiler's pure tuple and collection Show/Debug factory
+/// families. A closed user instance or an arbitrary Standard identity is not a
+/// purity proof. This permits lazy reuse at the original read, never eager
+/// evaluation.
 pub fn closed_standard_display_key<'a>(
     selected: &CoreCallEvidence,
     bound_type_names: impl IntoIterator<Item = &'a str>,
@@ -11,7 +16,13 @@ pub fn closed_standard_display_key<'a>(
     let CoreInstanceEvidence::Standard { identity, .. } = &selected.evidence else {
         return None;
     };
-    if !matches!(identity.as_str(), "std/tuple::Show" | "std/tuple::Debug") {
+    let (owner, method) = identity.split_once("::")?;
+    if !matches!(method, "Show" | "Debug")
+        || !(owner == "std/tuple"
+            || COLLECTIONS
+                .iter()
+                .any(|collection| owner == format!("std/{}", collection.to_ascii_lowercase())))
+    {
         return None;
     }
     let bound = bound_type_names.into_iter().collect::<BTreeSet<_>>();
@@ -40,39 +51,78 @@ fn certify(selected: &CoreCallEvidence, bound: &BTreeSet<&str>, depth: usize) ->
         return None;
     };
     let type_key = display_type_key(ty, bound, depth)?;
-    if identity == &format!("std/tuple::{method}") {
+    let children = if identity == &format!("std/tuple::{method}") {
         let [tuple @ CoreType::Tuple { elements }] = type_arguments.as_slice() else {
             return None;
         };
-        if Some(type_key.clone()) != display_type_key(tuple, bound, depth)
-            || elements.len() != evidence_arguments.len()
+        if Some(type_key.clone()) != display_type_key(tuple, bound, depth) {
+            return None;
+        }
+        elements.iter().collect::<Vec<_>>()
+    } else if let Some(collection) = COLLECTIONS.iter().find(|collection| {
+        identity == &format!("std/{}::{method}", collection.to_ascii_lowercase())
+    }) {
+        let [element] = type_arguments.as_slice() else {
+            return None;
+        };
+        if collection_element(ty, collection, bound) != Some(element) {
+            return None;
+        }
+        vec![element]
+    } else {
+        if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
+            return None;
+        }
+        for primitive in ["Unit", "Bool", "Int", "Float", "Char", "String"] {
+            let canonical = format!("std/prelude::{primitive}");
+            if type_key == canonical && identity == &format!("{method}<{canonical}>") {
+                return Some(format!("{method}:{type_key}"));
+            }
+        }
+        return None;
+    };
+    if children.len() != evidence_arguments.len() {
+        return None;
+    }
+    for (element, child) in children.into_iter().zip(evidence_arguments) {
+        let [child_type] = child.constraint.arguments.as_slice() else {
+            return None;
+        };
+        if child.constraint.name != method
+            || display_type_key(element, bound, depth + 1)?
+                != display_type_key(child_type, bound, depth + 1)?
         {
             return None;
         }
-        for (element, child) in elements.iter().zip(evidence_arguments) {
-            let [child_type] = child.constraint.arguments.as_slice() else {
-                return None;
-            };
-            if child.constraint.name != method
-                || display_type_key(element, bound, depth + 1)?
-                    != display_type_key(child_type, bound, depth + 1)?
-            {
-                return None;
-            }
-            certify(child, bound, depth + 1)?;
-        }
-        return Some(format!("{method}:{type_key}"));
+        certify(child, bound, depth + 1)?;
     }
-    if !type_arguments.is_empty() || !evidence_arguments.is_empty() {
+    Some(format!("{method}:{type_key}"))
+}
+
+/// The element of a standard collection type, spelled as the source or as the
+/// prelude's canonical name, unless a type parameter shadows the name.
+fn collection_element<'a>(
+    ty: &'a CoreType,
+    collection: &str,
+    bound: &BTreeSet<&str>,
+) -> Option<&'a CoreType> {
+    let arguments = match ty {
+        CoreType::Named { name, arguments }
+            if name == collection && !bound.contains(collection) =>
+        {
+            arguments
+        }
+        CoreType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if canonical == &format!("std/prelude::{collection}") => arguments,
+        _ => return None,
+    };
+    let [element] = arguments.as_slice() else {
         return None;
-    }
-    for primitive in ["Unit", "Bool", "Int", "Float", "Char", "String"] {
-        let canonical = format!("std/prelude::{primitive}");
-        if type_key == canonical && identity == &format!("{method}<{canonical}>") {
-            return Some(format!("{method}:{type_key}"));
-        }
-    }
-    None
+    };
+    Some(element)
 }
 
 // Bound recursion before structural comparison; do not clone or recursively
@@ -90,6 +140,12 @@ fn display_type_key(ty: &CoreType, bound: &BTreeSet<&str>, depth: usize) -> Opti
             .map(|element| display_type_key(element, bound, depth + 1))
             .collect::<Option<Vec<_>>>()?;
         return Some(format!("Tuple[{}]", children.join(",")));
+    }
+    for collection in COLLECTIONS {
+        if let Some(element) = collection_element(ty, collection, bound) {
+            let element = display_type_key(element, bound, depth + 1)?;
+            return Some(format!("{collection}[{element}]"));
+        }
     }
     for primitive in ["Unit", "Bool", "Int", "Float", "Char", "String"] {
         let canonical = format!("std/prelude::{primitive}");
@@ -127,6 +183,86 @@ mod tests {
             panic!("call")
         };
         evidence[0].clone()
+    }
+
+    fn keys(source: &str) -> Vec<Option<String>> {
+        let module =
+            crate::lower_typed_module(seseragi_semantics::type_module("display/main.ssrg", source))
+                .expect("valid test lowering input");
+        module
+            .functions
+            .iter()
+            .map(|function| {
+                let super::super::CoreExpr::Call { evidence, .. } = &function.body else {
+                    panic!("call")
+                };
+                closed_standard_display_key(&evidence[0], [])
+            })
+            .collect()
+    }
+
+    #[test]
+    fn proves_closed_standard_collection_factories_with_distinct_keys() {
+        let source = "pub fn a value: Int -> String = show [value]
+pub fn b value: Int -> String = debug [value]
+pub fn c value: Int -> String = show `[value]
+pub fn d value: Int -> String = show (Just [Just (value, 'c')])
+pub fn e value: Int -> String = show (value..value)
+pub fn f value: Float -> String = debug `[[value], []]";
+        assert_eq!(
+            keys(source),
+            [
+                "Show:Array[std/prelude::Int]",
+                "Debug:Array[std/prelude::Int]",
+                "Show:List[std/prelude::Int]",
+                "Show:Maybe[Array[Maybe[Tuple[std/prelude::Int,std/prelude::Char]]]]",
+                "Show:Range[std/prelude::Int]",
+                "Debug:List[Array[std/prelude::Float]]",
+            ]
+            .map(|key| Some(key.to_owned()))
+        );
+    }
+
+    #[test]
+    fn collections_of_user_or_parameter_dictionaries_keep_the_original_path() {
+        let source = "type Box = | Box Int
+instance Show<Box> {
+  fn show value: Box -> String = \"box\"
+}
+pub fn a value: Int -> String = show [Box value]
+pub fn b<A> value: A -> String where Show<A> = show [value]
+pub fn c<A> value: A -> String where Show<A> = show (Just [(value, 1)])";
+        assert_eq!(keys(source), [None, None, None]);
+        let show = {
+            let module = crate::lower_typed_module(seseragi_semantics::type_module(
+                "display/main.ssrg",
+                "pub fn a value: Int -> String = show [value]",
+            ))
+            .expect("valid test lowering input");
+            let super::super::CoreExpr::Call { evidence, .. } = &module.functions[0].body else {
+                panic!("call")
+            };
+            evidence[0].clone()
+        };
+        // A type parameter that shadows the collection or element name is not
+        // the standard type.
+        assert_eq!(closed_standard_display_key(&show, ["Array"]), None);
+        assert_eq!(closed_standard_display_key(&show, ["Int"]), None);
+        let mut forged = show.clone();
+        let CoreInstanceEvidence::Standard { identity, .. } = &mut forged.evidence else {
+            panic!("standard")
+        };
+        *identity = "std/list::Show".into();
+        assert_eq!(closed_standard_display_key(&forged, []), None);
+        let mut forged = show;
+        let CoreInstanceEvidence::Standard { type_arguments, .. } = &mut forged.evidence else {
+            panic!("standard")
+        };
+        type_arguments[0] = CoreType::Named {
+            name: "Bool".into(),
+            arguments: vec![],
+        };
+        assert_eq!(closed_standard_display_key(&forged, []), None);
     }
 
     #[test]

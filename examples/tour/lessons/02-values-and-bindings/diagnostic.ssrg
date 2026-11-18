@@ -1,4 +1,4 @@
-let language = "Seseragi"
-let language = "Tour"
+let total = 20 + 22
+let total = 50
 
-pub effect fn main = println language
+pub effect fn main = println `Int: ${total}`

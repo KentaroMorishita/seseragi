@@ -104,6 +104,58 @@
       "end": 406
     }
   ],
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_listShow",
+        "typeArguments": [
+          {
+            "kind": "maybe",
+            "element": {
+              "kind": "number"
+            }
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "type-application-call",
+            "callee": "_ssrg_show_maybeShow",
+            "typeArguments": [
+              {
+                "kind": "number"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "$ssrg$closedDisplay$1",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_listShow",
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_intShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.list",
     "core.int",
@@ -594,33 +646,9 @@
                               "value": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_show_listShow",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "maybe",
-                                      "element": {
-                                        "kind": "number"
-                                      }
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "type-application-call",
-                                      "callee": "_ssrg_show_maybeShow",
-                                      "typeArguments": [
-                                        {
-                                          "kind": "number"
-                                        }
-                                      ],
-                                      "arguments": [
-                                        {
-                                          "kind": "runtime-reference",
-                                          "name": "_ssrg_show_intShow"
-                                        }
-                                      ]
-                                    }
-                                  ]
+                                  "kind": "call",
+                                  "callee": "$ssrg$closedDisplay$0",
+                                  "arguments": []
                                 },
                                 "method": "show",
                                 "arguments": [
@@ -761,19 +789,9 @@
                               "value": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_show_listShow",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_show_intShow"
-                                    }
-                                  ]
+                                  "kind": "call",
+                                  "callee": "$ssrg$closedDisplay$1",
+                                  "arguments": []
                                 },
                                 "method": "show",
                                 "arguments": [
@@ -837,19 +855,9 @@
                               "value": {
                                 "kind": "dictionary-call",
                                 "dictionary": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_show_listShow",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-reference",
-                                      "name": "_ssrg_show_intShow"
-                                    }
-                                  ]
+                                  "kind": "call",
+                                  "callee": "$ssrg$closedDisplay$1",
+                                  "arguments": []
                                 },
                                 "method": "show",
                                 "arguments": [

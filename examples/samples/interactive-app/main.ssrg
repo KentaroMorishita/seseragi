@@ -1,188 +1,267 @@
 import * as dom from "std/web/dom"
 import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
+import * as svg from "std/web/svg"
 
-// Shared comparison model and view.
-type TrailState =
+// ── 状態: 選んでいるコース ─────────────────────────────
+
+type Trail deriving Eq =
   | Riverside
   | Woodland
   | Ridge
 
-type Action =
-  | ChooseRiverside
-  | ChooseWoodland
-  | ChooseRidge
-
-let initialState: TrailState = Woodland
-
-fn cx classes: Array<String> -> String = join " " classes
-
-fn update action: Action -> state: TrailState -> TrailState = match action {
-  ChooseRiverside -> Riverside
-  ChooseWoodland -> Woodland
-  ChooseRidge -> Ridge
+// コースごとの情報を一か所にまとめる。画面はこの値だけを読む。
+struct TrailInfo {
+  name: String,
+  title: String,
+  guidance: String,
+  minutes: String,
+  distance: String,
+  climb: String,
+  accent: String,
+  sky: String,
+  profile: String,
 }
 
-fn title state: TrailState -> String = match state {
-  Riverside -> "川辺をゆっくり歩く"
-  Woodland -> "木陰の周回コースを歩く"
-  Ridge -> "尾根の展望へ登る"
-}
-
-fn guidance state: TrailState -> String = match state {
-  Riverside -> "短い平坦路で、水辺の音を楽しむコースです。"
-  Woodland -> "木陰と小さな坂を組み合わせた歩きやすいコースです。"
-  Ridge -> "長い登りの先で、広い景色に出会うコースです。"
-}
-
-fn distance state: TrailState -> String = match state {
-  Riverside -> "20分・初級"
-  Woodland -> "45分・中級"
-  Ridge -> "75分・上級"
-}
-
-fn accent state: TrailState -> String = match state {
-  Riverside -> "#0369a1"
-  Woodland -> "#047857"
-  Ridge -> "#9a3412"
-}
-
-fn progress state: TrailState -> String = match state {
-  Riverside -> "28%"
-  Woodland -> "62%"
-  Ridge -> "88%"
-}
-
-let pageClass = cx ["min-h-screen", "p-4", "sm:p-10",]
-
-let cardClass = cx [
-  "mx-auto",
-  "max-w-xl",
-  "rounded-2xl",
-  "border",
-  "border-slate-200",
-  "bg-white",
-  "p-5",
-  "shadow-lg",
-  "sm:p-10",
-]
-
-let heroImageClass = cx [
-  "aspect-2-1",
-  "h-auto",
-  "w-full",
-  "rounded-xl",
-  "object-cover",
-]
-
-let eyebrowClass = cx ["mt-4", "text-sm", "font-semibold",]
-
-let headingClass = cx [
-  "mb-2",
-  "mt-2",
-  "text-3xl",
-  "font-bold",
-  "text-slate-900",
-  "sm:text-4xl",
-]
-
-let summaryClass = cx ["mb-4", "text-lg", "text-slate-700",]
-
-let actionGroupClass = cx ["mt-6", "grid", "grid-cols-1", "gap-2", "sm:grid-cols-3",]
-
-let actionButtonClass = cx [
-  "w-full",
-  "rounded-xl",
-  "border-0",
-  "px-4",
-  "py-3",
-  "font-semibold",
-]
-
-let pageStyle = html.style { backgroundColor: "#eff6ff", color: "#0f172a" }
-
-let cardStyle = html.style { boxShadow: "0 18px 44px #0f172a18" }
-
-let progressTrackStyle = html.style {
-  backgroundColor: "#e2e8f0",
-  borderRadius: "999px",
-  height: "10px",
-  overflow: "hidden"
-}
-
-fn accentStyle state: TrailState -> html.Style = html.style {
-  color: accent state,
-  fontWeight: "700"
-}
-
-fn progressStyle state: TrailState -> html.Style = html.style {
-  backgroundColor: accent state,
-  borderRadius: "999px",
-  height: "100%",
-  transition: "all 240ms ease",
-  width: progress state
-}
-
-fn actionStyle action: Action -> html.Style = match action {
-  ChooseRiverside -> html.style { backgroundColor: "#0369a1", color: "#ffffff" }
-  ChooseWoodland -> html.style { backgroundColor: "#047857", color: "#ffffff" }
-  ChooseRidge -> html.style { backgroundColor: "#9a3412", color: "#ffffff" }
-}
-
-fn actionButton label: String -> action: Action -> html.Html<Action> = html.button {
-  onClick: action,
-  class: actionButtonClass,
-  style: actionStyle action,
-  children: label
-}
-
-fn view imageUrl: html.WebUrl -> state: TrailState -> html.Html<Action> = html.main {
-  class: pageClass,
-  style: pageStyle,
-  children: html.section {
-    class: cardClass,
-    style: cardStyle,
-    children: [
-      html.img {
-        src: imageUrl,
-        alt: "日差しが差し込む森林の小径",
-        class: heroImageClass,
-        width: 960,
-        height: 480,
-        loading: "eager"
-      },
-      html.span {
-        class: eyebrowClass,
-        style: accentStyle state,
-        children: "WEEKEND TRAIL · PURE REDUCER"
-      },
-      html.h1 { class: headingClass, children: title state },
-      html.p { class: summaryClass, children: guidance state },
-      html.strong { style: accentStyle state, children: distance state },
-      html.div {
-        class: "mt-4",
-        style: progressTrackStyle,
-        children: html.div { style: progressStyle state, children: "" }
-      },
-      html.div {
-        class: actionGroupClass,
-        children: [
-          actionButton "川辺" ChooseRiverside,
-          actionButton "木陰" ChooseWoodland,
-          actionButton "尾根" ChooseRidge
-        ]
-      }
-    ]
+fn info trail: Trail -> TrailInfo = match trail {
+  Riverside -> TrailInfo {
+    name: "川辺",
+    title: "川辺をゆっくり歩く",
+    guidance: "平らな道が続く短いコースです。水の音を聞きながら、肩の力を抜いて歩けます。",
+    minutes: "20分",
+    distance: "1.6km",
+    climb: "10m",
+    accent: "#1d6fa5",
+    sky: "#dcecf6",
+    profile: "0,92 40,90 80,93 120,89 160,91 200,88 240,90 280,87 320,89",
+  }
+  Woodland -> TrailInfo {
+    name: "木陰",
+    title: "木陰の周回コースを歩く",
+    guidance: "小さな上り下りを繰り返す周回コースです。木漏れ日の中を、ちょうどよい汗をかいて歩けます。",
+    minutes: "45分",
+    distance: "3.2km",
+    climb: "80m",
+    accent: "#2f7a4b",
+    sky: "#e1efe1",
+    profile: "0,90 40,78 80,84 120,66 160,72 200,58 240,70 280,62 320,74",
+  }
+  Ridge -> TrailInfo {
+    name: "尾根",
+    title: "尾根の展望へ登る",
+    guidance: "長い上りの先に、広い景色が待っているコースです。休みながら、自分のペースで登りましょう。",
+    minutes: "75分",
+    distance: "4.8km",
+    climb: "320m",
+    accent: "#b0552a",
+    sky: "#f4e4d6",
+    profile: "0,96 40,90 80,78 120,64 160,50 200,38 240,24 280,18 320,22",
   }
 }
 
-effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
-  fromEither (html.parseWebUrl value)
+let trails: Array<Trail> = [Riverside, Woodland, Ridge]
 
-effect fn parseSampleUrl value: String -> html.WebUrl fails String =
-  mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
+// 選んでいるかどうかを、ボタンの aria-pressed で伝える
+struct Pressed { on: html.Attribute, off: html.Attribute }
 
-// Runtime boundary: dom.app owns Signal setup, dispatch, query and run.
+// ── 見た目: 名前付きの style ───────────────────────────
+
+fn pageStyle current: TrailInfo -> html.Style = html.style {
+  background: `linear-gradient(180deg, ${current.sky} 0%, #f7f3ea 60%)`,
+  color: "#1f2a24",
+  fontFamily: "system-ui, -apple-system, \"Hiragino Sans\", \"Noto Sans JP\", sans-serif",
+  minHeight: "100vh",
+  padding: "40px 20px 56px",
+  transition: "background 320ms ease"
+}
+
+fn columnStyle -> html.Style = html.style { margin: "0 auto", maxWidth: "640px" }
+
+fn eyebrowStyle current: TrailInfo -> html.Style = html.style {
+  color: current.accent,
+  fontSize: "12px",
+  fontWeight: "700",
+  letterSpacing: "0.14em",
+  margin: "0"
+}
+
+fn titleStyle -> html.Style = html.style {
+  fontSize: "clamp(28px, 6vw, 40px)",
+  fontWeight: "800",
+  letterSpacing: "-0.02em",
+  lineHeight: "1.2",
+  margin: "10px 0 12px"
+}
+
+fn guidanceStyle -> html.Style = html.style {
+  color: "#4a5650",
+  fontSize: "16px",
+  lineHeight: "1.8",
+  margin: "0",
+  maxWidth: "34em"
+}
+
+fn profileStyle -> html.Style = html.style {
+  background: "#fffdf8",
+  border: "1px solid #e4dccb",
+  borderRadius: "18px",
+  display: "block",
+  height: "auto",
+  margin: "28px 0 0",
+  width: "100%"
+}
+
+fn statsStyle -> html.Style = html.style {
+  display: "grid",
+  gap: "12px",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  margin: "20px 0 0"
+}
+
+fn statStyle -> html.Style = html.style {
+  background: "#fffdf8",
+  border: "1px solid #e4dccb",
+  borderRadius: "14px",
+  padding: "12px 14px"
+}
+
+fn statLabelStyle -> html.Style = html.style {
+  color: "#6b756f",
+  fontSize: "12px",
+  margin: "0"
+}
+
+fn statValueStyle -> html.Style = html.style {
+  fontSize: "22px",
+  fontVariantNumeric: "tabular-nums",
+  fontWeight: "800",
+  margin: "4px 0 0"
+}
+
+fn choicesStyle -> html.Style = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "10px",
+  margin: "28px 0 0"
+}
+
+fn choiceStyle trail: TrailInfo -> selected: Bool -> html.Style = match selected {
+  True -> html.style {
+    background: trail.accent,
+    border: `2px solid ${trail.accent}`,
+    borderRadius: "999px",
+    color: "#ffffff",
+    cursor: "pointer",
+    flex: "1 1 120px",
+    font: "inherit",
+    fontWeight: "700",
+    padding: "12px 18px"
+  }
+  False -> html.style {
+    background: "#fffdf8",
+    border: "2px solid #e4dccb",
+    borderRadius: "999px",
+    color: "#1f2a24",
+    cursor: "pointer",
+    flex: "1 1 120px",
+    font: "inherit",
+    fontWeight: "600",
+    padding: "12px 18px"
+  }
+}
+
+// ── 画面の部品 ─────────────────────────────────────
+
+fn profileView current: TrailInfo -> html.Html<Task<Unit>> = svg.svg {
+  viewBox: "0 0 320 120",
+  role: "img",
+  ariaLabel: `${current.name}のコースの標高の断面`,
+  style: profileStyle (),
+  children: [
+    svg.polygon { points: `0,120 ${current.profile} 320,120`, fill: current.sky },
+    svg.polyline {
+      points: current.profile,
+      fill: "none",
+      stroke: current.accent,
+      strokeWidth: "3"
+    }
+  ]
+}
+  |> svg.toHtml
+
+fn stat label: String -> value: String -> html.Html<Task<Unit>> = html.div {
+  style: statStyle (),
+  children: [
+    html.p { style: statLabelStyle (), children: label },
+    html.p { style: statValueStyle (), children: value }
+  ]
+}
+
+fn statsView current: TrailInfo -> html.Html<Task<Unit>> = html.div {
+  style: statsStyle (),
+  children: [
+    stat "時間" current.minutes,
+    stat "距離" current.distance,
+    stat "登り" current.climb
+  ]
+}
+
+fn choice pressed: Pressed
+  -> state: MutableSignal<Trail>
+  -> current: Trail
+  -> trail: Trail
+  -> html.Html<Task<Unit>> =
+  {
+    let selected = trail == current
+    html.button {
+      buttonType: "button",
+      attributes: [if selected then
+        pressed.on
+      else
+        pressed.off],
+      onClick: signals.set trail state,
+      style: choiceStyle (info trail) selected,
+      children: (info trail).name
+    }
+  }
+
+fn page pressed: Pressed
+  -> state: MutableSignal<Trail>
+  -> current: Trail
+  -> html.Html<Task<Unit>> = {
+    let shown = info current
+    let sections: Array<html.Html<Task<Unit>>> = [
+      html.p { style: eyebrowStyle shown, children: "週末の散歩コース" },
+      html.h1 { style: titleStyle (), children: shown.title },
+      html.p { style: guidanceStyle (), children: shown.guidance },
+      profileView shown,
+      statsView shown,
+      html.div {
+        role: "group",
+        style: choicesStyle (),
+        children: map (choice pressed state current) trails
+      }
+    ]
+    html.main {
+      style: pageStyle shown,
+      children: html.section { style: columnStyle (), children: sections }
+    }
+  }
+
+// ── 実行の境界: 状態の Signal を作り、画面を dom.run に渡す ──────
+
+effect fn ariaPressed value: String -> html.Attribute fails String =
+  html.attribute "aria-pressed" value
+  |> fromEither
+  |> mapError (\error: html.HtmlBuildError -> show error)
+
 pub effect fn main -> Unit with dom: dom.Dom fails String = do {
-  imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=960&h=480&q=80"
-  dom.app { target: "#app", initial: initialState, update, view: view imageUrl }
+  on <- ariaPressed "true"
+  off <- ariaPressed "false"
+  let pressed = Pressed { on, off }
+  state <- signals.make Woodland
+  target <- dom.query "#app" |> mapError (\error: dom.DomError -> "表示先の #app が見つかりません")
+  dom.run (dom.defaultOptions ()) target (\action: Task<Unit> -> action) (signals.map (page pressed state) state)
+    |> mapError (\error: dom.DomRuntimeError<Never> -> "画面の更新に失敗しました")
 }

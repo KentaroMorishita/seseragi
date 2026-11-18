@@ -1,0 +1,8 @@
+examples/tour/lessons/tuple-and-record/diagnostic.ssrg:9:41: error[SES-T0101]: Argument type does not match the parameter type
+  | pub effect fn main = println (summarize incomplete)
+  |                                         ^^^^^^^^^^ argument 1 expected { city: String, stops: Int }, received { city: String }
+  = expected: { city: String, stops: Int }
+  = actual: { city: String }
+  = diff: stops is missing; expected Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

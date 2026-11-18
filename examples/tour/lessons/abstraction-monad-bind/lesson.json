@@ -1,1 +1,66 @@
-{"$schema":"../../lesson.schema.json","id":"abstraction-monad-bind","formatVersion":2,"sections":{"prerequisite":"MaybeとEffectの両方でflatMap・>>=・doを使い、success-dependent compositionを実行しました。","walkthrough":[{"heading":"具体型で使ったcallback形を再確認する","body":"Maybeのcallbackは次のMaybeを、Effectのcallbackは次のEffectを返しました。どちらも通常値ではなく次のcontextを返します。","sourceRange":{"startLine":1,"endLine":5}},{"heading":"型名をMへ置き換える","body":"bindの共通型は`M<A>`と`A -> M<B>`から`M<B>`を作ります。MaybeとEffectで変わるのはMと短絡channelです。","sourceRange":{"startLine":13,"endLine":13}},{"heading":"Named・operator・doを同じcontractへ戻す","body":"flatMapはcallback-first、>>=はvalue-first、doはsuccess bindingへ名前を付ける表記です。具体型で学んだ三形は同じMonad bindです。","sourceRange":{"startLine":19,"endLine":27}},{"heading":"Monadを持つ型と持たない型を分ける","body":"Maybe・Either・Array・List・EffectはMonadを持ちます。SignalとValidationはApplicativeまでで、依存する次のcontextを選ぶ>>=を提供しません。","sourceRange":{"startLine":15,"endLine":17}}],"introduced":[{"kind":"api","name":"Monad共通contract","body":"Monadは具体型で使ったflatMap・>>=・doを`M<A>`と`A -> M<B>`から`M<B>`を作るbindとして統一します。"}],"exercise":{"instruction":"課題sourceの44を51または奇数へ変え、共通contractでもflatMap・>>=・doが同じ位置で短絡することを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Callbackがcontainerを返さない","body":"失敗例の`>>=` callbackはIntを返します。右側が`Int -> Maybe<B>`である必要をdiagnosticで確認します。"},"recap":["具体型のflatMap・>>=・doはMonadの同じbindである。","Mごとにshort-circuit semanticsが異なり、SignalとValidationはMonadを持たない。"],"next":{"lessonId":"abstraction-type-comparison","body":"次は同じFunctor operationが複数の標準containerへ広がることを実行比較します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "abstraction-monad-bind",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`Maybe` と `Effect` の両方で `flatMap`・`>>=`・`do` を使い、前の成功値に応じた連鎖を実行しました。ここではそれらを `Monad` の共通契約としてまとめます。",
+    "walkthrough": [
+      {
+        "heading": "次の文脈を返す関数を用意する",
+        "body": "`halfIfEven` と `decrementIfPositive` はどちらも `Int` を受け取り、普通の値ではなく次の `Maybe<Int>` を返します。前の結果次第で途切れる可能性があるため、`map` ではなく `Monad` の操作でつなぎます。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 5
+        }
+      },
+      {
+        "heading": "do ブロックで結果に名前を付けてつなぐ",
+        "body": "`viaDo` の中にある `current <- value` は、成功した値に名前を付けて次の処理へ渡す記法です。途中で `Nothing` になると、その後の行は実行されず全体の答えも `Nothing` になります。",
+        "sourceRange": {
+          "startLine": 12,
+          "endLine": 17
+        }
+      },
+      {
+        "heading": "flatMap と >>= と do は同じ連鎖を表す",
+        "body": "21〜22 行目の `flatMap`、23 行目の `>>=`、24 行目の `viaDo` は表現が違うだけで、どれも `M<A>` と `A -> M<B>` から `M<B>` を作る `Monad` の同じ操作です。`Maybe`・`Either`・`Effect`・`Array`・`List` はこの契約を実装しています。",
+        "sourceRange": {
+          "startLine": 20,
+          "endLine": 27
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "Monad の共通契約",
+        "body": "`Monad<M<_>>` は `flatMap`（演算子 `>>=`）を提供し、前のステップの結果に依存して次の `M<B>` を選ぶ処理を連鎖させます。`do` 記法の `<-` もこの操作の読みやすい構文です。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 20 行目にある `Just 84` を `Just 7` に書き換えて `Run` し、`flatMap`・`>>=`・`do` の 3 つがすべて `Nothing` で止まることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "普通の値を返す関数を >>= に渡す",
+      "body": "失敗例では `>>=` の右側の関数が `Maybe<B>` ではなく素の `Int` を返しています。次の計算も失敗や分岐を表せる `Int -> Maybe<B>` 型を返す必要があるため、戻り型の不一致エラーになります。"
+    },
+    "recap": [
+      "`flatMap`・`>>=`・`do` ブロックの `<-` はすべて `Monad` の同じ連鎖操作を表している。",
+      "途中で `Nothing` や失敗（`Left`）が起きると、後続の処理をスキップして短絡する。",
+      "`Signal` のように依存した動的な連鎖を持たない型は `Monad` を実装しない。"
+    ],
+    "next": {
+      "lessonId": "abstraction-type-comparison",
+      "body": "次は同じ `Functor` の操作を `Maybe`・`Either`・`Array`・`List`・`Effect` で並べて実行し、それぞれの違いを比べます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

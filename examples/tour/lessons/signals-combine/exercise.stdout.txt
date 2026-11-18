@@ -1,1 +1,4 @@
-combined: 42
+doubled: 200
+<$>: 200
+initial total: 200
+after update: 500

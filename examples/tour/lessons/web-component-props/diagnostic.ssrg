@@ -1,5 +1,10 @@
 import * as html from "std/web/html"
 
-fn card title: String -> html.Html<Unit> = html.h2 { children: title }
+type Action =
+  | NoAction
 
-let invalid = card 42
+fn card title: String -> detail: String -> html.Html<Action> = html.article {
+  children: [html.h2 { children: title }, html.p { children: detail }]
+}
+
+let invalid = card 42 "Seseragi"

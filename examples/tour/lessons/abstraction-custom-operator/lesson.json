@@ -1,1 +1,58 @@
-{"$schema":"../../lesson.schema.json","id":"abstraction-custom-operator","formatVersion":2,"sections":{"prerequisite":"impl methodを通常のfunction signatureとして読みました。","walkthrough":[{"heading":"Infixと関数値を同じ定義から使う","body":"`<+>`はfixityとprecedenceを持ちますが、`(<+>)`として通常のcurried関数値にもなります。","sourceRange":{"startLine":1,"endLine":9}}],"introduced":[{"kind":"syntax","name":"custom operator","body":"custom operatorはfixityを宣言した関数で、infix適用とgrouped function valueの両方を提供します。"}],"exercise":{"instruction":"課題sourceの左右のStringを変更し、右結合operatorの結果を確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"宣言した戻り型と実装をずらす","body":"失敗例はIntを返すoperatorとして宣言しながらStringの`append`を返します。"},"recap":["custom operatorもparameter型と戻り型を持つ通常関数である。","fixityはinfix chainの読み方を決め、`(<+>)`は関数値として使える。"],"next":{"lessonId":"signals-value-difference","body":"次は通常の値と時間変化するSignalを区別します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "abstraction-custom-operator",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`impl` による固有メソッドを通常の関数シグネチャとして読めるようになりました。ここでは独自の中置演算子を定義し、関数値としても使う方法を学びます。",
+    "walkthrough": [
+      {
+        "heading": "結合性と優先順位を決めて演算子を定義する",
+        "body": "`operator infixr 4 <+>` は、優先順位 `4`・右結合（`infixr`）の二項演算子 `<+>` を定義します。中身は 2 つの `String` を受け取って `String` を返す通常の関数と同じです。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      },
+      {
+        "heading": "中置記法と括弧付きの関数値として使う",
+        "body": "10 行目のように `\"Sese\" <+> \"ragi\"` と中置演算子として呼べるだけでなく、11 行目のように `(<+>)` と括弧で囲むと通常の 2 引数関数として `applyJoin` に渡せます。",
+        "sourceRange": {
+          "startLine": 3,
+          "endLine": 12
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "独自演算子と結合性",
+        "body": "`operator` の後ろに `infixl` または `infixr`、優先順位、記号を並べて独自の二項演算子を定義します。定義した演算子は中置適用だけでなく `(記号)` の形で関数値としても扱えます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 10 行目にある `\"Sese\"` を `\"Kamo\"` に、11 行目の `\"Tour\"` を `\"Code\"` に書き換えて `Run` し、`Output` が `Kamoragi` と `Code!` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "宣言した戻り型と本体の型が合わない",
+      "body": "失敗例では戻り型を `Int` と宣言しながら、本体で `String` を返す `append` を書いています。独自演算子も通常の関数と同様に、宣言した型と本体の型が厳密に検査されます。"
+    },
+    "recap": [
+      "独自演算子も引数型と戻り型を持つ通常の関数として定義・型検査される。",
+      "`infixl`（左結合）・`infixr`（右結合）と優先順位によって、連続した演算子の解釈が決まる。",
+      "`(<+>)` のように括弧で囲めば、そのまま関数値として高階関数に渡せる。"
+    ],
+    "next": {
+      "lessonId": "design-type-constructor-kinds",
+      "body": "型クラスと演算子の基礎が揃いました。次の補足トラックでは、完成した型 `A` と型コンストラクター `F<_>` の種類の違いを起点に、抽象化の設計原則を掘り下げます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

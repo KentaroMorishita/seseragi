@@ -1,51 +1,59 @@
 import { describe, expect, test } from "bun:test"
 import { tourLessons } from "../src/tour/curriculum"
 
-const abstractionIds = [
-  "abstraction-concrete-generic",
+const coreAbstractionIds = [
   "abstraction-type-parameter",
-  "abstraction-generic-adt-definition",
-  "abstraction-generic-adt-use",
-  "abstraction-multiple-type-parameters",
-  "abstraction-type-constructor-parameter",
   "abstraction-trait-operation",
-  "abstraction-user-instance",
-  "abstraction-where-constraint",
-  "abstraction-instance-selection",
+] as const
+
+const sideTripAbstractionIds = [
   "abstraction-functor-map",
   "abstraction-applicative-apply",
   "abstraction-monad-bind",
   "abstraction-type-comparison",
   "abstraction-signal-contract",
+  "signals-switch-map",
   "abstraction-impl-method",
   "abstraction-custom-operator",
+  "design-type-constructor-kinds",
+  "design-trait-evidence",
+  "design-abstraction-laws",
+  "design-trait-boundary",
 ] as const
 
 describe("Tour generic and Trait curriculum", () => {
-  test("stages one abstraction concept at a time", () => {
-    const lessons = tourLessons.slice(83, 83 + abstractionIds.length)
-
-    expect(lessons.map(({ id }) => id)).toEqual([...abstractionIds])
-    expect(
-      lessons.slice(10, 13).every(({ deliveryIssue }) => deliveryIssue === 262)
-    ).toBe(true)
-    expect(
-      [...lessons.slice(0, 10), ...lessons.slice(13)].every(
-        ({ deliveryIssue }) => deliveryIssue === 178
-      )
-    ).toBe(true)
-    for (const [index, lesson] of lessons.entries()) {
+  test("stages generics and traits before signals and places laws in side trips", () => {
+    const core = tourLessons.slice(21, 21 + coreAbstractionIds.length)
+    expect(core.map(({ id }) => id)).toEqual([...coreAbstractionIds])
+    expect(core.every(({ deliveryIssue }) => deliveryIssue === 1348)).toBe(true)
+    for (const [index, lesson] of core.entries()) {
       expect(lesson.prerequisites).toContain(
-        index === 0 ? "10-effects-and-do" : abstractionIds[index - 1]!
+        index === 0 ? "effect-with-capability" : coreAbstractionIds[index - 1]!
       )
       expect(lesson.format?.next.lessonId).toBe(
-        abstractionIds[index + 1] ?? "signals-value-difference"
+        coreAbstractionIds[index + 1] ?? "signals-value-difference"
+      )
+    }
+
+    const sideTrips = tourLessons.slice(35, 35 + sideTripAbstractionIds.length)
+    expect(sideTrips.map(({ id }) => id)).toEqual([...sideTripAbstractionIds])
+    expect(sideTrips.every(({ deliveryIssue }) => deliveryIssue === 1348)).toBe(
+      true
+    )
+    for (const [index, lesson] of sideTrips.entries()) {
+      expect(lesson.prerequisites).toContain(
+        index === 0
+          ? "abstraction-trait-operation"
+          : sideTripAbstractionIds[index - 1]!
+      )
+      expect(lesson.format?.next.lessonId).toBe(
+        sideTripAbstractionIds[index + 1] ?? "web-link-image"
       )
     }
   })
 
   test("keeps every abstraction lesson runnable and diagnosable", () => {
-    for (const id of abstractionIds) {
+    for (const id of [...coreAbstractionIds, ...sideTripAbstractionIds]) {
       const lesson = lessonById(id)
       expect(lesson.source.trim()).not.toBe("")
       expect(lesson.expectedOutput.trim()).not.toBe("")
@@ -60,17 +68,26 @@ describe("Tour generic and Trait curriculum", () => {
   })
 
   test("connects named operations to operators and preserves the Signal boundary", () => {
+    const typeParams = lessonById("abstraction-type-parameter")
+    expect(typeParams.source).toContain("type Box<A>")
+    expect(typeParams.source).toContain("type Pair<A, B>")
+
+    const traitLesson = lessonById("abstraction-trait-operation")
+    expect(traitLesson.source).toContain("deriving Eq, Show")
+    expect(traitLesson.source).toContain("trait Label<A>")
+    expect(traitLesson.source).toContain("where Label<A>")
+
     const functor = lessonById("abstraction-functor-map")
     expect(functor.source).toContain("let source: Maybe<Int>")
     expect(functor.source).toContain(
       "let named: Maybe<String> = map label source"
     )
     expect(functor.source).toContain("label <$> source")
-    expect(functor.format?.walkthrough).toHaveLength(4)
+    expect(functor.format?.walkthrough).toHaveLength(3)
     expect(functor.prerequisites).toEqual([
-      "abstraction-instance-selection",
-      "collection-map",
-      "maybe-map",
+      "abstraction-trait-operation",
+      "collection-pipeline",
+      "maybe-short-circuit",
       "either-map-error",
     ])
 
@@ -79,14 +96,14 @@ describe("Tour generic and Trait curriculum", () => {
     expect(applicative.source).toContain("let partial: Maybe<Int -> Int>")
     expect(applicative.source).toContain("apply partial right")
     expect(applicative.source).toContain("operatorPartial <*> right")
-    expect(applicative.format?.walkthrough).toHaveLength(4)
-    expect(applicative.prerequisites).toContain("maybe-combine")
+    expect(applicative.format?.walkthrough).toHaveLength(3)
+    expect(applicative.prerequisites).toContain("maybe-short-circuit")
 
     const monad = lessonById("abstraction-monad-bind")
     expect(monad.source).toContain("flatMap halfIfEven input")
     expect(monad.source).toContain(">>= halfIfEven >>= decrementIfPositive")
     expect(monad.source).toContain("current <- value")
-    expect(monad.format?.walkthrough).toHaveLength(4)
+    expect(monad.format?.walkthrough).toHaveLength(3)
     expect(monad.prerequisites).toContain("maybe-short-circuit")
     expect(monad.prerequisites).toContain("10-effects-and-do")
 

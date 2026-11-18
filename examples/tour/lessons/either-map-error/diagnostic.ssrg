@@ -1,8 +1,10 @@
 struct ErrorInfo { message: String }
 
-fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> = match value {
-  Left message -> Left (ErrorInfo { message })
-  Right number -> Right (ErrorInfo { message: "wrong" })
+fn render value: Either<ErrorInfo, Int> -> String = match value {
+  Left info -> `error: ${info.message}`
+  Right number -> `success: ${number}`
 }
 
-pub effect fn main = println "Either"
+let failure: Either<String, Int> = Left "invalid"
+
+pub effect fn main = println (render failure)

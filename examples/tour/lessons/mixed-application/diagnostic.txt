@@ -1,8 +1,0 @@
-examples/tour/lessons/mixed-application/diagnostic.ssrg:5:32: error[SES-T0101]: Argument type does not match the parameter type
-  | pub effect fn main = println $ "Seseragi" |> greeting |> addOne
-  |                                ^^^^^^^^^^^^^^^^^^^^^^ argument 1 expected Int, received String
-  = expected: Int
-  = actual: String
-  = diff: expected Int, actual String
-  = note: Seseragi does not insert an implicit conversion between these types.
-  = help: Change the expression or its annotation so the two types agree.

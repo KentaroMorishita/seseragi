@@ -6,6 +6,18 @@ let sales: Array<Sale> = [
   Sale { item: "Cancelled", amount: 0 }
 ]
 
-fn render sale: Sale -> String = `${sale.item}: ${sale.amount}`
+fn validate sale: Sale -> Either<String, Sale> =
+  if sale.amount > 0 then Right sale else Left `${sale.item}: invalid amount`
 
-pub effect fn main = map render sales |> join "\n" |> println
+fn render result: Either<String, Sale> -> String = match result {
+  Left error -> `error: ${error}`
+  Right sale -> `${sale.item}: ${sale.amount}`
+}
+
+fn report values: Array<Sale> -> String =
+  values
+  |> map validate
+  |> map render
+  |> join "\n"
+
+pub effect fn main = report sales |> println

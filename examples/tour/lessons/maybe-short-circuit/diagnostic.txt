@@ -1,6 +1,8 @@
-examples/tour/lessons/maybe-short-circuit/diagnostic.ssrg:1:53: error[SES-T0101]: Lambda body type mismatch
-  | let result: Maybe<Int> = Nothing >>= \value: Int -> value + 1
-  |                                                     ^^^^^^^^^ lambda context expects Maybe<Int>, body produces Int
-  = expected: Maybe<Int>
-  = actual: Int
-  = diff: expected Maybe<Int>, actual Int
+examples/tour/lessons/maybe-short-circuit/diagnostic.ssrg:3:38: error[SES-T0101]: Argument type does not match the parameter type
+  | let result: Maybe<Int> = Just 41 >>= addOne
+  |                                      ^^^^^^ argument 2 expected Int -> Maybe<Int>, received Int -> Int
+  = expected: Int -> Maybe<Int>
+  = actual: Int -> Int
+  = diff: return type: expected Maybe<Int>, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

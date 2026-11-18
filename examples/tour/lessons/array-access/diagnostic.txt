@@ -1,3 +1,0 @@
-examples/tour/lessons/array-access/diagnostic.ssrg:2:37: error[SES-T0101]: Array index not int
-  | pub effect fn main = println values["first"]
-  |                                     ^^^^^^^ array index must be Int, received String
