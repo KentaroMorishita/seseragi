@@ -271,7 +271,7 @@ TypeScript の既存のコードや npm パッケージを Seseragi から呼ぶ
 <!-- canonical-example: path=examples/samples/fizzbuzz/main.ssrg -->
 ```seseragi
 fn fizzBuzz number: Int -> String =
-  // A tuple lets one match classify both divisibility rules.
+  // タプルを使うと、3と5の割り切れ方を1つのmatchで判定できます。
   match (number % 3, number % 5) {
     (0, 0) -> "FizzBuzz"
     (0, _) -> "Fizz"
@@ -280,7 +280,7 @@ fn fizzBuzz number: Int -> String =
   }
 
 pub effect fn main = for number <- 1 ..= 30 {
-  println $ fizzBuzz number
+  println (fizzBuzz number)
 }
 ```
 <!-- /canonical-example -->
