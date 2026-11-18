@@ -5,15 +5,18 @@
   "samples": [
     {
       "id": "html-components",
-      "identity": "warm document surface for static component and SSR",
-      "photoId": "photo-1497366811353-6870744d04b2",
+      "identity": "warm reading-notes shelf with SVG book covers",
+      "photoId": null,
       "photoGroup": "html-components",
-      "layoutMarkers": ["object-cover", "min-h-screen"],
+      "layoutMarkers": [
+        "repeat(auto-fill, minmax(240px, 1fr))",
+        "minHeight: \"100vh\""
+      ],
       "states": ["initial"],
       "artifacts": [
-        "docs/reviews/issue-190/visual/html-components-desktop.png",
-        "docs/reviews/issue-190/visual/html-components-iphone-390.png",
-        "docs/reviews/issue-190/visual/html-components-android-360.png"
+        "docs/reviews/issue-1376/visual/html-components-desktop.png",
+        "docs/reviews/issue-1376/visual/html-components-iphone-390.png",
+        "docs/reviews/issue-1376/visual/html-components-android-360.png"
       ]
     },
     {

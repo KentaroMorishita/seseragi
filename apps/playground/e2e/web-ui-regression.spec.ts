@@ -45,7 +45,6 @@ const mockLogo = readFileSync(
 const visualBaselines = new Set([
   "html-components/desktop/initial",
   "html-components/iphone-390/initial",
-  "html-components/iphone-390/image-fallback",
   "html-components/minimum-320/code",
   "form-todo/desktop/initial",
   "form-todo/desktop/invalid-submit",

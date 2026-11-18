@@ -1,183 +1,244 @@
 import * as html from "std/web/html"
+import * as svg from "std/web/svg"
 
-fn cx classes: Array<String> -> String = join " " classes
+// ── データ: 今週読んだ本 ─────────────────────────────
 
-let pageClass = cx ["min-h-screen", "p-4", "sm:p-10",]
-
-let shellClass = cx ["mx-auto", "max-w-3xl",]
-
-let pageHeaderClass = cx [
-  "mb-6",
-  "flex",
-  "flex-wrap",
-  "items-end",
-  "justify-between",
-  "gap-4",
-]
-
-let eyebrowClass = cx ["text-sm", "font-semibold",]
-
-let pageHeadingClass = cx ["mb-0", "mt-2", "text-3xl", "font-bold", "sm:text-4xl",]
-
-let navLinkClass = cx [
-  "inline-block",
-  "rounded-full",
-  "border",
-  "border-slate-200",
-  "px-4",
-  "py-2",
-  "font-semibold",
-]
-
-let cardClass = cx [
-  "rounded-2xl",
-  "border",
-  "border-slate-200",
-  "bg-white",
-  "p-5",
-  "shadow-lg",
-  "sm:p-10",
-]
-
-let heroImageClass = cx [
-  "aspect-2-1",
-  "h-auto",
-  "w-full",
-  "rounded-xl",
-  "object-cover",
-]
-
-let cardHeadingClass = cx ["mb-0", "mt-4", "text-2xl", "font-bold",]
-
-let cardCopyClass = cx ["mt-4", "text-lg",]
-
-let listClass = cx ["mt-4", "text-base",]
-
-let pageStyle = html.style { backgroundColor: "#fff7ed", color: "#1f2937" }
-
-let eyebrowStyle = html.style { color: "#9a3412" }
-
-let headingStyle = html.style { color: "#7c2d12" }
-
-let navLinkStyle = html.style { backgroundColor: "#ffedd5", color: "#9a3412" }
-
-// Styleは値として再利用でき、variablesはCSS custom propertyになります。
-let cardStyle = html.style {
-  variables: { cardShadow: "0 18px 42px #7c2d1220" },
-  boxShadow: "var(--card-shadow)"
+struct Book {
+  title: String,
+  author: String,
+  note: String,
+  tags: Array<String>,
+  cover: String,
+  ink: String,
 }
 
-let cardCopyStyle = html.style { color: "#4b5563" }
+let books: Array<Book> = [
+  Book {
+    title: "川のほとりで",
+    author: "水野 しずく",
+    note: "朝の短い時間に、一章ずつ読みたくなる随筆集。",
+    tags: ["随筆", "朝に読む"],
+    cover: "#2f6f8f",
+    ink: "#f4efe3",
+  },
+  Book {
+    title: "型で考える",
+    author: "森 一樹",
+    note: "設計の迷いを、型の言葉で言い直す練習帳。",
+    tags: ["プログラミング", "設計"],
+    cover: "#3f6b3a",
+    ink: "#f4efe3",
+  },
+  Book {
+    title: "季節のパン",
+    author: "小麦 ひより",
+    note: "週末に一つずつ焼いてみたい、季節ごとのレシピ。",
+    tags: ["料理", "週末"],
+    cover: "#b8743a",
+    ink: "#2b1d12",
+  },
+]
 
-let footerStyle = html.style { color: "#78716c" }
+// ── 見た目: Style は値なので、名前を付けて使い回せる ─────────────
 
-// 通常のpure関数を、そのままHTML componentとして使えます。
-fn card<Action> imageUrl: html.WebUrl
-  -> title: String
-  -> detail: String
-  -> html.Html<Action> =
-  html.article {
-    class: cardClass,
-    style: cardStyle,
-    children: [
-      html.div {
-        class: eyebrowClass,
-        style: eyebrowStyle,
-        children: "STATIC COMPONENT / SSR"
-      },
-      html.header {
-        children: html.h2 {
-          class: cardHeadingClass,
-          style: headingStyle,
-          children: title
-        }
-      },
-      html.img {
-        src: imageUrl,
-        alt: "大きな窓とテーブルのある明るい共同作業スペース",
-        class: heroImageClass,
-        width: 960,
-        height: 480,
-        loading: "eager"
-      },
-      html.p {
-        class: cardCopyClass,
-        style: cardCopyStyle,
-        children: [
-          html.strong { children: "Typed document surface" },
-          html.br {},
-          html.em { children: detail }
-        ]
-      },
-      html.ul {
-        class: listClass,
-        children: [
-          html.li { children: "sectioning tags" },
-          html.li { children: "text semantics" },
-          html.li { children: "ordered children" }
-        ]
-      },
-      html.footer {
-        class: "mt-4",
-        style: footerStyle,
-        children: html.small { children: "Rendered by Seseragi" }
-      }
-    ]
-  }
+let pageStyle = html.style {
+  background: "#f5f0e6",
+  color: "#2b2620",
+  fontFamily: "system-ui, -apple-system, \"Hiragino Sans\", \"Noto Sans JP\", sans-serif",
+  minHeight: "100vh",
+  padding: "40px 20px 56px"
+}
 
-fn page<Action> imageUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Action> =
-  html.main {
-    id: "app",
-    class: pageClass,
-    style: pageStyle,
-    children: html.div {
-      class: shellClass,
-      children: [
-        html.header {
-          class: pageHeaderClass,
-          children: [
-            html.div {
-              children: [
-                html.p {
-                  class: eyebrowClass,
-                  style: eyebrowStyle,
-                  children: "WEB UI FOUNDATIONS"
-                },
-                html.h1 {
-                  class: pageHeadingClass,
-                  style: headingStyle,
-                  children: "Seseragi components"
-                }
-              ]
-            },
-            html.nav {
-              children: html.a {
-                href: repositoryUrl,
-                target: "_blank",
-                rel: "noopener",
-                class: navLinkClass,
-                style: navLinkStyle,
-                children: "Seseragi repository"
-              }
-            }
-          ]
-        },
-        card imageUrl "Reusable card" "Function component from children"
-      ]
+let shellStyle = html.style { margin: "0 auto", maxWidth: "880px" }
+
+let headerStyle = html.style {
+  alignItems: "end",
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "16px",
+  justifyContent: "space-between",
+  marginBottom: "28px"
+}
+
+let eyebrowStyle = html.style {
+  color: "#8a5a2b",
+  fontSize: "12px",
+  fontWeight: "700",
+  letterSpacing: "0.14em",
+  margin: "0"
+}
+
+let headingStyle = html.style {
+  fontSize: "clamp(28px, 6vw, 40px)",
+  fontWeight: "800",
+  letterSpacing: "-0.02em",
+  margin: "8px 0 0"
+}
+
+let leadStyle = html.style {
+  color: "#5d554b",
+  fontSize: "16px",
+  lineHeight: "1.8",
+  margin: "10px 0 0",
+  maxWidth: "32em"
+}
+
+let linkStyle = html.style {
+  border: "1px solid #d8cdb9",
+  borderRadius: "999px",
+  color: "#2b2620",
+  fontSize: "14px",
+  fontWeight: "600",
+  padding: "10px 16px",
+  textDecoration: "none"
+}
+
+// variables は CSS のカスタムプロパティになる。影の値を一か所で決めて使う。
+let shelfStyle = html.style {
+  variables: { cardShadow: "0 1px 0 #e6dcc8, 0 18px 36px -24px #4a3a2366" },
+  display: "grid",
+  gap: "18px",
+  gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+  listStyle: "none",
+  margin: "0",
+  padding: "0"
+}
+
+let cardStyle = html.style {
+  background: "#fffdf8",
+  border: "1px solid #e6dcc8",
+  borderRadius: "18px",
+  boxShadow: "var(--card-shadow)",
+  display: "grid",
+  gap: "12px",
+  height: "100%",
+  padding: "16px"
+}
+
+let coverStyle = html.style {
+  borderRadius: "10px",
+  display: "block",
+  height: "auto",
+  width: "100%"
+}
+
+let titleStyle = html.style { fontSize: "19px", fontWeight: "800", margin: "0" }
+
+let authorStyle = html.style { color: "#7a6f62", fontSize: "13px", margin: "2px 0 0" }
+
+let noteStyle = html.style { fontSize: "15px", lineHeight: "1.7", margin: "0" }
+
+let tagListStyle = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "6px",
+  listStyle: "none",
+  margin: "0",
+  padding: "0"
+}
+
+let tagStyle = html.style {
+  background: "#f1e8d8",
+  borderRadius: "999px",
+  color: "#6b4a26",
+  fontSize: "12px",
+  padding: "3px 10px"
+}
+
+let footerStyle = html.style { color: "#8a8073", fontSize: "13px", marginTop: "28px" }
+
+// ── 部品: 普通の関数が、そのまま HTML の部品になる ──────────────
+// 静的なページなので、操作（Action）は持たない。型は html.Html<Unit> にしている。
+
+// 表紙は画像を読み込まず、SVG で描く。
+fn cover book: Book -> html.Html<Unit> = svg.svg {
+  viewBox: "0 0 240 120",
+  role: "img",
+  ariaLabel: `${book.title}の表紙`,
+  style: coverStyle,
+  children: [
+    svg.rect { x: 0.0, y: 0.0, width: 240.0, height: 120.0, fill: book.cover },
+    svg.rect {
+      x: 18.0,
+      y: 0.0,
+      width: 10.0,
+      height: 120.0,
+      fill: book.ink,
+      opacity: 0.35
+    },
+    svg.text {
+      x: 44.0,
+      y: 70.0,
+      fill: book.ink,
+      fontSize: "22",
+      fontWeight: "700",
+      children: book.title
     }
-  }
+  ]
+}
+  |> svg.toHtml
 
-effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
-  fromEither (html.parseWebUrl value)
+fn tag label: String -> html.Html<Unit> = html.li { style: tagStyle, children: label }
+
+fn bookCard book: Book -> html.Html<Unit> = {
+  let heading: Array<html.Html<Unit>> = [
+    html.h2 { style: titleStyle, children: book.title },
+    html.p { style: authorStyle, children: book.author }
+  ]
+  let tags: Array<html.Html<Unit>> = map tag book.tags
+  let parts: Array<html.Html<Unit>> = [
+    cover book,
+    html.header { children: heading },
+    html.p { style: noteStyle, children: book.note },
+    html.ul { style: tagListStyle, children: tags }
+  ]
+  html.li { children: html.article { style: cardStyle, children: parts } }
+}
+
+fn intro -> html.Html<Unit> = {
+  let lines: Array<html.Html<Unit>> = [
+    html.p { style: eyebrowStyle, children: "今週の読書メモ" },
+    html.h1 { style: headingStyle, children: "三冊の本" },
+    html.p { style: leadStyle, children: "本のデータを一つの配列にまとめ、同じ部品で三枚のカードを並べています。" }
+  ]
+  html.div { children: lines }
+}
+
+fn page repositoryUrl: html.WebUrl -> html.Html<Unit> = {
+  let header: Array<html.Html<Unit>> = [
+    intro (),
+    html.a {
+      href: repositoryUrl,
+      target: "_blank",
+      rel: "noopener",
+      style: linkStyle,
+      children: "Seseragi のリポジトリ"
+    }
+  ]
+  let cards: Array<html.Html<Unit>> = map bookCard books
+  let sections: Array<html.Html<Unit>> = [
+    html.header { style: headerStyle, children: header },
+    html.ul { style: shelfStyle, children: cards },
+    html.footer {
+      style: footerStyle,
+      children: html.small { children: "このページは Seseragi が HTML の文字列として書き出しました。" }
+    }
+  ]
+  html.main {
+    style: pageStyle,
+    children: html.div { style: shellStyle, children: sections }
+  }
+}
+
+// ── 実行の境界: HTML を文字列にして出力する（SSR） ───────────────
 
 effect fn parseSampleUrl value: String -> html.WebUrl fails String =
-  mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
+  html.parseWebUrl value
+  |> fromEither
+  |> mapError (\error: html.HtmlBuildError -> show error)
 
-pub effect fn main = do {
-  imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80"
+pub effect fn main -> Unit with Console fails String = do {
   repositoryUrl <- parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
-  println (html.renderToString (page imageUrl repositoryUrl))
+  println (html.renderToString (page repositoryUrl))
     |> mapError (\error: ConsoleError -> show error)
 }

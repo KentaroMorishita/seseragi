@@ -36,11 +36,11 @@
   "samples": [
     {
       "id": "html-components",
-      "pickerLabel": "HTML componentとSSRの最小例",
-      "heading": "Seseragi components",
+      "pickerLabel": "読書メモのカードを HTML の部品で組み立てる",
+      "heading": "三冊の本",
       "architecture": "static",
       "requiredSurfaces": ["sample-picker", "code", "preview"],
-      "requiredStates": ["initial", "image-fallback"]
+      "requiredStates": ["initial"]
     },
     {
       "id": "interactive-app",

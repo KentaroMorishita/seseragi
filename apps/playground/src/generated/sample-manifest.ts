@@ -431,17 +431,15 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "html-components",
-      "title": "HTML componentとSSRの最小例",
-      "summary": "stateを持たず、tag、props、children、link、image、関数componentを順に組み立てます。",
+      "title": "読書メモのカードを HTML の部品で組み立てる",
+      "summary": "本のデータの配列から、同じ関数の部品で三枚のカードを並べ、HTML の文字列として書き出します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
         "Html",
-        "document tags",
-        "link",
-        "image",
         "function component",
         "Style",
+        "SVG",
         "SSR"
       ],
       "capabilities": [
@@ -460,8 +458,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:0be939f6ed3e6e71798fdfa15155ec3ab50cbfdabf01c62e3f8d0bba1f999022",
-      "workspaceHash": "sha256:5dc380d0cdf1ba6adc1c17486ab5441f7287c2e851967ad89641202af087c2ec"
+      "sourceHash": "sha256:b1e1840f1931f275607b6ee6e325dad6b6dd3584cd0834eb84c1c2104b20a93c",
+      "workspaceHash": "sha256:8cf8a3bcc569a134a54faab8b628b16c3a78f44f61cf16d0d95a07e9b1a08b01"
     },
     source: sample8Source,
     manifest: "",

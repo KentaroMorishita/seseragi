@@ -145,8 +145,9 @@ describe("canonical Web UI visual direction", () => {
     const trail = sourceFor("interactive-app")
     const composition = sourceFor("feature-composition")
 
-    expect(htmlComponents).toContain("#fff7ed")
-    expect(htmlComponents).toContain('"flex-wrap"')
+    expect(htmlComponents).toContain("#f5f0e6")
+    expect(htmlComponents).toContain('flexWrap: "wrap"')
+    expect(htmlComponents).toContain("map bookCard books")
     expect(trail).toContain('flexWrap: "wrap"')
     expect(trail).toContain('gridTemplateColumns: "repeat(3, minmax(0, 1fr))"')
     expect(composition).toContain('"grid-cols-1"')
