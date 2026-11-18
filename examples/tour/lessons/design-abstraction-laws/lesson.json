@@ -3,41 +3,55 @@
   "id": "design-abstraction-laws",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "Functorのmap、Applicativeのapply、Monadのbindを具体型で実行しました。",
+    "prerequisite": "`Functor` の `map`、`Applicative` の `apply`、`Monad` の `flatMap` を学びました。ここではそれぞれの強さと、実装が守るべき法則を確かめます。",
     "walkthrough": [
       {
-        "heading": "Operationの強さで抽象を並べる",
-        "body": "Functorはpure変換、Applicativeは独立したcontext、Monadは前の結果に依存する次のcontextを扱います。",
-        "sourceRange": { "startLine": 1, "endLine": 8 }
+        "heading": "操作の強さで抽象を選び分ける",
+        "body": "`Functor` は中身の純粋な変換、`Applicative` は独立した複数の値の組み合わせ、`Monad` は前の結果に依存する連鎖を扱います。依存がないなら弱い抽象に留めるのが設計の基本です。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 8
+        }
       },
       {
-        "heading": "Lawの両辺を実行する",
-        "body": "identity・composition・homomorphism・associativityの両辺を評価し、同じ結果へ置換できることをOutputで確認します。",
-        "sourceRange": { "startLine": 19, "endLine": 30 }
+        "heading": "Eq と Show で一致をそのまま確かめる",
+        "body": "`report` は `Maybe<Int>` の `Eq`（`==`）で左辺と右辺が等しいかを比べ、`Show`（`show`）で値を文字列にして返します。専用の変換関数を手書きする必要はありません。",
+        "sourceRange": {
+          "startLine": 10,
+          "endLine": 11
+        }
+      },
+      {
+        "heading": "法則の両辺を並べて実行する",
+        "body": "恒等法則・合成法則・準同型性・結合法則の両辺をそれぞれ評価し、式を書き換えても同じ結果になることを `Output` で確かめています。",
+        "sourceRange": {
+          "startLine": 13,
+          "endLine": 25
+        }
       }
     ],
     "introduced": [
       {
         "kind": "api",
-        "name": "Functor Applicative Monad laws",
-        "body": "Lawは同じ意味を保つ書き換えをinstance実装へ要求する契約です。"
+        "name": "Functor・Applicative・Monad の法則",
+        "body": "式の書き換え（合成のまとめ方や `do` 記法の展開など）の前後で結果が変わらないことを `instance` の実装に求める約束です。"
       }
     ],
     "exercise": {
-      "instruction": "入力値を変更し、すべてのlawの両辺が引き続き一致することを確認してください。",
+      "instruction": "エディターの 14〜15 行目にある `Just 20` を `Just 10` に書き換えて `Run` し、`Functor composition` の両辺が引き続き一致して `Just 22` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "Monad bindのcallbackがplain valueを返す",
-      "body": "失敗例は`A -> M<B>`ではなく`A -> B`を渡し、desugaring後のcontract差を示します。"
+      "heading": "bind の関数が普通の値を返してしまう",
+      "body": "失敗例では `>>=` の右側の関数が `Maybe<B>` ではなく素の `Int` を返しています。次の計算結果も `Maybe` に包んで返す約束と一致しないため、`Problems` にエラー表示が出ます。"
     },
     "recap": [
-      "必要以上に強い抽象を選ばず、依存がなければApplicativeまでに留める。",
-      "Lawはoperatorやdoを含む書き換えの意味を支える。"
+      "前の結果に依存しない処理は `Functor` や `Applicative` に留め、必要以上に強い抽象を選ばない。",
+      "法則を満たす `instance` は、演算子や `do` 記法へ書き換えても同じ意味を保てる。"
     ],
     "next": {
       "lessonId": "design-trait-boundary",
-      "body": "最後に具体的な重複からTrait境界を切り出す判断を行います。"
+      "body": "次は独自の `trait` を作るときに、どのような境界で最小の操作を切り出すかを考えます。"
     }
   },
   "files": {

@@ -1,1 +1,57 @@
-{"$schema":"../../lesson.schema.json","id":"signals-switch-map","formatVersion":2,"sections":{"prerequisite":"SignalへMonadの>>=を使わない境界を確認しました。","walkthrough":[{"heading":"選択先のSignalを専用APIで返す","body":"switchMapのcallbackは現在値から次に追跡するSignalを返します。source更新後は新しい選択先の42が通知されます。","sourceRange":{"startLine":1,"endLine":5}}],"introduced":[{"kind":"api","name":"signals.switchMap","body":"switchMapはsource値ごとに追跡先Signalを明示的に切り替える専用operationです。汎用Monad bindではありません。"}],"exercise":{"instruction":"切替先の計算を乗算へ変え、source更新後の現在値を確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Signalではない値を選択先にする","body":"失敗例のcallbackはIntを返します。switchMapのcallbackはSignalを返す必要があります。"},"recap":["switchMapは動的dependency切替を名前付きAPIで表す。","callbackは通常値ではなく次に追跡するSignalを返す。"],"next":{"lessonId":"signals-handler-boundary","body":"最後に更新権限をhandlerの内側へ閉じます。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "signals-switch-map",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "前のレッスンで、`Signal` が `Monad` の `>>=` を持たない設計上の境界を確かめました。ここでは現在値に応じて別の `Signal` へ明示的に切り替える `signals.switchMap` を学びます。",
+    "walkthrough": [
+      {
+        "heading": "signals.switchMap で切り替え先の Signal を返す",
+        "body": "6 行目の `signals.switchMap` は、元の `source` の現在値を受け取り、次に追跡したい別の `Signal` を返す関数を引数に取ります。汎用的な `>>=` ではなく、名前付きの専用 API として動的な切り替えを明示します。",
+        "sourceRange": {
+          "startLine": 4,
+          "endLine": 6
+        }
+      },
+      {
+        "heading": "元の Signal を更新して新しい切り替え先の結果を読む",
+        "body": "7〜11 行目では `selected` を `mirror` に購読したうえで 8 行目で `source` を `41` に更新し、切り替え後の新しい値 `42` を受け取っています。使い終えたら `signals.unsubscribe` で購読を解除します。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 11
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "signals.switchMap",
+        "body": "元の `Signal<A>` の値に応じて次に追跡する `Signal<B>` を返す関数 `A -> Signal<B>` を受け取り、動的に切り替わる `Signal<B>` を作ります。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 8 行目にある `signals.set` の引数 `41` を `99` に書き換えて `Run` し、`Output` が `switchMap: 100` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Signal ではなく通常の値を返してしまう",
+      "body": "失敗例では `signals.switchMap` へ渡す関数が `Signal<Int>` ではなく通常の `Int` を返しています。切り替え先の `Signal` を返す必要があるため、実行前に `Problems` へエラー表示が出ます。"
+    },
+    "recap": [
+      "`signals.switchMap` は、元の値に応じて追跡先の `Signal` を動的に切り替える専用の関数である。",
+      "切り替え先を選ぶ関数は通常の値 `B` ではなく、次に追跡する `Signal<B>` を返す必要がある。"
+    ],
+    "next": {
+      "lessonId": "abstraction-impl-method",
+      "body": "次は型クラスではなく、特定の型自身に直接固有のメソッドを追加する `impl` ブロックの使い方を学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

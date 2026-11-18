@@ -22,12 +22,6 @@ fn native_left(value: V) -> V {
 pub fn native_right(value: V) -> V {
     V::adt("std/prelude::Right", value)
 }
-fn native_maybe(value: Option<V>) -> V {
-    match value {
-        Some(value) => V::adt("std/prelude::Just", value),
-        None => V::adt("std/prelude::Nothing", V::Unit),
-    }
-}
 fn native_path_error(tag: &'static str, payload: V) -> V {
     V::adt(tag, payload)
 }

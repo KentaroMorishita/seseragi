@@ -7,26 +7,19 @@ fn stepA value: Int -> Maybe<Int> = Just $ value + 1
 fn stepB value: Int -> Maybe<Int> = Just $ value * 2
 fn stepAB value: Int -> Maybe<Int> = stepA value >>= stepB
 
-fn render value: Maybe<Int> -> String = match value {
-  Nothing -> "Nothing"
-  Just 11 -> "Just 11"
-  Just 21 -> "Just 21"
-  Just 22 -> "Just 22"
-  Just 42 -> "Just 42"
-  Just _ -> "Just another value"
-}
-
 fn report label: String -> left: Maybe<Int> -> right: Maybe<Int> -> String =
-  if render left == render right then label + ": ok" else label + ": failed"
+  if left == right then `${label}: ${show left}` else `${label}: failed`
 
 pub effect fn main = do {
-  report "Functor identity" (identityInt <$> Just 11) (Just 11) |> println
-  report "Functor composition" (incrementThenDouble <$> Just 10) (double <$> (increment <$> Just 10))
-    |> println
-  report "Applicative identity" (pure identityInt <*> Just 11) (Just 11) |> println
-  report "Applicative homomorphism" (pure increment <*> pure 21) (pure 22) |> println
-  report "Monad left identity" (pure 20 >>= stepA) (stepA 20) |> println
-  report "Monad right identity" (Just 21 >>= wrapMaybe) (Just 21) |> println
-  report "Monad associativity" (Just 20 >>= stepA >>= stepB) (Just 20 >>= stepAB)
-    |> println
+  let compLeft = incrementThenDouble <$> Just 10
+  let compRight = double <$> (increment <$> Just 10)
+  let assocLeft = Just 40 >>= stepA >>= stepB
+  let assocRight = Just 40 >>= stepAB
+  report "Functor identity" (identityInt <$> Just 21) (Just 21) |> println
+  report "Functor composition" compLeft compRight |> println
+  report "Applicative identity" (pure identityInt <*> Just 21) (Just 21) |> println
+  report "Applicative homomorphism" (pure increment <*> pure 41) (pure 42) |> println
+  report "Monad left identity" (pure 40 >>= stepA) (stepA 40) |> println
+  report "Monad right identity" (Just 41 >>= wrapMaybe) (Just 41) |> println
+  report "Monad associativity" assocLeft assocRight |> println
 }

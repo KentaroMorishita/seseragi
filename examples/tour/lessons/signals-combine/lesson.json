@@ -1,1 +1,80 @@
-{"$schema":"../../lesson.schema.json","id":"signals-combine","formatVersion":2,"sections":{"prerequisite":"constantとpureで固定値をSignalへ持ち上げました。","walkthrough":[{"heading":"二つのdependencyを合成する","body":"`signals.combine add left right`は左右の現在値へcurried関数を適用し、合計を追跡するderived Signalを作ります。","sourceRange":{"startLine":1,"endLine":7}}],"introduced":[{"kind":"api","name":"signals.combine","body":"signals.combineは(A -> B -> C)と二つのSignalからSignal<C>を導出します。"}],"exercise":{"instruction":"加算を乗算へ変え、二つのSignalが一つへ合成されることを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Combinerの入力型をずらす","body":"失敗例はSignal<Int>二つへString用のcombinerを渡します。"},"recap":["signals.combineは二つのSignal dependencyを一つへまとめる。","combinerはcurriedな二引数関数として渡す。"],"next":{"lessonId":"signals-applicative-glitch-free","body":"次は<*>とtransactionで複数更新をまとめます。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "signals-combine",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "前のレッスンで `MutableSignal` の現在値を書き換える方法を学びました。ここでは元の `Signal` の変化に合わせて自動計算される派生 `Signal` の作り方を学びます。",
+    "walkthrough": [
+      {
+        "heading": "signals.map と <$> で 1 つの Signal を変換する",
+        "body": "7〜8 行目の `signals.map` と `<$>` は、元の `price` を変更せずに、現在値を 2 倍にした新しい `Signal` を作ります。どちらの書き方でも最初の値は同じ `200` になります。",
+        "sourceRange": {
+          "startLine": 7,
+          "endLine": 8
+        }
+      },
+      {
+        "heading": "signals.combine で 2 つの Signal を合成する",
+        "body": "9 行目の `signals.combine` は 2 引数関数と 2 つの `Signal` を受け取り、両方の現在値を組み合わせた `total` を作ります。ここでは単価 `price` と個数 `count` を掛け合わせた `200` が求まります。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 15
+        }
+      },
+      {
+        "heading": "元の Signal を更新すると派生 Signal も自動で変わる",
+        "body": "16 行目で `count := 3` と元の値だけを書き換えたあと、17 行目で `*total` を読むと `300` に変わっています。派生 `Signal` は依存関係を保ったまま、常に最新の計算結果を返します。",
+        "sourceRange": {
+          "startLine": 16,
+          "endLine": 18
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "signals.map",
+        "body": "純粋な関数 `A -> B` と `Signal<A>` を受け取り、元の値が変わるたびに変換後の値を保つ派生 `Signal<B>` を返します。"
+      },
+      {
+        "kind": "syntax",
+        "name": "Signal の <$>",
+        "body": "`f <$> s` は `signals.map f s` と同じ `Functor` の演算子です。変換関数と `Signal` を並べて書けます。"
+      },
+      {
+        "kind": "api",
+        "name": "signals.combine",
+        "body": "2 引数関数 `A -> B -> C` と 2 つの `Signal` から、両方の現在値を組み合わせた派生 `Signal<C>` を作ります。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 16 行目にある `count := 3` を `count := 5` に書き換えて `Run` し、`Output` の `after update` が `500` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "signals.combine に渡す関数の型が合わない",
+      "body": "失敗例では `MutableSignal<Int>` 同士を合成しようとしながら、`String` を受け取る `join` を渡しています。関数の引数の型と `Signal` の中身の型が一致しないため、実行前に `Problems` へエラー表示が出ます。"
+    },
+    "recap": [
+      "`signals.map` と `<$>` は、元の `Signal` を変更せずに値を変換した派生 `Signal` を作る。",
+      "`signals.combine` は 2 つの `Signal` の現在値を 1 つの派生 `Signal` へまとめる。",
+      "元の `Signal` が更新されると、依存関係を持つ派生 `Signal` の現在値も自動で最新の計算結果になる。"
+    ],
+    "next": {
+      "lessonId": "signals-handler-boundary",
+      "body": "次は複数の更新を途中状態が見えないようにまとめて反映する `signals.transaction` と、更新権限をハンドラーに閉じ込める設計を学びます。"
+    },
+    "notes": [
+      "変化しない固定値を派生 `Signal` の計算へ混ぜたいときは、`signals.constant` や `Applicative` 文脈の `pure` を使って `Signal` の形へ持ち上げられます。",
+      "`<$>` は `Signal` の `Functor` 演算子として定義されているため、`MutableSignal` に使うときは 8 行目のように `Signal<Int>` の型注釈で読み取り専用として扱うことを示します。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

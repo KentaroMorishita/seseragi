@@ -12,7 +12,7 @@ test("runs Tour image, external link, form and Signal interactions", async ({
   await page.goto("/tour/?lesson=web-link-image")
 
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "External linkとimageを表示する"
+    "外部リンクと画像を表示する"
   )
   await page.locator("#tour-tools-button").click()
   await page
@@ -55,27 +55,27 @@ test("preserves direct routes across next, back, forward and reload", async ({
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto("/tour/?lesson=web-feature-state")
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Component分割とstate ownershipを保つ"
+    "部品の分割と状態の管理を保つ"
   )
 
   await page.locator("#tour-next-button").click()
-  await expect(page).toHaveURL(/lesson=applications-console-data/u)
+  await expect(page).toHaveURL(/lesson=list-values/u)
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Step 1: input dataを定義する"
+    "Listを組み立てる"
   )
 
   await page.reload()
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Step 1: input dataを定義する"
+    "Listを組み立てる"
   )
   await page.goBack()
   await expect(page).toHaveURL(/lesson=web-feature-state/u)
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Component分割とstate ownershipを保つ"
+    "部品の分割と状態の管理を保つ"
   )
   await page.goForward()
-  await expect(page).toHaveURL(/lesson=applications-console-data/u)
+  await expect(page).toHaveURL(/lesson=list-values/u)
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Step 1: input dataを定義する"
+    "Listを組み立てる"
   )
 })

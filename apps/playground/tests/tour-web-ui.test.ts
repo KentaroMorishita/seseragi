@@ -1,46 +1,48 @@
 import { describe, expect, test } from "bun:test"
 import { tourLessons } from "../src/tour/curriculum"
 
-const webIds = [
+const coreWebIds = [
   "web-html-value",
-  "web-text-attributes",
-  "web-style-class",
-  "web-tags-children",
-  "web-component-definition",
-  "web-component-children",
   "web-component-props",
-  "web-link-image",
-  "web-click-action",
-  "web-input-action",
-  "web-change-action",
-  "web-form-submit",
-  "web-signal-preview",
-  "web-dom-run",
   "web-typed-action",
+  "web-form-submit",
+  "web-dom-run",
+] as const
+
+const sideTripWebIds = [
+  "web-link-image",
   "web-accessibility-label",
   "web-feature-state",
 ] as const
 
 describe("Tour Web UI curriculum", () => {
-  test("stages static HTML through feature-owned state", () => {
-    const lessons = tourLessons.slice(38, 38 + webIds.length)
-
-    expect(lessons.map(({ id }) => id)).toEqual([...webIds])
-    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 180)).toBe(
-      true
-    )
-    for (const [index, lesson] of lessons.entries()) {
+  test("stages static HTML through dom.run in core and keeps details in side trips", () => {
+    const core = tourLessons.slice(27, 27 + coreWebIds.length)
+    expect(core.map(({ id }) => id)).toEqual([...coreWebIds])
+    expect(core.every(({ deliveryIssue }) => deliveryIssue === 1348)).toBe(true)
+    for (const [index, lesson] of core.entries()) {
       expect(lesson.prerequisites).toEqual([
-        index === 0 ? "signals-handler-boundary" : webIds[index - 1]!,
+        index === 0 ? "signals-handler-boundary" : coreWebIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        webIds[index + 1] ?? "applications-console-data"
+        coreWebIds[index + 1] ?? "applications-console-data"
+      )
+    }
+
+    const sideTrips = tourLessons.slice(47, 47 + sideTripWebIds.length)
+    expect(sideTrips.map(({ id }) => id)).toEqual([...sideTripWebIds])
+    expect(sideTrips.every(({ deliveryIssue }) => deliveryIssue === 1348)).toBe(
+      true
+    )
+    for (const [index, lesson] of sideTrips.entries()) {
+      expect(lesson.format?.next.lessonId).toBe(
+        sideTripWebIds[index + 1] ?? "list-values"
       )
     }
   })
 
   test("keeps every Web UI lesson editable and diagnosable", () => {
-    for (const id of webIds) {
+    for (const id of [...coreWebIds, ...sideTripWebIds]) {
       const lesson = lessonById(id)
       expect(lesson.source.trim()).not.toBe("")
       expect(lesson.exerciseSource.trim()).not.toBe("")
@@ -55,24 +57,28 @@ describe("Tour Web UI curriculum", () => {
   })
 
   test("makes the event and state path traceable", () => {
-    expect(lessonById("web-click-action").source).toContain("onClick")
-    expect(lessonById("web-input-action").source).toContain("event.value")
-    expect(lessonById("web-change-action").source).toContain("event.checked")
-    expect(lessonById("web-form-submit").source).toContain("onSubmit")
+    const staticHtml = lessonById("web-html-value").source
+    expect(staticHtml).toContain("html.style")
+    expect(staticHtml).toContain("html.main")
 
-    const signal = lessonById("web-signal-preview")
-    expect(signal.source).toContain("signals.map view state")
-    expect(signal.source).toContain("signals.set 42 state")
+    expect(lessonById("web-component-props").source).toContain("fn card")
+
+    const typed = lessonById("web-typed-action")
+    expect(typed.source).toContain("onClick: Cleared")
+    expect(typed.source).toContain("match action")
+    expect(typed.source).toContain("state: MutableSignal<String>")
+
+    const form = lessonById("web-form-submit").source
+    expect(form).toContain("event.value")
+    expect(form).toContain("event.checked")
+    expect(form).toContain("onSubmit: Submitted")
 
     const runtime = lessonById("web-dom-run")
+    expect(runtime.source).toContain("signals.map view state")
     expect(runtime.source).toContain('dom.query "#app"')
     expect(runtime.source).toContain(
       "dom.run options target (handle state) content"
     )
-
-    const typed = lessonById("web-typed-action")
-    expect(typed.source).toContain("match action")
-    expect(typed.source).toContain("state: MutableSignal<String>")
   })
 
   test("covers media, forms, accessibility, and mobile-safe ownership", () => {

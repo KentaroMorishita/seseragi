@@ -11,12 +11,14 @@ fn handle state: MutableSignal<String> -> action: Action -> Task<Unit> = match a
   Cleared -> signals.set "" state
 }
 
-fn view draft: String -> html.Html<Action> = html.p {
-  children:
-    if draft == "" then
-      "Empty"
-    else
-      draft
+fn view draft: String -> html.Html<Action> = {
+  let label = if draft == "" then "Empty" else draft
+  html.div {
+    children: [
+      html.p { children: label },
+      html.button { onClick: Cleared, children: "Clear" },
+    ]
+  }
 }
 
 pub effect fn main = do {

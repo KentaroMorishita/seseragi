@@ -1,2 +1,3 @@
-Tour: practice with code
-Articles: inspect design choices
+Discover: Recipe を 1 つ試す
+Docs: 公式ドキュメント（seseragi-docs）と Seseragi Articles で設計を読む
+SideTrips: 本編後の 2 つの補足トラックで抽象やコレクションを掘り下げる

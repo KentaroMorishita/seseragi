@@ -2,7 +2,7 @@
 // Captures are ordinary managed graph edges, including generic/user methods.
 pub fn native_tuple_display_dictionary(elements: Vec<V>, debug: bool) -> V {
     let method = if debug { "debug" } else { "show" };
-    let children = elements.iter().map(|child| child.field(method)).collect();
+    let children: Vec<V> = elements.iter().map(|child| child.field(method)).collect();
     let render = V::fun(children, |capture, value| {
         native_display(|| {
             let V::Tuple(elements) = value else {

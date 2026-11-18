@@ -1,2 +1,3 @@
-Tour: run, edit, diagnose
-Articles: why, internals, trade-offs
+Discover: Playground の Discover（Recipe / Showcase）で実例を探す
+Docs: 公式ドキュメント（seseragi-docs）と Seseragi Articles で設計を読む
+SideTrips: 本編後の 2 つの補足トラックで抽象やコレクションを掘り下げる

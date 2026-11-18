@@ -240,7 +240,10 @@ fn native_child_pump(cursor: V, child: V) -> V {
                         vec![c[1].clone(), event],
                     )),
                     V::fun(
-                        c.to_vec().into_iter().chain([V::Bool(done)]).collect(),
+                        c.to_vec()
+                            .into_iter()
+                            .chain([V::Bool(done)])
+                            .collect::<Vec<_>>(),
                         |c, _| {
                             if c[2].boolean() {
                                 stream_close(&c[0])
