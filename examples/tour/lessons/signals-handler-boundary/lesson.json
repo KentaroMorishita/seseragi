@@ -1,1 +1,79 @@
-{"$schema":"../../lesson.schema.json","id":"signals-handler-boundary","formatVersion":2,"sections":{"prerequisite":"switchMapで動的dependency切替を明示しました。","walkthrough":[{"heading":"更新権限をhandlerへ閉じる","body":"`handle`だけがMutableSignalを受け取り、更新を実行します。表示側には`expose`でSignalだけを渡します。","sourceRange":{"startLine":1,"endLine":9}}],"introduced":[{"kind":"type","name":"mutable handler boundary","body":"MutableSignalは更新handlerの境界内に保ち、consumerへはread-onlyなSignalを公開します。"}],"exercise":{"instruction":"handlerの更新関数を乗算へ変え、read-only viewへ結果が反映されることを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Viewから更新する","body":"失敗例はread-onlyなSignalをsignals.setへ渡します。表示側には更新権限がありません。"},"recap":["MutableSignalは更新するhandlerだけへ渡す。","表示やconsumerへはSignalとして公開し、権限を型で分離する。"],"next":{"lessonId":"web-html-value","body":"次はSignalの更新境界を保ったままpureなHtml valueを作ります。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "signals-handler-boundary",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "前のレッスンで派生 `Signal` の作り方を学びました。ここでは複数の更新をまとめて反映する方法と、更新権限をハンドラーの内側に閉じる型設計を学びます。",
+    "walkthrough": [
+      {
+        "heading": "applyBatch に MutableSignal を渡してまとめて更新する",
+        "body": "9〜13 行目の `applyBatch` は `MutableSignal<Int>` を受け取る更新ハンドラーです。`signals.transaction` の中に `signals.planSet` を並べることで、2 つの更新を 1 つのまとまった更新として反映できます。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 13
+        }
+      },
+      {
+        "heading": "Applicative の <*> で読み取り専用の合計を組み立てる",
+        "body": "20 行目の `total` は `<$>` と `<*>` で `left` と `right` を組み合わせた読み取り専用の `Signal<Int>` です。更新権限を持たない `Signal` として扱うため、表示や購読の側から元の値を書き換えることはできません。",
+        "sourceRange": {
+          "startLine": 20,
+          "endLine": 20
+        }
+      },
+      {
+        "heading": "subscribe で途中状態が出ないことを確かめる",
+        "body": "21〜26 行目で `total` を購読した状態で `applyBatch` を呼び、最後に `signals.unsubscribe` で解除します。片方だけが変わった `22` のような途中状態は通知されず、初期値 `3` から確定後の `42` へ直接移ります。",
+        "sourceRange": {
+          "startLine": 21,
+          "endLine": 30
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "signals.transaction と planSet",
+        "body": "`signals.planSet` で予定した複数の更新を配列にまとめ、`signals.transaction` で一度に反映します。途中状態を見せずにまとめて更新できます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "Signal の <*>",
+        "body": "`Applicative` の演算子 `<*>` を使うと、複数の独立した `Signal` を静的な依存関係を保ったまま組み合わせられます。"
+      },
+      {
+        "kind": "type",
+        "name": "ハンドラー境界の設計",
+        "body": "`MutableSignal` を更新ハンドラーの内側だけに渡し、観測側や表示側へは読み取り専用の `Signal` を公開することで、予期しない書き換えを型で防げます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 11 行目と 12 行目にある `20` と `22` をそれぞれ `30` と `15` に書き換えて `Run` し、`Output` が `total: 45` と `observed: 3 -> 45` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "読み取り専用の Signal を signals.planSet に渡す",
+      "body": "失敗例では読み取り専用の `Signal<Int>` である `view` を `signals.planSet` へ渡しています。更新を予約できるのは `MutableSignal` だけなので、実行前に `Problems` へエラー表示が出ます。更新ハンドラーの引数型は `MutableSignal<Int>` にしてください。"
+    },
+    "recap": [
+      "`signals.transaction` と `signals.planSet` を組み合わせると、複数の更新を途中状態を見せずにまとめて反映できる。",
+      "`<$>` と `<*>` は複数の `Signal` を静的な依存関係を保ったまま合成する。",
+      "更新用ハンドラーには `MutableSignal`、観測側には読み取り専用の `Signal` を渡して役割を型で分ける。"
+    ],
+    "next": {
+      "lessonId": "web-html-value",
+      "body": "時間変化する `Signal` の仕組みと更新境界が揃いました。次の章からは、この `Signal` と組み合わせてブラウザ UI を作る純粋な `Html` の表現を学びます。"
+    },
+    "notes": [
+      "`Signal` は `Functor` と `Applicative` を持ちますが、前の値に応じて動的に別の `Signal` へ切り替える `Monad` の `>>=` は持ちません。その理由と `signals.switchMap` の使い方は補足トラックで学べます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

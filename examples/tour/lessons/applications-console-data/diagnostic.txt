@@ -1,3 +1,8 @@
-examples/tour/lessons/applications-console-data/diagnostic.ssrg:3:15: error[SES-T0101]: Struct field missing
-  | let invalid = Sale { item: "Book" }
-  |               ^^^^ struct construction is missing required field `amount`
+examples/tour/lessons/applications-console-data/diagnostic.ssrg:9:3: error[SES-T0101]: Argument type does not match the parameter type
+  |   values
+  |   ^^^^^^ argument 2 expected Array<Either<String, Sale>>, received Array<Sale>
+  = expected: Array<Either<String, Sale>>
+  = actual: Array<Sale>
+  = diff: Array type argument 1: expected Either<String, Sale>, actual Sale
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

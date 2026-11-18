@@ -13,4 +13,4 @@ let form: html.Html<Action> = html.form {
   ]
 }
 
-pub effect fn main = html.renderToString form |> println
+pub effect fn main = form |> html.renderToString |> println

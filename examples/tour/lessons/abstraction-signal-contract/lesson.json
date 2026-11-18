@@ -34,8 +34,8 @@
       "`Signal` には `Monad` の `instance` がなく、`>>=` で次の `Signal` を動的に選ぶことはできない。"
     ],
     "next": {
-      "lessonId": "abstraction-impl-method",
-      "body": "次は型クラスではなく、特定の型自身に直接メソッドを追加する `impl` を学びます。"
+      "lessonId": "signals-switch-map",
+      "body": "次は動的な切り替えが必要な場面で `>>=` の代わりに使う専用 API、`signals.switchMap` を学びます。"
     }
   },
   "files": {

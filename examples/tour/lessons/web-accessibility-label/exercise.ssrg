@@ -1,13 +1,16 @@
 import * as html from "std/web/html"
 
 type Action =
-  | NoAction
+  | DraftChanged String
 
-let field: html.Html<Action> = html.div {
+fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
+
+let form: html.Html<Action> = html.form {
   children: [
-    html.label { htmlFor: "email", children: "Email" },
-    html.input { id: "email", name: "email", inputType: "text" },
+    html.label { htmlFor: "task", children: "Task title" },
+    html.input { id: "task", inputType: "text", onInput: draftAction },
+    html.p { role: "status", children: "Ready to edit" },
   ]
 }
 
-pub effect fn main = html.renderToString field |> println
+pub effect fn main = form |> html.renderToString |> println

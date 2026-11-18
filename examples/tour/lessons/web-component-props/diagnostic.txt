@@ -1,5 +1,5 @@
-examples/tour/lessons/web-component-props/diagnostic.ssrg:5:20: error[SES-T0101]: Argument type does not match the parameter type
-  | let invalid = card 42
+examples/tour/lessons/web-component-props/diagnostic.ssrg:10:20: error[SES-T0101]: Argument type does not match the parameter type
+  | let invalid = card 42 "Seseragi"
   |                    ^^ argument 1 expected String, received Int
   = expected: String
   = actual: Int

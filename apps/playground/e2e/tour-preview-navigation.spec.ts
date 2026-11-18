@@ -41,7 +41,7 @@ for (const action of ["reset", "lesson", "text"] as const) {
     await page.locator("#tour-run-button").click()
     if (action === "lesson") {
       await expect(page.locator("#tour-status-text")).toHaveText("Completed")
-      await expect(page.locator("#tour-output")).toHaveText("<p>Ada</p>")
+      await expect(page.locator("#tour-output")).toContainText("Book: 2400")
       await expect(page.locator("#tour-run-button")).toBeEnabled()
       return
     }

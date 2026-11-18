@@ -1,2 +1,4 @@
-named: named
-operator: operator
+before: 10
+afterSet: 20
+afterOp: 50
+afterUpdate: 62

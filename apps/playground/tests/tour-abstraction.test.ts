@@ -12,8 +12,13 @@ const sideTripAbstractionIds = [
   "abstraction-monad-bind",
   "abstraction-type-comparison",
   "abstraction-signal-contract",
+  "signals-switch-map",
   "abstraction-impl-method",
   "abstraction-custom-operator",
+  "design-type-constructor-kinds",
+  "design-trait-evidence",
+  "design-abstraction-laws",
+  "design-trait-boundary",
 ] as const
 
 describe("Tour generic and Trait curriculum", () => {
@@ -30,7 +35,7 @@ describe("Tour generic and Trait curriculum", () => {
       )
     }
 
-    const sideTrips = tourLessons.slice(67, 67 + sideTripAbstractionIds.length)
+    const sideTrips = tourLessons.slice(35, 35 + sideTripAbstractionIds.length)
     expect(sideTrips.map(({ id }) => id)).toEqual([...sideTripAbstractionIds])
     expect(sideTrips.every(({ deliveryIssue }) => deliveryIssue === 1348)).toBe(
       true
@@ -42,7 +47,7 @@ describe("Tour generic and Trait curriculum", () => {
           : sideTripAbstractionIds[index - 1]!
       )
       expect(lesson.format?.next.lessonId).toBe(
-        sideTripAbstractionIds[index + 1] ?? "design-learning-map"
+        sideTripAbstractionIds[index + 1] ?? "web-link-image"
       )
     }
   })

@@ -1,8 +1,4 @@
-examples/tour/lessons/web-typed-action/diagnostic.ssrg:4:70: error[SES-T0101]: Argument type does not match the parameter type
-  | fn invalid state: Signal<String> -> Task<Unit> = signals.set "wrong" state
-  |                                                                      ^^^^^ argument 2 expected MutableSignal<String>, received Signal<String>
-  = expected: MutableSignal<String>
-  = actual: Signal<String>
-  = diff: expected MutableSignal<String>, actual Signal<String>
-  = note: Seseragi does not insert an implicit conversion between these types.
-  = help: Change the expression or its annotation so the two types agree.
+examples/tour/lessons/web-typed-action/diagnostic.ssrg:8:75: error[SES-T0301]: This match does not cover every possible value
+  | fn invalid state: MutableSignal<String> -> action: Action -> Task<Unit> = match action {
+  |                                                                           ^ missing patterns: Cleared
+  = help: Add the missing pattern arms, or add a final _ arm when a catch-all is intended.

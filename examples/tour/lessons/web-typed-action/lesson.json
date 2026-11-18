@@ -1,1 +1,76 @@
-{"$schema":"../../lesson.schema.json","id":"web-typed-action","formatVersion":2,"sections":{"prerequisite":"dom.runへ一つのAction handlerを渡しました。","walkthrough":[{"heading":"Action payloadをmatchする","body":"handleはDraftChangedのString payloadとClearedを分岐し、更新方法を一箇所へ集めます。","sourceRange":{"startLine":1,"endLine":9}},{"heading":"MutableSignalへEffectとして反映する","body":"Actionを実行してからstateをreadし、pure viewへ渡す経路を上から追えます。","sourceRange":{"startLine":14,"endLine":27}}],"introduced":[{"kind":"type","name":"Typed Action handler","body":"ADT ActionはUI eventの種類とpayloadを閉じ、handlerのexhaustive matchからMutableSignalを更新します。"}],"exercise":{"instruction":"Action constructorと更新値を変更し、stateへ届く経路を確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Read-only Signalをhandlerで更新する","body":"失敗例はMutableSignalではなくSignalを更新targetにします。"},"recap":["UI eventはADT Actionへ変換してhandlerでmatchする。","MutableSignalの更新権限はhandlerへ閉じる。"],"next":{"lessonId":"web-accessibility-label","body":"次はformへlabelとARIA状態を追加します。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.html","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "web-typed-action",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "関数コンポーネントで静的な `Html` を組み立てられるようになりました。ここからはユーザーの操作を表す `Action` 型と `MutableSignal` による状態の更新を結びつけます。",
+    "walkthrough": [
+      {
+        "heading": "操作の種類を Action 型で表す",
+        "body": "5〜7 行目の `Action` は画面で起こる操作を表す代数的データ型です。文字の更新には文字列付きの `DraftChanged`、消去には値なしの `Cleared` を使います。",
+        "sourceRange": {
+          "startLine": 5,
+          "endLine": 7
+        }
+      },
+      {
+        "heading": "handle で Action を分岐して状態を更新する",
+        "body": "9〜12 行目の `handle` は `MutableSignal` と `Action` を受け取り、`match` で全ケースを分岐して `signals.set` で状態を書き換えます。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 12
+        }
+      },
+      {
+        "heading": "onClick と main で操作から描画までをつなぐ",
+        "body": "20 行目のボタンでは `onClick: Cleared` を指定します。24〜29 行目の `main` では `handle` を呼んでから現在値を読み取り、`view` を文字列化して出力します。",
+        "sourceRange": {
+          "startLine": 14,
+          "endLine": 29
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Action 型",
+        "body": "ユーザーの操作を列挙する代数的データ型です。操作ごとに必要なデータだけを持たせ、不要な操作は値なしのコンストラクターで表せます。"
+      },
+      {
+        "kind": "api",
+        "name": "onClick",
+        "body": "要素がクリックされたときに送信する `Action` の値を指定します。ブラウザーのイベントを直接触らずに操作を表せます。"
+      },
+      {
+        "kind": "syntax",
+        "name": "ハンドラー（handle）",
+        "body": "`MutableSignal` と `Action` を受け取り、`match` ですべての操作を網羅的に処理して状態を更新する関数です。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 26 行目にある `(DraftChanged \"Ada\")` を `Cleared` に書き換えて `Run` し、`Output` の段落が `<p>Empty</p>` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Action の分岐を書き忘れる",
+      "body": "失敗例では `handle` の `match` で `DraftChanged` だけを扱い、`Cleared` の分岐を書いていません。実行前に網羅性チェックが働き、`Problems` に不足ケースのエラー表示が出ます。"
+    },
+    "recap": [
+      "クリックなどの操作は `Action` 型として表し、`onClick` へ対応するコンストラクターを渡す。",
+      "`handle` の `match` ですべての `Action` を網羅的に処理し、状態の更新を一箇所へ集める。",
+      "`MutableSignal` への更新権限はハンドラー側に閉じ、描画関数の `view` は純粋なまま保つ。"
+    ],
+    "next": {
+      "lessonId": "web-form-submit",
+      "body": "次はテキスト入力欄・チェックボックス・フォーム送信といった入力イベントを `Action` へ変換する方法を学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.html",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

@@ -1,15 +1,31 @@
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
 
-fn handle state: MutableSignal<Int> -> amount: Int -> Task<Unit> =
-  signals.update (\value: Int -> value + amount) state
+fn add left: Int -> right: Int -> Int = left + right
 
-fn expose state: MutableSignal<Int> -> Signal<Int> = state
+fn appendTrace prev: String -> value: Int -> String =
+  if prev == "" then `${value}` else `${prev} -> ${value}`
+
+fn applyBatch left: MutableSignal<Int> -> right: MutableSignal<Int> -> Task<Unit> =
+  signals.transaction [
+    signals.planSet 20 left,
+    signals.planSet 22 right,
+  ]
 
 pub effect fn main = do {
-  state <- signals.make 40
-  let view = expose state
-  handle state 2
-  current <- signals.read view
-  println `view: ${current}`
+  left <- signals.make 1
+  right <- signals.make 2
+  mirror <- signals.make 0
+  trace <- signals.make ""
+  let total: Signal<Int> = add <$> left <*> right
+  subscription <- signals.subscribe (\value: Int -> do {
+      signals.set value mirror
+      signals.update (\prev: String -> appendTrace prev value) trace
+  }) total
+  applyBatch left right
+  signals.unsubscribe subscription
+  current <- *mirror
+  observed <- *trace
+  println `total: ${current}`
+  println `observed: ${observed}`
 }

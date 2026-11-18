@@ -3,7 +3,7 @@
   "id": "abstraction-impl-method",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "汎用データ型と `trait`・`instance` による共通操作の仕組みを学びました。ここでは特定の型自身に固有のメソッドを直接定義する `impl` を学びます。",
+    "prerequisite": "`signals.switchMap` のような専用の関数や、`trait`・`instance` による共通操作を学びました。ここからは、型クラスではなく特定の型自身に固有のメソッドを直接定義する `impl` を学びます。",
     "walkthrough": [
       {
         "heading": "impl ブロックで固有のメソッドを定義する",

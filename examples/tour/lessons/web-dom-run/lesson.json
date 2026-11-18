@@ -1,1 +1,76 @@
-{"$schema":"../../lesson.schema.json","id":"web-dom-run","interactive":true,"formatVersion":2,"sections":{"prerequisite":"Signal<Html<Action>>をderived viewとして作りました。","walkthrough":[{"heading":"Runtimeへ渡す四つの値を作る","body":"options、query済みtarget、Action handler、Signal<Html<Action>>をそれぞれ名前付きvalueとして準備します。","sourceRange":{"startLine":1,"endLine":26}},{"heading":"Dom.runでlifetimeを所有する","body":"dom.runはmount、event dispatch、Signal購読、cleanupを一つのEffect scopeとして実行します。","sourceRange":{"startLine":26,"endLine":26}}],"introduced":[{"kind":"api","name":"dom.run","body":"dom.runはoptions、DomTarget、Action handler、Signal<Html<Action>>を受け取りbrowser lifetimeを管理します。"}],"exercise":{"instruction":"静的exerciseでbutton idかtextを変更し、mount前のHtml contractを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Query前のStringをtargetにする","body":"失敗例はDomTargetの代わりにselector Stringをdom.runへ渡します。"},"recap":["dom.queryでselectorをDomTargetへ解決する。","dom.runへoptions、target、handler、contentを明示的に渡す。"],"next":{"lessonId":"web-typed-action","body":"次は複数Actionをmatchしてstateへ反映します。"}},"files":{"source":"main.ssrg","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "web-dom-run",
+  "interactive": true,
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "クリックやフォーム送信などの操作を `Action` 型として扱い、ハンドラーで `MutableSignal` を更新する方法を学びました。ここでは画面を表す `Signal<Html<Action>>` を導出し、`dom.run` でブラウザーへマウントします。",
+    "walkthrough": [
+      {
+        "heading": "表示関数 view と更新関数 handle を分ける",
+        "body": "9〜17 行目の `view` は現在の数値から `Html<Action>` を返し、`handle` は `Increment` を受け取って `signals.update` で `state` を 1 増やします。",
+        "sourceRange": {
+          "startLine": 9,
+          "endLine": 17
+        }
+      },
+      {
+        "heading": "Signal<Html<Action>> とマウント先を準備する",
+        "body": "21 行目では `signals.map` に `view` と `state` を渡して画面用の `Signal` を作り、23 行目の `dom.query` で `\"#app\"` 要素を `DomTarget` として取得します。",
+        "sourceRange": {
+          "startLine": 19,
+          "endLine": 23
+        }
+      },
+      {
+        "heading": "dom.run でブラウザーにマウントして動かす",
+        "body": "24〜25 行目の `dom.run` へ設定・マウント先・ハンドラー・表示用 `Signal` を渡すと、`Preview` に描画されてクリックごとに表示が自動で更新されます。",
+        "sourceRange": {
+          "startLine": 24,
+          "endLine": 26
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Signal<Html<Action>>",
+        "body": "状態の `Signal` に純粋な表示関数を `signals.map` で適用して作る値です。元の状態が更新されるたびに最新の `Html` ツリーを表します。"
+      },
+      {
+        "kind": "api",
+        "name": "dom.query",
+        "body": "セレクター文字列からマウント先となる `DomTarget` を探す `Effect` です。要素が見つからない場合は失敗を型で返します。"
+      },
+      {
+        "kind": "api",
+        "name": "dom.run",
+        "body": "設定・`DomTarget`・ハンドラー・`Signal<Html<Action>>` を受け取り、描画・イベント処理・後片付けを 1 つの `Effect` として実行します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "まず `Run` を押し、`Preview` 上のボタンをクリックして `Count: 1` に増えることを試してください。次に下のボタンで静的確認用の課題コードを開き、ボタンの `id` や表示文字を書き換えて `Run` し、`Output` の変化を確かめてください（既定の課題コードでは下の期待結果が出ます）。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "DomTarget ではなく文字列を dom.run に渡す",
+      "body": "失敗例では `dom.query` を通さずに文字列 `\"#app\"` をそのまま `dom.run` に渡しています。マウント先には必ず `DomTarget` 型が必要なため、実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "`signals.map` で状態の `Signal` を表示用の `Signal<Html<Action>>` へ変換する。",
+      "`dom.query` でセレクター文字列からマウント先の `DomTarget` を安全に取得する。",
+      "`dom.run` に設定・`DomTarget`・ハンドラー・`Signal<Html<Action>>` を渡して対話的な画面を動かす。"
+    ],
+    "next": {
+      "lessonId": "applications-console-data",
+      "body": "次は到達課題へ進み、ここまで学んだデータ型・配列変換・失敗処理・`Effect` を小さなコンソールアプリケーションへ段階的にまとめます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}
