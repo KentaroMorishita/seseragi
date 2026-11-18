@@ -2693,7 +2693,9 @@ describe("Playground sample catalog", () => {
     expect(html).toContain('class="ui-card-head pg-code-head"')
     // Search の入口（⌘K）は、例の一覧を開く
     expect(html).toContain('id="search-button"')
-    expect(main).toContain("searchButton.addEventListener(\"click\", () => sampleBrowserButton.click())")
+    expect(main).toContain(
+      'searchButton.addEventListener("click", () => sampleBrowserButton.click())'
+    )
     expect(html).toContain("順序を持つ学習はTour")
     expect(html).toContain("Minimal / GuidedはWeb UI例の説明量")
     expect(html).not.toContain('id="sample-browser-learn-tab"')

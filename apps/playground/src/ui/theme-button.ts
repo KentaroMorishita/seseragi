@@ -28,7 +28,8 @@ export function connectThemeButton(
     button.title = label
     button.dataset.themePreference = theme.get().preference
   }
-  const onClick = (): void => theme.set(nextThemePreference(theme.get().preference))
+  const onClick = (): void =>
+    theme.set(nextThemePreference(theme.get().preference))
   button.addEventListener("click", onClick)
   const unsubscribe = theme.subscribe(render)
   render()

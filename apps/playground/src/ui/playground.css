@@ -698,7 +698,10 @@ body.preview-fullscreen-fallback-open {
   padding: 10px;
   color: var(--accent-ink);
   background: var(--surface);
-  font: 12px / 1.55 "SFMono-Regular", Consolas, monospace;
+  font:
+    12px / 1.55 "SFMono-Regular",
+    Consolas,
+    monospace;
   white-space: pre-wrap;
 }
 .reference-card p {
@@ -735,7 +738,10 @@ body.preview-fullscreen-fallback-open {
 .analysis-hover-signature {
   display: block;
   color: var(--accent-ink);
-  font: 12px / 1.5 "SFMono-Regular", Consolas, monospace;
+  font:
+    12px / 1.5 "SFMono-Regular",
+    Consolas,
+    monospace;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -785,7 +791,10 @@ body.preview-fullscreen-fallback-open {
 }
 .analysis-hover small {
   color: var(--accent-ink);
-  font: 10px / 1.4 "SFMono-Regular", Consolas, monospace;
+  font:
+    10px / 1.4 "SFMono-Regular",
+    Consolas,
+    monospace;
 }
 .analysis-hover p {
   margin: 0;
@@ -1001,7 +1010,10 @@ body.preview-fullscreen-fallback-open {
   letter-spacing: 0.08em;
 }
 .code-workspace[data-explorer-visible="true"] {
-  grid-template-columns: minmax(180px, var(--explorer-width)) 7px minmax(220px, 1fr);
+  grid-template-columns: minmax(180px, var(--explorer-width)) 7px minmax(
+      220px,
+      1fr
+    );
 }
 .explorer-panel {
   grid-area: explorer;
@@ -1442,7 +1454,11 @@ body.preview-fullscreen-fallback-open {
   -webkit-overflow-scrolling: touch;
 }
 .editor-host .ssrg-indent-space {
-  background-image: radial-gradient( circle at 50% 55%, var(--surface-3) 0 0.7px, transparent 0.95px );
+  background-image: radial-gradient(
+    circle at 50% 55%,
+    var(--surface-3) 0 0.7px,
+    transparent 0.95px
+  );
   background-repeat: no-repeat;
 }
 .diagnostic-list {
@@ -1551,7 +1567,8 @@ body.preview-fullscreen-fallback-open {
   width: 100vw;
   height: 100dvh;
   grid-template-rows: auto minmax(0, 1fr);
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
   color: var(--fg-1);
   background: var(--surface);
 }
@@ -1562,7 +1579,7 @@ body.preview-fullscreen-fallback-open {
 }
 .preview-fullscreen-surface:is(
     :fullscreen,
-[data-preview-fullscreen="fallback"]
+    [data-preview-fullscreen="fallback"]
   )
   .panel-heading {
   position: relative;
@@ -1571,7 +1588,7 @@ body.preview-fullscreen-fallback-open {
 }
 .preview-fullscreen-surface:is(
     :fullscreen,
-[data-preview-fullscreen="fallback"]
+    [data-preview-fullscreen="fallback"]
   )
   .output-content {
   min-height: 0;

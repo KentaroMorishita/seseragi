@@ -1,9 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import { renderRunStatus, runStatusView } from "../src/ui/run-status"
-import {
-  nextThemePreference,
-  themeButtonLabel,
-} from "../src/ui/theme-button"
+import { nextThemePreference, themeButtonLabel } from "../src/ui/theme-button"
 
 const root = new URL("..", import.meta.url)
 const html = await Bun.file(new URL("index.html", root)).text()

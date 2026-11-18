@@ -40,7 +40,10 @@ export function runStatusView(outcome: RunOutcome): RunStatusView {
   }
 }
 
-export function renderRunStatus(element: HTMLElement, outcome: RunOutcome): void {
+export function renderRunStatus(
+  element: HTMLElement,
+  outcome: RunOutcome
+): void {
   const view = runStatusView(outcome)
   element.hidden = view.hidden
   element.textContent = view.text
