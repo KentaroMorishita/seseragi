@@ -98,9 +98,8 @@ effect fn events base: String -> path: String -> method: http.Method -> body: ht
     Left error -> say (show error)
   }
 
-// A body that never ends, as fast as the connection takes it. The TS hosts
-// do not answer an early response to such a body yet, so only the native
-// run passes the "endless" argument that sends it.
+// A body that never ends, as fast as the connection takes it. Only an early
+// final response ends such an exchange.
 fn endless -> http.Body<{}, String> =
   http.streamBody (streams.unfold (\n: Int -> Just (text.encodeUtf8 "ab", n + 1)) 0)
 
@@ -136,6 +135,8 @@ effect fn streaming base: String -> Unit with Console, { httpClient: http.HttpCl
     }
     Left error -> say (show error)
   }
+  events base "/reject" http.post (endless ())
+  events base "/first" http.post (endless ())
 }
 
 fn millis value: Int -> time.Duration = match time.milliseconds value {
@@ -180,11 +181,4 @@ pub effect fn main -> Unit with Console, Clock, { httpClient: http.HttpClient, p
   events base "/early" http.get (http.emptyBody ())
   events "http://127.0.0.1:9" "/refused" http.get (http.emptyBody ())
   streaming base
-  match args {
-    [_, mode, ..._] -> if mode == "endless" then do {
-      events base "/reject" http.post (endless ())
-      events base "/first" http.post (endless ())
-    } else effects.succeed ()
-    _ -> effects.succeed ()
-  }
 }

@@ -288,21 +288,15 @@ fn http_exchanges_match_bun_node_and_native() {
             .arg(&native),
         &directory,
     ));
-    // Only the native run sends request bodies that never end; see the
-    // fixture's `endless`.
     let output = successful(bounded(
         Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
             .arg(&base)
-            .arg("endless")
             .env("PATH", ""),
         &directory,
     ));
     assert_eq!(
         String::from_utf8_lossy(&output.stdout),
-        format!(
-            "{}exchange /reject: [started 413]too large\nexchange /first: [started 200]first ab\n",
-            String::from_utf8_lossy(&expected)
-        ),
+        String::from_utf8_lossy(&expected),
         "native"
     );
     let ts = directory.join("ts");
