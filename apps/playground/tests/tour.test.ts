@@ -82,7 +82,7 @@ describe("Tour curriculum UI", () => {
     expect(findLesson("01-hello-world")).toMatchObject({
       format: {
         exercise: { reset: "restore-lesson-source" },
-        next: { lessonId: "program-entry" },
+        next: { lessonId: "02-values-and-bindings" },
       },
     })
     expect(findLesson("14-integrated-app")).toMatchObject({

@@ -1,10 +1,15 @@
 type Choice =
   | One
   | Two
+  | Three
 
 fn choose value: Choice -> Int = match value {
   One -> 1
   Two -> 2
+  Three -> 3
 }
 
-pub effect fn main = choose One |> show |> println
+pub effect fn main = do {
+  println (show (choose One))
+  println (show (choose Two))
+}

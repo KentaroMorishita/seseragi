@@ -33,7 +33,7 @@ describe("Tour navigation model", () => {
     ).toHaveLength(tourLessons.length)
     expect(model.progress).toEqual({ completed: 1, total: tourLessons.length })
     expect(model.categories[0]).toMatchObject({
-      progress: { completed: 1, total: 2 },
+      progress: { completed: 1, total: 3 },
       resumeLessonId: tourLessons[1]!.id,
     })
     expect(model.categories[0]!.chapters[0]!.lessons[0]).toMatchObject({

@@ -13,13 +13,13 @@ const operatorCoverage = [
 
 describe("Tour concrete operator progression", () => {
   test("introduces operators in concrete chapters before abstraction", () => {
-    expect(firstLessonContaining("<$>")?.id).toBe("collection-map")
+    expect(firstLessonContaining("<$>")?.id).toBe("collection-pipeline")
     expect(firstLessonContaining("<*>")?.id).toBe("maybe-combine")
     expect(firstLessonContaining(">>=")?.id).toBe("maybe-short-circuit")
 
     const abstractionOrder = lessonById("abstraction-functor-map").order
     for (const id of [
-      "collection-map",
+      "collection-pipeline",
       "maybe-map",
       "maybe-combine",
       "maybe-short-circuit",

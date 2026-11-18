@@ -21,13 +21,11 @@ const signalIds = [
 
 describe("Tour Signal curriculum", () => {
   test("stages one Signal concept at a time", () => {
-    const lessons = tourLessons.slice(100, 100 + signalIds.length)
+    const lessons = tourLessons.slice(56, 56 + signalIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...signalIds])
     expect(
-      [lessons[3], lessons[5]].every(
-        (lesson) => lesson?.deliveryIssue === 252
-      )
+      [lessons[3], lessons[5]].every((lesson) => lesson?.deliveryIssue === 252)
     ).toBe(true)
     expect(
       lessons
