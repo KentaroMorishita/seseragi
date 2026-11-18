@@ -57,7 +57,7 @@ test("keeps the mobile lesson scroll reset", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto("/tour/?lesson=web-feature-state")
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Component分割とstate ownershipを保つ"
+    "部品の分割と状態の管理を保つ"
   )
   // 狭い画面でも、レッスンは自分の列の中でスクロールする
   await scrollLessonToEnd(page)
