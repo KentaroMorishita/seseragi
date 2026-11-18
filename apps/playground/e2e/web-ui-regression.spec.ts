@@ -98,7 +98,7 @@ async function open(page: Page, width: number, height: number): Promise<void> {
 
 async function select(page: Page, entry: MatrixSample): Promise<void> {
   await page.locator("#sample-browser-button").click()
-  const dialog = page.locator("#sample-browser-dialog")
+  const dialog = page.locator("#search-dialog")
   await expect(dialog).toBeVisible()
   await dialog.locator(`[data-sample-id="${entry.id}"]`).click()
   await expect(dialog).toBeHidden()

@@ -16,8 +16,9 @@ describe("mobile editing layout contract", () => {
     expect(styles).toMatch(
       /\.ui-app input,\s*\.ui-app select,\s*\.ui-app textarea \{\s*font-size: 16px;/
     )
+    // Search の入力欄も、狭い画面では 16px にする
     expect(styles).toMatch(
-      /\.reference-browser-filters input,[\s\S]*?font-size: 16px;/
+      /@media \(max-width: 760px\)[^{]*\{[\s\S]*?\.pg-search-field input \{\s*font-size: 16px;/
     )
     expect(tourStyles).toMatch(/textarea \{[\s\S]*?font-size: 16px;/)
   })
@@ -105,27 +106,23 @@ describe("mobile editing layout contract", () => {
     expect(tourStyles).not.toContain('content: "S"')
   })
 
-  test("keeps Web catalog roles readable in one-column mobile cards", async () => {
-    const browser = await Bun.file(
-      new URL("src/ui/sample-browser.ts", root)
+  test("shows Search as a bottom sheet without internal category names", async () => {
+    const palette = await Bun.file(
+      new URL("src/ui/search-palette.ts", root)
     ).text()
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const index = await Bun.file(new URL("src/ui/search-index.ts", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
 
-    expect(browser).toContain('"Minimal"')
-    expect(browser).toContain('"dom.app"')
-    expect(browser).toContain('"Signal + dom.run"')
-    expect(browser).toContain('"Multi-module"')
-    expect(browser).toContain("sample-card-prerequisite")
-    expect(browser).toContain("sample-card-comparison")
-    expect(styles).toMatch(/\.sample-card-meta \{[\s\S]*?line-height: 1\.45;/)
+    // 例は、内部の分類名ではなくグループ名（日本語）の見出しで並べる
+    expect(index).toContain("section: group.title")
+    for (const internal of ["Recipe", "Showcase", "dom.app", "Multi-module"]) {
+      expect(palette).not.toContain(internal)
+      expect(index).not.toContain(internal)
+    }
     expect(styles).toMatch(
-      /@media \(max-width: 760px\)[\s\S]*?\.sample-card-grid \{\s*grid-template-columns: 1fr;/
-    )
-    expect(styles).toMatch(
-      /@media \(max-width: 760px\)[\s\S]*?\.sample-card \{\s*min-height: 0;/
+      /@media \(max-width: 760px\)[^{]*\{\s*\.pg-search-dialog \{[\s\S]*?margin: auto 0 0;/
     )
   })
-
   test("switches to I/O after Run in portrait and compact landscape", async () => {
     const main = await Bun.file(new URL("src/main.ts", root)).text()
 
@@ -166,7 +163,7 @@ describe("mobile editing layout contract", () => {
 
   test("syntax-highlights Reference signatures with the editor tokenizer", async () => {
     const reference = await Bun.file(
-      new URL("src/ui/reference-browser.ts", root)
+      new URL("src/ui/reference-card.ts", root)
     ).text()
     const styles = await Bun.file(new URL("src/styles.css", root)).text()
     const palette = await Bun.file(

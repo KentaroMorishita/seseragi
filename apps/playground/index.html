@@ -29,7 +29,7 @@
             class="ui-search-trigger pg-search"
             type="button"
             aria-haspopup="dialog"
-            aria-controls="sample-browser-dialog"
+            aria-controls="search-dialog"
             aria-keyshortcuts="Meta+K Control+K"
           >
             <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
@@ -53,20 +53,6 @@
             aria-label="More"
           ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="0.75" fill="currentColor" /><circle cx="8" cy="8" r="0.75" fill="currentColor" /><circle cx="12.5" cy="8" r="0.75" fill="currentColor" /></svg></button>
           <div id="mobile-tools-menu" class="pg-menu" role="menu" hidden>
-            <button
-              id="reference-browser-button"
-              type="button"
-              role="menuitem"
-              aria-haspopup="dialog"
-              aria-controls="reference-browser-dialog"
-              aria-expanded="false"
-            >API reference</button>
-            <button
-              id="settings-button"
-              type="button"
-              role="menuitem"
-              aria-haspopup="dialog"
-            >Settings…</button>
             <button id="theme-system-button" type="button" role="menuitem" hidden>Use system theme</button>
             <button id="clear-source-button" type="button" role="menuitem">Clear file</button>
           </div>
@@ -74,126 +60,39 @@
       </header>
 
       <dialog
-        id="sample-browser-dialog"
-        class="sample-browser-dialog"
-        aria-labelledby="sample-browser-title"
+        id="search-dialog"
+        class="pg-search-dialog"
+        aria-label="Search"
       >
-        <div class="sample-browser-dialog-header">
-          <div>
-            <span class="sample-browser-kicker">DISCOVER</span>
-            <h2 id="sample-browser-title">目的からsampleを選ぶ</h2>
-            <p>順序を持つ学習はTour、ここでは実用例と完成例を探します。</p>
-          </div>
-          <button
-            id="sample-browser-close"
-            class="sample-browser-close"
-            type="button"
-            aria-label="サンプル一覧を閉じる"
-          >×</button>
+        <div class="pg-search-field">
+          <svg class="ui-icon pg-search-field-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+          <input
+            id="search-input"
+            type="text"
+            role="combobox"
+            aria-label="Search examples, lessons, API, and settings"
+            aria-expanded="true"
+            aria-controls="search-results"
+            aria-autocomplete="list"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Examples, lessons, API…"
+          />
+          <kbd class="ui-kbd">esc</kbd>
         </div>
-        <div class="sample-browser-content">
-          <section class="sample-start-section" aria-labelledby="sample-start-title">
-            <div>
-              <span class="sample-browser-kicker">START</span>
-              <h3 id="sample-start-title">Workspaceを選ぶ</h3>
-              <p>空のmain.ssrgから書くか、canonical Hello Worldへ戻ります。</p>
-            </div>
-            <div class="sample-start-actions">
-              <button id="sample-new-blank-button" type="button">
-                <strong>Blank workspace</strong>
-                <span>空のmain.ssrgで始める</span>
-              </button>
-              <button id="sample-starter-button" type="button">
-                <strong>Hello world</strong>
-                <span>canonical starterを開く</span>
-              </button>
-              <button id="reset-sample-button" type="button">
-                <strong>Reset workspace</strong>
-                <span>現在のworkspaceを元の状態へ戻す</span>
-              </button>
-            </div>
-          </section>
-          <section
-            id="sample-browser-discover-panel"
-            class="sample-browser-panel"
-            aria-label="Discover catalog"
-          >
-            <div class="sample-discover-intro">
-              <strong>Recipe</strong>は既習概念を目的別に組み合わせる例、
-              <strong>Showcase</strong>は複数surfaceを統合した完成例です。
-              Minimal / GuidedはWeb UI例の説明量、Static HTML / dom.app / Signal + dom.run /
-              Multi-moduleは実行方式を表し、別のcontent categoryではありません。
-              Featuredは品質確認済みの代表例をgroup順で最大8件に絞ります。
-            </div>
-            <div class="sample-discover-filters">
-              <label class="sample-search-field">
-                <span>検索</span>
-                <input id="sample-search" type="search" placeholder="title・summary・topic" />
-              </label>
-              <label>
-                <span>Kind</span>
-                <select id="sample-kind-filter">
-                  <option value="">すべて</option>
-                  <option value="recipe">Recipe</option>
-                  <option value="showcase">Showcase</option>
-                </select>
-              </label>
-              <label>
-                <span>Topic</span>
-                <select id="sample-topic-filter"><option value="">すべて</option></select>
-              </label>
-              <label>
-                <span>Capability</span>
-                <select id="sample-capability-filter">
-                  <option value="">すべて</option>
-                  <option value="console">Console</option>
-                  <option value="stdin">Input</option>
-                  <option value="dom">DOM</option>
-                </select>
-              </label>
-              <label class="sample-check"><input id="sample-featured-filter" type="checkbox" /> Featured</label>
-              <label class="sample-check"><input id="sample-new-filter" type="checkbox" /> New</label>
-            </div>
-            <p id="sample-result-count" class="sample-result-count"></p>
-            <div id="sample-discover-results" class="sample-discover-groups"></div>
-          </section>
+        <div id="search-scopes" class="pg-search-scopes" role="group" aria-label="Scope"></div>
+        <div
+          id="search-results"
+          class="pg-search-results"
+          role="listbox"
+          aria-label="Results"
+        ></div>
+        <div id="search-detail" class="pg-search-detail" hidden></div>
+        <div class="pg-search-foot" aria-hidden="true">
+          <span><kbd class="ui-kbd">↑</kbd> <kbd class="ui-kbd">↓</kbd> Navigate</span>
+          <span><kbd class="ui-kbd">↵</kbd> Open</span>
+          <span><kbd class="ui-kbd">esc</kbd> Close</span>
         </div>
-      </dialog>
-
-      <dialog
-        id="reference-browser-dialog"
-        class="sample-browser-dialog reference-browser-dialog"
-        aria-labelledby="reference-browser-title"
-      >
-        <div class="sample-browser-dialog-header">
-          <div>
-            <span class="sample-browser-kicker">LANGUAGE REFERENCE</span>
-            <h2 id="reference-browser-title">型と標準surfaceを探す</h2>
-            <p>compilerのPrelude registryとmodule interfaceから生成しています。</p>
-          </div>
-          <button
-            id="reference-browser-close"
-            class="sample-browser-close"
-            type="button"
-            aria-label="Referenceを閉じる"
-          >×</button>
-        </div>
-        <div class="reference-browser-filters">
-          <label>
-            <span>検索</span>
-            <input
-              id="reference-search"
-              type="search"
-              placeholder="join・Effect・Signal・HTML…"
-            />
-          </label>
-          <label>
-            <span>Category</span>
-            <select id="reference-category"><option value="">すべて</option></select>
-          </label>
-          <span id="reference-result-count" class="sample-result-count"></span>
-        </div>
-        <div id="reference-results" class="reference-results"></div>
       </dialog>
 
 
@@ -223,7 +122,7 @@
               class="pg-picker"
               type="button"
               aria-haspopup="dialog"
-              aria-controls="sample-browser-dialog"
+              aria-controls="search-dialog"
               aria-expanded="false"
               aria-label="Choose an example"
             >
@@ -249,6 +148,11 @@
               type="button"
               title="Format code with the shared Seseragi formatter"
             ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h10M3 7h7M3 10h10M3 13h5" /></svg><span class="pg-label">Format</span></button>
+            <button
+              id="reset-sample-button"
+              class="ui-button ui-button--ghost"
+              type="button"
+            ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8a4.5 4.5 0 1 0 1.3-3.2M3.5 3v2.5H6" /></svg><span class="pg-label">Reset</span></button>
           </div>
           <div id="code-workspace" class="code-workspace pg-code-body" data-explorer-visible="false">
           <aside
@@ -512,7 +416,7 @@
         <a href="https://github.com/KentaroMorishita/seseragi">GitHub</a>
       </footer>
     </div>
-    <dialog id="interop-inspector" class="sample-browser-dialog interop-dialog" aria-labelledby="interop-inspector-title"></dialog>
+    <dialog id="interop-inspector" class="pg-dialog interop-dialog" aria-labelledby="interop-inspector-title"></dialog>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

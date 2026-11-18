@@ -68,7 +68,7 @@ describe("Playground and Tour interaction architecture", () => {
 
     expect(playground).toContain("createEditorPreferencesStore(localStorage")
     expect(tour).toContain("createEditorPreferencesStore(localStorage")
-    expect(playground).toContain("returnFocus: mobileToolsButton")
+    expect(playground).toContain("returnFocus: searchButton")
     expect(tour).toContain("returnFocus: toolsButton")
     expect(settings).toContain("Show indentation whitespace")
     expect(settings).toContain("Line width")

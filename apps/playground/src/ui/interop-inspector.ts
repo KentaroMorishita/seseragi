@@ -283,7 +283,7 @@ export function connectInteropInspector(options: {
   if (new Set(views.map((view) => view.id)).size !== views.length)
     throw new Error("Duplicate Interop view identity")
   const header = element("header")
-  header.className = "sample-browser-dialog-header"
+  header.className = "pg-dialog-head"
   const heading = element("div")
   const title = element("h2", "Interop Inspector")
   title.id = "interop-inspector-title"
@@ -296,7 +296,7 @@ export function connectInteropInspector(options: {
   )
   const close = element("button", "×")
   close.type = "button"
-  close.className = "sample-browser-close"
+  close.className = "pg-dialog-close"
   close.setAttribute("aria-label", "Close Interop Inspector")
   close.addEventListener("click", () => dialog.close())
   header.append(heading, close)

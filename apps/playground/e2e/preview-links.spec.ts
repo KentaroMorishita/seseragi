@@ -9,7 +9,7 @@ async function openSample(page: Page, id: string): Promise<void> {
     timeout: 60_000,
   })
   await page.locator("#sample-browser-button").click()
-  await page.locator(`#sample-browser-dialog [data-sample-id="${id}"]`).click()
+  await page.locator(`#search-dialog [data-sample-id="${id}"]`).click()
   await expect(page.locator("#status-text")).toHaveText("Analysis ready", {
     timeout: 60_000,
   })
