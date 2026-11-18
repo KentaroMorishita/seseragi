@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.61.186] - 2026-11-18
+
+### Added
+
+- `std/http` works on the native target (#1085): methods, statuses, URLs, headers, requests, body limits, responses, `errorMessage`, `sendBytes`, `sendEmpty` and `exchange`. The client speaks HTTP/1.1 on worker threads and matches the TS client on Content-Length and chunked bodies, 1xx responses, body limits, request Content-Length checks and the typed errors. `exchange` sends its request body chunk by chunk from its own Fiber while it reads the response, stops the body at a final response, and returns a body failure as `Left` and an HTTP failure as `Right`. Cancelling or closing an exchange closes its connection.
+- On native, `https` URLs fail with `HttpTlsFailure` (#1340), and compressed response bodies fail with `HttpProtocolFailure` instead of being decompressed. A program WASM build refuses `std/http`, and a native build refuses a `seseragi.toml` that selects another HttpClient provider.
+
 ## [0.61.185] - 2026-11-18
 
 ### Changed
