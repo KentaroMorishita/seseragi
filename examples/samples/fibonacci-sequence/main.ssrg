@@ -1,11 +1,19 @@
-fn fibonacci index: Int -> Int = {
-  // アキュムレーターを使うと、再帰呼び出しを末尾位置に保てます。
-  fn loop remaining: Int -> current: Int -> next: Int -> Int =
-    if remaining == 0 then current else loop (remaining - 1) next (current + next)
+// 100 番目のフィボナッチ数を、桁あふれせずに正確に求めます。
+import { BigInt } from "std/big-int"
+import * as bigints from "std/big-int"
+import * as text from "std/text"
 
-  loop index 0 1
+// 直前の 2 つの数だけを持って進む。関数の中の関数が、最後に自分を呼ぶ（末尾再帰）
+fn fibonacci n: Int -> BigInt = {
+  fn step remaining: Int -> current: BigInt -> next: BigInt -> BigInt =
+    if remaining == 0 then current else step (remaining - 1) next (current + next)
+
+  step n (bigints.fromInt 0) (bigints.fromInt 1)
 }
 
-pub effect fn main = for index <- 0 ..= 10 {
-  println `${index}: ${fibonacci index}`
+fn describe n: Int -> String = {
+  let digits = bigints.format (fibonacci n)
+  `${n} 番目: ${digits}（${text.lengthScalars digits} 桁）`
 }
+
+pub effect fn main = [10, 50, 100] |> map describe |> join "\n" |> println

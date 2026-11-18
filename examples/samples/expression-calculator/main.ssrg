@@ -1,0 +1,65 @@
+// 式を木の形の型で表し、たどって計算します。
+// 0 で割る式は、理由の付いた失敗として返します。
+type Op =
+  | Plus
+  | Minus
+  | Times
+  | Divide
+
+type Expr =
+  | Num Int
+  | Apply (Op, Expr, Expr)
+
+type CalcError =
+  | DivideByZero Expr
+
+fn symbol op: Op -> String = match op {
+  Plus -> "+"
+  Minus -> "-"
+  Times -> "×"
+  Divide -> "÷"
+}
+
+fn render expr: Expr -> String = match expr {
+  Num n -> show n
+  Apply (op, left, right) -> `(${render left} ${symbol op} ${render right})`
+}
+
+// いちばん外側の式は、かっこを付けずに出す
+fn renderTop expr: Expr -> String = match expr {
+  Num n -> show n
+  Apply (op, left, right) -> `${render left} ${symbol op} ${render right}`
+}
+
+fn calculate op: Op -> a: Int -> b: Int -> Int = match op {
+  Plus -> a + b
+  Minus -> a - b
+  Times -> a * b
+  Divide -> a / b
+}
+
+// 左右を先に計算してから組み合わせる。どちらかで失敗したら、そこで止まる
+fn evaluate expr: Expr -> Either<CalcError, Int> = match expr {
+  Num n -> Right n
+  Apply (op, left, right) -> do {
+    a <- evaluate left
+    b <- evaluate right
+    match (op, b) {
+      (Divide, 0) -> Left (DivideByZero right)
+      _ -> Right (calculate op a b)
+    }
+  }
+}
+
+fn report expr: Expr -> String = match evaluate expr {
+  Right value -> `${renderTop expr} = ${value}`
+  Left (DivideByZero divisor) -> `${renderTop expr} は計算できません（${render divisor} が 0 です）`
+}
+
+let expressions: Array<Expr> = [
+  Apply (Plus, Num 1, Apply (Times, Num 2, Num 3)),
+  Apply (Divide, Num 84, Apply (Minus, Num 10, Num 8)),
+  Apply (Divide, Num 10, Apply (Minus, Num 4, Num 4)),
+]
+
+pub effect fn main = expressions |> map report |> join "\n" |> println

@@ -1,19 +1,60 @@
 {
   "$schema": "../sample.schema.json",
   "id": "fizzbuzz",
-  "title": "FizzBuzzを順に出力",
-  "summary": "Tuple patternとRangeを組み合わせ、分類した値を順番に出力します。",
+  "title": "規則を足せる FizzBuzz",
+  "summary": "規則を配列のデータにして、3 と 5 の倍数を言葉に変えます。規則を一行足すだけで、7 の倍数にも言葉を出せます。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["match", "tuple", "Range", "effectful for"],
-  "capabilities": ["console"],
+  "topics": [
+    "struct",
+    "comprehension",
+    "array",
+    "pipeline"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["hello-world"],
+  "prerequisites": [
+    "hello-world"
+  ],
   "featured": false,
   "isNew": true,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "7 の倍数に Whizz を足す",
+        "edits": [
+          {
+            "find": "  Rule { divisor: 5, word: \"Buzz\" },\n",
+            "replace": "  Rule { divisor: 5, word: \"Buzz\" },\n  Rule { divisor: 7, word: \"Whizz\" },\n"
+          }
+        ]
+      },
+      {
+        "label": "規則の順番を入れ替える",
+        "edits": [
+          {
+            "find": "  Rule { divisor: 3, word: \"Fizz\" },\n  Rule { divisor: 5, word: \"Buzz\" },\n",
+            "replace": "  Rule { divisor: 5, word: \"Buzz\" },\n  Rule { divisor: 3, word: \"Fizz\" },\n"
+          }
+        ]
+      },
+      {
+        "label": "30 まで数える",
+        "edits": [
+          {
+            "find": "1 ..= 15",
+            "replace": "1 ..= 30"
+          }
+        ]
+      }
+    ]
   }
 }

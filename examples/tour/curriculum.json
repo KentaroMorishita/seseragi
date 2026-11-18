@@ -5002,6 +5002,13 @@
       "reason": "MaybeとEitherの値操作を段階教材へ借り、Monad比較は高度なRecipeとして残す。"
     },
     {
+      "sampleId": "expression-calculator",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "式を再帰する型で表し、match でたどって計算する。0 で割る式は Either の失敗として返す。"
+    },
+    {
       "sampleId": "feature-composition",
       "currentKind": "showcase",
       "decision": "tour-seed-and-showcase",
