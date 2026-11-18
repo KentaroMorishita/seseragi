@@ -2598,7 +2598,7 @@ describe("Playground sample catalog", () => {
         expect.objectContaining({
           id: "form-todo",
           experience: "showcase",
-          architecture: "signal-run",
+          architecture: "multi-module",
           focus: "form",
         }),
         expect.objectContaining({
@@ -3454,28 +3454,50 @@ pub effect fn main -> Unit with Console fails String = do {
     expect(sample?.source).not.toContain("type RootAction")
   })
 
-  test("integrates the advanced Launch Loop surface in one feature-owned sample", () => {
+  test("integrates the Launch Loop board across readable modules", () => {
     const sample = samples.find((candidate) => candidate.id === "form-todo")
-
     expect(sample?.interactive).toBe(true)
-    expect(sample?.source).toContain("MutableSignal<Model>")
-    expect(sample?.source).toContain("Signal<html.Html<Task<Unit>>>")
-    expect(sample?.source).toContain("onSubmit: dispatch state Submitted")
-    expect(sample?.source).toContain("html.img {")
-    expect(sample?.source).toContain("html.a {")
-    expect(sample?.source).toContain("html.textarea {")
-    expect(sample?.source).toContain("TrackChanged")
-    expect(sample?.source).toContain("ToggleComplete")
-    expect(sample?.source).toContain("TogglePinned")
-    expect(sample?.source).toContain("ClearCompleted")
-    expect(sample?.source).toContain("fn planCard")
-    expect(sample?.source).toContain("fn emptyState")
-    expect(sample?.source).toContain("onKeyDown: filterKeyTask state")
-    expect(sample?.source).toContain("onPointerDown: pointerTask state")
-    expect(sample?.source).toContain("stopClickPropagation: True")
-    expect(sample?.source).toContain('role: "alert"')
-    expect(sample?.source).toContain('role: "status"')
-    expect(sample?.source).not.toContain("dom.app {")
+    const files = new Map(
+      (sample?.workspace.files ?? []).map(({ path, source }) => [path, source])
+    )
+    // Each visual section and responsibility owns one file (#1378).
+    expect([...files.keys()].sort()).toEqual([
+      "app.ssrg",
+      "main.ssrg",
+      "plans/events.ssrg",
+      "plans/model.ssrg",
+      "ui/styles.ssrg",
+      "views/board.ssrg",
+      "views/form.ssrg",
+      "views/header.ssrg",
+    ])
+    const source = [...files.values()].join("\n")
+    for (const marker of [
+      "MutableSignal<Model>",
+      "Signal<html.Html<Task<Unit>>>",
+      "onSubmit: dispatch state Submitted",
+      "html.a {",
+      "html.textarea {",
+      "TrackChanged",
+      "ToggleComplete",
+      "TogglePinned",
+      "ClearCompleted",
+      "fn planCard",
+      "fn emptyState",
+      "onKeyDown: filterKeyTask state",
+      "onPointerDown: pointerTask state",
+      "stopClickPropagation: True",
+      'role: "alert"',
+      'role: "status"',
+    ])
+      expect(source).toContain(marker)
+    expect(source).not.toContain("dom.app")
+    // Colors live only in the shared styles module.
+    for (const [path, text] of files)
+      if (path !== "ui/styles.ssrg")
+        expect(text, path).not.toMatch(/#[0-9a-f]{6}/iu)
+    // No external photo (#1371).
+    expect(source).not.toContain("images.unsplash.com")
   })
 
   test("keeps transparent aliases and Task in the Recipe catalog", () => {

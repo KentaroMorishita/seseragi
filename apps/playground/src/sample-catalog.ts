@@ -441,10 +441,11 @@ function validateWebCatalogCoverage(samples: readonly CatalogSample[]): void {
         sample.architecture === "signal-run",
     },
     {
-      label: "advanced single-file interactive Showcase",
+      // Showcases are split into readable modules (#1374), so the form
+      // Showcase is no longer required to be a single file.
+      label: "interactive form Showcase",
       matches: (sample: (typeof webSamples)[number]) =>
-        sample.experience === "showcase" &&
-        sample.architecture !== "multi-module",
+        sample.experience === "showcase" && sample.focus === "form",
     },
     {
       label: "multi-module application Showcase",

@@ -1,35 +1,52 @@
 {
   "$schema": "../sample.schema.json",
   "id": "form-todo",
-  "title": "Signal + dom.runのLaunch Loop Showcase",
-  "summary": "controlled form、validation、カード操作、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
+  "title": "公開までの段取りボード（Launch Loop）",
+  "summary": "フォームでの入力と確認、カードの操作、絞り込み、キーボードとポインターの操作を、ファイルに分けた一つの画面にまとめます。",
   "kind": "showcase",
   "difficulty": "advanced",
   "topics": [
     "form",
-    "IME",
     "InputEvent",
     "ChangeEvent",
-    "Task",
     "Signal",
-    "checkbox",
-    "empty state",
-    "responsive cards",
-    "accessibility",
+    "dom.run",
     "keyboard",
-    "pointer"
+    "pointer",
+    "empty state",
+    "multi-module"
   ],
-  "capabilities": ["dom"],
+  "capabilities": [
+    "dom"
+  ],
   "outputMode": "html",
   "experience": "showcase",
-  "architecture": "signal-run",
+  "architecture": "multi-module",
   "focus": "form",
-  "prerequisites": ["interactive-app", "web-starter"],
+  "prerequisites": [
+    "interactive-app",
+    "web-starter"
+  ],
   "featured": true,
   "isNew": true,
   "interactive": true,
   "files": {
-    "source": "main.ssrg",
+    "manifest": "seseragi.toml",
     "guide": "guide.md"
+  },
+  "workspace": {
+    "active": "app.ssrg",
+    "open": [
+      "main.ssrg",
+      "app.ssrg",
+      "plans/model.ssrg",
+      "views/board.ssrg",
+      "ui/styles.ssrg"
+    ],
+    "expanded": [
+      "plans",
+      "views",
+      "ui"
+    ]
   }
 }

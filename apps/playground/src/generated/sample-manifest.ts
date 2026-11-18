@@ -24,7 +24,15 @@ import sample5Source from "../../../../examples/samples/fizzbuzz/main.ssrg?raw"
 import sample5Guide from "../../../../examples/samples/fizzbuzz/guide.md?raw"
 import sample5Output from "../../../../examples/samples/fizzbuzz/stdout.txt?raw"
 
-import sample6Source from "../../../../examples/samples/form-todo/main.ssrg?raw"
+import sample6Manifest from "../../../../examples/samples/form-todo/seseragi.toml?raw"
+import sample6Source from "../../../../examples/samples/form-todo/src/main.ssrg?raw"
+import sample6Source2 from "../../../../examples/samples/form-todo/src/app.ssrg?raw"
+import sample6Source3 from "../../../../examples/samples/form-todo/src/plans/events.ssrg?raw"
+import sample6Source4 from "../../../../examples/samples/form-todo/src/plans/model.ssrg?raw"
+import sample6Source5 from "../../../../examples/samples/form-todo/src/ui/styles.ssrg?raw"
+import sample6Source6 from "../../../../examples/samples/form-todo/src/views/board.ssrg?raw"
+import sample6Source7 from "../../../../examples/samples/form-todo/src/views/form.ssrg?raw"
+import sample6Source8 from "../../../../examples/samples/form-todo/src/views/header.ssrg?raw"
 import sample6Guide from "../../../../examples/samples/form-todo/guide.md?raw"
 
 import sample7Source from "../../../../examples/samples/hello-world/main.ssrg?raw"
@@ -346,30 +354,27 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "form-todo",
-      "title": "Signal + dom.runのLaunch Loop Showcase",
-      "summary": "controlled form、validation、カード操作、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
+      "title": "公開までの段取りボード（Launch Loop）",
+      "summary": "フォームでの入力と確認、カードの操作、絞り込み、キーボードとポインターの操作を、ファイルに分けた一つの画面にまとめます。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
         "form",
-        "IME",
         "InputEvent",
         "ChangeEvent",
-        "Task",
         "Signal",
-        "checkbox",
-        "empty state",
-        "responsive cards",
-        "accessibility",
+        "dom.run",
         "keyboard",
-        "pointer"
+        "pointer",
+        "empty state",
+        "multi-module"
       ],
       "capabilities": [
         "dom"
       ],
       "outputMode": "html",
       "experience": "showcase",
-      "architecture": "signal-run",
+      "architecture": "multi-module",
       "focus": "form",
       "prerequisites": [
         "interactive-app",
@@ -378,15 +383,82 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": true,
       "isNew": true,
       "interactive": true,
-      "sourcePath": "examples/samples/form-todo/main.ssrg",
+      "sourcePath": "examples/samples/form-todo/src/main.ssrg",
+      "manifestPath": "examples/samples/form-todo/seseragi.toml",
+      "manifestHash": "sha256:1c8896f5568347bb21cdb7f7aa6bd9941838b00f8a47093829038148ef2363c8",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:279a6c5fde288ce855cff63b789482e7120609eb0d37eea48430034edca79712",
-      "workspaceHash": "sha256:4768e03902abc8cd8f9601bd6c9c8de9518b6fa0a9b3db68d379aceb9832db61"
+      "sourceHash": "sha256:54944885b30583d48bc1db2164f406f7c116b3fd8b3a608aeae7fd5da767130b",
+      "workspaceHash": "sha256:95a907454adff4d0ec77884a2c302d0b79fc81c019d6ad829be3c5aba58d7d2b",
+      "project": {
+        "entryFile": "main.ssrg",
+        "activeFile": "app.ssrg",
+        "openFiles": [
+          "main.ssrg",
+          "app.ssrg",
+          "plans/model.ssrg",
+          "views/board.ssrg",
+          "ui/styles.ssrg"
+        ],
+        "expandedFolders": [
+          "plans",
+          "views",
+          "ui"
+        ],
+        "files": [
+          {
+            "path": "main.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/main.ssrg",
+            "sourceHash": "sha256:54944885b30583d48bc1db2164f406f7c116b3fd8b3a608aeae7fd5da767130b"
+          },
+          {
+            "path": "app.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/app.ssrg",
+            "sourceHash": "sha256:53c8163d1a9a5d07b47508861365336245fdfcf9c25dd0a2f72e4658edf268ae"
+          },
+          {
+            "path": "plans/events.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/plans/events.ssrg",
+            "sourceHash": "sha256:b22ae05f156a8e1d02a2dbabb8850134a96cca354816087497b56110675054b0"
+          },
+          {
+            "path": "plans/model.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/plans/model.ssrg",
+            "sourceHash": "sha256:621d29351ab65ae75d389263a95d33bf378d8fb5cc9e3e7b06a58088c2586885"
+          },
+          {
+            "path": "ui/styles.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/ui/styles.ssrg",
+            "sourceHash": "sha256:4af0f1062db5eaabc42bf200a1e7a62143dccba995752389be671e6b5df50533"
+          },
+          {
+            "path": "views/board.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/views/board.ssrg",
+            "sourceHash": "sha256:b88049df92e51d1bf49c825998223ee0e96b8159c04a4a58800eb9c178d79c21"
+          },
+          {
+            "path": "views/form.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/views/form.ssrg",
+            "sourceHash": "sha256:8871f824676a61d7329f926a0fb4d901ba078f2f1fee485ec15ec2cbd87ccd21"
+          },
+          {
+            "path": "views/header.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/views/header.ssrg",
+            "sourceHash": "sha256:91830510aa84229d7be06d55ec13847bf787fc352a321b3500c9df84338e3418"
+          }
+        ]
+      }
     },
     source: sample6Source,
-    manifest: "",
+    manifest: sample6Manifest,
     projectFiles: [
       { path: "main.ssrg", source: sample6Source },
+      { path: "app.ssrg", source: sample6Source2 },
+      { path: "plans/events.ssrg", source: sample6Source3 },
+      { path: "plans/model.ssrg", source: sample6Source4 },
+      { path: "ui/styles.ssrg", source: sample6Source5 },
+      { path: "views/board.ssrg", source: sample6Source6 },
+      { path: "views/form.ssrg", source: sample6Source7 },
+      { path: "views/header.ssrg", source: sample6Source8 },
     ],
     guide: sample6Guide,
     stdin: "",

@@ -1,0 +1,139 @@
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import { MutableSignal } from "std/signal"
+import {
+  Build,
+  InteractionChanged,
+  Model,
+  Rest,
+  Share,
+  Submitted,
+  Track,
+  TrackChanged,
+} from "../plans/model"
+import { detailsTask, dispatch, draftTask, pinnedTask } from "../plans/events"
+import * as styles from "../ui/styles"
+
+// 次の一手を足すフォーム。入力のたびに状態を更新する（controlled form）。
+
+pub fn trackLabel track: Track -> String = match track {
+  Build -> "つくる"
+  Share -> "伝える"
+  Rest -> "休む"
+}
+
+fn trackChoice state: MutableSignal<Model>
+  -> model: Model
+  -> track: Track
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    onClick: dispatch state (TrackChanged track),
+    style: styles.choiceStyle track (model.track == track),
+    children: trackLabel track
+  }
+
+fn titleField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> = {
+  let parts: Array<html.Html<Task<Unit>>> = [
+    html.label { htmlFor: "plan-title", style: styles.labelStyle (), children: "やること" },
+    html.input {
+      id: "plan-title",
+      name: "title",
+      inputType: "text",
+      value: model.draft,
+      placeholder: "例: 告知文の下書きを書く",
+      onInput: draftTask state,
+      onFocus: dispatch state (InteractionChanged "やることの欄に入力しています。"),
+      style: styles.inputStyle ()
+    }
+  ]
+  html.div { style: styles.fieldStyle (), children: parts }
+}
+
+fn detailsField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> = {
+  let parts: Array<html.Html<Task<Unit>>> = [
+    html.label {
+      htmlFor: "plan-details",
+      style: styles.labelStyle (),
+      children: "ひとこと"
+    },
+    html.textarea {
+      id: "plan-details",
+      name: "details",
+      value: model.details,
+      placeholder: "何のためにやるのかを一文で。",
+      onInput: detailsTask state,
+      style: styles.textareaStyle ()
+    }
+  ]
+  html.div { style: styles.fieldStyle (), children: parts }
+}
+
+fn trackField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> = {
+  let choices: Array<html.Html<Task<Unit>>> = map (trackChoice state model) [
+    Build,
+    Share,
+    Rest
+  ]
+  let parts: Array<html.Html<Task<Unit>>> = [
+    html.p { style: styles.labelStyle (), children: "種類" },
+    html.div { role: "group", style: styles.choiceRowStyle (), children: choices }
+  ]
+  html.div { style: styles.fieldStyle (), children: parts }
+}
+
+fn pinnedField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> = {
+  let parts: Array<html.Html<Task<Unit>>> = [
+    html.input {
+      id: "plan-pinned",
+      name: "pinned",
+      inputType: "checkbox",
+      checked: model.pinned,
+      onChange: pinnedTask state
+    },
+    html.span { children: "ピン留めして、上で目立たせる" }
+  ]
+  html.label {
+    htmlFor: "plan-pinned",
+    style: styles.checkboxRowStyle (),
+    children: parts
+  }
+}
+
+fn validation model: Model -> Array<html.Html<Task<Unit>>> =
+  if model.validation == "" then
+    []
+  else
+    [html.p {
+      role: "alert",
+      style: styles.validationStyle (),
+      children: model.validation
+    }]
+
+pub fn planForm state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> = {
+  let heading: Array<html.Html<Task<Unit>>> = [
+    html.h2 { style: styles.panelHeadingStyle (), children: "次の一手を足す" },
+    html.p {
+      style: styles.panelCopyStyle (),
+      children: "役に立つ一番小さな行動を書いて、見える場所に置いておきます。"
+    }
+  ]
+  let fields: Array<html.Html<Task<Unit>>> = [
+    html.div { children: heading },
+    titleField state model,
+    detailsField state model,
+    trackField state model,
+    pinnedField state model
+  ]
+  let submit: Array<html.Html<Task<Unit>>> =
+    [html.button {
+      buttonType: "submit",
+      style: styles.primaryButtonStyle (),
+      children: "追加する"
+    }]
+  html.form {
+    onSubmit: dispatch state Submitted,
+    style: styles.panelStyle (),
+    children: arrays.concat [fields, validation model, submit]
+  }
+}

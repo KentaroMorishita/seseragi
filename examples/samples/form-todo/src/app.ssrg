@@ -1,0 +1,40 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import { Model, initialModel } from "./plans/model"
+import { header } from "./views/header"
+import { planForm } from "./views/form"
+import { board } from "./views/board"
+import * as styles from "./ui/styles"
+
+// 画面の組み立て: 見出しの帯、フォーム、ボードを並べる。
+
+fn page repositoryUrl: html.WebUrl
+  -> state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> = {
+    let workspace: Array<html.Html<Task<Unit>>> = [
+      planForm state model,
+      board state model
+    ]
+    let sections: Array<html.Html<Task<Unit>>> = [
+      header repositoryUrl model,
+      html.div { style: styles.workspaceStyle (), children: workspace }
+    ]
+    let shell: html.Html<Task<Unit>> = html.div {
+      style: styles.shellStyle (),
+      children: sections
+    }
+    html.main { style: styles.pageStyle (), children: shell }
+  }
+
+effect fn parseUrl value: String -> html.WebUrl fails String =
+  html.parseWebUrl value
+  |> fromEither
+  |> mapError (\error: html.HtmlBuildError -> show error)
+
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String = do {
+  repositoryUrl <- parseUrl "https://github.com/KentaroMorishita/seseragi/tree/main/examples/samples/form-todo"
+  state <- signals.make initialModel
+  succeed (signals.map (page repositoryUrl state) state)
+}

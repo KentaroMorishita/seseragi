@@ -445,14 +445,15 @@ test.describe("canonical Web UI browser regression", () => {
     const planTitle = formPreview.locator("#plan-title")
     const planDetails = formPreview.locator("#plan-details")
     const addToLaunchLoop = formPreview.getByRole("button", {
-      name: "Add to launch loop",
+      name: "追加する",
+      exact: true,
     })
     await planTitle.scrollIntoViewIfNeeded()
-    await planTitle.fill("Review the launch loop")
+    await planTitle.fill("ローンチの流れを見直す")
     await addToLaunchLoop.scrollIntoViewIfNeeded()
     await addToLaunchLoop.click()
     const formAlert = formPreview.getByRole("alert")
-    await expect(formAlert).toContainText("clear purpose")
+    await expect(formAlert).toContainText("ひとこと添えてください")
     await formAlert.evaluate((element) =>
       element.scrollIntoView({ block: "center" })
     )
@@ -465,11 +466,11 @@ test.describe("canonical Web UI browser regression", () => {
       formPreview.locator("body")
     )
     await planDetails.scrollIntoViewIfNeeded()
-    await planDetails.fill("Walk through every control once.")
+    await planDetails.fill("操作を一つずつ、通しで確かめる。")
     await addToLaunchLoop.scrollIntoViewIfNeeded()
     await addToLaunchLoop.click()
-    const addedPlan = formPreview.locator('input[id="4"]')
-    await expect(addedPlan).toHaveValue("Review the launch loop")
+    const addedPlan = formPreview.locator("#plan-4")
+    await expect(addedPlan).toHaveValue("ローンチの流れを見直す")
     await addedPlan.evaluate((element) =>
       element.scrollIntoView({ block: "center" })
     )
@@ -481,13 +482,19 @@ test.describe("canonical Web UI browser regression", () => {
       "valid-submit",
       formPreview.locator("body")
     )
-    while (await formPreview.getByRole("button", { name: "Remove" }).count()) {
-      const remove = formPreview.getByRole("button", { name: "Remove" }).first()
+    while (
+      await formPreview
+        .getByRole("button", { name: "削除", exact: true })
+        .count()
+    ) {
+      const remove = formPreview
+        .getByRole("button", { name: "削除", exact: true })
+        .first()
       await remove.scrollIntoViewIfNeeded()
       await remove.click()
     }
     const emptyHeading = formPreview.getByRole("heading", {
-      name: "Your launch loop is clear.",
+      name: "計画はすべて片付きました。",
     })
     await expect(emptyHeading).toBeVisible()
     await emptyHeading.evaluate((element) =>

@@ -1,17 +1,17 @@
 {
   "schema": 1,
   "sampleId": "form-todo",
-  "sourcePath": "examples/samples/form-todo/main.ssrg",
+  "sourcePath": "examples/samples/form-todo/src/main.ssrg",
   "manifest": {
-    "sourceHash": "sha256:279a6c5fde288ce855cff63b789482e7120609eb0d37eea48430034edca79712",
-    "workspaceHash": "sha256:4768e03902abc8cd8f9601bd6c9c8de9518b6fa0a9b3db68d379aceb9832db61"
+    "sourceHash": "sha256:54944885b30583d48bc1db2164f406f7c116b3fd8b3a608aeae7fd5da767130b",
+    "workspaceHash": "sha256:95a907454adff4d0ec77884a2c302d0b79fc81c019d6ad829be3c5aba58d7d2b"
   },
   "runner": {
-    "kind": "browser-use",
-    "url": "http://127.0.0.1:5173/",
+    "kind": "playwright",
+    "url": "http://127.0.0.1:4420/",
     "previewSelector": "#html-preview",
-    "recordedAt": "2026-08-02",
-    "note": "Vite PreviewでsampleをRunし、iframeの実DOMへ入力・click・change・keydown・pointerdownを配送して観測した。"
+    "recordedAt": "2026-11-18",
+    "note": "PlaywrightでPlaygroundのsampleをRunし、Previewの実DOMへ入力・click・change・keydown・pointerdownを送って観測した。"
   },
   "requiredOperations": [
     "invalid-submit",
@@ -31,32 +31,37 @@
     {
       "id": "desktop",
       "previewWidth": 538,
-      "previewHeight": 966,
-      "browserViewport": "1710x1112",
-      "horizontalOverflow": false,
-      "surfaces": ["code-editor", "preview"],
-      "artifact": "docs/reviews/issue-188/visual/desktop-initial.png"
-    },
-    {
-      "id": "iphone-13",
-      "previewWidth": 390,
-      "previewHeight": 844,
-      "browserViewport": "1710x1112",
-      "horizontalOverflow": false,
-      "surfaces": ["code-editor", "preview"],
-      "artifact": "docs/reviews/issue-188/visual/iphone-390-initial.png"
-    },
-    {
-      "id": "small-android",
-      "previewWidth": 360,
-      "previewHeight": 800,
+      "previewHeight": 917,
       "browserViewport": "1710x1112",
       "horizontalOverflow": false,
       "surfaces": ["code-editor", "preview"],
       "artifacts": [
-        "docs/reviews/issue-188/visual/android-360-initial.png",
-        "docs/reviews/issue-188/visual/android-360-populated.png",
-        "docs/reviews/issue-188/visual/android-360-empty.png"
+        "docs/reviews/issue-1378/visual/form-todo-desktop-preview.png",
+        "docs/reviews/issue-1378/visual/form-todo-desktop-code.png"
+      ]
+    },
+    {
+      "id": "iphone-13",
+      "previewWidth": 390,
+      "previewHeight": 667,
+      "browserViewport": "390x844",
+      "horizontalOverflow": false,
+      "surfaces": ["code-editor", "preview"],
+      "artifacts": [
+        "docs/reviews/issue-1378/visual/form-todo-iphone-13-preview.png",
+        "docs/reviews/issue-1378/visual/form-todo-iphone-13-code.png"
+      ]
+    },
+    {
+      "id": "small-android",
+      "previewWidth": 360,
+      "previewHeight": 603,
+      "browserViewport": "360x780",
+      "horizontalOverflow": false,
+      "surfaces": ["code-editor", "preview"],
+      "artifacts": [
+        "docs/reviews/issue-1378/visual/form-todo-small-android-preview.png",
+        "docs/reviews/issue-1378/visual/form-todo-small-android-code.png"
       ]
     }
   ],
@@ -67,12 +72,12 @@
       "assert": {
         "planCount": 3,
         "planTitles": [
-          "Outline the launch story",
-          "Invite two people to review",
-          "Leave room for a quiet reset"
+          "告知文の骨子を書く",
+          "二人にレビューを頼む",
+          "ひと息つく時間を残す"
         ],
-        "summary": "All plans: 3 plan(s) visible.",
-        "status": "Ready for a focused planning session."
+        "summary": "すべて: 3 件 ・ 完了 1 / 3",
+        "status": "段取りを始める準備ができました。"
       }
     },
     {
@@ -81,14 +86,17 @@
         {
           "kind": "input",
           "selector": "#plan-title",
-          "value": "Review the launch loop"
+          "value": "ローンチの流れを見直す"
         },
-        { "kind": "submit", "buttonText": "Add to launch loop" }
+        {
+          "kind": "submit",
+          "buttonText": "追加する"
+        }
       ],
       "assert": {
         "planCount": 3,
-        "alert": "Add one sentence so the plan has a clear purpose.",
-        "status": "Validation: add a short purpose."
+        "alert": "何のためにやるのかを、ひとこと添えてください。",
+        "status": "入力の確認: ひとことがまだ空です。"
       }
     },
     {
@@ -97,19 +105,29 @@
         {
           "kind": "input",
           "selector": "#plan-details",
-          "value": "Walk through every control once."
+          "value": "操作を一つずつ、通しで確かめる。"
         },
-        { "kind": "click", "buttonText": "Share" },
-        { "kind": "change", "selector": "#plan-pinned", "checked": true },
-        { "kind": "submit", "buttonText": "Add to launch loop" }
+        {
+          "kind": "click",
+          "buttonText": "伝える"
+        },
+        {
+          "kind": "change",
+          "selector": "#plan-pinned",
+          "checked": true
+        },
+        {
+          "kind": "submit",
+          "buttonText": "追加する"
+        }
       ],
       "assert": {
         "planCount": 4,
         "addedPlanId": "4",
-        "addedPlanTitle": "Review the launch loop",
-        "addedPlanTrack": "Share",
+        "addedPlanTitle": "ローンチの流れを見直す",
+        "addedPlanTrack": "伝える",
         "addedPlanPinned": true,
-        "status": "Plan added to the launch loop."
+        "status": "「ローンチの流れを見直す」を追加しました。"
       }
     },
     {
@@ -118,7 +136,9 @@
       "assert": {
         "planCount": 4,
         "addedPlanId": "4",
-        "addedPlanTitle": "Review the launch loop"
+        "addedPlanTitle": "ローンチの流れを見直す",
+        "addedPlanTrack": "伝える",
+        "addedPlanPinned": true
       }
     },
     {
@@ -126,100 +146,146 @@
       "actions": [
         {
           "kind": "input",
-          "selector": "input[id=\"4\"]",
-          "value": "Review the launch loop notes"
+          "selector": "#plan-4",
+          "value": "ローンチの流れを見直すメモ"
         }
       ],
       "assert": {
         "planId": "4",
-        "title": "Review the launch loop notes",
-        "status": "Plan title edited inline."
+        "title": "ローンチの流れを見直すメモ",
+        "status": "カードの名前を直しました。"
       }
     },
     {
       "id": "complete",
       "actions": [
-        { "kind": "click", "cardId": "4", "buttonText": "Mark complete" }
+        {
+          "kind": "click",
+          "cardId": "4",
+          "buttonText": "完了にする"
+        }
       ],
       "assert": {
         "planId": "4",
-        "buttonText": "Mark open",
-        "status": "Plan completion changed."
+        "buttonText": "未完了に戻す",
+        "status": "完了の印を切り替えました。"
       }
     },
     {
       "id": "pin",
       "actions": [
-        { "kind": "click", "cardId": "2", "buttonText": "Pin for focus" }
+        {
+          "kind": "click",
+          "cardId": "2",
+          "buttonText": "ピン留めする"
+        }
       ],
       "assert": {
         "planId": "2",
-        "buttonText": "Unpin",
-        "status": "Plan pin changed."
+        "buttonText": "ピンを外す",
+        "status": "ピン留めを切り替えました。"
       }
     },
     {
       "id": "remove",
-      "actions": [{ "kind": "remove", "cardId": "4", "buttonText": "Remove" }],
+      "actions": [
+        {
+          "kind": "remove",
+          "cardId": "4",
+          "buttonText": "削除"
+        }
+      ],
       "assert": {
         "planCount": 3,
         "removedPlanId": "4",
-        "status": "Plan removed from the launch loop."
+        "status": "カードを一枚削除しました。"
       }
     },
     {
       "id": "filter-done",
-      "actions": [{ "kind": "filter", "buttonText": "Done" }],
+      "actions": [
+        {
+          "kind": "filter",
+          "buttonText": "完了"
+        }
+      ],
       "assert": {
         "planCount": 1,
-        "summary": "Completed: 1 plan(s) visible.",
-        "status": "View changed."
+        "summary": "完了: 1 件 ・ 完了 1 / 3",
+        "status": "表示を切り替えました。"
       }
     },
     {
       "id": "keyboard-arrow-right",
       "actions": [
-        { "kind": "keyboard", "filter": "Done", "key": "ArrowRight" }
+        {
+          "kind": "keyboard",
+          "filter": "完了",
+          "key": "ArrowRight"
+        }
       ],
       "assert": {
-        "summary": "All plans: 3 plan(s) visible.",
-        "status": "View changed."
+        "planCount": 3,
+        "summary": "すべて: 3 件 ・ 完了 1 / 3",
+        "status": "表示を切り替えました。"
       }
     },
     {
       "id": "keyboard-end",
-      "actions": [{ "kind": "keyboard", "filter": "All", "key": "End" }],
+      "actions": [
+        {
+          "kind": "keyboard",
+          "filter": "すべて",
+          "key": "End"
+        }
+      ],
       "assert": {
-        "summary": "Completed: 1 plan(s) visible.",
-        "status": "View changed."
+        "planCount": 1,
+        "summary": "完了: 1 件 ・ 完了 1 / 3",
+        "status": "表示を切り替えました。"
       }
     },
     {
       "id": "pointer",
       "actions": [
-        { "kind": "pointer", "selector": "article p", "pointerType": "touch" }
+        {
+          "kind": "pointer",
+          "selector": "article p",
+          "pointerType": "touch"
+        }
       ],
       "assert": {
-        "status": "Plan details explored with pointer input."
+        "status": "カードの説明をポインターで見ています。"
       }
     },
     {
       "id": "clear-completed",
-      "actions": [{ "kind": "clear", "buttonText": "Clear completed" }],
+      "actions": [
+        {
+          "kind": "clear",
+          "buttonText": "完了したカードを片付ける"
+        }
+      ],
       "assert": {
         "planCount": 2,
-        "summary": "All plans: 2 plan(s) visible.",
-        "status": "Completed plans cleared."
+        "summary": "すべて: 2 件 ・ 完了 0 / 2",
+        "status": "完了したカードを片付けました。"
       }
     },
     {
       "id": "empty-state",
-      "actions": [{ "kind": "remove", "buttonText": "Remove", "repeat": 2 }],
+      "actions": [
+        {
+          "kind": "remove",
+          "buttonText": "削除",
+          "repeat": 2
+        }
+      ],
       "assert": {
         "planCount": 0,
-        "summary": "All plans: 0 plan(s) visible.",
-        "emptyHeading": "Your launch loop is clear.",
-        "status": "Plan removed from the launch loop."
+        "summary": "すべて: 0 件 ・ 完了 0 / 0",
+        "status": "カードを一枚削除しました。",
+        "emptyHeading": "計画はすべて片付きました。"
       }
     }
   ]

@@ -1,0 +1,200 @@
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import { MutableSignal } from "std/signal"
+import {
+  All,
+  ClearCompleted,
+  Complete,
+  FilterChanged,
+  InteractionChanged,
+  Model,
+  Open,
+  Pinned,
+  Plan,
+  Removed,
+  ToggleComplete,
+  TogglePinned,
+  ViewFilter,
+  countWhere,
+  visiblePlans,
+} from "../plans/model"
+import { dispatch, filterKeyTask, pointerTask, titleTask } from "../plans/events"
+import { trackLabel } from "./form"
+import * as styles from "../ui/styles"
+
+// 計画のボード: 絞り込み、進み具合、カード、空の状態、最後の操作の知らせ。
+
+pub fn filterLabel filter: ViewFilter -> String = match filter {
+  All -> "すべて"
+  Pinned -> "ピン留め"
+  Open -> "未完了"
+  Complete -> "完了"
+}
+
+fn filterButton state: MutableSignal<Model>
+  -> model: Model
+  -> filter: ViewFilter
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    onClick: dispatch state (FilterChanged filter),
+    onKeyDown: filterKeyTask state filter,
+    style: styles.filterStyle (model.filter == filter),
+    children: filterLabel filter
+  }
+
+fn toolbar state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> = {
+  let filters: Array<html.Html<Task<Unit>>> = map (filterButton state model) [
+    All,
+    Pinned,
+    Open,
+    Complete
+  ]
+  let total = arrays.length model.plans
+  let done = countWhere Complete model.plans
+  let percent = if total == 0 then 0 else done * 100 / total
+  let bar: html.Html<Task<Unit>> = html.div {
+    style: styles.progressBarStyle percent,
+    children: ""
+  }
+  let parts: Array<html.Html<Task<Unit>>> = [
+    html.div { role: "group", style: styles.filterBarStyle (), children: filters },
+    html.div { style: styles.progressTrackStyle (), children: bar },
+    html.p {
+      style: styles.summaryStyle (),
+      children: `${filterLabel model.filter}: ${arrays.length (visiblePlans model)} 件 ・ 完了 ${done} / ${total}`
+    }
+  ]
+  html.div { style: styles.fieldStyle (), children: parts }
+}
+
+fn badges plan: Plan -> html.Html<Task<Unit>> = {
+  let track: Array<html.Html<Task<Unit>>> =
+    [html.span { style: styles.badgeStyle plan.track, children: trackLabel plan.track }]
+  let pin: Array<html.Html<Task<Unit>>> =
+    if plan.pinned then
+      [html.span { style: styles.pinBadgeStyle (), children: "ピン留め" }]
+    else
+      []
+  html.div { style: styles.choiceRowStyle (), children: arrays.concat [track, pin] }
+}
+
+fn planCard state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Unit>> = {
+  let top: Array<html.Html<Task<Unit>>> = [
+    badges plan,
+    html.button {
+      buttonType: "button",
+      onClick: dispatch state (Removed plan.id),
+      stopClickPropagation: True,
+      style: styles.quietButtonStyle (),
+      children: "削除"
+    }
+  ]
+  let actions: Array<html.Html<Task<Unit>>> = [
+    html.button {
+      buttonType: "button",
+      onClick: dispatch state (ToggleComplete plan.id),
+      stopClickPropagation: True,
+      style: styles.ghostButtonStyle (),
+      children:
+        if plan.complete then
+          "未完了に戻す"
+        else
+          "完了にする"
+    },
+    html.button {
+      buttonType: "button",
+      onClick: dispatch state (TogglePinned plan.id),
+      stopClickPropagation: True,
+      style: styles.ghostButtonStyle (),
+      children:
+        if plan.pinned then
+          "ピンを外す"
+        else
+          "ピン留めする"
+    }
+  ]
+  let parts: Array<html.Html<Task<Unit>>> = [
+    html.div { style: styles.cardTopStyle (), children: top },
+    html.label {
+      htmlFor: `plan-${plan.id}`,
+      style: styles.labelStyle (),
+      children: "名前（その場で直せます）"
+    },
+    html.input {
+      id: `plan-${plan.id}`,
+      value: plan.title,
+      onInput: titleTask state plan.id,
+      onFocus: dispatch state (InteractionChanged "カードの名前を直しています。"),
+      style: styles.titleInputStyle plan.complete
+    },
+    html.p {
+      onPointerDown: pointerTask state,
+      style: styles.detailsStyle (),
+      children: plan.details
+    },
+    html.div { style: styles.cardActionsStyle (), children: actions }
+  ]
+  let card: html.Html<Task<Unit>> = html.article {
+    style: styles.cardStyle plan.track plan.complete,
+    children: parts
+  }
+  html.li { key: show plan.id, children: card }
+}
+
+fn emptyHeading filter: ViewFilter -> String = match filter {
+  All -> "計画はすべて片付きました。"
+  Pinned -> "ピン留めしたカードはありません。"
+  Open -> "未完了のカードはありません。"
+  Complete -> "完了したカードはまだありません。"
+}
+
+fn emptyCopy filter: ViewFilter -> String = match filter {
+  All -> "左のフォームから、次の一手を書き足しましょう。"
+  Pinned -> "大事なカードは「ピン留めする」で上に残せます。"
+  Open -> "いまやることは、すべて終わっています。"
+  Complete -> "カードの「完了にする」で、ここに移ります。"
+}
+
+fn emptyState filter: ViewFilter -> html.Html<Task<Unit>> = {
+  let parts: Array<html.Html<Task<Unit>>> = [
+    html.h3 { style: styles.emptyHeadingStyle (), children: emptyHeading filter },
+    html.p { style: styles.panelCopyStyle (), children: emptyCopy filter }
+  ]
+  html.div { style: styles.emptyStyle (), children: parts }
+}
+
+fn planList state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> = {
+  let shown = visiblePlans model
+  if arrays.length shown == 0 then emptyState model.filter else {
+    let cards: Array<html.Html<Task<Unit>>> = map (planCard state) shown
+    html.ul { style: styles.listStyle (), children: cards }
+  }
+}
+
+pub fn board state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> = {
+  let heading: Array<html.Html<Task<Unit>>> = [
+    html.h2 { style: styles.panelHeadingStyle (), children: "段取りのボード" },
+    html.p {
+      style: styles.panelCopyStyle (),
+      children: "絞り込みは矢印キーと Home / End でも切り替えられます。"
+    }
+  ]
+  let parts: Array<html.Html<Task<Unit>>> = [
+    html.div { children: heading },
+    toolbar state model,
+    planList state model,
+    html.button {
+      buttonType: "button",
+      onClick: dispatch state ClearCompleted,
+      style: styles.ghostButtonStyle (),
+      children: "完了したカードを片付ける"
+    },
+    html.p {
+      role: "status",
+      style: styles.statusStyle (),
+      children: model.lastInteraction
+    }
+  ]
+  html.section { style: styles.panelStyle (), children: parts }
+}

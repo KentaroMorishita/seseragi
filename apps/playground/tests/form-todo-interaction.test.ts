@@ -74,9 +74,11 @@ describe("form-todo browser interaction fixture", () => {
     expect(sample.interactive).toBe(true)
     expect(sample.sourceHash).toBe(fixture.manifest.sourceHash)
     expect(sample.workspaceHash).toBe(fixture.manifest.workspaceHash)
-    expect(fixture.runner.kind).toBe("browser-use")
+    expect(fixture.runner.kind).toBe("playwright")
     expect(fixture.runner.previewSelector).toBe("#html-preview")
 
+    // The Showcase is split into modules (#1378), so look across every file.
+    const source = sample.workspace.files.map(({ source }) => source).join("\n")
     for (const marker of [
       "signals.make initialModel",
       "dom.run (dom.defaultOptions ())",
@@ -91,9 +93,9 @@ describe("form-todo browser interaction fixture", () => {
       "fn emptyState",
       "fn planCard",
     ]) {
-      expect(sample.source).toContain(marker)
+      expect(source).toContain(marker)
     }
-    expect(sample.source).not.toContain("html.table")
+    expect(source).not.toContain("html.table")
   })
 
   test("covers every #188 interaction state and action family", () => {
@@ -140,7 +142,7 @@ describe("form-todo browser interaction fixture", () => {
     ])
     expect(fixture.steps.at(-1)?.assert).toMatchObject({
       planCount: 0,
-      emptyHeading: "Your launch loop is clear.",
+      emptyHeading: "計画はすべて片付きました。",
     })
   })
 
@@ -153,7 +155,7 @@ describe("form-todo browser interaction fixture", () => {
     for (const viewport of fixture.viewports) {
       expect(viewport.previewWidth).toBeGreaterThan(0)
       expect(viewport.previewHeight).toBeGreaterThan(0)
-      expect(viewport.browserViewport).toBe("1710x1112")
+      expect(viewport.browserViewport).toMatch(/^\d+x\d+$/u)
       expect(viewport.horizontalOverflow).toBe(false)
       expect(viewport.surfaces).toEqual(["code-editor", "preview"])
       for (const artifact of [

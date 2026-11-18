@@ -1,0 +1,46 @@
+import * as html from "std/web/html"
+import { Complete, Model, Open, Pinned, countWhere } from "../plans/model"
+import * as styles from "../ui/styles"
+
+// 見出しの帯: 何のボードかと、いまの件数を最初に見せる。
+
+fn metric label: String -> value: Int -> html.Html<Task<Unit>> = {
+  let lines: Array<html.Html<Task<Unit>>> = [
+    html.p { style: styles.metricValueStyle (), children: show value },
+    html.p { style: styles.metricLabelStyle (), children: label }
+  ]
+  html.div { style: styles.metricStyle (), children: lines }
+}
+
+pub fn header repositoryUrl: html.WebUrl -> model: Model -> html.Html<Task<Unit>> = {
+  // 見出しは句読点の切れ目で折り返し、最後の数文字だけが次の行に落ちないようにする
+  let headline: Array<html.Html<Task<Unit>>> = [
+    html.span { style: styles.phraseStyle (), children: "小さく始めて、" },
+    html.span { style: styles.phraseStyle (), children: "回し続ける。" }
+  ]
+  let intro: Array<html.Html<Task<Unit>>> = [
+    html.p { style: styles.eyebrowStyle (), children: "LAUNCH LOOP" },
+    html.h1 { style: styles.displayStyle (), children: headline },
+    html.p {
+      style: styles.leadStyle (),
+      children: "次の一手を書き足し、終わったら印を付け、片付けてまた書く。公開までの段取りを一枚のボードで回します。"
+    },
+    html.a {
+      href: repositoryUrl,
+      target: "_blank",
+      rel: "noopener",
+      style: styles.headerLinkStyle (),
+      children: "このサンプルのソースを見る"
+    }
+  ]
+  let metrics: Array<html.Html<Task<Unit>>> = [
+    metric "未完了" (countWhere Open model.plans),
+    metric "ピン留め" (countWhere Pinned model.plans),
+    metric "完了" (countWhere Complete model.plans)
+  ]
+  let parts: Array<html.Html<Task<Unit>>> = [
+    html.div { children: intro },
+    html.div { style: styles.metricsStyle (), children: metrics }
+  ]
+  html.header { style: styles.headerStyle (), children: parts }
+}

@@ -1,0 +1,207 @@
+import * as arrays from "std/array"
+
+// ── 計画と、画面全体の状態 ─────────────────────────────
+
+pub type Track deriving Eq, Show =
+  | Build
+  | Share
+  | Rest
+
+pub type ViewFilter deriving Eq, Show =
+  | All
+  | Pinned
+  | Open
+  | Complete
+
+pub struct Plan {
+  pub id: Int,
+  pub title: String,
+  pub details: String,
+  pub track: Track,
+  pub pinned: Bool,
+  pub complete: Bool,
+}
+
+pub struct Model {
+  pub draft: String,
+  pub details: String,
+  pub track: Track,
+  pub pinned: Bool,
+  pub filter: ViewFilter,
+  pub nextId: Int,
+  pub validation: String,
+  pub lastInteraction: String,
+  pub plans: Array<Plan>,
+}
+
+pub type PlanAction =
+  | DraftChanged String
+  | DetailsChanged String
+  | TrackChanged Track
+  | PinnedChanged Bool
+  | Submitted
+  | TitleChanged (Int, String)
+  | ToggleComplete Int
+  | TogglePinned Int
+  | Removed Int
+  | FilterChanged ViewFilter
+  | ClearCompleted
+  | InteractionChanged String
+  | NoOp
+
+pub let initialModel: Model = Model {
+  draft: "",
+  details: "",
+  track: Build,
+  pinned: False,
+  filter: All,
+  nextId: 4,
+  validation: "",
+  lastInteraction: "段取りを始める準備ができました。",
+  plans: [
+    Plan {
+      id: 1,
+      title: "告知文の骨子を書く",
+      details: "この画面が何のためにあるのかを、最初の一行で伝える。",
+      track: Build,
+      pinned: True,
+      complete: False,
+    },
+    Plan {
+      id: 2,
+      title: "二人にレビューを頼む",
+      details: "共有する前に、キーボードとタッチの両方で操作を確かめてもらう。",
+      track: Share,
+      pinned: False,
+      complete: False,
+    },
+    Plan {
+      id: 3,
+      title: "ひと息つく時間を残す",
+      details: "続けられる計画には、わざと休む時間を入れておく。",
+      track: Rest,
+      pinned: False,
+      complete: True,
+    },
+  ],
+}
+
+// ── 絞り込みと数え上げ ──────────────────────────────
+
+pub fn matches filter: ViewFilter -> plan: Plan -> Bool = match filter {
+  All -> True
+  Pinned -> plan.pinned
+  Open -> !plan.complete
+  Complete -> plan.complete
+}
+
+pub fn visiblePlans model: Model -> Array<Plan> =
+  arrays.filter (matches model.filter) model.plans
+
+pub fn countWhere filter: ViewFilter -> plans: Array<Plan> -> Int =
+  arrays.length (arrays.filter (matches filter) plans)
+
+// 左右の矢印キーで、絞り込みを順に送る
+pub fn previousFilter filter: ViewFilter -> ViewFilter = match filter {
+  All -> Complete
+  Pinned -> All
+  Open -> Pinned
+  Complete -> Open
+}
+
+pub fn nextFilter filter: ViewFilter -> ViewFilter = match filter {
+  All -> Pinned
+  Pinned -> Open
+  Open -> Complete
+  Complete -> All
+}
+
+// ── 更新 ─────────────────────────────────────────
+
+fn newPlan model: Model -> Plan = Plan {
+  id: model.nextId,
+  title: model.draft,
+  details: model.details,
+  track: model.track,
+  pinned: model.pinned,
+  complete: False,
+}
+
+fn updatePlan id: Int -> change: (Plan -> Plan) -> plan: Plan -> Plan =
+  if plan.id == id then change plan else plan
+
+fn submit model: Model -> Model =
+  if model.draft == "" then
+    Model {
+      ...model,
+      validation: "やることの名前を入れてください。",
+      lastInteraction: "入力の確認: 名前がまだ空です。",
+    }
+  else if model.details == "" then
+    Model {
+      ...model,
+      validation: "何のためにやるのかを、ひとこと添えてください。",
+      lastInteraction: "入力の確認: ひとことがまだ空です。",
+    }
+  else
+    Model {
+      ...model,
+      draft: "",
+      details: "",
+      pinned: False,
+      nextId: model.nextId + 1,
+      validation: "",
+      lastInteraction: `「${model.draft}」を追加しました。`,
+      plans: arrays.append [newPlan model] model.plans,
+    }
+
+pub fn update action: PlanAction -> model: Model -> Model = match action {
+  DraftChanged value -> Model { ...model, draft: value, validation: "" }
+  DetailsChanged value -> Model { ...model, details: value, validation: "" }
+  TrackChanged value -> Model { ...model, track: value, validation: "" }
+  PinnedChanged value -> Model { ...model, pinned: value }
+  Submitted -> submit model
+  TitleChanged (id, title) -> Model {
+    ...model,
+    lastInteraction: "カードの名前を直しました。",
+    plans: map (updatePlan id (\plan: Plan -> Plan {
+      ...plan,
+      title
+    })) model.plans,
+  }
+  ToggleComplete id -> Model {
+    ...model,
+    lastInteraction: "完了の印を切り替えました。",
+    plans: map
+      (updatePlan id (\plan: Plan -> Plan {
+        ...plan,
+        complete: ! plan.complete
+      })) model.plans,
+  }
+  TogglePinned id -> Model {
+    ...model,
+    lastInteraction: "ピン留めを切り替えました。",
+    plans: map (updatePlan id (\plan: Plan -> Plan {
+      ...plan,
+      pinned: ! plan.pinned
+    })) model.plans,
+  }
+  Removed id -> Model {
+    ...model,
+    lastInteraction: "カードを一枚削除しました。",
+    plans: arrays.filter (\plan: Plan -> plan.id != id) model.plans,
+  }
+  FilterChanged value -> Model {
+    ...model,
+    filter: value,
+    lastInteraction: "表示を切り替えました。"
+  }
+  ClearCompleted -> Model {
+    ...model,
+    filter: All,
+    lastInteraction: "完了したカードを片付けました。",
+    plans: arrays.filter (matches Open) model.plans,
+  }
+  InteractionChanged detail -> Model { ...model, lastInteraction: detail }
+  NoOp -> model
+}

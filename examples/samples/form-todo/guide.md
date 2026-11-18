@@ -1,63 +1,25 @@
-このsampleを選ぶ理由: 一つの画面で、Signal、controlled form、validation、
-inline edit、filter、keyboard / pointer event、空状態まで通して体験したいときに選びます。
-以前のTodo表を拡張するのではなく、launch loopという一つの仕事の流れを
-mobile-firstのカードUIとして組み立てています。
+このサンプルを選ぶ理由: フォームでの入力と確認、カードの操作、絞り込み、キーボードとポインターの操作を、ファイルに分けた一つの画面にまとめた完成例を見たいときに選びます。
+
+公開までの段取りを、一枚のボードで回します。次の一手を書き足し、終わったら印を付け、片付けてまた書く、という流れです。
 
 ## この画面で試すこと
 
-- Plan name と Why it matters に入力して Add to launch loop を押す。
-- Plan nameが空のときは送信buttonがdisabledになります。名前だけ入力して
-  Why it mattersを空のまま送信すると、role: "alert" のvalidationを確認できます。
-- Build / Share / Rest のtrack chooserを切り替える。
-  これはselect相当の状態選択を、タッチしやすいbutton群で表現したものです。
-- Keep this move in focus のcheckboxでpinned状態を持たせる。
-- カードのタイトルをその場で編集し、Mark complete、Pin for focus、
-  Removeを操作する。
-- All / Pinned / Open / Done を切り替え、完了カードを
-  Clear completed でまとめて取り除く。
-- filter buttonで左右矢印を押すと前後のfilterへ循環します。
-  HomeはAll、EndはDoneへ移動します。
-- カードの説明文をpointerで触るとstatus live regionへ操作結果が表示されます。
-  pointer handlerは入力欄やbuttonの親には置かず、click前のrerenderと衝突しない
-  独立したsurfaceへ分けています。
+- 名前だけ入れて「追加する」を押し、入力の確認の知らせを出す
+- ひとことと種類を選び、ピン留めして追加する
+- カードの名前を、その場で書き直す
+- 「完了にする」と「ピン留めする」で、カードの印を切り替える
+- 「削除」でカードを一枚消す
+- 絞り込みのボタンにフォーカスして、左右の矢印キーと Home / End で切り替える
+- カードの説明をタップして、最後の操作の知らせが変わるのを見る
+- 「完了したカードを片付ける」のあとで全部消し、空の状態を出す
 
-## 構造
+## ファイルの役割
 
-Modelがdraft、validation、filter、plans、lastInteractionを所有し、
-PlanActionをupdateが純粋に次のModelへ畳み込みます。各DOMイベントは
-InputEvent / ChangeEvent / KeyboardEvent / PointerEventの値を
-feature内のadapterでsnapshotし、dispatchからTask<Unit>へ変換します。
-そのためbrowser event objectをstateへ保存せず、フォームとカードが同じ
-MutableSignal<Model>を共有できます。
+1. `main.ssrg`: `#app` を探し、`create` が作った画面の Signal を `dom.run` に渡すだけの実行の境界です。
+2. `app.ssrg`: `signals.make initialModel` で状態の Signal を作り、見出しの帯、フォーム、ボードを並べた画面にします。
+3. `plans/model.ssrg`: 計画（`Plan`）、画面全体の状態（`Model`）、操作（`PlanAction`）と、状態を変える `update` です。絞り込みと数え上げもここにあります。
+4. `plans/events.ssrg`: 入力、チェックボックス、キーボード、ポインターのイベントを `PlanAction` に直し、状態を更新する `Task` にします。
+5. `views/header.ssrg`、`views/form.ssrg`、`views/board.ssrg`: 画面の区切りごとの部品です。Explorer で見たファイルの並びが、画面の構成と同じになるようにしています。
+6. `ui/styles.ssrg`: 色と余白は、名前を付けた `html.Style` の関数としてここだけに置いています。種類（つくる・伝える・休む）の色も、ここで決めています。
 
-表示はsignals.map (view state ...) stateで作り、mountは明示的な
-signals.make + dom.runです。このsampleではdom.appを使いません。
-dom.runのperformを自分で渡すことで、イベントをTask<Unit>として
-実行する境界と、失敗をStringへ変換するmount処理をこのsingle-file
-featureの中で読み取れるようにしています。純粋なreducerだけを学ぶなら
-interactive-app、明示的なdom.runの最小構成を先に読むならweb-starterが
-先に向いています。
-
-## UIの読み方
-
-heroは固定HTTPSのUnsplash画像、source link、open / pinned / doneの
-derived metricsを持ちます。formとboardはカードの配列として分け、
-デスクトップでは2列、狭い画面では1列になります。テーブルを横に縮めず、
-タイトル編集と状態操作を一枚のカードへまとめているのがこのsampleの
-見せ場です。
-
-completion barは完了件数だけの固定段階値ではなく、現在のplan総数に対する
-完了数から割合を計算します。planを追加・削除しても表示と実データがずれません。
-
-各入力には対応するlabel.htmlForとidを持たせ、送信ボタンはvalidation
-中にdisabledになります。role: "alert"は入力エラー、role: "status"は
-最後の操作を示します。画像には意味のあるalt、幅、高さ、loading:
-"eager"を指定し、読み込み中もレイアウトを安定させます。カード内の
-buttonは通常のclick actionだけを所有し、pointer fixtureとはDOM上で分離しています。
-
-## 前提と次のsample
-
-interactive-appでpure viewとSignalの基本、web-starterで
-明示的なdom.run、feature-compositionでfeatureごとのlocal stateを
-先に読むと、このsampleの構造を追いやすくなります。Explorerを含む複数
-module構成へ進むときはproject-flow-appを選んでください。
+一つの状態を切り替える小さな形は `interactive-app`、機能ごとに状態を分けて組み合わせる形は `project-flow-app` を見てください。

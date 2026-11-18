@@ -1,0 +1,64 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
+import {
+  Complete,
+  All,
+  DetailsChanged,
+  DraftChanged,
+  FilterChanged,
+  InteractionChanged,
+  Model,
+  NoOp,
+  PinnedChanged,
+  PlanAction,
+  TitleChanged,
+  ViewFilter,
+  nextFilter,
+  previousFilter,
+  update,
+} from "./model"
+
+// 画面のイベントを PlanAction に直し、状態の Signal を更新する Task にする。
+
+pub fn dispatch state: MutableSignal<Model> -> action: PlanAction -> Task<Unit> =
+  signals.update (update action) state
+
+pub fn draftTask state: MutableSignal<Model> -> event: html.InputEvent -> Task<Unit> =
+  dispatch state (DraftChanged event.value)
+
+pub fn detailsTask state: MutableSignal<Model> -> event: html.InputEvent -> Task<Unit> =
+  dispatch state (DetailsChanged event.value)
+
+pub fn pinnedTask state: MutableSignal<Model> -> event: html.ChangeEvent -> Task<Unit> =
+  match event.checked {
+    Just checked -> dispatch state (PinnedChanged checked)
+    Nothing -> dispatch state NoOp
+  }
+
+pub fn titleTask state: MutableSignal<Model>
+  -> id: Int
+  -> event: html.InputEvent
+  -> Task<Unit> =
+  dispatch state (TitleChanged (
+    id,
+    event.value
+  ))
+
+pub fn pointerTask state: MutableSignal<Model>
+  -> event: html.PointerEvent
+  -> html.EventAction<Task<Unit>> =
+  html.Dispatch (dispatch state (InteractionChanged "カードの説明をポインターで見ています。"))
+
+// 絞り込みのボタンは、左右の矢印キーと Home / End でも動かせる
+pub fn filterKeyTask state: MutableSignal<Model>
+  -> filter: ViewFilter
+  -> event: html.KeyboardEvent
+  -> html.EventAction<Task<Unit>> =
+  match event.key {
+    "ArrowLeft" -> html.DispatchPreventDefault (dispatch state (FilterChanged (previousFilter filter)))
+    "ArrowRight" -> html.DispatchPreventDefault (dispatch state (FilterChanged (nextFilter filter)))
+    "Home" -> html.DispatchPreventDefault (dispatch state (FilterChanged All))
+    "End" -> html.DispatchPreventDefault (dispatch state (FilterChanged Complete))
+    _ -> html.Dispatch (dispatch state NoOp)
+  }

@@ -60,17 +60,17 @@
     },
     {
       "id": "form-todo",
-      "pickerLabel": "Signal + dom.runのLaunch Loop Showcase",
-      "heading": "Plan a calmer launch.",
-      "architecture": "signal-run",
-      "requiredSurfaces": ["sample-picker", "code", "preview"],
-      "requiredStates": [
-        "initial",
-        "invalid-submit",
-        "valid-submit",
-        "empty",
-        "image-fallback"
-      ]
+      "pickerLabel": "公開までの段取りボード（Launch Loop）",
+      "heading": "小さく始めて、回し続ける。",
+      "architecture": "multi-module",
+      "requiredSurfaces": [
+        "sample-picker",
+        "explorer",
+        "tabs",
+        "code",
+        "preview"
+      ],
+      "requiredStates": ["initial", "invalid-submit", "valid-submit", "empty"]
     },
     {
       "id": "project-flow-app",
