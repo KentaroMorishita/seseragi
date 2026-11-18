@@ -1,1 +1,49 @@
-{"$schema":"../../lesson.schema.json","id":"collection-append-concat","formatVersion":2,"sections":{"prerequisite":"collectionを一つのresultへ集約できるようになりました。","walkthrough":[{"heading":"Suffixまたはnested collectionをつなぐ","body":"appendはsuffixを既存collectionへ足し、concatはcollection of collectionsを一段平らにします。","sourceRange":{"startLine":1,"endLine":1}}],"introduced":[{"kind":"api","name":"append and concat","body":"appendは二collection、concatはnested collectionを入力として新しいcollectionを返します。"}],"exercise":{"instruction":"課題sourceのsuffixとnested Arrayを変え、順序を確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"要素をsuffixとして渡す","body":"失敗例はappendへArrayではなくIntを渡します。suffixのcollection型を確認してください。"},"recap":["appendはsuffixをつなぐ。","concatは一段nestedなcollectionを平らにつなぐ。"],"next":{"lessonId":"collection-comprehension","body":"次はsource、条件、resultを一つのcomprehensionで読みます。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.txt","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "collection-append-concat",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "たたみ込み関数の引数の並びと戻り値の役割を確認しました。ここでは複数の配列をつなぐ操作を見ます。",
+    "walkthrough": [
+      {
+        "heading": "後ろにつなぐ append と入れ子を平らにする concat",
+        "body": "`arrays.append` は後ろに別の配列をつなぎ、`arrays.concat` は配列の配列を 1 段平らに連結します。",
+        "sourceRange": {
+          "startLine": 3,
+          "endLine": 4
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "append と concat",
+        "body": "`append` は 2 つのコレクションをつなぎ、`concat` は入れ子になったコレクションを 1 段平らにした新しいコレクションを返します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの `arrays.append [3, 4]` を `arrays.append [5, 6]` に、`[[1, 2], [3, 4]]` を `[[1], [2, 3], [4]]` に書き換えて `Run` し、`Output` の変化を確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "配列ではなく単一の要素を渡す",
+      "body": "失敗例では `arrays.append` に配列ではなく `Int` の値 `3` をそのまま渡しています。つなぐ値もコレクション型にしてください。"
+    },
+    "recap": [
+      "`append` は後ろに別のコレクションをつなぐ。",
+      "`concat` は 1 段入れ子になったコレクションを平らに連結する。"
+    ],
+    "next": {
+      "lessonId": "collection-comprehension",
+      "body": "次は要素の取り出し、絞り込み条件、変換の式を 1 つにまとめる内包表記を読みます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

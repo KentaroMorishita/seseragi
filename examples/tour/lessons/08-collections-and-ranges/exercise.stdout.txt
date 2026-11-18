@@ -1,1 +1,4 @@
-Array length: 4 / List length: 2 / Range total: 10
+scores: [10, 20, 30, 40] (length 4)
+get 1: Just 20
+get 3: Just 40
+range: 1..=5 (sum 15)

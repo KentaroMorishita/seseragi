@@ -1,3 +1,0 @@
-examples/tour/lessons/single-constructor-match/diagnostic.ssrg:5:3: error[SES-T0101]: Match pattern type mismatch
-  |   Ready -> "ready"
-  |   ^^^^^ payload constructor pattern requires an argument

@@ -36,8 +36,8 @@
       "Consumer、複数instance、lawを説明できる最小contractを選ぶ。"
     ],
     "next": {
-      "lessonId": null,
-      "body": "Tourはここで終わりです。設計背景と内部は関連記事から必要なtopicを選んで読めます。"
+      "lessonId": "list-values",
+      "body": "本編の内容はここまでです。必要に応じて、補足トラックのコレクション操作や関連記事へ進めます。"
     }
   },
   "files": {

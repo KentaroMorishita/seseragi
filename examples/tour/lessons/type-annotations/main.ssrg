@@ -1,3 +1,0 @@
-let answer: Int = 42
-
-pub effect fn main = println `Answer: ${answer}`

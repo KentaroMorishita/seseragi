@@ -1,3 +1,0 @@
-let profile: { name: String, role: String } = { name: "Mio", role: "Engineer" }
-
-pub effect fn main = println "profile: Mio / Engineer"

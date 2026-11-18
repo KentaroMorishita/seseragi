@@ -1,3 +1,0 @@
-let answer = 100
-
-pub effect fn main = println `Inferred Int: ${answer}`

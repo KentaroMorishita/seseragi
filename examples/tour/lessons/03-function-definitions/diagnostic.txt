@@ -1,8 +1,8 @@
-examples/tour/lessons/03-function-definitions/diagnostic.ssrg:1:25: error[SES-T0101]: Expression type does not match the expected type
-  | fn greeting -> String = 42
-  |                         ^^ declared String, body produces Int
-  = expected: String
-  = actual: Int
-  = diff: expected String, actual Int
+examples/tour/lessons/03-function-definitions/diagnostic.ssrg:3:16: error[SES-T0101]: Argument type does not match the parameter type
+  | let first = add(10, 20)
+  |                ^^^^^^^^ argument 1 expected Int, received (Int, Int)
+  = expected: Int
+  = actual: (Int, Int)
+  = diff: expected Int, actual (Int, Int)
   = note: Seseragi does not insert an implicit conversion between these types.
   = help: Change the expression or its annotation so the two types agree.

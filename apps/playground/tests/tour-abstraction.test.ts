@@ -23,7 +23,7 @@ const abstractionIds = [
 
 describe("Tour generic and Trait curriculum", () => {
   test("stages one abstraction concept at a time", () => {
-    const lessons = tourLessons.slice(83, 83 + abstractionIds.length)
+    const lessons = tourLessons.slice(39, 39 + abstractionIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...abstractionIds])
     expect(
@@ -69,7 +69,7 @@ describe("Tour generic and Trait curriculum", () => {
     expect(functor.format?.walkthrough).toHaveLength(4)
     expect(functor.prerequisites).toEqual([
       "abstraction-instance-selection",
-      "collection-map",
+      "collection-pipeline",
       "maybe-map",
       "either-map-error",
     ])

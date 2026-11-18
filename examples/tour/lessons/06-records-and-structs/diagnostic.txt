@@ -1,3 +1,8 @@
-examples/tour/lessons/06-records-and-structs/diagnostic.ssrg:3:15: error[SES-T0101]: Struct field missing
-  | let profile = Profile { name: "Mio" }
-  |               ^^^^^^^ struct construction is missing required field `role`
+examples/tour/lessons/06-records-and-structs/diagnostic.ssrg:9:46: error[SES-T0101]: Argument type does not match the parameter type
+  | pub effect fn main = println (formatCustomer staff)
+  |                                              ^^^^^ argument 1 expected Customer, received Staff
+  = expected: Customer
+  = actual: Staff
+  = diff: expected Customer, actual Staff
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

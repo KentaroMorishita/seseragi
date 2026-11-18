@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.61.184] - 2026-11-18
+## [0.61.185] - 2026-11-18
 
 ### Changed
 
@@ -8,6 +8,12 @@
   - `show` and `debug` on an Array, Maybe, Range or List whose element types are all standard, such as `show [1, 2]`, build their display dictionary once per program instead of at every call. The TS target shares these dictionaries the same way, as it already did for tuples. A dictionary that involves a type parameter or a user instance is still built at each call.
   - `match values[i] { Just v -> ...; Nothing -> ... }` reads the element directly instead of building a `Just` and taking it apart. A branch that binds the whole `Maybe` still gets one.
   - A closure that captures up to three values takes one allocation instead of two, and copying or dropping a value does less work.
+
+## [0.61.184] - 2026-11-18
+
+### Fixed
+
+- On Bun and Node, an `exchange` whose request body keeps producing chunks, including empty chunks, finishes when the server sends a final response before the body ends. The sender yields while it skips empty chunks, so the response is read and the request body is cancelled. A browser schedules that pause with a timer, so the same upload still finishes where `setImmediate` is absent.
 
 ## [0.61.183] - 2026-11-18
 

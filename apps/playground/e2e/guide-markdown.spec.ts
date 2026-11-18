@@ -96,7 +96,7 @@ test("renders every guide safely at mobile width", async ({
     page.getByRole("heading", { name: "codeを上から追う" })
   ).toBeVisible()
   await expect(
-    tourGuide.getByText("struct Profile", { exact: true })
+    tourGuide.getByText("struct Customer", { exact: true })
   ).toBeVisible()
   expect(
     await tourGuide.evaluate(
