@@ -5,17 +5,14 @@ import {
   ownsExclusiveResize,
 } from "../ui/resize-coordinator"
 
-const NAVIGATION_RATIO_KEY = "seseragi.tour.navigation-ratio"
 const LESSON_RATIO_KEY = "seseragi.tour.lesson-ratio"
 const CODE_RATIO_KEY = "seseragi.tour.code-ratio"
 
-const DEFAULT_NAVIGATION_RATIO = 0.2
 const DEFAULT_LESSON_RATIO = 0.43
 const DEFAULT_CODE_RATIO = 0.64
 const KEYBOARD_STEP = 0.025
 const RESIZER_SIZE = 9
 
-const NAVIGATION_MIN_WIDTH = 240
 const LESSON_MIN_WIDTH = 300
 const LAB_MIN_WIDTH = 460
 const CODE_MIN_HEIGHT = 280
@@ -23,8 +20,6 @@ const OUTPUT_MIN_HEIGHT = 190
 
 type TourPaneLayoutElements = Readonly<{
   workspace: HTMLElement
-  navigationResizer: HTMLElement
-  navigationToggle: HTMLButtonElement
   lessonResizer: HTMLElement
   lab: HTMLElement
   outputResizer: HTMLElement
@@ -45,17 +40,11 @@ export function connectTourPaneLayout(
   elements: TourPaneLayoutElements,
   onLayoutChange: () => void
 ): void {
-  const desktopQuery = window.matchMedia("(min-width: 1181px)")
-  let navigationRatio = readStoredRatio(
-    NAVIGATION_RATIO_KEY,
-    DEFAULT_NAVIGATION_RATIO
-  )
+  const desktopQuery = window.matchMedia("(min-width: 761px)")
   let lessonRatio = readStoredRatio(LESSON_RATIO_KEY, DEFAULT_LESSON_RATIO)
   let codeRatio = readStoredRatio(CODE_RATIO_KEY, DEFAULT_CODE_RATIO)
-  let navigationWidth = 0
   let lessonWidth = 0
   let codeHeight = 0
-  let navigationCollapsed = false
   let outputCollapsed = false
 
   const scheduleLayoutChange = (): void => {
@@ -67,14 +56,8 @@ export function connectTourPaneLayout(
   const applyHorizontalRatios = (): void => {
     const width = elements.workspace.getBoundingClientRect().width
     if (width <= 0) return
-    navigationRatio = clampPanelRatio(
-      navigationRatio,
-      width,
-      NAVIGATION_MIN_WIDTH,
-      LESSON_MIN_WIDTH + LAB_MIN_WIDTH + RESIZER_SIZE * 2
-    )
-    navigationWidth = navigationRatio * width
-    const remaining = width - navigationWidth - RESIZER_SIZE
+    // レッスンの列とコードの列の二つ。目次はコースマップとして重ねて開く
+    const remaining = width
     lessonRatio = clampPanelRatio(
       lessonRatio,
       remaining,
@@ -83,24 +66,8 @@ export function connectTourPaneLayout(
     )
     lessonWidth = lessonRatio * remaining
     elements.workspace.style.setProperty(
-      "--tour-navigation-width",
-      `${navigationWidth.toFixed(2)}px`
-    )
-    elements.workspace.style.setProperty(
       "--tour-lesson-width",
       `${lessonWidth.toFixed(2)}px`
-    )
-    elements.navigationResizer.setAttribute(
-      "aria-valuenow",
-      String(Math.round(navigationWidth))
-    )
-    elements.navigationResizer.setAttribute(
-      "aria-valuemax",
-      String(
-        Math.round(
-          width - (LESSON_MIN_WIDTH + LAB_MIN_WIDTH + RESIZER_SIZE * 2)
-        )
-      )
     )
     elements.lessonResizer.setAttribute(
       "aria-valuenow",
@@ -138,20 +105,6 @@ export function connectTourPaneLayout(
     scheduleLayoutChange()
   }
 
-  const syncNavigationToggle = (): void => {
-    elements.workspace.dataset.navigationCollapsed = String(navigationCollapsed)
-    const label = navigationCollapsed
-      ? "lesson一覧を開く"
-      : "lesson一覧を閉じる"
-    elements.navigationToggle.setAttribute(
-      "aria-expanded",
-      String(!navigationCollapsed)
-    )
-    elements.navigationToggle.setAttribute("aria-label", label)
-    elements.navigationToggle.title = label
-    scheduleLayoutChange()
-  }
-
   const syncOutputToggle = (): void => {
     elements.lab.dataset.outputCollapsed = String(outputCollapsed)
     const label = outputCollapsed ? "Outputを開く" : "Outputを閉じる"
@@ -166,30 +119,11 @@ export function connectTourPaneLayout(
 
   connectResizer(desktopQuery, {
     axis: "horizontal",
-    defaultRatio: DEFAULT_NAVIGATION_RATIO,
-    getRatio: () => navigationRatio,
-    getRatioFromPointer: (event) => {
-      const bounds = elements.workspace.getBoundingClientRect()
-      return (event.clientX - bounds.left) / bounds.width
-    },
-    onCommit: () => writeStoredRatio(NAVIGATION_RATIO_KEY, navigationRatio),
-    resizer: elements.navigationResizer,
-    setRatio: (ratio) => {
-      navigationRatio = ratio
-      applyHorizontalRatios()
-    },
-  })
-
-  connectResizer(desktopQuery, {
-    axis: "horizontal",
     defaultRatio: DEFAULT_LESSON_RATIO,
     getRatio: () => lessonRatio,
     getRatioFromPointer: (event) => {
       const bounds = elements.workspace.getBoundingClientRect()
-      const remaining = bounds.width - navigationWidth - RESIZER_SIZE
-      const position =
-        event.clientX - bounds.left - navigationWidth - RESIZER_SIZE
-      return position / remaining
+      return (event.clientX - bounds.left) / bounds.width
     },
     onCommit: () => writeStoredRatio(LESSON_RATIO_KEY, lessonRatio),
     resizer: elements.lessonResizer,
@@ -215,11 +149,6 @@ export function connectTourPaneLayout(
     },
   })
 
-  elements.navigationToggle.addEventListener("click", () => {
-    if (!desktopQuery.matches) return
-    navigationCollapsed = !navigationCollapsed
-    syncNavigationToggle()
-  })
   elements.outputToggle.addEventListener("click", () => {
     if (!desktopQuery.matches) return
     outputCollapsed = !outputCollapsed
@@ -237,7 +166,6 @@ export function connectTourPaneLayout(
 
   applyHorizontalRatios()
   applyCodeRatio()
-  syncNavigationToggle()
   syncOutputToggle()
 }
 

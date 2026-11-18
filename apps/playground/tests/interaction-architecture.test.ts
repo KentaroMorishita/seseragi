@@ -39,37 +39,44 @@ describe("Playground and Tour interaction architecture", () => {
   test("keeps Tour pane and editor controls local while preserving global Run", async () => {
     const html = await Bun.file(new URL("tour/index.html", root)).text()
     const header = html.slice(
-      html.indexOf('<header class="tour-topbar"'),
+      html.indexOf('<header class="pg-top tour-topbar"'),
       html.indexOf("</header>")
     )
-    const editorHeading = html.slice(
-      html.indexOf('class="tour-editor-heading-actions"'),
+    const codeHead = html.slice(
+      html.indexOf('class="ui-card-head tour-code-head"'),
       html.indexOf('id="tour-editor"')
     )
+    const flow = html.slice(
+      html.indexOf('class="tour-flow"'),
+      html.indexOf('id="tour-output-section"')
+    )
 
-    expect(header).toContain('id="tour-surface-switcher-button"')
+    // 上のバーは Playground と同じ。Run はコードと出力の間の流れの上に置く
+    expect(header).toContain('class="ui-view-switch pg-views"')
+    expect(header).toContain('href="../"')
+    expect(header).toContain('id="tour-search-button"')
+    expect(header).toContain('id="tour-theme-button"')
     expect(header).toContain('id="tour-tools-button"')
-    expect(header).toContain('id="tour-run-button"')
-    expect(header).not.toContain("Playgroundへ戻る")
+    expect(header).not.toContain('id="tour-run-button"')
     expect(header).not.toContain('id="tour-format-button"')
-    expect(header).not.toContain('id="tour-navigation-pane-toggle"')
-    expect(editorHeading).toContain('id="tour-format-button"')
-    expect(html).toMatch(/class="[^"]*tour-navigation-boundary-toggle[^"]*"/)
+    expect(flow).toContain('id="tour-run-button"')
+    expect(flow).toContain('id="tour-output-resizer"')
+    expect(codeHead).toContain('id="tour-format-button"')
+    expect(codeHead).toContain('id="tour-output-pane-toggle"')
     expect(html).toContain('id="tour-fullscreen-button"')
   })
-
   test("uses one shared Settings model and responsive surface", async () => {
     const playground = await Bun.file(new URL("src/main.ts", root)).text()
     const tour = await Bun.file(new URL("src/tour/main.ts", root)).text()
     const settings = await Bun.file(
       new URL("src/ui/editor-settings.ts", root)
     ).text()
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const styles = await Bun.file(new URL("src/ui/playground.css", root)).text()
 
     expect(playground).toContain("createEditorPreferencesStore(localStorage")
     expect(tour).toContain("createEditorPreferencesStore(localStorage")
     expect(playground).toContain("returnFocus: searchButton")
-    expect(tour).toContain("returnFocus: toolsButton")
+    expect(tour).toContain("returnFocus: searchButton")
     expect(settings).toContain("Show indentation whitespace")
     expect(settings).toContain("Line width")
     expect(settings).toContain("returnFocus.focus()")

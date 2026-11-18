@@ -16,6 +16,7 @@ import { utf8RangeToUtf16 } from "../diagnostics/source-range"
 import {
   createEditor,
   replaceEditorSource,
+  setEditorLinePins,
   setEditorWhitespaceVisible,
 } from "../editor/create-editor"
 import { resolveEditorLineWidth } from "../editor/format-width"
@@ -34,7 +35,7 @@ import {
 } from "../runtime/preview-navigation"
 import { connectExecutionSettings } from "../ui/execution-settings"
 import "../ui/design/index.css"
-import "../styles.css"
+import "../ui/playground.css"
 import {
   deepDiveArticles,
   deepDiveArticlesForTourLesson,
@@ -71,7 +72,13 @@ import {
   type TourProgress,
   visitTourLesson,
 } from "./progress"
-import "./styles.css"
+import "./tour.css"
+import curriculumJson from "../../../../examples/tour/curriculum.json"
+import { createReferenceCard } from "../ui/reference-card"
+import { exampleEntries, lessonEntries } from "../ui/search-index"
+import { connectSearchPalette } from "../ui/search-palette"
+import { createThemeController } from "../ui/theme"
+import { browserStorage, connectThemeButton } from "../ui/theme-button"
 
 const chapterHost = requiredElement("#tour-chapters", HTMLElement)
 const menuButton = requiredElement("#tour-menu-button", HTMLButtonElement)
@@ -89,14 +96,6 @@ const codeFocusButton = requiredElement(
 )
 const navigation = requiredElement("#tour-navigation", HTMLElement)
 const workspace = requiredElement(".tour-workspace", HTMLElement)
-const navigationResizer = requiredElement(
-  "#tour-navigation-resizer",
-  HTMLElement
-)
-const navigationPaneToggle = requiredElement(
-  "#tour-navigation-pane-toggle",
-  HTMLButtonElement
-)
 const topbar = requiredElement(".tour-topbar", HTMLElement)
 const lesson = requiredElement(".tour-lesson", HTMLElement)
 const lessonResizer = requiredElement("#tour-lesson-resizer", HTMLElement)
@@ -123,8 +122,20 @@ const prerequisiteList = requiredElement(
   "#tour-prerequisite-list",
   HTMLUListElement
 )
-const runSection = requiredElement("#tour-run-section", HTMLElement)
-const runCopy = requiredElement("#tour-run-copy", HTMLElement)
+const chapterProgress = requiredElement("#tour-chapter-progress", HTMLElement)
+const trySteps = requiredElement("#tour-try-steps", HTMLOListElement)
+const tryResetButton = requiredElement(
+  "#tour-try-reset-button",
+  HTMLButtonElement
+)
+const runCheck = requiredElement("#tour-run-check", HTMLElement)
+const searchButton = requiredElement("#tour-search-button", HTMLButtonElement)
+const themeButton = requiredElement("#tour-theme-button", HTMLButtonElement)
+const themeSystemButton = requiredElement(
+  "#tour-theme-system-button",
+  HTMLButtonElement
+)
+const furtherDetails = requiredElement("#tour-further", HTMLDetailsElement)
 const expectedOutput = requiredElement("#tour-expected-output", HTMLElement)
 const guideSection = requiredElement("#tour-guide-section", HTMLElement)
 const lessonGuide = requiredElement("#tour-guide", HTMLElement)
@@ -138,11 +149,7 @@ const introducedSection = requiredElement(
   HTMLElement
 )
 const introduced = requiredElement("#tour-introduced", HTMLElement)
-const trySection = requiredElement("#tour-try-section", HTMLElement)
-const challenge = requiredElement("#tour-challenge", HTMLElement)
 const topicList = requiredElement("#tour-topic-list", HTMLUListElement)
-const exerciseSection = requiredElement("#tour-exercise-section", HTMLElement)
-const exerciseCopy = requiredElement("#tour-exercise-copy", HTMLElement)
 const exerciseButton = requiredElement(
   "#tour-exercise-button",
   HTMLButtonElement
@@ -177,20 +184,10 @@ const nextButton = requiredElement("#tour-next-button", HTMLButtonElement)
 const runButton = requiredElement("#tour-run-button", HTMLButtonElement)
 const resetButton = requiredElement("#tour-reset-button", HTMLButtonElement)
 const formatButton = requiredElement("#tour-format-button", HTMLButtonElement)
-const settingsButton = requiredElement(
-  "#tour-settings-button",
-  HTMLButtonElement
-)
+// エディターの設定のダイアログは、Search の Settings から開く。
+const settingsButton = document.createElement("button")
 const toolsButton = requiredElement("#tour-tools-button", HTMLButtonElement)
 const toolsMenu = requiredElement("#tour-tools-menu", HTMLElement)
-const surfaceSwitcherButton = requiredElement(
-  "#tour-surface-switcher-button",
-  HTMLButtonElement
-)
-const surfaceSwitcherMenu = requiredElement(
-  "#tour-surface-switcher-menu",
-  HTMLElement
-)
 const editorHost = requiredElement("#tour-editor", HTMLDivElement)
 const statusDot = requiredElement("#tour-status-dot", HTMLElement)
 const statusText = requiredElement("#tour-status-text", HTMLElement)
@@ -242,6 +239,8 @@ let runRevision = 0
 let htmlPreviewUrl: string | undefined
 let activePreviewPreparation: AbortController | undefined
 let navigationBackgroundScrollTop = 0
+// Try it の手順の進み具合。レッスンを開き直すと最初から数える。
+let tryState = { ran: false, changed: false }
 const expandedCategoryIds = new Set<string>([currentLesson.categoryId])
 const expandedChapterIds = new Set<string>([currentLesson.chapterId])
 
@@ -264,15 +263,87 @@ preferences.subscribe(({ showWhitespace }) =>
 )
 connectEditorSettings({
   button: settingsButton,
-  returnFocus: toolsButton,
+  returnFocus: searchButton,
   idPrefix: "tour",
   store: preferences,
 })
 connectOverflowMenu({ button: toolsButton, menu: toolsMenu })
-connectOverflowMenu({
-  button: surfaceSwitcherButton,
-  menu: surfaceSwitcherMenu,
+const themeController = createThemeController({
+  storage: browserStorage(),
+  root: document.documentElement,
+  query: window.matchMedia("(prefers-color-scheme: dark)"),
+  eventTarget: window,
 })
+connectThemeButton(themeButton, themeController, themeSystemButton)
+
+// Search（⌘K）は Playground と同じ。例は Playground で開き、レッスンはこの場で開く。
+const search = connectSearchPalette({
+  dialog: requiredElement("#search-dialog", HTMLDialogElement),
+  input: requiredElement("#search-input", HTMLInputElement),
+  scopes: requiredElement("#search-scopes", HTMLElement),
+  results: requiredElement("#search-results", HTMLElement),
+  detail: requiredElement("#search-detail", HTMLElement),
+  examples: [],
+  loadEntries: async () => {
+    const { discoverGroups, samples } = await import("../samples")
+    return [
+      ...exampleEntries(
+        samples.filter(({ kind }) => kind !== "lesson"),
+        discoverGroups
+      ),
+      ...lessonEntries(curriculumJson),
+    ]
+  },
+  onExample: (id) => {
+    window.location.assign(
+      new URL(`../?example=${encodeURIComponent(id)}`, window.location.href)
+    )
+    return undefined
+  },
+  onLesson: (id) => loadLesson(findTourLesson(id).id, "push", true),
+  commands: [
+    {
+      id: "reset",
+      title: "Reset lesson",
+      detail: "このレッスンのコードを、最初の状態に戻す",
+      keywords: "元に戻す",
+      run: () => {
+        resetLesson()
+        return undefined
+      },
+    },
+    ...(["light", "dark", "system"] as const).map((preference) => ({
+      id: `theme-${preference}`,
+      title: `${preference[0]?.toUpperCase()}${preference.slice(1)} theme`,
+      detail: {
+        light: "明るい色で表示する",
+        dark: "暗い色で表示する",
+        system: "OS の設定に合わせる",
+      }[preference],
+      keywords: "theme テーマ",
+      tag: () =>
+        themeController.get().preference === preference ? "Current" : undefined,
+      run: () => {
+        themeController.set(preference)
+        return undefined
+      },
+    })),
+    {
+      id: "editor-settings",
+      title: "Editor settings",
+      detail: "インデントの表示と、Format の行の幅を変える",
+      keywords: "settings 設定 whitespace width",
+      run: () => {
+        settingsButton.click()
+        return undefined
+      },
+    },
+  ],
+  renderApiDetail: (item) => createReferenceCard(document, item),
+})
+searchButton.addEventListener("click", () =>
+  search.open({ opener: searchButton })
+)
 
 const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
   analyze: analyzeSingleFile,
@@ -288,6 +359,7 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
   },
   apply: (analysis, analyzedSource) => {
     latestAnalysis = analysis
+    search.setApiCatalog(analysis.standardLibrary)
     const diagnostics = analysis.diagnostics.diagnostics
     editor.dispatch(
       setDiagnostics(editor.state, [
@@ -310,8 +382,6 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
 connectTourPaneLayout(
   {
     workspace,
-    navigationResizer,
-    navigationToggle: navigationPaneToggle,
     lessonResizer,
     lab,
     outputResizer,
@@ -319,9 +389,8 @@ connectTourPaneLayout(
   },
   () => editor.requestMeasure()
 )
-navigationPaneToggle.addEventListener("pointerdown", (event) =>
-  event.stopPropagation()
-)
+// Run は流れの線の上にある。押したときに、線の高さ変更を始めない。
+runButton.addEventListener("pointerdown", (event) => event.stopPropagation())
 connectPreviewFullscreen(outputSection, fullscreenButton)
 loadLesson(currentLesson.id, "replace")
 
@@ -332,12 +401,9 @@ menuButton.addEventListener("click", () => {
 menuCloseButton.addEventListener("click", () => {
   setNavigationOpen(false, { returnFocus: true })
 })
-lessonFocusButton.addEventListener("click", () => {
-  lesson.scrollIntoView({ block: "start" })
-  lessonTitle.focus({ preventScroll: true })
-})
+lessonFocusButton.addEventListener("click", () => showMobilePanel("lesson"))
 codeFocusButton.addEventListener("click", () => {
-  lab.scrollIntoView({ block: "start" })
+  showMobilePanel("code")
   editor.focus()
 })
 navigation.addEventListener("keydown", handleNavigationKeydown)
@@ -347,20 +413,21 @@ previousButton.addEventListener("click", () => moveLesson(-1))
 nextButton.addEventListener("click", () => moveLesson(1))
 runButton.addEventListener("click", () => void run())
 resetButton.addEventListener("click", () => resetLesson())
+tryResetButton.addEventListener("click", () => resetLesson())
 exerciseButton.addEventListener("click", () => {
   if (currentLesson.format === undefined) return
   loadSourceVariant(
     currentLesson.exerciseSource,
-    "課題sourceを開きました。Runで期待結果と比べられます。",
-    "Exercise ready"
+    "答えのコードを開きました。Run を押すと、書き換えたあとの出力になります。",
+    "Answer opened"
   )
 })
 diagnosticButton.addEventListener("click", () => {
   if (currentLesson.format === undefined) return
   loadSourceVariant(
     currentLesson.diagnosticSource,
-    "失敗例を開きました。compiler diagnosticを確認してください。",
-    "Diagnostic example ready"
+    "間違いの例を開きました。エラーの知らせを読んでみてください。",
+    "Mistake example opened"
   )
 })
 formatButton.addEventListener("click", () => void formatSource())
@@ -371,9 +438,16 @@ showPreviewButton.addEventListener("click", () => {
   setOutputMode("html")
 })
 document.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" || (!event.metaKey && !event.ctrlKey)) return
-  event.preventDefault()
-  if (!runButton.disabled) void run()
+  if (!event.metaKey && !event.ctrlKey) return
+  if (event.key === "Enter") {
+    event.preventDefault()
+    if (!runButton.disabled) void run()
+    return
+  }
+  if (event.key.toLowerCase() === "k" && !event.shiftKey && !event.altKey) {
+    event.preventDefault()
+    searchButton.click()
+  }
 })
 window.addEventListener("popstate", () => {
   const lessonId = new URL(window.location.href).searchParams.get("lesson")
@@ -598,10 +672,12 @@ function renderNeighborButton(
   neighbor: TourLessonNeighbor | undefined
 ): void {
   button.disabled = neighbor === undefined
-  const directionLabel = direction === "previous" ? "← 前へ" : "次へ →"
+  const directionLabel = direction === "previous" ? "← Previous" : "Next"
   if (neighbor === undefined) {
     button.textContent =
-      direction === "previous" ? "最初のlessonです" : "最後のlessonです"
+      direction === "previous"
+        ? "最初のレッスンです"
+        : "最後のレッスンです。お疲れさまでした。"
     button.removeAttribute("aria-label")
     return
   }
@@ -614,11 +690,11 @@ function renderNeighborButton(
   const boundary = document.createElement("span")
   boundary.className = "tour-neighbor-boundary"
   boundary.hidden = !neighbor.crossesCategory
-  boundary.textContent = `${direction === "previous" ? "前" : "次"}のcategory · ${neighbor.categoryTitle}`
+  boundary.textContent = `${direction === "previous" ? "前" : "次"}の部 · ${neighbor.categoryTitle}`
   button.replaceChildren(directionText, title, boundary)
   button.setAttribute(
     "aria-label",
-    `${direction === "previous" ? "前" : "次"}のlesson、${neighbor.title}${
+    `${direction === "previous" ? "前" : "次"}のレッスン、${neighbor.title}${
       neighbor.crossesCategory ? `、${boundary.textContent}` : ""
     }`
   )
@@ -632,6 +708,9 @@ function loadLesson(
   const navigationWasOpen = navigation.dataset.mobileOpen === "true"
   cancelActiveExecution()
   currentLesson = findTourLesson(lessonId)
+  tryState = { ran: false, changed: false }
+  furtherDetails.open = false
+  showMobilePanel("lesson")
   expandedCategoryIds.add(currentLesson.categoryId)
   expandedChapterIds.add(currentLesson.chapterId)
   progress = visitTourLesson(progress, currentLesson.id)
@@ -684,7 +763,6 @@ function renderLesson(): void {
   lessonSummary.textContent = currentLesson.summary
   goal.textContent = currentLesson.goal
   renderGuideMarkdown(lessonGuide, currentLesson.guide)
-  challenge.textContent = currentLesson.challenge
   focusList.replaceChildren(
     ...currentLesson.focus.map((focus) => listItem(focus))
   )
@@ -692,7 +770,9 @@ function renderLesson(): void {
     ...currentLesson.introducedSurfaces.map((topic) => listItem(topic))
   )
   renderLessonFormat(currentLesson.format)
-  stepLabel.textContent = `Step ${currentLesson.position} / ${tourLessons.length}`
+  stepLabel.textContent = `${currentLesson.position}/${tourLessons.length}`
+  renderChapterProgress(navigationModel)
+  renderTrySteps()
   progressBar.max = navigationModel.progress.total
   progressBar.value = navigationModel.progress.completed
   progressBar.textContent = progressText(navigationModel.progress)
@@ -735,19 +815,26 @@ function renderDeepDiveLinks(): void {
 function renderLessonFormat(format: TourLessonFormat | undefined): void {
   const structured = format !== undefined
   guideSection.hidden = structured
-  trySection.hidden = structured
+  topicList.hidden = structured
+  exerciseButton.hidden = !structured
   for (const section of [
     prerequisiteSection,
-    runSection,
     walkthroughSection,
     introducedSection,
-    exerciseSection,
     diagnosticSection,
     recapSection,
     nextSection,
   ]) {
     section.hidden = !structured
   }
+  applyWalkthroughPins()
+  expectedOutput.hidden = currentLesson.interactive
+  expectedOutput.textContent =
+    currentLesson.expectedFailure === ""
+      ? currentLesson.expectedOutput
+      : currentLesson.expectedOutput === ""
+        ? `typed failure:\n${currentLesson.expectedFailure}`
+        : `stdout:\n${currentLesson.expectedOutput}\n\ntyped failure:\n${currentLesson.expectedFailure}`
   if (format === undefined) return
 
   renderTourInline(prerequisiteCopy, format.prerequisite)
@@ -763,22 +850,10 @@ function renderLessonFormat(format: TourLessonFormat | undefined): void {
   )
   prerequisiteList.hidden = currentLesson.prerequisites.length === 0
 
-  runCopy.textContent = currentLesson.interactive
-    ? "Runするとbrowser Previewが起動します。表示と操作を確認してください。"
-    : currentLesson.expectedFailure === ""
-      ? "Runすると次の結果がOutputへ表示されます。"
-      : "Runすると次のstdoutを出力し、typed failureで終了します。"
-  expectedOutput.hidden = currentLesson.interactive
-  expectedOutput.textContent =
-    currentLesson.expectedFailure === ""
-      ? currentLesson.expectedOutput
-      : currentLesson.expectedOutput === ""
-        ? `typed failure:\n${currentLesson.expectedFailure}`
-        : `stdout:\n${currentLesson.expectedOutput}\n\ntyped failure:\n${currentLesson.expectedFailure}`
-
   walkthrough.replaceChildren(
     ...format.walkthrough.map((step) => walkthroughCard(step))
   )
+  applyWalkthroughPins()
   introduced.replaceChildren(
     ...format.introduced.flatMap((surface) => {
       const term = document.createElement("dt")
@@ -791,7 +866,6 @@ function renderLessonFormat(format: TourLessonFormat | undefined): void {
     })
   )
 
-  renderTourInline(exerciseCopy, format.exercise.instruction)
   exerciseOutput.textContent = currentLesson.exerciseExpectedOutput
   diagnosticHeading.textContent = format.diagnostic.heading
   renderTourInline(diagnosticCopy, format.diagnostic.body)
@@ -857,6 +931,7 @@ function selectCanonicalSourceRange(range: TourSourceRange): void {
     executionSettings.reset()
     source = currentLesson.source
     replaceEditorSource(editor, source)
+    applyWalkthroughPins()
     liveAnalysis.schedule(source)
   }
   const start = editor.state.doc.line(range.startLine)
@@ -880,10 +955,12 @@ function setNavigationOpen(
   requestedOpen: boolean,
   options: NavigationCloseOptions = {}
 ): void {
-  const collapsible = collapsibleNavigationQuery.matches
+  // コースマップは、どの画面幅でも上のバーの下に重ねて開く
+  const collapsible = true
   const wasOpen = navigation.dataset.mobileOpen === "true"
   const open = collapsible && requestedOpen
   navigation.dataset.mobileOpen = String(open)
+  navigation.hidden = !open
   menuButton.setAttribute("aria-expanded", String(open))
 
   if (!collapsible) {
@@ -927,10 +1004,6 @@ function setNavigationOpen(
 
 function syncNavigationViewport(): void {
   const open = navigation.dataset.mobileOpen === "true"
-  if (!collapsibleNavigationQuery.matches) {
-    setNavigationOpen(false)
-    return
-  }
 
   navigation.inert = !open
   setNavigationBackgroundInert(open)
@@ -953,7 +1026,7 @@ function syncNavigationViewport(): void {
 }
 
 function setNavigationBackgroundInert(inert: boolean): void {
-  for (const element of [topbar, menuButton, lesson, lab]) {
+  for (const element of [lesson, lab]) {
     element.inert = inert
   }
 }
@@ -1037,7 +1110,8 @@ function resetLesson(): void {
   stdinInput.value = currentLesson.stdin
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))
-  showTextOutput("Lessonを初期状態へ戻しました。")
+  applyWalkthroughPins()
+  showTextOutput("レッスンのコードを、最初の状態に戻しました。")
   liveAnalysis.schedule(source)
   setStatus("ready", "Lesson reset")
   editor.focus()
@@ -1053,6 +1127,7 @@ function loadSourceVariant(
   source = variantSource
   outputMode = "text"
   replaceEditorSource(editor, source)
+  applyWalkthroughPins()
   editor.dispatch(setDiagnostics(editor.state, []))
   showTextOutput(outputMessage)
   liveAnalysis.schedule(source)
@@ -1149,9 +1224,10 @@ async function run(): Promise<void> {
       },
       () => {
         if (revision !== runRevision) return
-        output.textContent = "Interactive preview is running."
+        output.textContent = "Preview で動いています。"
         setOutputMode("html")
         setStatus("success", "Interactive")
+        markTryProgress(undefined)
         completeCurrentLesson()
       }
     )
@@ -1171,6 +1247,7 @@ async function run(): Promise<void> {
         }
         showExecutionOutput(completion.result.stdout)
         setStatus("success", "Completed")
+        markTryProgress(completion.result.stdout)
         completeCurrentLesson()
       },
       (error: unknown) => {
@@ -1210,6 +1287,7 @@ function showExecutionOutput(stdout: string): void {
 }
 
 function showTextOutput(message: string): void {
+  runCheck.hidden = true
   output.className = "output-text"
   delete output.dataset.liveDiagnostics
   output.textContent = message
@@ -1331,4 +1409,132 @@ function setStatus(
 // 下の帯の状態の言葉。Output の Problems と同じ言い方にする（DESIGN.md「画面の言葉」）。
 function problemCount(count: number): string {
   return `${count} ${count === 1 ? "problem" : "problems"}`
+}
+
+// 狭い画面では、レッスンとコードを下の Lesson / Code で切り替える。
+function showMobilePanel(panel: "lesson" | "code"): void {
+  workspace.dataset.mobilePanel = panel
+  lessonFocusButton.setAttribute("aria-pressed", String(panel === "lesson"))
+  codeFocusButton.setAttribute("aria-pressed", String(panel === "code"))
+  if (panel === "code") requestAnimationFrame(() => editor.requestMeasure())
+}
+
+// 章の中の進み具合を、レッスンの数だけ区切ったバーで見せる。
+function renderChapterProgress(
+  model: ReturnType<typeof buildTourNavigationModel>
+): void {
+  const chapter = model.categories
+    .flatMap(({ chapters }) => chapters)
+    .find(({ id }) => id === currentLesson.chapterId)
+  const lessons = chapter?.lessons ?? []
+  chapterProgress.replaceChildren(
+    ...lessons.map((item) => {
+      const segment = document.createElement("span")
+      segment.dataset.state = progress.completedLessonIds.includes(item.id)
+        ? "done"
+        : item.state === "current"
+          ? "current"
+          : "todo"
+      return segment
+    })
+  )
+  const done = lessons.filter((item) =>
+    progress.completedLessonIds.includes(item.id)
+  ).length
+  chapterProgress.setAttribute(
+    "aria-label",
+    `この章の進み具合 ${done} / ${lessons.length}`
+  )
+}
+
+// Try it: 自分で書き換えて Run する手順。終わった手順にチェックを付け、今の手順を示す。
+function renderTrySteps(): void {
+  const format = currentLesson.format
+  const steps: { done: boolean; render: (target: HTMLElement) => void }[] = [
+    {
+      done: tryState.ran,
+      render: (target) => {
+        target.textContent = currentLesson.interactive
+          ? "Run を押して、Preview で動かしてみる"
+          : currentLesson.expectedFailure === ""
+            ? "Run を押して、出力を確かめる"
+            : "Run を押して、出力と失敗の知らせを確かめる"
+      },
+    },
+  ]
+  if (format !== undefined) {
+    steps.push({
+      done: tryState.changed,
+      render: (target) => renderTourInline(target, format.exercise.instruction),
+    })
+  } else if (currentLesson.challenge !== "") {
+    steps.push({
+      done: tryState.changed,
+      render: (target) => {
+        target.textContent = currentLesson.challenge
+      },
+    })
+  }
+  const current = steps.findIndex(({ done }) => !done)
+  trySteps.replaceChildren(
+    ...steps.map((step, index) => {
+      const item = document.createElement("li")
+      item.className = "tour-try-step"
+      item.dataset.state = step.done
+        ? "done"
+        : index === current
+          ? "current"
+          : "todo"
+      const mark = document.createElement("span")
+      mark.className = "tour-try-mark"
+      mark.setAttribute("aria-hidden", "true")
+      const body = document.createElement("span")
+      body.className = "tour-try-body"
+      step.render(body)
+      if (step.done) {
+        const done = document.createElement("span")
+        done.className = "visually-hidden"
+        done.textContent = "（済み）"
+        body.append(done)
+      }
+      item.append(mark, body)
+      return item
+    })
+  )
+}
+
+// Run の結果を、期待する出力と比べて Try it の手順に反映する。
+// interactive なレッスンは、Preview が動いた時点で一つ目の手順を終えたとみなす。
+function markTryProgress(stdout: string | undefined): void {
+  const normalized = stdout?.replace(/\s+$/u, "")
+  const expected = currentLesson.expectedOutput.replace(/\s+$/u, "")
+  const exercise = currentLesson.exerciseExpectedOutput.replace(/\s+$/u, "")
+  tryState = {
+    ran: true,
+    changed:
+      tryState.changed ||
+      (normalized !== undefined &&
+        exercise !== "" &&
+        exercise !== expected &&
+        normalized === exercise),
+  }
+  runCheck.hidden =
+    normalized === undefined ||
+    !(normalized === expected || (exercise !== "" && normalized === exercise))
+  renderTrySteps()
+}
+
+// Walkthrough の番号と同じピンを、エディターの該当する行に出す。
+// 答えや間違いの例を開いているときは、行がずれるので出さない。
+function applyWalkthroughPins(): void {
+  const steps = currentLesson.format?.walkthrough ?? []
+  setEditorLinePins(
+    editor,
+    source === currentLesson.source
+      ? steps.map((step, index) => ({
+          line: step.sourceRange.startLine,
+          label: String(index + 1),
+        }))
+      : []
+  )
 }

@@ -342,7 +342,7 @@ const search = connectSearchPalette({
     return sample === undefined ? false : loadSample(sample, "Sample loaded")
   },
   // レッスンの一覧は、Search を初めて開いたときに読み込む。
-  loadLessons: async () =>
+  loadEntries: async () =>
     lessonEntries(
       (await import("../../../examples/tour/curriculum.json")).default
     ),
@@ -743,6 +743,21 @@ document.addEventListener("keydown", (event) => {
   }
 })
 window.addEventListener("beforeunload", () => cancelActiveExecution())
+
+// Tour の Search などから ?example=<ID> で開かれたとき、その例を開く。
+// 書き換えたコードがあれば、今までどおり開く前に確かめる。URL からは消しておく。
+openRequestedExample(new URL(window.location.href))
+
+function openRequestedExample(url: URL): void {
+  const id = url.searchParams.get("example")
+  if (id === null) return
+  url.searchParams.delete("example")
+  history.replaceState(history.state, "", url)
+  const sample = samples.find((candidate) => candidate.id === id)
+  if (sample !== undefined && sample.id !== currentSample?.id) {
+    loadSample(sample, "Sample loaded")
+  }
+}
 
 function searchCommands(): readonly SearchCommand[] {
   const starterSample = defaultSample as (typeof samples)[number]
