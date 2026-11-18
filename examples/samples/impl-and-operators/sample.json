@@ -8,7 +8,7 @@
   "topics": ["impl", "operator", "Add", "Eq"],
   "capabilities": ["console"],
   "outputMode": "text",
-  "prerequisites": ["generic-structs", "traits-and-instances"],
+  "prerequisites": ["records", "newtypes"],
   "featured": false,
   "files": {
     "source": "main.ssrg",

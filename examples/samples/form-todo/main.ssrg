@@ -103,40 +103,6 @@ fn trackLabel track: Track -> String = match track {
   Rest -> "Rest"
 }
 
-fn sameTrack first: Track -> second: Track -> Bool = match first {
-  Build -> match second {
-    Build -> True
-    _ -> False
-  }
-  Share -> match second {
-    Share -> True
-    _ -> False
-  }
-  Rest -> match second {
-    Rest -> True
-    _ -> False
-  }
-}
-
-fn sameFilter first: ViewFilter -> second: ViewFilter -> Bool = match first {
-  All -> match second {
-    All -> True
-    _ -> False
-  }
-  Pinned -> match second {
-    Pinned -> True
-    _ -> False
-  }
-  Open -> match second {
-    Open -> True
-    _ -> False
-  }
-  Complete -> match second {
-    Complete -> True
-    _ -> False
-  }
-}
-
 fn filterLabel filter: ViewFilter -> String = match filter {
   All -> "All plans"
   Pinned -> "Pinned"
@@ -602,7 +568,7 @@ fn trackButton state: MutableSignal<Model>
     buttonType: "button",
     onClick: dispatch state (TrackChanged track),
     style:
-      if sameTrack model.track track then
+      if model.track == track then
         selectedChoiceStyle
       else
         neutralChoiceStyle,
@@ -620,7 +586,7 @@ fn filterButton state: MutableSignal<Model>
     onClick: dispatch state (FilterChanged filter),
     onKeyDown: filterKeyTask state filter,
     style:
-      if sameFilter model.filter filter then
+      if model.filter == filter then
         selectedChoiceStyle
       else
         neutralChoiceStyle,

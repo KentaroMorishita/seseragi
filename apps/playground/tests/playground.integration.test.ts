@@ -1,4 +1,3 @@
-import { createPreviewDocument } from "../src/preview-document"
 import { describe, expect, test } from "bun:test"
 import { createHash } from "node:crypto"
 import { readdir } from "node:fs/promises"
@@ -15,6 +14,7 @@ import type {
   ProjectRequest,
 } from "../src/compiler/types"
 import { collectWorkspaceDiagnostics } from "../src/diagnostics/workspace-diagnostics"
+import { createPreviewDocument } from "../src/preview-document"
 import {
   executeGeneratedModule,
   executeGeneratedProject,
@@ -2525,16 +2525,7 @@ describe("Playground sample catalog", () => {
     )
     expect(
       samples.filter(({ kind }) => kind === "lesson").map(({ id }) => id)
-    ).toEqual([
-      "data-and-patterns",
-      "effects-and-do",
-      "functions-and-pipelines",
-      "generic-structs",
-      "hello-world",
-      "signal-composition",
-      "strings-and-templates",
-      "traits-and-instances",
-    ])
+    ).toEqual(["hello-world"])
     expect(
       samples
         .filter(({ id }) =>
@@ -2557,7 +2548,6 @@ describe("Playground sample catalog", () => {
       "project-greeting",
       "html-components",
       "interactive-app",
-      "signal-run-route",
       "seseragi-landing-page",
       "form-todo",
       "project-flow-app",
@@ -2601,13 +2591,6 @@ describe("Playground sample catalog", () => {
           experience: "guided",
           architecture: "signal-run",
           focus: "composition",
-        }),
-        expect.objectContaining({
-          id: "signal-run-route",
-          experience: "minimal",
-          architecture: "signal-run",
-          focus: "state",
-          comparisonSample: "interactive-app",
         }),
         expect.objectContaining({
           id: "form-todo",
@@ -2668,9 +2651,9 @@ describe("Playground sample catalog", () => {
 
   test("starts minimal and keeps explanatory prose in the guide", () => {
     const hello = samples.find((sample) => sample.id === "hello-world")
-    expect(hello?.source.trim()).toBe(
-      'pub effect fn main = println "Hello, Seseragi!"'
-    )
+    expect(hello?.source).toContain("type Mode =")
+    expect(hello?.source).toContain("|> greeting")
+    expect(hello?.source).toContain("|> println")
     for (const sample of samples) {
       expect(sample.source).not.toContain("Lesson ")
       expect(sample.source).not.toContain("Expected stdout")
@@ -3390,23 +3373,16 @@ fails dom.DomRuntimeError<Never> =
     expect(main).toContain("execution.cancel()")
   })
 
-  test("keeps dom.app and explicit dom.run as one semantic comparison pair", async () => {
+  test("keeps dom.app trail planner view snapshots across route updates", async () => {
     const domApp = samples.find(({ id }) => id === "interactive-app")
-    const signalRun = samples.find(({ id }) => id === "signal-run-route")
-    if (domApp === undefined || signalRun === undefined) {
-      throw new Error("missing Trail planner comparison samples")
+    if (domApp === undefined) {
+      throw new Error("missing interactive-app sample")
     }
 
-    expect(domApp.comparisonSample).toBe(signalRun.id)
-    expect(signalRun.comparisonSample).toBe(domApp.id)
+    expect(domApp.comparisonSample).toBeUndefined()
     expect(domApp.architecture).toBe("dom-app")
-    expect(signalRun.architecture).toBe("signal-run")
 
-    const sharedMarker = "// Shared comparison model and view."
     const runtimeMarker = "// Runtime boundary:"
-    const sharedSource = (source: string) =>
-      source.slice(source.indexOf(sharedMarker), source.indexOf(runtimeMarker))
-    expect(sharedSource(domApp.source)).toBe(sharedSource(signalRun.source))
 
     const snapshotSource = (source: string) => `${source.slice(
       0,
@@ -3444,14 +3420,9 @@ fails String =
       domApp.id,
       snapshotSource(domApp.source)
     )
-    const runSnapshots = await executeSnapshots(
-      signalRun.id,
-      snapshotSource(signalRun.source)
-    )
-    expect(runSnapshots).toEqual(appSnapshots)
     expect(appSnapshots.stdout.split("\n")).toHaveLength(4)
     expect(appSnapshots.stdout).toContain("川辺をゆっくり歩く")
-    expect(appSnapshots.stdout).toContain("木陰のloopを巡る")
+    expect(appSnapshots.stdout).toContain("木陰の周回コースを歩く")
     expect(appSnapshots.stdout).toContain("尾根の展望へ登る")
     expect(appSnapshots.stdout).toContain("width: 28%")
     expect(appSnapshots.stdout).toContain("width: 62%")
@@ -3500,7 +3471,7 @@ fails String =
 
     expect(sample?.source).toContain("alias Pair<A>")
     expect(sample?.source).toContain("Task<Unit>")
-    expect(sample?.expectedOutput).toBe("user: 42, signal: 42")
+    expect(sample?.expectedOutput).toBe("/users/41 -> /users/42")
   })
 
   test("returns structured diagnostics for invalid source", async () => {

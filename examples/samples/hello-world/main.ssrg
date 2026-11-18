@@ -1,1 +1,16 @@
-pub effect fn main = println "Hello, Seseragi!"
+type Mode =
+  | Starter String
+  | Exploring String
+
+fn greeting mode: Mode -> String = match mode {
+  Starter name -> `Hello, ${name}! Welcome to Seseragi.`
+  Exploring topic -> `Exploring ${topic} with types and pipelines.`
+}
+
+fn banner message: String -> String = `>> ${message}`
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  Starter "Seseragi"
+  |> greeting
+  |> banner
+  |> println

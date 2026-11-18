@@ -79,7 +79,7 @@ dispatch、app-levelのApplicative composition、そしてExplorerで追えるmo
 `parseWebUrl`の検証結果だけを渡します。class utilityは長いliteralへ戻さず、
 `ui/styles.ssrg`の`cx [...]`とnamed `html.Style`を使います。
 
-pure reducerだけの最小構成は`interactive-app`、同じappの明示的runtime接続は
-`signal-run-route`、single-fileでformと多様なeventを確認する完成例は`form-todo`です。
+pure reducerだけの最小構成は`interactive-app`、明示的な`dom.run`の最小構成は
+`web-starter`、single-fileでformと多様なeventを確認する完成例は`form-todo`です。
 このRelease Roomは、その次にExplorerを開いて「featureの境界が画面の境界とどう対応するか」を
 読むためのmulti-module Showcaseです。

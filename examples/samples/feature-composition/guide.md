@@ -10,4 +10,4 @@ Playgroundは単一file編集なので同じ境界を一file内で見せてい�
 
 lavenderのRelease rhythmはrootが合成するsurface、amber / blue / greenのPulseはfeatureごとのprivate stateです。fixed Unsplash imageをheroへ置き、mobileではheroとPulseが一列、desktopでは二つのfeature surfaceが並びます。`Counter A`のような仮ラベルではなく、PreviewでもSignalの独立性を読むための具体的なritualとして表示します。
 
-一つのState / Action / pure reducerだけで足りる場合は`interactive-app`の`dom.app`が短い選択です。同じappで明示的runtime接続だけを先に比べる場合は`signal-run-route`、form、validation、keyboard / pointer eventまで一つの画面で試す場合は`form-todo`へ、同じSignal ownershipをmodule境界で追う場合は`project-flow-app`へ進みます。
+一つのState / Action / pure reducerだけで足りる場合は`interactive-app`の`dom.app`が短い選択です。明示的runtime接続の最小構成から読みたい場合は`web-starter`、form、validation、keyboard / pointer eventまで一つの画面で試す場合は`form-todo`へ、同じSignal ownershipをmodule境界で追う場合は`project-flow-app`へ進みます。

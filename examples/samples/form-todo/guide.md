@@ -35,7 +35,7 @@ signals.make + dom.runです。このsampleではdom.appを使いません。
 dom.runのperformを自分で渡すことで、イベントをTask<Unit>として
 実行する境界と、失敗をStringへ変換するmount処理をこのsingle-file
 featureの中で読み取れるようにしています。純粋なreducerだけを学ぶなら
-interactive-app、runtime接続だけを段階的に読むならsignal-run-routeが
+interactive-app、明示的なdom.runの最小構成を先に読むならweb-starterが
 先に向いています。
 
 ## UIの読み方
@@ -57,7 +57,7 @@ buttonは通常のclick actionだけを所有し、pointer fixtureとはDOM上�
 
 ## 前提と次のsample
 
-interactive-appでpure viewとSignalの基本、signal-run-routeで
+interactive-appでpure viewとSignalの基本、web-starterで
 明示的なdom.run、feature-compositionでfeatureごとのlocal stateを
 先に読むと、このsampleの構造を追いやすくなります。Explorerを含む複数
 module構成へ進むときはproject-flow-appを選んでください。

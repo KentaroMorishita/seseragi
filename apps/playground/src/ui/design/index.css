@@ -1,0 +1,4 @@
+/* v2 の土台。トークン、フォント、共通部品の順に読み込みます。 */
+@import "./fonts.css";
+@import "./tokens.css";
+@import "./components.css";

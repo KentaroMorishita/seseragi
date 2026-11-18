@@ -1,6 +1,6 @@
 # Playground / Tour デザインの決めごと（初版ドラフト・旧案）
 
-> これは旧案（v1）です。現行の案は [`docs/design/playground/DESIGN.md`](../../DESIGN.md) を見てください。この文書の中のリンクは、旧案を置いていた場所を指しています。
+> これは旧案（v1）です。現行の案は [`apps/playground/DESIGN.md`](../../../../../apps/playground/DESIGN.md) を見てください。この文書の中のリンクは、旧案を置いていた場所を指しています。
 
 Playground と Tour の画面を変える人のための文書です。見た目、言葉、操作の感触をそろえるための決めごとをまとめます。
 

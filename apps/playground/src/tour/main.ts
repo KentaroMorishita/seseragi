@@ -32,6 +32,7 @@ import {
   isPreviewNavigationCancellation,
   previewNavigationCancelled,
 } from "../runtime/preview-navigation"
+import "../ui/design/index.css"
 import "../styles.css"
 import {
   deepDiveArticles,
