@@ -49,7 +49,7 @@ describe("desktop panel layout", () => {
     expect(styles).toMatch(/\.pg-stage \{\s*grid-row: 3;/)
     // コード・流れ・出力の三列。コードの幅は workspace-resizer が動かす
     expect(styles).toMatch(
-      /\.pg-stage \{[\s\S]*?calc\(var\(--editor-panel-ratio\) - 52px\)\) 104px/
+      /\.pg-stage \{[\s\S]*?min\(calc\(var\(--editor-panel-ratio\) - 52px\), calc\(100% - 404px\)\)\s*\)\s*104px minmax\(300px, 1fr\)/
     )
   })
 

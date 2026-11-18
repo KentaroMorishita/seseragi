@@ -199,9 +199,13 @@ body.preview-fullscreen-fallback-open {
   overflow: hidden;
   display: grid;
   /* 比率は流れの線の位置。コードの列は、流れの列の半分だけ手前で終わる */
+  /* コードの列は、流れの列と、出力の最小幅（300px）を残す幅までに抑える */
   grid-template-columns:
-    minmax(360px, calc(var(--editor-panel-ratio) - 52px)) 104px
-    minmax(300px, 1fr);
+    minmax(
+      360px,
+      min(calc(var(--editor-panel-ratio) - 52px), calc(100% - 404px))
+    )
+    104px minmax(300px, 1fr);
   padding: 0 var(--space-5) var(--space-3);
 }
 
@@ -284,6 +288,8 @@ body.preview-fullscreen-fallback-open {
 .pg-editor-panel {
   grid-area: editor;
   position: relative;
+  /* 狭い画面で Explorer を重ねて開いても、カードの高さに収めて中でスクロールさせる */
+  height: 100%;
   min-width: 0;
   min-height: 0;
   display: flex;
@@ -2179,8 +2185,11 @@ body.preview-fullscreen-fallback-open {
 @media (max-width: 1100px) {
   .pg-stage {
     grid-template-columns:
-      minmax(320px, calc(var(--editor-panel-ratio) - 44px)) 88px
-      minmax(260px, 1fr);
+      minmax(
+        320px,
+        min(calc(var(--editor-panel-ratio) - 44px), calc(100% - 348px))
+      )
+      88px minmax(260px, 1fr);
     padding: 0 var(--space-4) var(--space-3);
   }
 
