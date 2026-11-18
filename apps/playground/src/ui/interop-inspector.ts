@@ -6,6 +6,7 @@ import type {
 import { currentBindingInspection } from "../workspace/binding-inspection"
 import type { WorkspaceState } from "../workspace/model"
 import { describeSemanticNode } from "../workspace/semantic-inspection"
+import { createIcon } from "./icons"
 
 export type InteropView = Readonly<{
   id: string
@@ -176,11 +177,19 @@ export function connectInteropInspector(options: {
           select.append(option)
         }
         if (!semantic.nodes.some((node) => node.id === selectedType)) {
-          const firstSymbol = Object.entries(semantic.symbols).find(([key]) => !semantic.privateSymbols?.includes(key))?.[1]
-          const root = firstSymbol && typeof firstSymbol === "object" && "typeRef" in firstSymbol
-            ? String(firstSymbol.typeRef)
-            : ""
-          selectedType = semantic.nodes.find((node) => node.id === root)?.id ?? semantic.nodes[0]?.id ?? ""
+          const firstSymbol = Object.entries(semantic.symbols).find(
+            ([key]) => !semantic.privateSymbols?.includes(key)
+          )?.[1]
+          const root =
+            firstSymbol &&
+            typeof firstSymbol === "object" &&
+            "typeRef" in firstSymbol
+              ? String(firstSymbol.typeRef)
+              : ""
+          selectedType =
+            semantic.nodes.find((node) => node.id === root)?.id ??
+            semantic.nodes[0]?.id ??
+            ""
         }
         select.value = selectedType
         select.addEventListener("change", () => {
@@ -291,10 +300,11 @@ export function connectInteropInspector(options: {
     title,
     element(
       "p",
-      "Compare declaration inputs with generated bindings. Generated code is read-only."
+      "TypeScript の宣言と、そこから作った Seseragi のバインディングを並べて比べます。作ったコードは読むだけです。"
     )
   )
-  const close = element("button", "×")
+  const close = element("button")
+  close.append(createIcon(document, "close"))
   close.type = "button"
   close.className = "pg-dialog-close"
   close.setAttribute("aria-label", "Close Interop Inspector")

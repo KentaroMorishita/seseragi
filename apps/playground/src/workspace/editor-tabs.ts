@@ -1,3 +1,4 @@
+import { createIcon } from "../ui/icons"
 import {
   activateWorkspaceFile,
   closeWorkspaceFile,
@@ -174,7 +175,7 @@ export function connectWorkspaceTabs(
     const dirty = document.createElement("span")
     dirty.className = "workspace-tab-dirty"
     dirty.setAttribute("aria-hidden", "true")
-    dirty.textContent = item.dirty ? "●" : ""
+    dirty.hidden = !item.dirty
     const label = document.createElement("span")
     label.className = "workspace-tab-label"
     label.textContent = item.name
@@ -186,7 +187,7 @@ export function connectWorkspaceTabs(
     close.dataset.tabAction = "close"
     close.setAttribute("aria-label", `Close ${item.path}`)
     close.title = `Close ${item.path}`
-    close.textContent = "×"
+    close.append(createIcon(document, "close"))
     wrapper.append(tab, close)
     return wrapper
   }

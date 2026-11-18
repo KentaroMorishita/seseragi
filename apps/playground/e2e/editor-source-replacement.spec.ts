@@ -79,7 +79,7 @@ test("diagnostic navigation can be followed by Format and another edit", async (
   await page.goto("/")
   await page.locator(".cm-content").fill("pub effect fn main=missing\n")
   await page.locator("#run-button").click()
-  await expect(page.locator("#status-text")).toContainText("diagnostic")
+  await expect(page.locator("#status-text")).toContainText("problem")
   await page.locator("#output button").first().click()
   await expect
     .poll(() => page.evaluate(() => getSelection()?.toString()))

@@ -28,10 +28,10 @@ export function connectEditorSettings({
   dialog.innerHTML = `
     <div class="editor-settings-heading">
       <div>
-        <span>SHARED PREFERENCES</span>
-        <h2 id="${idPrefix}-settings-title">Settings</h2>
+        <h2 id="${idPrefix}-settings-title">Editor settings</h2>
+        <p>Playground と Tour で共通の設定です。</p>
       </div>
-      <button class="editor-settings-close" type="button" aria-label="Settingsを閉じる">×</button>
+      <button class="editor-settings-close" type="button" aria-label="Close editor settings"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 4.5 7 7M11.5 4.5l-7 7" /></svg></button>
     </div>
     <div class="editor-settings-content">
       <fieldset>
@@ -39,22 +39,22 @@ export function connectEditorSettings({
         <label class="editor-setting-row">
           <span>
             <strong>Show indentation whitespace</strong>
-            <small>Indent guidesとしてspaceとtabを表示します。</small>
+            <small>インデントの空白とタブを、薄い印で表示します。</small>
           </span>
           <input class="editor-settings-whitespace" type="checkbox" />
         </label>
       </fieldset>
       <fieldset>
-        <legend>Formatting</legend>
+        <legend>Format</legend>
         <div class="editor-settings-width">
           <strong>Line width</strong>
           <label>
             <input class="editor-settings-auto" type="radio" name="${idPrefix}-format-width" value="auto" />
-            <span><strong>Auto</strong><small>Format押下時のeditor幅に合わせます。</small></span>
+            <span><strong>Auto</strong><small>Format を押したときの、エディターの幅に合わせます。</small></span>
           </label>
           <label>
             <input class="editor-settings-fixed" type="radio" name="${idPrefix}-format-width" value="fixed" />
-            <span><strong>Fixed</strong><small>PlaygroundとTourで同じ幅を使用します。</small></span>
+            <span><strong>Fixed</strong><small>Playground と Tour で、同じ幅を使います。</small></span>
           </label>
           <label class="editor-settings-fixed-value">
             <span>Characters</span>
@@ -111,7 +111,7 @@ export function connectEditorSettings({
     const valid = isValidFixedFormatWidth(value)
     const message = valid
       ? ""
-      : `${minimumFormatWidth}〜${maximumFormatWidth}の整数を入力してください。`
+      : `${minimumFormatWidth}〜${maximumFormatWidth} の整数を入れてください。`
     fixedValue.setCustomValidity(message)
     error.textContent = message
     error.hidden = valid

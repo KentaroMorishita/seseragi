@@ -34,7 +34,7 @@ test("editing an ADT keeps closed Reference cards off the input path", async ({
       source.replace("| Sent String", `| Sent String${variant}`)
     )
     await expect(status).toHaveText(
-      variant === "" ? "Analysis ready" : "1 diagnostic(s)"
+      variant === "" ? "Analysis ready" : "1 problem"
     )
     await expect(cards).toHaveCount(0)
   }

@@ -1,3 +1,4 @@
+import { createIcon, type IconName } from "../ui/icons"
 import {
   beginExclusiveResize,
   finishExclusiveResize,
@@ -620,12 +621,27 @@ export function connectWorkspaceExplorer(
     const marker = document.createElement("span")
     marker.className = "explorer-row-marker"
     marker.setAttribute("aria-hidden", "true")
-    marker.textContent =
-      row.kind === "folder" ? (row.expanded ? "⌄" : "›") : row.dirty ? "●" : "·"
+    // フォルダーは開閉の矢印とフォルダーの形、ファイルはファイルの形
+    if (row.kind === "folder") {
+      marker.append(createIcon(document, "chevron"))
+      marker.dataset.expanded = String(row.expanded)
+    }
+    const kindIcon = document.createElement("span")
+    kindIcon.className = "explorer-row-icon"
+    kindIcon.setAttribute("aria-hidden", "true")
+    kindIcon.append(
+      createIcon(document, row.kind === "folder" ? "folder" : "file")
+    )
     const label = document.createElement("span")
     label.className = "explorer-row-label"
     label.textContent = row.name
-    element.append(marker, label)
+    element.append(marker, kindIcon, label)
+    if (row.dirty) {
+      const dirty = document.createElement("span")
+      dirty.className = "explorer-row-dirty"
+      dirty.setAttribute("aria-hidden", "true")
+      element.append(dirty)
+    }
 
     if (row.entry) {
       const badge = document.createElement("span")
@@ -639,10 +655,10 @@ export function connectWorkspaceExplorer(
     actions.className = "explorer-row-actions"
     actions.append(
       ...(row.kind === "file" && isWorkspaceSourcePath(row.path) && !row.entry
-        ? [rowAction("entry", `Set ${row.path} as entry`, "▶")]
+        ? [rowAction("entry", `Set ${row.path} as entry`, "entry")]
         : []),
-      rowAction("rename", `Rename ${row.path}`, "✎"),
-      rowAction("delete", `Delete ${row.path}`, "×")
+      rowAction("rename", `Rename ${row.path}`, "rename"),
+      rowAction("delete", `Delete ${row.path}`, "trash")
     )
     element.append(actions)
     return element
@@ -691,14 +707,14 @@ export function connectWorkspaceExplorer(
 function rowAction(
   action: string,
   label: string,
-  text: string
+  icon: IconName
 ): HTMLButtonElement {
   const button = document.createElement("button")
   button.type = "button"
   button.dataset.explorerAction = action
   button.setAttribute("aria-label", label)
   button.title = label
-  button.textContent = text
+  button.append(createIcon(document, icon))
   return button
 }
 
