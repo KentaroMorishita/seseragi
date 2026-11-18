@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "reason": "#1358 rebuilds the Playground shell on the v2 design decided in #1350",
+  "reason": "#1358 finishes the v2 shell: Search replaces the old dialogs and Explorer, tabs and Reset take the v2 look",
   "showcaseReviews": {
     "feature-composition": "2e5cd252f0cbfa5c791ef27268a6dae0523efa38abbf2c751d88b3d68f5d11ac",
     "form-todo": "5bcd1cdc1dca643937118b5356859cb3a38cab4f8cfcf1f542865777735dfa7a",
@@ -28,21 +28,21 @@
     "project-flow-app-desktop-day-studio-linux.png": "809862406d4bd3dd9ce696877d3d8362063d2ac070daea566814c2e9266a871d",
     "project-flow-app-desktop-empty-disabled-darwin.png": "d9ff4ababc00b22b937b86a097964a0f0461fa09f5ced83d3b6e4858f1cfb565",
     "project-flow-app-desktop-empty-disabled-linux.png": "5d93aad9f5e9be27f05ad8cff6395b5f34902136c9d8362453ff519b71dbe462",
-    "project-flow-app-desktop-explorer-code-preview-darwin.png": "e499c3b7ace5e8e94bd13a89ba9a8ffa8eeca64ae14f582d39e6d73f6a3a4f42",
+    "project-flow-app-desktop-explorer-code-preview-darwin.png": "6f3fe33728265658fb99ed529541c9b1a8ddf594f68f248bd29999f21e26e90c",
     "project-flow-app-desktop-explorer-code-preview-linux.png": "b7e9e32e46e198621a16f879be4e956f424269b5b4f0b9960dd9d65a658fcf1b",
-    "project-flow-app-desktop-initial-darwin.png": "97082f6f3e9d857e56767fae6e0e678b77a7ffc334cb3add463d9e84dd06cf72",
+    "project-flow-app-desktop-initial-darwin.png": "acdea9e41132f3e222f3f89f1cc1c49c340338843c0a310334c15c4c78932d16",
     "project-flow-app-desktop-initial-linux.png": "5bfc84f3e11af81a91a8a9dfe8a8fa27bcde9639d0c7674811f1111a02373aa2",
     "project-flow-app-desktop-invalid-submit-darwin.png": "f3908075e0295b0234c2b876a5c35a0f8ca252c7441c91acce9339376c2cdc8a",
     "project-flow-app-desktop-invalid-submit-linux.png": "cfd2678bc9c5c0537d1baf62154cd0bc6d4993b3710a0f0f2f09bbfae749f18e",
     "seseragi-landing-page-android-360-alive-darwin.png": "4a54aa8b5f8d265f6c0d97404d59cce1dfbebb2c125f25551b803a6cbdef45c9",
     "seseragi-landing-page-android-360-alive-linux.png": "96ee55fdf39c692fbecf3ae31af00d1c4c136238a1635ea6db40a8feeb517204",
-    "seseragi-landing-page-desktop-composable-darwin.png": "dc9a91e05d4d1cb3d874d8a934c86c392b1fcd12a78427d493aab689891eb8ca",
+    "seseragi-landing-page-desktop-composable-darwin.png": "82f4f68dc09e3d62de394e13f94af11b9242593434ab3493570da6a17221ef99",
     "seseragi-landing-page-desktop-composable-linux.png": "ef18a29e047d58de097a8cb0820110b165819e0c2a44e5f3bb6c733d94230b23",
-    "seseragi-landing-page-desktop-initial-darwin.png": "d5c07d2441f43ccd98dd9b068a35215a7e9ce27ce1eda4f23000b7774edca7cc",
+    "seseragi-landing-page-desktop-initial-darwin.png": "dc75fa0bc15e3b101cfb1228d389f03b4248824708f90fadbb493b28debdf720",
     "seseragi-landing-page-desktop-initial-linux.png": "994fa54824b2193adaed393995210219280edbfddbfd459c6cde5d1401f093f1",
     "seseragi-landing-page-iphone-390-initial-darwin.png": "295ef4de2e551823039e00c7d1194b9a06c9f6148e90cf2878b7da22377d8ad6",
     "seseragi-landing-page-iphone-390-initial-linux.png": "040552cc380bae31dd79f06f1211ccc1014032ac6ae32022062a5ea86401edae",
-    "seseragi-landing-page-minimum-320-code-darwin.png": "ac3c31087de3f0a258877ec80ab35006a6f373f26627e445b6c7a37198ebe483",
+    "seseragi-landing-page-minimum-320-code-darwin.png": "22682d13ee16b02b43dc6c108ad6030467f01300f5916827bf3b9686c560cd73",
     "seseragi-landing-page-minimum-320-code-linux.png": "e47ba008a508e5d29ae54870dbfbd8a0a4796a580e1aa1373244c1447d0201ff"
   }
 }
