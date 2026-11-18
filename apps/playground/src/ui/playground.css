@@ -2338,6 +2338,16 @@ body.preview-fullscreen-fallback-open {
     height: 70dvh;
   }
 
+  /* 指で動かしているあいだは、指に合わせて伸び縮みさせる */
+  .pg-output-card[data-dragging="true"] {
+    transition: none;
+  }
+
+  .pg-sheet-handle,
+  .pg-output-head {
+    touch-action: none;
+  }
+
   .workspace[data-mobile-panel="io"] .pg-flow {
     bottom: calc(70dvh + var(--space-4));
   }

@@ -59,6 +59,7 @@ import { connectEditorSettings } from "./ui/editor-settings"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
 import { renderRunStatus } from "./ui/run-status"
+import { connectSheetDrag } from "./ui/sheet-drag"
 import { createThemeController } from "./ui/theme"
 import { browserStorage, connectThemeButton } from "./ui/theme-button"
 import { connectOverflowMenu } from "./ui/overflow-menu"
@@ -729,6 +730,18 @@ clearOutputButton.addEventListener("click", () => {
 showTextOutputButton.addEventListener("click", () => closeInteractivePreview())
 showHtmlPreviewButton.addEventListener("click", () => chooseOutputMode("html"))
 const mobilePanels = connectMobilePanels(workspace)
+connectSheetDrag({
+  sheet: ioPanel,
+  handle: requiredElement(".pg-sheet-handle", HTMLButtonElement),
+  grips: [requiredElement(".pg-output-head", HTMLElement)],
+  panels: mobilePanels,
+  isSheet: () =>
+    window.matchMedia(
+      "(max-width: 760px), (max-width: 960px) and (max-height: 520px)"
+    ).matches,
+  peekHeight: () => 196,
+  openHeight: () => window.innerHeight * 0.7,
+})
 connectPanelLayout({ workspace, workspaceResizer, ioPanel, ioResizer })
 connectWorkspaceFocusNavigation(
   {

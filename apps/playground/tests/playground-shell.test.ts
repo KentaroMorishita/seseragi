@@ -180,3 +180,40 @@ describe("theme button", () => {
     expect(themeButtonLabel("dark")).toBe("Theme: Dark")
   })
 })
+
+describe("mobile output sheet dragging", () => {
+  test("snaps in the direction of a deliberate drag", async () => {
+    const { sheetSnapTarget, sheetSnapDistance } = await import(
+      "../src/ui/sheet-drag"
+    )
+    const base = { peekHeight: 196, openHeight: 590 }
+    expect(
+      sheetSnapTarget({ ...base, deltaY: sheetSnapDistance, height: 236 })
+    ).toBe("io")
+    expect(
+      sheetSnapTarget({ ...base, deltaY: -sheetSnapDistance, height: 550 })
+    ).toBe("code")
+  })
+
+  test("settles a short drag on the nearer state", async () => {
+    const { sheetSnapTarget } = await import("../src/ui/sheet-drag")
+    const base = { peekHeight: 196, openHeight: 590 }
+    expect(sheetSnapTarget({ ...base, deltaY: 20, height: 420 })).toBe("io")
+    expect(sheetSnapTarget({ ...base, deltaY: -20, height: 300 })).toBe("code")
+  })
+
+  test("keeps the sheet between its peek and maximum heights", async () => {
+    const { clampSheetHeight } = await import("../src/ui/sheet-drag")
+    expect(clampSheetHeight(120, 196, 760)).toBe(196)
+    expect(clampSheetHeight(400, 196, 760)).toBe(400)
+    expect(clampSheetHeight(900, 196, 760)).toBe(760)
+  })
+
+  test("is wired to the handle and the output heading", () => {
+    expect(main).toContain("connectSheetDrag({")
+    expect(main).toContain('grips: [requiredElement(".pg-output-head"')
+    expect(styles).toMatch(
+      /\.pg-sheet-handle,\s*\.pg-output-head \{\s*touch-action: none;/
+    )
+  })
+})
