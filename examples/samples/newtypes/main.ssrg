@@ -1,13 +1,104 @@
-newtype UserId = Int
+// 金額と個数を別の newtype にして、計算と丸めを型で守ります。
+import { Decimal } from "std/decimal"
+import * as decimal from "std/decimal"
+import { HalfEven } from "std/number"
 
-fn raw id: UserId -> Int = match id {
-  UserId value -> value
+newtype Yen deriving Eq, Show = Decimal
+
+newtype Quantity deriving Eq, Show = Int
+
+impl Yen {
+  operator + self -> other: Yen -> Yen = match (self, other) {
+    (Yen left, Yen right) -> Yen (left + right)
+  }
+
+  operator * self -> count: Quantity -> Yen = match (self, count) {
+    (Yen price, Quantity n) -> Yen (price * decimal.fromInt n)
+  }
 }
 
-fn requestPath id: UserId -> String = `/users/${raw id}`
+struct OrderLine { itemName: String, unitPrice: Yen, quantity: Quantity, }
 
-// UserIdはIntと同じ実行時表現ですが、型としては混ざりません。
-pub effect fn main -> Unit with Console fails ConsoleError =
-  UserId 42
-  |> requestPath
+struct Order {
+  customer: String,
+  lines: Array<OrderLine>,
+  discountPercent: Int,
+  taxPercent: Int,
+}
+
+struct Invoice {
+  customer: String,
+  discountPercent: Int,
+  subtotal: Decimal,
+  discount: Decimal,
+  tax: Decimal,
+  total: Yen,
+}
+
+fn yen amount: Int -> Yen = Yen (decimal.fromInt amount)
+
+fn rawYen amount: Yen -> Decimal = match amount {
+  Yen value -> value
+}
+
+fn lineSubtotal line: OrderLine -> Yen = line.unitPrice * line.quantity
+
+fn addYen left: Yen -> right: Yen -> Yen = left + right
+
+fn orderSubtotal lines: Array<OrderLine> -> Decimal =
+  lines
+  |> map lineSubtotal
+  |> reduce (yen 0) addYen
+  |> rawYen
+
+fn percentOf percent: Int
+  -> base: Decimal
+  -> Either<decimal.DecimalArithmeticError, Decimal> =
+  decimal.divideExact (decimal.fromInt 100) (base * decimal.fromInt percent)
+
+// Decimal で割引と税を計算し、請求額だけを整数円へ偶数丸めします。
+fn buildInvoice order: Order -> Either<decimal.DecimalArithmeticError, Invoice> = {
+  let subtotal = orderSubtotal order.lines
+  do {
+    discount <- percentOf order.discountPercent subtotal
+    let afterDiscount = subtotal - discount
+    tax <- percentOf order.taxPercent afterDiscount
+    let roundedTotal = Yen (decimal.quantize 0 HalfEven (afterDiscount + tax))
+    pure (Invoice {
+      customer: order.customer,
+      discountPercent: order.discountPercent,
+      subtotal,
+      discount,
+      tax,
+      total: roundedTotal,
+    })
+  }
+}
+
+fn renderInvoice label: String
+  -> result: Either<decimal.DecimalArithmeticError, Invoice>
+  -> String =
+  match result {
+    Left error -> `${label}: 計算できません (${error})`
+    Right invoice -> `${label} [${invoice.customer}]: 小計 ${invoice.subtotal}円 - 割引(${invoice.discountPercent}%) ${invoice.discount}円 + 税 ${invoice.tax}円 = ${rawYen invoice.total}円`
+  }
+
+let standardOrder = Order {
+  customer: "アオイ",
+  lines: [
+    OrderLine { itemName: "珈琲豆 200g", unitPrice: yen 1280, quantity: Quantity 2 },
+    OrderLine { itemName: "マグカップ", unitPrice: yen 1850, quantity: Quantity 1 },
+  ],
+  discountPercent: 0,
+  taxPercent: 10,
+}
+
+// 元の構造体を保ったまま、割引率だけを書き換えた新しい注文を作ります。
+let memberOrder = Order { ...standardOrder, discountPercent: 15 }
+
+pub effect fn main = [
+  renderInvoice "通常注文" (buildInvoice standardOrder),
+  renderInvoice "会員割引" (buildInvoice memberOrder),
+]
+  |> join "\n"
   |> println

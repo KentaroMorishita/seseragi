@@ -1,14 +1,25 @@
-import { greeting } from "./feature/greeting"
+// エントリポイントは入力データを用意し、別モジュールの計算と検証を呼び出すだけに保ちます。
+import * as arrays from "std/array"
+import { formatChecks, runChecks } from "self/pricing/checks"
+import {
+  Domestic,
+  Island,
+  Parcel,
+  formatQuote,
+  quoteShipping,
+} from "self/pricing/shipping"
 
-type AppError deriving Show =
-  | InputFailure StdinError
-  | OutputFailure ConsoleError
+let sampleParcels: Array<Parcel> = [
+  Parcel { label: "マグカップ", subtotalYen: 2400, weightGrams: 400, zone: Domestic },
+  Parcel { label: "珈琲豆 1kg", subtotalYen: 4800, weightGrams: 1000, zone: Domestic },
+  Parcel { label: "陶器ポット (離島)", subtotalYen: 6000, weightGrams: 2600, zone: Island },
+]
 
-pub effect fn main = do {
-  maybeName <- mapError InputFailure (readLine ())
-  let message = match maybeName {
-    Just name -> greeting name
-    Nothing -> greeting "stranger"
-  }
-  mapError OutputFailure (println message)
+fn renderQuoteLine parcel: Parcel -> String =
+  `  ${formatQuote parcel (quoteShipping parcel)}`
+
+pub effect fn main = {
+  let quoteLines = map renderQuoteLine sampleParcels
+  let checkLines = formatChecks (runChecks ())
+  arrays.concat [["配送見積もり:"], quoteLines, checkLines] |> join "\n" |> println
 }

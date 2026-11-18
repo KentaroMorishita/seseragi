@@ -5145,6 +5145,13 @@
       "reason": "最終lessonはActionを段階導入し、compactなdom.app state machineはRecipeとして残す。"
     },
     {
+      "sampleId": "json-decode",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "JSON を自動導出で型に読み込み、足りない項目や型の違いを型の付いた失敗として扱う。"
+    },
+    {
       "sampleId": "local-functions",
       "currentKind": "recipe",
       "decision": "discover-recipe",

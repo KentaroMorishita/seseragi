@@ -1,25 +1,63 @@
 {
   "$schema": "../sample.schema.json",
   "id": "project-greeting",
-  "title": "複数fileのprojectを動かす",
-  "summary": "moduleを跨ぐ関数と標準入力を一つのworkspaceで編集します。",
+  "title": "ファイルを分けたパッケージとテスト",
+  "summary": "送料計算のモジュール、検証一覧、main をファイルごとに分け、pub で公開する範囲を保ったまま動作を確認します。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["project", "module", "import", "Stdin"],
-  "capabilities": ["console", "stdin"],
+  "topics": [
+    "project",
+    "module",
+    "pub",
+    "import",
+    "test"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["stdin-greeting"],
+  "prerequisites": [
+    "newtypes"
+  ],
   "featured": true,
   "isNew": true,
   "files": {
     "manifest": "seseragi.toml",
     "guide": "guide.md",
-    "stdin": "stdin.txt",
     "expectedOutput": "stdout.txt"
   },
   "workspace": {
     "active": "main.ssrg",
-    "open": ["main.ssrg", "feature/greeting.ssrg"],
-    "expanded": ["feature"]
+    "open": [
+      "main.ssrg",
+      "pricing/shipping.ssrg",
+      "pricing/checks.ssrg"
+    ],
+    "expanded": [
+      "pricing"
+    ]
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "珈琲豆を 5000 円にして送料無料を見る",
+        "edits": [
+          {
+            "find": "  Parcel { label: \"珈琲豆 1kg\", subtotalYen: 4800, weightGrams: 1000, zone: Domestic },",
+            "replace": "  Parcel { label: \"珈琲豆 1kg\", subtotalYen: 5000, weightGrams: 1000, zone: Domestic },"
+          }
+        ]
+      },
+      {
+        "label": "配送見積もりに箱物を 1 件足す",
+        "edits": [
+          {
+            "find": "  Parcel { label: \"陶器ポット (離島)\", subtotalYen: 6000, weightGrams: 2600, zone: Island },\n]",
+            "replace": "  Parcel { label: \"陶器ポット (離島)\", subtotalYen: 6000, weightGrams: 2600, zone: Island },\n  Parcel { label: \"保存瓶セット\", subtotalYen: 3200, weightGrams: 2400, zone: Domestic },\n]"
+          }
+        ]
+      }
+    ]
   }
 }

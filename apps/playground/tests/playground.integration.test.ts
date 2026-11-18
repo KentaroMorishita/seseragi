@@ -2617,17 +2617,25 @@ describe("Playground sample catalog", () => {
       project: {
         entryFile: "main.ssrg",
         activeFile: "main.ssrg",
-        openFiles: ["main.ssrg", "feature/greeting.ssrg"],
-        expandedFolders: ["feature"],
+        openFiles: [
+          "main.ssrg",
+          "pricing/shipping.ssrg",
+          "pricing/checks.ssrg",
+        ],
+        expandedFolders: ["pricing"],
       },
       workspace: {
         entryFile: "main.ssrg",
         activeFile: "main.ssrg",
-        openFiles: ["main.ssrg", "feature/greeting.ssrg"],
-        expandedFolders: ["feature"],
+        openFiles: [
+          "main.ssrg",
+          "pricing/shipping.ssrg",
+          "pricing/checks.ssrg",
+        ],
+        expandedFolders: ["pricing"],
         explorer: { visible: true },
       },
-      stdin: "Seseragi\n",
+      stdin: "",
     })
     expect(samples.find(({ id }) => id === "project-flow-app")).toMatchObject({
       interactive: true,

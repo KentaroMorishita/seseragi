@@ -1,14 +1,141 @@
+// 標準入力から複数行の CSV を読み、成績表と行番号付きのエラーを出力します。
+import * as arrays from "std/array"
+import * as ints from "std/int"
+import * as text from "std/text"
+
 type AppError deriving Show =
   | InputFailure StdinError
   | OutputFailure ConsoleError
 
-fn greeting maybeName: Maybe<String> -> String = match maybeName {
-  Just name -> `Hello, ${name}!`
-  Nothing -> "Hello, stranger!"
+type Grade deriving Eq, Show =
+  | GradeS
+  | GradeA
+  | GradeB
+  | GradeC
+
+struct ScoreEntry { student: String, score: Int, grade: Grade, }
+
+struct LineIssue { lineNumber: Int, raw: String, reason: String, }
+
+let sGradeThreshold = 90
+let passingScore = 60
+
+fn classifyGrade score: Int -> Grade =
+  if score >= sGradeThreshold then
+    GradeS
+  else if score >= 80 then
+    GradeA
+  else if score >= passingScore then
+    GradeB
+  else
+    GradeC
+
+fn gradeLabel grade: Grade -> String = match grade {
+  GradeS -> "S"
+  GradeA -> "A"
+  GradeB -> "B"
+  GradeC -> "再試"
 }
 
+fn validateScore lineNumber: Int
+  -> raw: String
+  -> student: String
+  -> rawScore: String
+  -> Either<LineIssue, ScoreEntry> =
+  match ints.parse (text.trim rawScore) {
+    Left _ -> Left (LineIssue { lineNumber, raw, reason: "点数が整数ではありません" })
+    Right score ->
+      if score < 0
+        || score > 100 then
+        Left (LineIssue { lineNumber, raw, reason: "点数は 0〜100 の範囲にしてください" })
+      else
+        Right (ScoreEntry { student, score, grade: classifyGrade score })
+  }
+
+fn parseScoreLine lineNumber: Int
+  -> raw: String
+  -> Maybe<Either<LineIssue, ScoreEntry>> =
+  {
+    let trimmed = text.trim raw
+    if text.isEmpty trimmed then Nothing else {
+      let columns = text.split "," trimmed
+      match (arrays.length columns == 2, arrays.get 0 columns, arrays.get 1 columns) {
+        (True, Just rawStudent, Just rawScore) -> {
+          let student = text.trim rawStudent
+          if text.isEmpty student then
+            Just (Left (LineIssue { lineNumber, raw: trimmed, reason: "名前が空です" }))
+          else
+            Just (validateScore lineNumber trimmed student rawScore)
+        }
+        _ -> Just (Left (LineIssue { lineNumber, raw: trimmed, reason: "「名前,点数」の 2 列にしてください" }))
+      }
+    }
+  }
+
+fn collectLines lines: Array<String>
+  -> index: Int
+  -> entries: Array<ScoreEntry>
+  -> issues: Array<LineIssue>
+  -> (Array<ScoreEntry>, Array<LineIssue>) =
+  match arrays.get index lines {
+    Nothing -> (entries, issues)
+    Just line -> match parseScoreLine (index + 1) line {
+      Nothing -> collectLines lines (index + 1) entries issues
+      Just (Right entry) -> collectLines lines (index + 1) (arrays.append [entry] entries) issues
+      Just (Left issue) -> collectLines lines (index + 1) entries (arrays.append [issue] issues)
+    }
+  }
+
+fn formatEntry entry: ScoreEntry -> String =
+  `  ${entry.student}: ${entry.score} 点 (${gradeLabel entry.grade})`
+
+fn formatIssue issue: LineIssue -> String =
+  `  ${issue.lineNumber} 行目: "${issue.raw}" -> ${issue.reason}`
+
+fn summarizeEntries entries: Array<ScoreEntry> -> Array<String> =
+  if arrays.isEmpty entries then ["有効な点数の行はありませんでした。"] else {
+  let count = arrays.length entries
+  let total = entries |> map (\entry: ScoreEntry -> entry.score) |> sum
+  let passingCount = arrays.length [
+    entry | entry <- entries,
+    entry.score >= passingScore
+  ]
+  let topLine =
+    match entries |> arrays.sortBy (\entry: ScoreEntry -> entry.score) |> arrays.last {
+    Just best -> `  最高点: ${best.student} (${best.score} 点)`
+    Nothing -> ""
+  }
+  arrays.concat [
+    [`成績一覧 (${count} 名 / 合格 ${passingCount} 名 / 平均 ${total / count} 点):`],
+    map formatEntry entries,
+    [topLine],
+  ]
+}
+
+// 純粋な計算だけでレポート文字列を組み立て、I/O と分離します。
+fn buildReport lines: Array<String> -> String = {
+  let emptyEntries: Array<ScoreEntry> = []
+  let emptyIssues: Array<LineIssue> = []
+  let (entries, issues) = collectLines lines 0 emptyEntries emptyIssues
+  let summary = summarizeEntries entries
+  let reportLines = if arrays.isEmpty issues then summary else {
+    let header = `読み込めなかった行 (${arrays.length issues} 件):`
+    arrays.concat [summary, [header], map formatIssue issues]
+  }
+  join "\n" reportLines
+}
+
+effect fn readAllLines acc: Array<String> -> Array<String> with Stdin fails StdinError =
+  do {
+    maybeLine <- readLine ()
+    match maybeLine {
+      Nothing -> pure acc
+      Just line -> readAllLines (arrays.append [line] acc)
+    }
+  }
+
 pub effect fn main -> Unit with Stdin, Console fails AppError = do {
-  maybeName <- mapError InputFailure (readLine ())
-  let message = greeting maybeName
-  mapError OutputFailure (println message)
+  let emptyLines: Array<String> = []
+  lines <- mapError InputFailure (readAllLines emptyLines)
+  mapError OutputFailure (println (buildReport lines))
 }

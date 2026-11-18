@@ -1,0 +1,71 @@
+// JSON 文字列を自動導出したデコーダーで型に読み込み、失敗の理由と場所を取り出します。
+import * as arrays from "std/array"
+import {
+  DecodeError,
+  DecodeErrorKind,
+  DuplicateJsonField,
+  ExpectedJsonType,
+  InvalidJsonSyntax,
+  InvalidJsonValue,
+  JsonDecodeFailure,
+  JsonField,
+  JsonIndex,
+  JsonPathSegment,
+  JsonReadError,
+  JsonSyntaxFailure,
+  MissingJsonField,
+  UnknownJsonField,
+  UnknownJsonTag,
+} from "std/json"
+import * as json from "std/json"
+
+struct Endpoint deriving Eq, Show, JsonEncode, JsonDecode { host: String, port: Int, }
+
+struct ServiceConfig deriving Eq, Show, JsonEncode, JsonDecode { service: String, endpoint: Endpoint, tls: Bool, regions: Array<String>, }
+
+fn formatSegment segment: JsonPathSegment -> String = match segment {
+  JsonField name -> name
+  JsonIndex index -> append "[" `${index}]`
+}
+
+fn formatPath path: Array<JsonPathSegment> -> String =
+  if arrays.isEmpty path then "<root>" else path |> map formatSegment |> join "."
+
+fn formatKind kind: DecodeErrorKind -> String = match kind {
+  ExpectedJsonType expected -> `${expected} 型が必要です`
+  MissingJsonField field -> `必須項目 "${field}" がありません`
+  UnknownJsonField field -> `未知の項目 "${field}" があります`
+  UnknownJsonTag tag -> `未知のタグ "${tag}" です`
+  InvalidJsonValue reason -> `値が不正です (${reason})`
+}
+
+fn describeError error: JsonReadError -> String = match error {
+  JsonSyntaxFailure (InvalidJsonSyntax detail) -> `構文エラー (${detail.offset} byte 目): ${detail.message}`
+  JsonSyntaxFailure (DuplicateJsonField detail) -> `${formatPath detail.path} の項目 "${detail.field}" が重複しています`
+  JsonDecodeFailure (DecodeError { path, kind }) -> `型エラー (${formatPath path}): ${formatKind kind}`
+}
+
+fn checkConfig label: String -> raw: String -> String = {
+  let decoded: Either<JsonReadError, ServiceConfig> = json.decodeString raw
+  match decoded {
+    Right config -> `${label}: OK -> ${config.service} (${config.endpoint.host}:${config.endpoint.port}) / 再出力: ${json.encodeString config}`
+    Left error -> `${label}: NG -> ${describeError error}`
+  }
+}
+
+let validJson =
+  `{"service":"ledger-api","endpoint":{"host":"api.example.com","port":8443},"tls":true,"regions":["tokyo","osaka"]}`
+let missingFieldJson =
+  `{"service":"ledger-api","endpoint":{"host":"api.example.com","port":8443},"regions":["tokyo"]}`
+let wrongTypeJson =
+  `{"service":"ledger-api","endpoint":{"host":"api.example.com","port":"8443"},"tls":true,"regions":[]}`
+let brokenSyntaxJson = `{"service":"ledger-api",`
+
+pub effect fn main = [
+  checkConfig "1. 正常な JSON" validJson,
+  checkConfig "2. tls が欠けた JSON" missingFieldJson,
+  checkConfig "3. port が文字列の JSON" wrongTypeJson,
+  checkConfig "4. 途中で切れた JSON" brokenSyntaxJson,
+]
+  |> join "\n"
+  |> println

@@ -1,0 +1,32 @@
+// `seseragi test` で実行するテストスイートです。
+import * as test from "std/test"
+import {
+  Domestic,
+  Island,
+  Parcel,
+  ShippingQuote,
+  quoteShipping,
+} from "self/pricing/shipping"
+
+pub let tests: test.Test = test.suite "shipping" [
+  test.test "domestic parcel below threshold pays base shipping" (
+    test.equal (ShippingQuote { shippingYen: 550, totalYen: 2950, freeShipping: False })
+      (
+        quoteShipping
+      (Parcel { label: "cup", subtotalYen: 2400, weightGrams: 400, zone: Domestic })
+      )
+  ),
+  test.test "domestic parcel at 5000 yen qualifies for free shipping" (
+    test.equal (ShippingQuote { shippingYen: 0, totalYen: 5000, freeShipping: True }) (
+      quoteShipping
+      (Parcel { label: "beans", subtotalYen: 5000, weightGrams: 2500, zone: Domestic })
+    )
+  ),
+  test.test "heavy island parcel pays base plus weight surcharge" (
+    test.equal
+      (ShippingQuote { shippingYen: 1450, totalYen: 7450, freeShipping: False }) (
+        quoteShipping
+      (Parcel { label: "pot", subtotalYen: 6000, weightGrams: 2600, zone: Island })
+      )
+  ),
+]
