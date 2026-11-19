@@ -1,6 +1,6 @@
-このサンプルを選ぶ理由: 計算ロジック、確認用のチェック、エントリポイントを別ファイルに分けたパッケージの構成を見たいときに選びます。
+このサンプルを選ぶ理由: 計算ロジック、表示整形、エントリポイント、単体テストを別ファイルに分けたパッケージの構成を見たいときに選びます。
 
-送料計算を行う `pricing/shipping.ssrg`、仕様通りの結果かを `==` で確かめる `pricing/checks.ssrg`、結果を表示する `main.ssrg` に役割を分け、Explorer から切り替えて編集できます。手元で `seseragi test` を実行すると `tests/shipping.ssrg` の単体テストが走ります。
+送料計算だけを担う `pricing/shipping.ssrg`、結果を表示用の文に整える `pricing/format.ssrg`、入出力をつなぐ `main.ssrg` に役割を分け、Explorer から切り替えて編集できます。テスト本体は `tests/shipping.ssrg` に分けて置いてあり、手元の CLI で `seseragi test` を実行すると単体テストが走ります。
 
 ## この画面で試すこと
 
@@ -11,6 +11,7 @@
 ## コードの読みどころ
 
 1. `seseragi.toml`: パッケージ名、実行の入口（`entry = "main"`）、`seseragi test` 用の設定を宣言します。
-2. `pricing/shipping.ssrg`: 外部から使う型と計算関数だけに `pub` を付け、地域別基本料金などの細部は非公開にしています。
-3. `pricing/checks.ssrg`: 計算モジュールを `import` し、代表ケースを `==` で比較してパス件数を表示します。
-4. `main.ssrg`: サンプルデータを用意して計算と検証の結果をつなぐだけに保っています。
+2. `pricing/shipping.ssrg`: 外部から使う型と計算関数だけに `pub` を付け、地域別基本料金などの細部は非公開にしています。表示用の文字列はここには持ちません。
+3. `pricing/format.ssrg`: 計算結果を表示用の文に整える責務だけを分けています。
+4. `main.ssrg`: サンプルデータを用意して計算と表示をつなぐだけに保っています。
+5. `tests/shipping.ssrg`: 本体のコードから分離した単体テストです。手元の環境で `seseragi test examples/samples/project-greeting` を実行して確認できます。

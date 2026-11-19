@@ -1,7 +1,7 @@
 // 金額と個数を別の newtype にして、計算と丸めを型で守ります。
 import { Decimal } from "std/decimal"
 import * as decimal from "std/decimal"
-import { HalfEven } from "std/number"
+import { Floor } from "std/number"
 
 newtype Yen deriving Eq, Show = Decimal
 
@@ -10,6 +10,10 @@ newtype Quantity deriving Eq, Show = Int
 impl Yen {
   operator + self -> other: Yen -> Yen = match (self, other) {
     (Yen left, Yen right) -> Yen (left + right)
+  }
+
+  operator - self -> other: Yen -> Yen = match (self, other) {
+    (Yen left, Yen right) -> Yen (left - right)
   }
 
   operator * self -> count: Quantity -> Yen = match (self, count) {
@@ -29,9 +33,9 @@ struct Order {
 struct Invoice {
   customer: String,
   discountPercent: Int,
-  subtotal: Decimal,
-  discount: Decimal,
-  tax: Decimal,
+  subtotal: Yen,
+  discount: Yen,
+  tax: Yen,
   total: Yen,
 }
 
@@ -45,32 +49,36 @@ fn lineSubtotal line: OrderLine -> Yen = line.unitPrice * line.quantity
 
 fn addYen left: Yen -> right: Yen -> Yen = left + right
 
-fn orderSubtotal lines: Array<OrderLine> -> Decimal =
+fn orderSubtotal lines: Array<OrderLine> -> Yen =
   lines
   |> map lineSubtotal
   |> reduce (yen 0) addYen
-  |> rawYen
 
-fn percentOf percent: Int
-  -> base: Decimal
-  -> Either<decimal.DecimalArithmeticError, Decimal> =
-  decimal.divideExact (decimal.fromInt 100) (base * decimal.fromInt percent)
+// divideExact はゼロ除算などに備えて Either を返しますが、100 で割るこの計算では失敗しません。
+// 日本の請求・消費税の端数処理に合わせて 1 円未満は切り捨て（Floor）にしています。
+fn percentOfYen percent: Int
+  -> base: Yen
+  -> Either<decimal.DecimalArithmeticError, Yen> =
+  do {
+    exact <- decimal.divideExact (decimal.fromInt 100) (rawYen base * decimal.fromInt percent)
+    pure (Yen (decimal.quantize 0 Floor exact))
+  }
 
-// Decimal で割引と税を計算し、請求額だけを整数円へ偶数丸めします。
+// 途中計算は Decimal で正確に行い、割引と税をそれぞれ 1 円単位へ丸めて請求書を作ります。
 fn buildInvoice order: Order -> Either<decimal.DecimalArithmeticError, Invoice> = {
   let subtotal = orderSubtotal order.lines
   do {
-    discount <- percentOf order.discountPercent subtotal
+    discount <- percentOfYen order.discountPercent subtotal
     let afterDiscount = subtotal - discount
-    tax <- percentOf order.taxPercent afterDiscount
-    let roundedTotal = Yen (decimal.quantize 0 HalfEven (afterDiscount + tax))
+    tax <- percentOfYen order.taxPercent afterDiscount
+    let total = afterDiscount + tax
     pure (Invoice {
       customer: order.customer,
       discountPercent: order.discountPercent,
       subtotal,
       discount,
       tax,
-      total: roundedTotal,
+      total,
     })
   }
 }
@@ -80,7 +88,7 @@ fn renderInvoice label: String
   -> String =
   match result {
     Left error -> `${label}: 計算できません (${error})`
-    Right invoice -> `${label} [${invoice.customer}]: 小計 ${invoice.subtotal}円 - 割引(${invoice.discountPercent}%) ${invoice.discount}円 + 税 ${invoice.tax}円 = ${rawYen invoice.total}円`
+    Right invoice -> `${label} [${invoice.customer}]: 小計 ${rawYen invoice.subtotal}円 - 割引(${invoice.discountPercent}%) ${rawYen invoice.discount}円 + 税 ${rawYen invoice.tax}円 = ${rawYen invoice.total}円`
   }
 
 let standardOrder = Order {

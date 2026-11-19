@@ -1,4 +1,4 @@
-1. 正常な JSON: OK -> ledger-api (api.example.com:8443) / 再出力: {"service":"ledger-api","endpoint":{"host":"api.example.com","port":8443},"tls":true,"regions":["tokyo","osaka"]}
-2. tls が欠けた JSON: NG -> 型エラー (<root>): 必須項目 "tls" がありません
-3. port が文字列の JSON: NG -> 型エラー (endpoint.port): number 型が必要です
-4. 途中で切れた JSON: NG -> 構文エラー (24 byte 目): expected object field
+1. 正常な JSON: 読めました -> ledger-api (api.example.com:8443) / 再出力: {"service":"ledger-api","endpoint":{"host":"api.example.com","port":8443},"tls":true,"regions":["tokyo","osaka"]}
+2. tls が欠けた JSON: 読めません -> 型エラー (いちばん外側): 必須項目 "tls" がありません
+3. port が文字列の JSON: 読めません -> 型エラー (endpoint.port): number 型が必要です
+4. 途中で切れた JSON: 読めません -> 構文エラー (24 byte 目): expected object field

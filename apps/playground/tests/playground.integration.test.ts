@@ -2625,7 +2625,7 @@ describe("Playground sample catalog", () => {
         openFiles: [
           "main.ssrg",
           "pricing/shipping.ssrg",
-          "pricing/checks.ssrg",
+          "pricing/format.ssrg",
         ],
         expandedFolders: ["pricing"],
       },
@@ -2635,7 +2635,7 @@ describe("Playground sample catalog", () => {
         openFiles: [
           "main.ssrg",
           "pricing/shipping.ssrg",
-          "pricing/checks.ssrg",
+          "pricing/format.ssrg",
         ],
         expandedFolders: ["pricing"],
         explorer: { visible: true },

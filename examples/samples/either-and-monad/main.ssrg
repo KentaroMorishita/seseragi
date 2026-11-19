@@ -14,6 +14,7 @@ struct SignupForm { name: String, email: String, password: String, age: Int, }
 
 struct Member deriving Eq, Show { name: String, email: String, age: Int, }
 
+// パスワードは検証のみに使い、会員情報には保持しません。
 fn makeMember name: String -> email: String -> _password: String -> age: Int -> Member =
   Member {
     name,

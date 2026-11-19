@@ -72,7 +72,7 @@ import sample15Guide from "../../../../examples/samples/project-flow-app/guide.m
 
 import sample16Manifest from "../../../../examples/samples/project-greeting/seseragi.toml?raw"
 import sample16Source from "../../../../examples/samples/project-greeting/src/main.ssrg?raw"
-import sample16Source2 from "../../../../examples/samples/project-greeting/src/pricing/checks.ssrg?raw"
+import sample16Source2 from "../../../../examples/samples/project-greeting/src/pricing/format.ssrg?raw"
 import sample16Source3 from "../../../../examples/samples/project-greeting/src/pricing/shipping.ssrg?raw"
 import sample16Guide from "../../../../examples/samples/project-greeting/guide.md?raw"
 import sample16Output from "../../../../examples/samples/project-greeting/stdout.txt?raw"
@@ -283,8 +283,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/either-and-monad/main.ssrg",
       "guidePath": "examples/samples/either-and-monad/guide.md",
       "expectedOutputPath": "examples/samples/either-and-monad/stdout.txt",
-      "sourceHash": "sha256:eb0839dff173d93151fc41d433c18ed908d356ebf8bd63d4bcaa13cde4c046cd",
-      "workspaceHash": "sha256:25f97992d05e01b97badeb3bfdd3adb03b44b0f6c287a26cfcd83d3c9c564747"
+      "sourceHash": "sha256:885d45b3664775ece94bb6b8f0f8aebd95089be91026831f5259ccc38ef0b100",
+      "workspaceHash": "sha256:3065c68dda31aa478ac8fa1df3721559309d491424863a06879bdcc88b1cc827"
     },
     source: sample2Source,
     manifest: "",
@@ -783,8 +783,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/json-decode/main.ssrg",
       "guidePath": "examples/samples/json-decode/guide.md",
       "expectedOutputPath": "examples/samples/json-decode/stdout.txt",
-      "sourceHash": "sha256:79b24fab2117dc3f6ff0786004baf127a4b1b3eafadecb460074d69bc4244e2f",
-      "workspaceHash": "sha256:df9d72190dc05c674c1d0eb31622df3dcacc0b7bdd5ef4d63bceb65cf2a6cc52"
+      "sourceHash": "sha256:319504d9bd6c2fc93c3e5b246e4ebafcb3f237bf788a359ae18e56a53df9d577",
+      "workspaceHash": "sha256:782e8b2bd2c9a44cd22fbedc7e4b0493099390cfda33b898b4637749a0d2ce44"
     },
     source: sample12Source,
     manifest: "",
@@ -884,8 +884,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/newtypes/main.ssrg",
       "guidePath": "examples/samples/newtypes/guide.md",
       "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
-      "sourceHash": "sha256:64dd6f0809acfa993e53f941e64a09f077a8f2ed0c6d7a10419048205fbcf072",
-      "workspaceHash": "sha256:e80d236a2c09cd60bc4b0a2b7a402b3d4003991bd8861172679d6d0ad2849aa0"
+      "sourceHash": "sha256:ab134b97170243ff425fe63be338de66b64072d70ffa80630f94dc104862cdaa",
+      "workspaceHash": "sha256:5e8ec7d7ec77b10f60205096d699eb3d2eb005bfdd79f0f2a57ce3b8c6b05d40"
     },
     source: sample14Source,
     manifest: "",
@@ -1018,7 +1018,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "project-greeting",
       "title": "ファイルを分けたパッケージとテスト",
-      "summary": "送料計算のモジュール、検証一覧、main をファイルごとに分け、pub で公開する範囲を保ったまま動作を確認します。",
+      "summary": "送料計算のモジュール、表示整形、main、単体テストをファイルごとに分け、pub で公開する範囲を保ちます。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -1066,15 +1066,15 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:1cc99f98d8ff8db12f37887a8042eb69d5ebb976c6d026708d5a549617b6f9e8",
       "guidePath": "examples/samples/project-greeting/guide.md",
       "expectedOutputPath": "examples/samples/project-greeting/stdout.txt",
-      "sourceHash": "sha256:5137ea460ac5a0fe248dba1f69a627d600af46e67d85e4cec5c3f3e76b6d8c67",
-      "workspaceHash": "sha256:e2b92b5ea3f8df9fe76a03ff8f8fe339c935743c83fe229d0bcfdfaef7698e45",
+      "sourceHash": "sha256:1a7dca28095f2f9df7aff0ec04b7f9e3c3f22e8888a213c0c65af916b137ad17",
+      "workspaceHash": "sha256:47acacd8a7ebabe5433ddb81780aed16613e4d02297d66feb9c886c8ea322d59",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "main.ssrg",
         "openFiles": [
           "main.ssrg",
           "pricing/shipping.ssrg",
-          "pricing/checks.ssrg"
+          "pricing/format.ssrg"
         ],
         "expandedFolders": [
           "pricing"
@@ -1083,17 +1083,17 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/project-greeting/src/main.ssrg",
-            "sourceHash": "sha256:5137ea460ac5a0fe248dba1f69a627d600af46e67d85e4cec5c3f3e76b6d8c67"
+            "sourceHash": "sha256:1a7dca28095f2f9df7aff0ec04b7f9e3c3f22e8888a213c0c65af916b137ad17"
           },
           {
-            "path": "pricing/checks.ssrg",
-            "sourcePath": "examples/samples/project-greeting/src/pricing/checks.ssrg",
-            "sourceHash": "sha256:55c8ebf51e0cd407816e89800fb4fe9c3bdaffe40b1c86b2a7f536e6c9f7721b"
+            "path": "pricing/format.ssrg",
+            "sourcePath": "examples/samples/project-greeting/src/pricing/format.ssrg",
+            "sourceHash": "sha256:ca224bb2b857ee95c45bf183933a1b240a3911a5199487272fc9bc407150b911"
           },
           {
             "path": "pricing/shipping.ssrg",
             "sourcePath": "examples/samples/project-greeting/src/pricing/shipping.ssrg",
-            "sourceHash": "sha256:8964319e655a0bd11048a37af455834770bd04ec66dab942b2fd02f3c5a1eb43"
+            "sourceHash": "sha256:207a2ebdfe52b5dc1d96d333c1155e07b20e3a41043d3b44ff1e07236426b2e5"
           }
         ]
       }
@@ -1102,7 +1102,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     manifest: sample16Manifest,
     projectFiles: [
       { path: "main.ssrg", source: sample16Source },
-      { path: "pricing/checks.ssrg", source: sample16Source2 },
+      { path: "pricing/format.ssrg", source: sample16Source2 },
       { path: "pricing/shipping.ssrg", source: sample16Source3 },
     ],
     guide: sample16Guide,
@@ -1377,8 +1377,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "guidePath": "examples/samples/stdin-greeting/guide.md",
       "stdinPath": "examples/samples/stdin-greeting/stdin.txt",
       "expectedOutputPath": "examples/samples/stdin-greeting/stdout.txt",
-      "sourceHash": "sha256:250615a5b9c07e220b606b775071e7225c7e302211d4a228a70ceb8fbf3af884",
-      "workspaceHash": "sha256:36815808e5e3c28abf3e01011481b9e6b38aaec63960f1bf48cee75c45faa561"
+      "sourceHash": "sha256:b3f8554a56be363925bed17c1829f4d08a5918d6474263a7ce140687909e592f",
+      "workspaceHash": "sha256:beecd7f7db3d9b3e550ea6dbb3b87f0f3b4660f98e220f70bf4dfafcfb58830a"
     },
     source: sample20Source,
     manifest: "",
