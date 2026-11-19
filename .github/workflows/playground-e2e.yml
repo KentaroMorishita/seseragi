@@ -1,0 +1,61 @@
+name: Playground e2e
+
+# Playground の動作を、ブラウザーで操作して確かめる（Preview のリンク、外部通信の確認、
+# 隔離した実行など）。見た目はスクリーンショットで比べず、PR のプレビューで確かめる。
+
+on:
+  pull_request:
+    paths:
+      - ".bun-version"
+      - ".github/workflows/playground-e2e.yml"
+      - "apps/playground/**"
+      - "examples/samples/**"
+      - "examples/tour/**"
+      - "runtime/ts/**"
+      - "scripts/generate-playground-*.ts"
+  push:
+    branches: [main]
+    paths:
+      - ".bun-version"
+      - ".github/workflows/playground-e2e.yml"
+      - "apps/playground/**"
+      - "examples/samples/**"
+      - "examples/tour/**"
+      - "runtime/ts/**"
+      - "scripts/generate-playground-*.ts"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Install Playground dependencies
+        working-directory: apps/playground
+        run: bun install --frozen-lockfile
+      - name: Install Chromium
+        working-directory: apps/playground
+        run: bunx playwright install --with-deps chromium
+      - name: Run Playground e2e
+        working-directory: apps/playground
+        run: bun run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: playground-e2e-report
+          path: apps/playground/test-results/e2e
+          if-no-files-found: warn
+          retention-days: 14

@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 7 行目にある `Discover` の説明を `\"Recipe を 1 つ試す\"` に書き換えて `Run` し、`Output` の 1 行目が変わることを確かめてください。",
+      "instruction": "エディターの `Discover -> ...` の説明文字列を `\"Recipe を 1 つ試す\"` に書き換えて `Run` し、`Output` の 1 行目が変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

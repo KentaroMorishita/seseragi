@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 6 行目にある `Just \"Mio\"` を `Nothing` に書き換えて `Run` し、`Output` の 1 行目が `user: none` に、3 行目の `active` の値が `Guest` に変わることを確かめてください。",
+      "instruction": "エディターの `Just \"Mio\"` を `Nothing` に書き換えて `Run` し、`Output` の 1 行目が `user: none` に、3 行目の `active` の値が `Guest` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

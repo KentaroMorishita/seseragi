@@ -294,11 +294,11 @@ describe("release readiness", () => {
     const e2e = path.join(root, "apps", "playground", "e2e")
     await mkdir(e2e, { recursive: true })
     await writeFile(
-      path.join(e2e, "web-ui-regression.spec.ts"),
+      path.join(e2e, "preview-links.spec.ts"),
       "export const testCases = []\n"
     )
     git(root, "add", ".")
-    git(root, "commit", "-m", "update playground e2e regression spec")
+    git(root, "commit", "-m", "update a playground e2e spec")
 
     expect(
       pullRequestReleaseBoundary(base, "HEAD", root).userVisibleFiles

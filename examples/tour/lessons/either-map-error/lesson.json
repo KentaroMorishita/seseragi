@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 14 行目にある `Left \"invalid\"` を `Left \"empty input\"` に書き換えて `Run` し、`Output` の 3 行目が `Left empty input` に、5 行目が `error: empty input` に変わることを確かめてください。",
+      "instruction": "エディターの `Left \"invalid\"` を `Left \"empty input\"` に書き換えて `Run` し、`Output` の 3 行目が `Left empty input` に、5 行目が `error: empty input` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
