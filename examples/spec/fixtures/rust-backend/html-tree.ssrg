@@ -44,4 +44,7 @@ pub effect fn main = do {
   let late = sized { width: 1.0, title: 4 }
   println "built with a late error"
   println (html.renderToString (svg.toHtml (svg.rect { width: 1.0, tabIndex: 2.0 })))
+  // Unit is left out and a Char is text, as on TS.
+  println (html.renderToString (svg.toHtml (sized { width: 1.0, tabIndex: (), children: () })))
+  println (html.renderToString (svg.toHtml (sized { width: 1.0, children: '<' })))
 }

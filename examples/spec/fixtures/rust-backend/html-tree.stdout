@@ -14,3 +14,5 @@ built a wide page
 <div><div><div><span>x</span><span>x</span></div><div><span>x</span><span>x</span></div></div><div><div><span>x</span><span>x</span></div><div><span>x</span><span>x</span></div></div></div>
 built with a late error
 <rect tabindex="2" width="1"></rect>
+<rect width="1"></rect>
+<rect width="1">&lt;</rect>

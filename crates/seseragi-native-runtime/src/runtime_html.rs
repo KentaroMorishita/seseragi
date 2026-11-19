@@ -80,8 +80,10 @@ fn native_html_children(value: Option<&V>) -> Vec<V> {
             .clone()
     };
     match value {
-        None => Vec::new(),
+        // Unit is `undefined` and a Char is a string on TS.
+        None | Some(V::Unit) => Vec::new(),
         Some(V::Text(text)) => vec![native_html_text_tree(text.get())],
+        Some(V::Char(ch)) => vec![native_html_text_tree(&ch.to_string())],
         Some(value @ V::Adt(_)) => vec![node(value, "unsupported HTML children value")],
         Some(V::Array(values)) => values
             .get()
@@ -112,8 +114,10 @@ fn native_svg_children(value: Option<&V>) -> Vec<V> {
             .clone()
     };
     match value {
-        None => Vec::new(),
+        // Unit is `undefined` and a Char is a string on TS.
+        None | Some(V::Unit) => Vec::new(),
         Some(V::Text(text)) => vec![native_html_text_tree(text.get())],
+        Some(V::Char(ch)) => vec![native_html_text_tree(&ch.to_string())],
         Some(value @ V::Adt(_)) => vec![node(value, "unsupported SVG children value")],
         Some(V::Array(values)) => values
             .get()
@@ -151,10 +155,11 @@ fn native_html_element(tag: &str, value: V, void: bool) -> V {
     let children = if void {
         Vec::new()
     } else if tag == "textarea" {
-        // TS gives a textarea its value, or "", as its only child.
-        vec![native_html_text_tree(
-            fields.get("value").map(native_text).unwrap_or(""),
-        )]
+        // TS gives a textarea its value, or "", as its children.
+        match fields.get("value") {
+            None | Some(V::Unit) => vec![native_html_text_tree("")],
+            value => native_html_children(value),
+        }
     } else {
         native_html_children(fields.get("children"))
     };
@@ -174,7 +179,8 @@ fn native_svg_element(tag: &str, value: V) -> V {
 
 /// One attribute, checked and written as the TS renderer does.
 fn native_html_attribute(output: &mut String, name: &str, value: Option<&V>, kind: &str) {
-    let Some(value) = value else {
+    // Unit is `undefined` on TS, so the attribute is left out.
+    let Some(value) = value.filter(|value| !matches!(value, V::Unit)) else {
         return;
     };
     let text = match kind {
@@ -196,6 +202,7 @@ fn native_html_attribute(output: &mut String, name: &str, value: Option<&V>, kin
         },
         "int" => match value {
             V::Int(value) => value.to_string(),
+            V::Byte(value) => value.to_string(),
             V::Float(value) if value.fract() == 0.0 && value.abs() <= 9_007_199_254_740_991.0 => {
                 native_number_text(*value)
             }
@@ -203,6 +210,7 @@ fn native_html_attribute(output: &mut String, name: &str, value: Option<&V>, kin
         },
         "number" => match value {
             V::Int(value) => value.to_string(),
+            V::Byte(value) => value.to_string(),
             V::Float(value) if value.is_finite() => native_number_text(*value),
             _ => panic!("SVG attribute {name} must be a finite number"),
         },

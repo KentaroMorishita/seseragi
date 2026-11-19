@@ -308,12 +308,9 @@ impl Backend<'_> {
         if scope.contains(callee) {
             return Ok(None);
         }
-        if name == "attribute" && !arguments.is_empty() {
-            return self
-                .attribute_call(arguments, type_ref, evidence, scope)
-                .map(Some);
-        }
-        if arguments.len() > 1
+        // `html.attribute` is the one curried operation with two arguments.
+        let arity = if name == "attribute" { 2 } else { 1 };
+        if arguments.len() > arity
             || trait_dispatch.is_some()
             || !deferred_evidence_parameters.is_empty()
             || !deferred_evidence_type_constructor_parameters.is_empty()
@@ -323,6 +320,11 @@ impl Backend<'_> {
         }
         if arguments.is_empty() {
             return self.html_reference(callee, evidence, type_ref, scope);
+        }
+        if name == "attribute" {
+            return self
+                .attribute_call(arguments, type_ref, evidence, scope)
+                .map(Some);
         }
         let mut argument = local::method_argument_type(&arguments[0])
             .ok_or("Rust backend: missing HTML argument type")?;
@@ -396,9 +398,6 @@ impl Backend<'_> {
         evidence: &[CoreCallEvidence],
         scope: &Scope,
     ) -> Result<String> {
-        if arguments.len() > 2 {
-            return Err("Rust backend: unproven HTML source application".into());
-        }
         let mut ty = result.clone();
         for argument in arguments.iter().rev() {
             ty = CoreType::Function {
