@@ -289,7 +289,7 @@ let applicationId =
     : crypto.randomUUID()
 const executionSettings = connectExecutionSettings(mobileToolsMenu, () => {
   cancelActiveExecution()
-  showTextOutput("Network設定を変更しました。Runで再実行してください。")
+  showTextOutput("Network の設定を変えました。もう一度 Run を押してください。")
 })
 const restoredBlank =
   linkedSource === undefined &&
@@ -436,10 +436,10 @@ const liveAnalysis: LiveAnalysisController =
       setActiveEditorDiagnostics(analysis.diagnostics)
       if (analysis.diagnostics.length > 0) {
         showWorkspaceDiagnostics(analysis.diagnostics)
-        setStatus("error", `${analysis.diagnostics.length} diagnostic(s)`)
+        setStatus("error", problemCount(analysis.diagnostics.length))
       } else {
         if (output.dataset.liveDiagnostics === "true") {
-          showTextOutput("No diagnostics. Runでprogramを実行できます。")
+          showTextOutput("エラーはありません。Run を押すと実行します。")
         }
         setStatus("ready", "Analysis ready")
       }
@@ -628,7 +628,7 @@ const formatSource = async (): Promise<void> => {
       )
       setActiveEditorDiagnostics(diagnostics)
       showWorkspaceDiagnostics(diagnostics)
-      setStatus("error", `Cannot format: ${diagnostics.length} diagnostic(s)`)
+      setStatus("error", `Cannot format: ${problemCount(diagnostics.length)}`)
       return
     }
     if (!formatted.changed) {
@@ -873,7 +873,7 @@ function loadSample(
   latestAnalysis = undefined
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
-  showTextOutput("Runを押すと結果がここに表示されます。")
+  showTextOutput("Run を押すと、結果がここに出ます。")
   renderRunStatus(runStatus, { kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
@@ -913,7 +913,7 @@ function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
   latestAnalysis = undefined
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
-  showTextOutput("Blank workspaceです。main.ssrgへcodeを書いてRunできます。")
+  showTextOutput("空の main.ssrg です。コードを書いて Run を押してください。")
   renderRunStatus(runStatus, { kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
@@ -1218,7 +1218,7 @@ async function run(): Promise<void> {
   liveAnalysis.cancel()
   activeRunAnalysisRevision = requestedAnalysisRevision
   runButton.disabled = true
-  showTextOutput("Compiling with the shared Rust driver…")
+  showTextOutput("Compiling…")
   renderRunStatus(runStatus, { kind: "running" })
   setStatus("running", "Compiling…")
 
@@ -1245,7 +1245,7 @@ async function run(): Promise<void> {
         kind: "diagnostics",
         count: diagnostics.length,
       })
-      setStatus("error", `${diagnostics.length} diagnostic(s)`)
+      setStatus("error", problemCount(diagnostics.length))
       showIoOnSmallScreens()
       return
     }
@@ -1335,7 +1335,7 @@ async function run(): Promise<void> {
         if (revision !== runRevision || activeExecution !== execution) return
         activeExecution = undefined
         if (completion.kind === "cancelled") {
-          showTextOutput("Interactive preview ended.")
+          showTextOutput("Preview の実行を終えました。")
           setStatus("ready", "Preview closed")
           return
         }
@@ -1552,4 +1552,9 @@ function showIoOnSmallScreens(): void {
     return
   }
   mobilePanels.show("io")
+}
+
+// 下の帯の状態の言葉。Output の Problems と同じ言い方にする（DESIGN.md「画面の言葉」）。
+function problemCount(count: number): string {
+  return `${count} ${count === 1 ? "problem" : "problems"}`
 }

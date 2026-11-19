@@ -58,13 +58,9 @@ export function connectSampleGuide(elements: SampleGuideElements): {
       elements.summary.textContent = sample.summary
       renderGuideMarkdown(elements.body, sample.guide)
       elements.source.textContent = sample.sourcePath
-      elements.topics.replaceChildren(
-        ...sample.topics.map((topic) => {
-          const item = ownerDocument.createElement("li")
-          item.textContent = topic
-          return item
-        })
-      )
+      // 英語のトピック名は出さない。例のデータに「使っている考え方」（Tour の
+      // レッスンへのリンク）が入ったら、ここに並べる（#1350 の全体設計 3）。
+      elements.topics.replaceChildren()
       setOpen(false)
     },
     setBlank: () => {

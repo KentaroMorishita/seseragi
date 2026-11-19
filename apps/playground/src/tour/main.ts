@@ -1,4 +1,3 @@
-import { connectExecutionSettings } from "../ui/execution-settings"
 import { setDiagnostics } from "@codemirror/lint"
 import { analysisHoverAt } from "../analysis/hover"
 import {
@@ -23,16 +22,17 @@ import { resolveEditorLineWidth } from "../editor/format-width"
 import { highlightSeseragi } from "../editor/seseragi-language"
 import { createEditorPreferencesStore } from "../preferences/editor-preferences"
 import { createPreviewDocument } from "../preview-document"
-import { connectPreviewLinks } from "../runtime/preview-links"
 import type { BrowserExecution } from "../runtime/browser-execution"
 import {
   type IsolatedExecutionRequest,
   startIsolatedProject,
 } from "../runtime/isolated-execution"
+import { connectPreviewLinks } from "../runtime/preview-links"
 import {
   isPreviewNavigationCancellation,
   previewNavigationCancelled,
 } from "../runtime/preview-navigation"
+import { connectExecutionSettings } from "../ui/execution-settings"
 import "../ui/design/index.css"
 import "../styles.css"
 import {
@@ -232,7 +232,7 @@ let progress: TourProgress = loadTourProgress(
 let currentLesson = findTourLesson(progress.currentLessonId)
 const executionSettings = connectExecutionSettings(toolsMenu, () => {
   cancelActiveExecution()
-  showTextOutput("Network設定を変更しました。Runで再実行してください。")
+  showTextOutput("Network の設定を変えました。もう一度 Run を押してください。")
 })
 let source = currentLesson.source
 let outputMode: "text" | "html" = currentLesson.outputMode
@@ -297,10 +297,10 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
     if (runButton.disabled) return
     if (diagnostics.length > 0) {
       showDiagnostics(diagnostics, analyzedSource)
-      setStatus("error", `${diagnostics.length} diagnostic(s)`)
+      setStatus("error", problemCount(diagnostics.length))
     } else {
       if (output.dataset.liveDiagnostics === "true") {
-        showTextOutput("No diagnostics. Runでprogramを実行できます。")
+        showTextOutput("エラーはありません。Run を押すと実行します。")
       }
       setStatus("ready", "Analysis ready")
     }
@@ -644,7 +644,7 @@ function loadLesson(
   inputSection.hidden = currentLesson.stdin === ""
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))
-  showTextOutput("Runを押すと結果がここに表示されます。")
+  showTextOutput("Run を押すと、結果がここに出ます。")
   renderLesson()
   liveAnalysis.schedule(source)
   setStatus("ready", "Lesson ready")
@@ -1081,7 +1081,7 @@ async function formatSource(): Promise<void> {
         ])
       )
       showDiagnostics(diagnostics, requestedSource)
-      setStatus("error", `Cannot format: ${diagnostics.length} diagnostic(s)`)
+      setStatus("error", `Cannot format: ${problemCount(diagnostics.length)}`)
       return
     }
     if (formatted.changed) {
@@ -1106,7 +1106,7 @@ async function run(): Promise<void> {
   cancelActiveExecution()
   const revision = runRevision
   runButton.disabled = true
-  showTextOutput("Compiling with the shared Rust driver…")
+  showTextOutput("Compiling…")
   setStatus("running", "Compiling…")
   const requestedSource = source
   const requestedInput = stdinInput.value
@@ -1121,7 +1121,7 @@ async function run(): Promise<void> {
     )
     if (compiled.status === "failure") {
       showDiagnostics(diagnostics)
-      setStatus("error", `${diagnostics.length} diagnostic(s)`)
+      setStatus("error", problemCount(diagnostics.length))
       return
     }
     if (!compiled.entry) {
@@ -1165,7 +1165,7 @@ async function run(): Promise<void> {
         if (revision !== runRevision || activeExecution !== execution) return
         activeExecution = undefined
         if (completion.kind === "cancelled") {
-          showTextOutput("Interactive preview ended.")
+          showTextOutput("Preview の実行を終えました。")
           setStatus("ready", "Preview closed")
           return
         }
@@ -1326,4 +1326,9 @@ function setStatus(
 ): void {
   statusDot.dataset.state = state
   statusText.textContent = message
+}
+
+// 下の帯の状態の言葉。Output の Problems と同じ言い方にする（DESIGN.md「画面の言葉」）。
+function problemCount(count: number): string {
+  return `${count} ${count === 1 ? "problem" : "problems"}`
 }

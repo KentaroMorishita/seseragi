@@ -2738,7 +2738,7 @@ describe("Playground sample catalog", () => {
     ).text()
     const stdinSample = samples.find((sample) => sample.id === "stdin-greeting")
 
-    expect(html).toContain('placeholder="Input passed to the program"')
+    expect(html).toContain('placeholder="プログラムが標準入力から読む内容"')
     expect(html).toContain('aria-label="Program input"')
     expect(stdinSample?.capabilities).toContain("stdin")
     expect(stdinSample?.stdin).not.toBe("")

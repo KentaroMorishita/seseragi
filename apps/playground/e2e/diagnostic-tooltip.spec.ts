@@ -26,7 +26,7 @@ test("a match diagnostic stays opaque beside its type hover", async ({
       'pub effect fn main = Sent "Kyoto" |> label |> println',
     ].join("\n")
   )
-  await expect(page.locator("#status-text")).toHaveText("1 diagnostic(s)")
+  await expect(page.locator("#status-text")).toHaveText("1 problem")
   await page
     .locator(".cm-line")
     .filter({ hasText: "match parcel {" })
