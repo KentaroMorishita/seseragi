@@ -73,8 +73,8 @@
     },
     {
       "id": "project-flow-app",
-      "pickerLabel": "Release Room — multi-module Signal Showcase",
-      "heading": "Make room for the next release.",
+      "pickerLabel": "旅行プランナー（地図ルート・日程・割り勘）",
+      "heading": "京都・宇治 週末旅行プランナー",
       "architecture": "multi-module",
       "requiredSurfaces": [
         "sample-picker",
@@ -87,8 +87,7 @@
         "initial",
         "invalid-submit",
         "day-studio",
-        "empty-disabled",
-        "image-fallback"
+        "empty-disabled"
       ]
     },
     {

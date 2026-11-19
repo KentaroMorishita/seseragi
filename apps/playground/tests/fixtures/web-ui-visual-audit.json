@@ -64,10 +64,10 @@
     },
     {
       "id": "project-flow-app",
-      "identity": "indigo Release Room multi-module Showcase",
-      "photoId": "photo-1516321318423-f06f85e504b3",
+      "identity": "ivory and deep-indigo editorial Kyoto travel planner with synced SVG route map",
+      "photoId": null,
       "photoGroup": "project-flow-app",
-      "layoutMarkers": ["object-cover", "min-h-screen"],
+      "layoutMarkers": ["svg.svg {", "minHeight: \"100vh\""],
       "states": ["initial", "populated", "empty", "day studio"],
       "artifacts": [
         "docs/reviews/issue-189/visual/explorer-code-preview.png",

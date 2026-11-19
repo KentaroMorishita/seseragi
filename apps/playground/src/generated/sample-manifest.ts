@@ -68,13 +68,12 @@ import sample14Output from "../../../../examples/samples/newtypes/stdout.txt?raw
 import sample15Manifest from "../../../../examples/samples/project-flow-app/seseragi.toml?raw"
 import sample15Source from "../../../../examples/samples/project-flow-app/src/main.ssrg?raw"
 import sample15Source2 from "../../../../examples/samples/project-flow-app/src/app.ssrg?raw"
-import sample15Source3 from "../../../../examples/samples/project-flow-app/src/focus/model.ssrg?raw"
-import sample15Source4 from "../../../../examples/samples/project-flow-app/src/focus/view.ssrg?raw"
-import sample15Source5 from "../../../../examples/samples/project-flow-app/src/notes/form.ssrg?raw"
-import sample15Source6 from "../../../../examples/samples/project-flow-app/src/notes/model.ssrg?raw"
-import sample15Source7 from "../../../../examples/samples/project-flow-app/src/notes/view.ssrg?raw"
-import sample15Source8 from "../../../../examples/samples/project-flow-app/src/ui/components.ssrg?raw"
-import sample15Source9 from "../../../../examples/samples/project-flow-app/src/ui/styles.ssrg?raw"
+import sample15Source3 from "../../../../examples/samples/project-flow-app/src/components/budget.ssrg?raw"
+import sample15Source4 from "../../../../examples/samples/project-flow-app/src/components/route_map.ssrg?raw"
+import sample15Source5 from "../../../../examples/samples/project-flow-app/src/components/share_view.ssrg?raw"
+import sample15Source6 from "../../../../examples/samples/project-flow-app/src/components/timeline.ssrg?raw"
+import sample15Source7 from "../../../../examples/samples/project-flow-app/src/trip/model.ssrg?raw"
+import sample15Source8 from "../../../../examples/samples/project-flow-app/src/ui/styles.ssrg?raw"
 import sample15Guide from "../../../../examples/samples/project-flow-app/guide.md?raw"
 
 import sample16Manifest from "../../../../examples/samples/project-greeting/seseragi.toml?raw"
@@ -965,18 +964,18 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "project-flow-app",
-      "title": "Release Room — multi-module Signal Showcase",
-      "summary": "focus rhythmとstory deckを独立したfeature Signalとして作り、app shellで一つのrelease roomへ合成します。",
+      "title": "旅行プランナー（地図ルート・日程・割り勘）",
+      "summary": "SVG の京都・宇治ルート地図、日程タイムライン、割り勘計算、しおり共有の 3 画面を責務別モジュールと Signal で連動させます。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
         "project",
         "module",
-        "feature ownership",
         "Signal",
-        "Effect Action",
+        "SVG",
         "dom.run",
-        "component"
+        "multi-view",
+        "test"
       ],
       "capabilities": [
         "dom"
@@ -995,70 +994,65 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/project-flow-app/src/main.ssrg",
       "manifestPath": "examples/samples/project-flow-app/seseragi.toml",
-      "manifestHash": "sha256:1d59646420c4523f7e5f346628d67b64fb534bc9d38bc12d02df0b6ee18bb1a7",
+      "manifestHash": "sha256:f2a154ae83ab1c88dc489b538a98965e7a5671ceea0b6f2b25b296134bea0d34",
       "guidePath": "examples/samples/project-flow-app/guide.md",
-      "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:37c710df0728a0b9c6d5f13abe873e7f9143aae80e88aaea24b899a74b6d9053",
+      "sourceHash": "sha256:f8617e4c87101381ff5e092b2e9bb11d4ff952134dfa2dfb0735073f6d915c0a",
+      "workspaceHash": "sha256:56c09324d87013ceb86abacfde9529bb2059563279eff8873ec8bbea6b859e4c",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
         "openFiles": [
           "main.ssrg",
           "app.ssrg",
-          "ui/components.ssrg",
-          "focus/model.ssrg",
-          "notes/model.ssrg"
+          "trip/model.ssrg",
+          "components/route_map.ssrg",
+          "components/timeline.ssrg"
         ],
         "expandedFolders": [
-          "ui",
-          "focus",
-          "notes"
+          "trip",
+          "components",
+          "ui"
         ],
         "files": [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/project-flow-app/src/main.ssrg",
-            "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880"
+            "sourceHash": "sha256:f8617e4c87101381ff5e092b2e9bb11d4ff952134dfa2dfb0735073f6d915c0a"
           },
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/project-flow-app/src/app.ssrg",
-            "sourceHash": "sha256:87a8f327e58e46b1aa4fd46365ff61706796236b5dc8ae8361228890f9e7e22d"
+            "sourceHash": "sha256:619957fa2523ab08dc6d07609973c2622927006d3e0079da40336bc6bc0ab95e"
           },
           {
-            "path": "focus/model.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/src/focus/model.ssrg",
-            "sourceHash": "sha256:63483efaa99f2773401abbe25c82653bb701789e816d0f6a1acf439cf36711fe"
+            "path": "components/budget.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/components/budget.ssrg",
+            "sourceHash": "sha256:b3d330a9ecee7f668bfec3c8b30cf35576d15efb08b580d9782bfdb43db9c949"
           },
           {
-            "path": "focus/view.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/src/focus/view.ssrg",
-            "sourceHash": "sha256:1b88ed70476675ca1ec6c6f228300446b154de5aad7f485e76c2ec2ade0d7bb1"
+            "path": "components/route_map.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/components/route_map.ssrg",
+            "sourceHash": "sha256:c9c619f604dee53120e9b8109a8471a66f81e02c620de5260af67b207b383e08"
           },
           {
-            "path": "notes/form.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/src/notes/form.ssrg",
-            "sourceHash": "sha256:d603f5c8c8a5e450bca21daac8ef3be0107e3092385a69d3c358f6ca96597399"
+            "path": "components/share_view.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/components/share_view.ssrg",
+            "sourceHash": "sha256:909792b0c2ea912298e87ac9b44341d9ed2550f212b2f9bc9c88f9a57b0c66c6"
           },
           {
-            "path": "notes/model.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/src/notes/model.ssrg",
-            "sourceHash": "sha256:61ebf27ad8d02be6177d836bb6480922903554f5629fbd755af19d8b262de8ca"
+            "path": "components/timeline.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/components/timeline.ssrg",
+            "sourceHash": "sha256:2f5ccd601aa8e50567c0505e926f187e5867e9badaad92fb0755fd81a764de44"
           },
           {
-            "path": "notes/view.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/src/notes/view.ssrg",
-            "sourceHash": "sha256:389f42012e81d9d061708cce7e87fb8b4fab3104089c89fb4c571d2a8ee437e1"
-          },
-          {
-            "path": "ui/components.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/src/ui/components.ssrg",
-            "sourceHash": "sha256:1ed51a5c5aef8c9d9bc35bba46af5d4b11c528c31358474d50a6f2968ab75f7b"
+            "path": "trip/model.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/trip/model.ssrg",
+            "sourceHash": "sha256:67f3b5513e5b84985b85983b376e935223c9cc2ff7483dfbea8bd3c87dc5b4c2"
           },
           {
             "path": "ui/styles.ssrg",
             "sourcePath": "examples/samples/project-flow-app/src/ui/styles.ssrg",
-            "sourceHash": "sha256:1fad3cc387013eab1b2d712e4c6ae0b47bafaf2fc81548dec38200c4f19bd4d2"
+            "sourceHash": "sha256:63d9966c8b91a97c2c35cc6ce26687778c68fdea7da4f24c5921f2803b8f48cb"
           }
         ]
       }
@@ -1068,13 +1062,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
     projectFiles: [
       { path: "main.ssrg", source: sample15Source },
       { path: "app.ssrg", source: sample15Source2 },
-      { path: "focus/model.ssrg", source: sample15Source3 },
-      { path: "focus/view.ssrg", source: sample15Source4 },
-      { path: "notes/form.ssrg", source: sample15Source5 },
-      { path: "notes/model.ssrg", source: sample15Source6 },
-      { path: "notes/view.ssrg", source: sample15Source7 },
-      { path: "ui/components.ssrg", source: sample15Source8 },
-      { path: "ui/styles.ssrg", source: sample15Source9 },
+      { path: "components/budget.ssrg", source: sample15Source3 },
+      { path: "components/route_map.ssrg", source: sample15Source4 },
+      { path: "components/share_view.ssrg", source: sample15Source5 },
+      { path: "components/timeline.ssrg", source: sample15Source6 },
+      { path: "trip/model.ssrg", source: sample15Source7 },
+      { path: "ui/styles.ssrg", source: sample15Source8 },
     ],
     guide: sample15Guide,
     stdin: "",

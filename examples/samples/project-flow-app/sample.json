@@ -1,18 +1,18 @@
 {
   "$schema": "../sample.schema.json",
   "id": "project-flow-app",
-  "title": "Release Room — multi-module Signal Showcase",
-  "summary": "focus rhythmとstory deckを独立したfeature Signalとして作り、app shellで一つのrelease roomへ合成します。",
+  "title": "旅行プランナー（地図ルート・日程・割り勘）",
+  "summary": "SVG の京都・宇治ルート地図、日程タイムライン、割り勘計算、しおり共有の 3 画面を責務別モジュールと Signal で連動させます。",
   "kind": "showcase",
   "difficulty": "advanced",
   "topics": [
     "project",
     "module",
-    "feature ownership",
     "Signal",
-    "Effect Action",
+    "SVG",
     "dom.run",
-    "component"
+    "multi-view",
+    "test"
   ],
   "capabilities": ["dom"],
   "outputMode": "html",
@@ -36,10 +36,10 @@
     "open": [
       "main.ssrg",
       "app.ssrg",
-      "ui/components.ssrg",
-      "focus/model.ssrg",
-      "notes/model.ssrg"
+      "trip/model.ssrg",
+      "components/route_map.ssrg",
+      "components/timeline.ssrg"
     ],
-    "expanded": ["ui", "focus", "notes"]
+    "expanded": ["trip", "components", "ui"]
   }
 }

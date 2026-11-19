@@ -1,0 +1,576 @@
+// 京都・宇治エリアの地形・川・街路・鉄道を描いたガイドブック調 SVG ルート地図です。
+import * as arrays from "std/array"
+import * as floats from "std/float"
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+import {
+  FocusSpot,
+  Spot,
+  TripAction,
+  TripState,
+  categoryLabel,
+  dayNumber,
+  formatYen,
+  spotsForDay,
+} from "self/trip/model"
+import * as styles from "self/ui/styles"
+
+fn indexRange count: Int -> Array<Int> = {
+  let empty: Array<Int> = []
+  if count <= 0 then empty else arrays.fromIterable (0 ..= count - 1)
+}
+
+// 隣り合う 2 地点を緩やかな二次ベジェ曲線で結び、直線の交差や角張りを和らげます。
+fn curvedSegment fromSpot: Spot -> toSpot: Spot -> idx: Int -> String = {
+  let dx = toSpot.mapX - fromSpot.mapX
+  let dy = toSpot.mapY - fromSpot.mapY
+  let midX = (fromSpot.mapX + toSpot.mapX) / 2
+  let midY = (fromSpot.mapY + toSpot.mapY) / 2
+  let bend = if idx % 2 == 0 then 1 else -1
+  let ctrlX = midX - (dy * bend) / 7
+  let ctrlY = midY + (dx * bend) / 7
+  `Q ${ctrlX} ${ctrlY} ${toSpot.mapX} ${toSpot.mapY}`
+}
+
+fn curvedRoutePath spots: Array<Spot> -> String = match arrays.head spots {
+  Nothing -> ""
+  Just first -> {
+    let count = arrays.length spots
+    let segIndices = if count <= 1 then [] else indexRange (count - 1)
+    let buildSeg = \idx: Int ->
+      match (arrays.get idx spots, arrays.get (idx + 1) spots) {
+      (Just a, Just b) -> [curvedSegment a b idx]
+      _ -> []
+    }
+    let segments = arrays.concat (map buildSeg segIndices)
+    join " " (arrays.concat [[`M ${first.mapX} ${first.mapY}`], segments])
+  }
+}
+
+fn terrainLayer -> Array<svg.Svg<Task<Unit>>> = [
+  // 和紙調の地図ベース
+  svg.rect { x: 0.0, y: 0.0, width: 420.0, height: 300.0, fill: "#f5f1e7", },
+  // 嵐山・西山の緑地シルエットと等高線（西の端）
+  svg.path {
+    d: "M 0 0 L 98 0 C 86 38, 72 74, 56 112 C 36 134, 18 144, 0 148 Z",
+    fill: "#e5ebd8",
+  }, svg.path {
+    d: "M 0 22 C 28 24, 52 44, 58 80 C 42 102, 20 114, 0 118",
+    fill: "none",
+    stroke: "#cfd9bc",
+    strokeWidth: "1",
+  },
+  // 東山・南禅寺〜清水の丘陵シルエットと等高線
+  svg.path {
+    d: "M 420 0 L 322 0 C 318 46, 324 96, 338 144 C 350 186, 370 212, 420 222 Z",
+    fill: "#e3ead6",
+  }, svg.path {
+    d: "M 420 34 C 374 44, 358 84, 366 136 C 374 172, 390 194, 420 202",
+    fill: "none",
+    stroke: "#cad6b6",
+    strokeWidth: "1",
+  },
+  // 宇治・南部の丘陵
+  svg.path { d: "M 250 300 C 294 276, 344 266, 420 258 L 420 300 Z", fill: "#e7ecd9", },
+  // 京都盆地の碁盤の目（市街地：烏丸・四条〜京都駅周辺）
+  svg.line {
+    x1: 112.0,
+    y1: 56.0,
+    x2: 296.0,
+    y2: 56.0,
+    stroke: "#e7dfd1",
+    strokeWidth: "0.9",
+  }, svg.line {
+    x1: 108.0,
+    y1: 76.0,
+    x2: 300.0,
+    y2: 76.0,
+    stroke: "#e7dfd1",
+    strokeWidth: "0.9",
+  }, svg.line {
+    x1: 106.0,
+    y1: 120.0,
+    x2: 306.0,
+    y2: 120.0,
+    stroke: "#e7dfd1",
+    strokeWidth: "0.9",
+  }, svg.line {
+    x1: 108.0,
+    y1: 164.0,
+    x2: 304.0,
+    y2: 164.0,
+    stroke: "#e7dfd1",
+    strokeWidth: "0.9",
+  }, svg.line {
+    x1: 126.0,
+    y1: 44.0,
+    x2: 126.0,
+    y2: 198.0,
+    stroke: "#e7dfd1",
+    strokeWidth: "0.9",
+  }, svg.line {
+    x1: 156.0,
+    y1: 42.0,
+    x2: 156.0,
+    y2: 200.0,
+    stroke: "#e7dfd1",
+    strokeWidth: "0.9",
+  }, svg.line {
+    x1: 214.0,
+    y1: 42.0,
+    x2: 214.0,
+    y2: 196.0,
+    stroke: "#e7dfd1",
+    strokeWidth: "0.9",
+  }, svg.line {
+    x1: 274.0,
+    y1: 46.0,
+    x2: 274.0,
+    y2: 184.0,
+    stroke: "#e7dfd1",
+    strokeWidth: "0.9",
+  },
+  // 主要幹線道路（四条通・五条通・烏丸通・塩小路通）
+  svg.line {
+    x1: 96.0,
+    y1: 96.0,
+    x2: 314.0,
+    y2: 96.0,
+    stroke: "#ffffff",
+    strokeWidth: "2.6",
+  }, svg.line {
+    x1: 104.0,
+    y1: 144.0,
+    x2: 336.0,
+    y2: 144.0,
+    stroke: "#ffffff",
+    strokeWidth: "2.4",
+  }, svg.line {
+    x1: 120.0,
+    y1: 184.0,
+    x2: 248.0,
+    y2: 184.0,
+    stroke: "#ffffff",
+    strokeWidth: "2.2",
+  }, svg.line {
+    x1: 186.0,
+    y1: 36.0,
+    x2: 186.0,
+    y2: 202.0,
+    stroke: "#ffffff",
+    strokeWidth: "2.6",
+  },
+  // JR 奈良線（京都駅 → 伏見 → 宇治）
+  svg.path {
+    d: "M 186 184 L 244 218 L 302 268",
+    fill: "none",
+    stroke: "#b3bec7",
+    strokeWidth: "1.4",
+    strokeDasharray: "3 3",
+  },
+  // 桂川（西側：嵐山から南下）
+  svg.path {
+    d: "M 42 0 C 52 54, 68 104, 94 172 C 114 222, 134 252, 156 272",
+    fill: "none",
+    stroke: "#d3e5ef",
+    strokeWidth: "9.5",
+    strokeLinecap: "round",
+  }, svg.path {
+    d: "M 42 0 C 52 54, 68 104, 94 172 C 114 222, 134 252, 156 272",
+    fill: "none",
+    stroke: "#bfd9e8",
+    strokeWidth: "4.8",
+    strokeLinecap: "round",
+  },
+  // 宇治川（南東：宇治から西へ合流）
+  svg.path {
+    d: "M 420 232 C 368 248, 316 262, 254 268 C 210 272, 178 274, 156 272",
+    fill: "none",
+    stroke: "#d3e5ef",
+    strokeWidth: "10",
+    strokeLinecap: "round",
+  }, svg.path {
+    d: "M 420 232 C 368 248, 316 262, 254 268 C 210 272, 178 274, 156 272",
+    fill: "none",
+    stroke: "#b9d6e7",
+    strokeWidth: "5",
+    strokeLinecap: "round",
+  },
+  // 鴨川（錦市場のすぐ東・祇園のすぐ西を南北に流れ、南西で桂川・宇治川と合流）
+  svg.path {
+    d: "M 248 0 C 244 68, 240 120, 226 186 C 216 232, 184 260, 126 300",
+    fill: "none",
+    stroke: "#cfe3ee",
+    strokeWidth: "13",
+    strokeLinecap: "round",
+  }, svg.path {
+    d: "M 248 0 C 244 68, 240 120, 226 186 C 216 232, 184 260, 126 300",
+    fill: "none",
+    stroke: "#b4d3e5",
+    strokeWidth: "6.5",
+    strokeLinecap: "round",
+  },
+  // 四条大橋・五条大橋の橋マーク
+  svg.line {
+    x1: 230.0,
+    y1: 96.0,
+    x2: 249.0,
+    y2: 96.0,
+    stroke: "#ffffff",
+    strokeWidth: "3.4",
+  }, svg.line {
+    x1: 223.0,
+    y1: 144.0,
+    x2: 242.0,
+    y2: 144.0,
+    stroke: "#ffffff",
+    strokeWidth: "3.0",
+  },
+]
+
+fn cartographicLabels -> Array<svg.Svg<Task<Unit>>> = [
+  // 地形・川・地区に馴染む控えめな地図タイポグラフィ
+  svg.text {
+    x: 38.0,
+    y: 52.0,
+    fill: "#64785b",
+    fontSize: "9.5px",
+    fontWeight: "600",
+    letterSpacing: "0.12em",
+    children: "嵐山",
+  }, svg.text {
+    x: 366.0,
+    y: 44.0,
+    fill: "#64785b",
+    fontSize: "9.5px",
+    fontWeight: "600",
+    letterSpacing: "0.12em",
+    children: "東山",
+  }, svg.text {
+    x: 118.0,
+    y: 66.0,
+    fill: "#8f8574",
+    fontSize: "9px",
+    fontWeight: "600",
+    letterSpacing: "0.16em",
+    children: "中京・四条",
+  }, svg.text {
+    x: 252.0,
+    y: 50.0,
+    fill: "#5b869e",
+    fontSize: "8.5px",
+    fontWeight: "600",
+    letterSpacing: "0.14em",
+    children: "鴨川",
+  }, svg.text {
+    x: 200.0,
+    y: 226.0,
+    fill: "#8f8574",
+    fontSize: "9px",
+    fontWeight: "600",
+    letterSpacing: "0.14em",
+    children: "伏見",
+  }, svg.text {
+    x: 338.0,
+    y: 288.0,
+    fill: "#64785b",
+    fontSize: "9.5px",
+    fontWeight: "600",
+    letterSpacing: "0.16em",
+    children: "宇治",
+  },
+  // 方位記号（左上）
+  svg.circle {
+    cx: 24.0,
+    cy: 24.0,
+    r: 10.0,
+    fill: "#faf8f4",
+    stroke: "#d5ccbd",
+    strokeWidth: "1",
+  }, svg.polygon { points: "24,16 26.8,24 24,22 21.2,24", fill: "#1c3d5a", }, svg.text {
+    x: 24.0,
+    y: 31.5,
+    fill: "#5c6d7d",
+    fontSize: "7px",
+    fontWeight: "700",
+    textAnchor: "middle",
+    children: "N",
+  },
+  // スケールバー（左下）
+  svg.rect {
+    x: 14.0,
+    y: 274.0,
+    width: 64.0,
+    height: 16.0,
+    rx: 4.0,
+    fill: "#faf8f4",
+    opacity: 0.88,
+  }, svg.line {
+    x1: 20.0,
+    y1: 285.0,
+    x2: 52.0,
+    y2: 285.0,
+    stroke: "#5c6d7d",
+    strokeWidth: "1.4",
+  }, svg.line {
+    x1: 20.0,
+    y1: 282.0,
+    x2: 20.0,
+    y2: 286.0,
+    stroke: "#5c6d7d",
+    strokeWidth: "1.4",
+  }, svg.line {
+    x1: 52.0,
+    y1: 282.0,
+    x2: 52.0,
+    y2: 286.0,
+    stroke: "#5c6d7d",
+    strokeWidth: "1.4",
+  }, svg.text {
+    x: 56.0,
+    y: 286.0,
+    fill: "#5c6d7d",
+    fontSize: "8px",
+    fontWeight: "600",
+    children: "2 km",
+  },
+]
+
+fn routeLayer spots: Array<Spot> -> Array<svg.Svg<Task<Unit>>> = {
+  let pathData = curvedRoutePath spots
+  if pathData == "" then [] else [
+    // 白い縁取りで地図要素の上からでもルート線をくっきり見せる
+    svg.path {
+      d: pathData,
+      fill: "none",
+      stroke: "#ffffff",
+      strokeWidth: "6",
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+      opacity: 0.85,
+    }, svg.path {
+      d: pathData,
+      fill: "none",
+      stroke: "#d65a31",
+      strokeWidth: "2.8",
+      strokeDasharray: "7 5",
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+    },
+  ]
+}
+
+fn pinElements spots: Array<Spot> -> focusedId: String -> Array<svg.Svg<Task<Unit>>> = {
+  let count = arrays.length spots
+  let indices = indexRange count
+  let buildPin = \idx: Int -> match arrays.get idx spots {
+    Nothing -> []
+    Just spot -> {
+      let x = floats.fromInt spot.mapX
+      let y = floats.fromInt spot.mapY
+      let isFocused = spot.id == focusedId
+      let fill = if isFocused then "#d65a31" else "#1c3d5a"
+      let radius = if isFocused then 12.0 else 9.5
+      let halo: Array<svg.Svg<Task<Unit>>> =
+        if isFocused then
+          [svg.circle { cx: x, cy: y, r: 18.0, fill: "#d65a31", opacity: 0.18, }]
+        else
+          []
+      let shadow: svg.Svg<Task<Unit>> = svg.circle {
+        cx: x,
+        cy: y + 2.0,
+        r: radius,
+        fill: "#1c3d5a",
+        opacity: 0.18,
+      }
+      let outer: svg.Svg<Task<Unit>> = svg.circle {
+        cx: x,
+        cy: y,
+        r: radius,
+        fill,
+        stroke: "#ffffff",
+        strokeWidth: "2.4",
+      }
+      let num: svg.Svg<Task<Unit>> = svg.text {
+        x,
+        y: y + 3.5,
+        fill: "#ffffff",
+        fontSize:
+          if isFocused then
+            "10.5px"
+          else
+            "9.5px",
+        fontWeight: "700",
+        textAnchor: "middle",
+        children: `${idx + 1}`,
+      }
+      arrays.concat [halo, [shadow, outer, num]]
+    }
+  }
+  arrays.concat (map buildPin indices)
+}
+
+fn focusedCalloutLayer spots: Array<Spot>
+  -> focusedId: String
+  -> Array<svg.Svg<Task<Unit>>> =
+  match arrays.find (\s: Spot -> s.id == focusedId) spots {
+    Nothing -> []
+    Just spot -> {
+      let x = floats.fromInt spot.mapX
+      let y = floats.fromInt spot.mapY
+      let calloutY = if spot.mapY < 60 then y + 26.0 else y - 22.0
+      let calloutX =
+        if spot.mapX > 296 then x - 46.0 else if spot.mapX < 114 then x + 46.0 else x
+      [
+        svg.rect {
+          x: calloutX - 62.0,
+          y: calloutY - 10.5,
+          width: 124.0,
+          height: 19.0,
+          rx: 9.5,
+          fill: "#1c3d5a",
+          stroke: "#ffffff",
+          strokeWidth: "1.5",
+        },
+        svg.text {
+          x: calloutX,
+          y: calloutY + 2.5,
+          fill: "#ffffff",
+          fontSize: "8.5px",
+          fontWeight: "700",
+          textAnchor: "middle",
+          children: spot.name,
+        },
+      ]
+    }
+  }
+
+fn mapCanvas spots: Array<Spot> -> focusedId: String -> html.Html<Task<Unit>> = {
+  let frameBorder: Array<svg.Svg<Task<Unit>>> =
+    [svg.rect {
+      x: 0.5,
+      y: 0.5,
+      width: 419.0,
+      height: 299.0,
+      rx: 12.0,
+      fill: "none",
+      stroke: "#ddd4c5",
+      strokeWidth: "1",
+    }]
+  svg.toHtml (
+    svg.svg {
+      viewBox: "0 0 420 300",
+      width: 420.0,
+      height: 300.0,
+      role: "img",
+      ariaLabel: "京都・宇治の旅行ルート地図",
+      style: html.style {
+        display: "block",
+        width: "100%",
+        height: "auto",
+        borderRadius: "12px",
+      },
+      children: arrays.concat [
+        terrainLayer (),
+        cartographicLabels (),
+        routeLayer spots,
+        pinElements spots focusedId,
+        focusedCalloutLayer spots focusedId,
+        frameBorder,
+      ],
+    }
+  )
+}
+
+fn spotJumpChip dispatch: (TripAction -> Task<Unit>)
+  -> focusedId: String
+  -> idx: Int
+  -> spot: Spot
+  -> html.Html<Task<Unit>> =
+  {
+    let isFocused = spot.id == focusedId
+    html.button {
+      buttonType: "button",
+      ariaSelected: isFocused,
+      onClick: dispatch (FocusSpot spot.id),
+      style: styles.dayChipStyle isFocused,
+      children: `${idx + 1}. ${spot.name}`,
+    }
+  }
+
+fn spotDetailCard spots: Array<Spot> -> focusedId: String -> html.Html<Task<Unit>> =
+  match arrays.find (\s: Spot -> s.id == focusedId) spots {
+    Nothing -> html.p {
+      style: styles.metaStyle (),
+      children: "日程にスポットを追加すると、地図上のルートと立ち寄り先のメモが表示されます。",
+    }
+    Just spot -> {
+      let nameNode: html.Html<Task<Unit>> = html.strong {
+        style: html.style { color: "#1c3d5a", fontSize: "14px", },
+        children: `${spot.name}（${spot.area}）`,
+      }
+      let badgeNode: html.Html<Task<Unit>> = html.span {
+        style: styles.categoryBadgeStyle spot.category,
+        children: `${categoryLabel spot.category}・${formatYen spot.costYen}`,
+      }
+      let headerRow: html.Html<Task<Unit>> = html.div {
+        style: html.style {
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "8px",
+          marginBottom: "6px",
+        },
+        children: [nameNode, badgeNode],
+      }
+      let noteNode: html.Html<Task<Unit>> = html.p {
+        style: styles.metaStyle (),
+        children: `${spot.note}（滞在目安 ${spot.stayMinutes} 分）`,
+      }
+      html.div {
+        style: html.style {
+          backgroundColor: "#faf6ef",
+          border: "1px solid #e4ddd2",
+          borderRadius: "12px",
+          padding: "12px 14px",
+          marginTop: "12px",
+        },
+        children: [headerRow, noteNode],
+      }
+    }
+  }
+
+pub fn view dispatch: (TripAction -> Task<Unit>)
+  -> state: TripState
+  -> html.Html<Task<Unit>> = {
+    let daySpots = spotsForDay state.activeDay state.spots
+    let count = arrays.length daySpots
+    let indices = indexRange count
+    let chips: Array<html.Html<Task<Unit>>> = [
+      spotJumpChip dispatch state.focusedSpotId idx spot | idx <- indices,
+      Just spot <- [arrays.get idx daySpots]
+    ]
+    let heading: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: `${dayNumber state.activeDay}日目のルート地図（${count} スポット）`,
+    }
+    let chipRow: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "6px",
+        marginTop: "12px",
+      },
+      children: chips,
+    }
+    html.section {
+      style: styles.cardStyle (),
+      children: [
+        heading,
+        mapCanvas daySpots state.focusedSpotId,
+        chipRow,
+        spotDetailCard daySpots state.focusedSpotId,
+      ],
+    }
+  }

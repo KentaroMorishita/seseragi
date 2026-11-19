@@ -1,12 +1,13 @@
+// 実行の入口: #app 要素を探し、アプリ全体の Signal を dom.run で描画します。
 import * as dom from "std/web/dom"
-import { create } from "./app"
+import { create } from "self/app"
 
 fn perform action: Task<Unit> -> Task<Unit> = action
 
 pub effect fn main -> Unit with dom: dom.Dom fails String = do {
   content <- create ()
   target <- dom.query "#app"
-    |> mapError (\error: dom.DomError -> "DOM target unavailable")
+    |> mapError (\_error: dom.DomError -> "DOM target unavailable")
   dom.run (dom.defaultOptions ()) target perform content
-    |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+    |> mapError (\_error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
 }
