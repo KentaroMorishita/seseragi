@@ -7,7 +7,7 @@
     "walkthrough": [
       {
         "heading": "値を返す式としての if",
-        "body": "2 行目の `if score >= 80 then \"pass\" else \"retry\"` は命令文ではなく、選んだ側の値をそのまま返す式です。条件 `score >= 80` が `True` なので `label` には `\"pass\"` が入ります。",
+        "body": "`let label = if score >= 80 then \"pass\" else \"retry\"` の `if` は命令文ではなく、選んだ側の値をそのまま返す式です。初期コードでは `score` が `85` で `score >= 80` が `True` になるため、`label` には `\"pass\"` が入ります。",
         "sourceRange": {
           "startLine": 1,
           "endLine": 2
@@ -15,7 +15,7 @@
       },
       {
         "heading": "else が必須で、式の一部にも書ける",
-        "body": "3 行目の `if` 式は `Int` 型の `5` または `0` を返し、5 行目の `score + bonus` の計算にそのまま使われています。`then` と `else` の両方を必ず書くのは、どちらの分岐でも 1 つの値を返す必要があるためです。",
+        "body": "`let bonus = if score >= 80 then 5 else 0` は `Int` 型の `5` または `0` を返し、`main` の `score + bonus` の計算にそのまま使われています。`then` と `else` の両方を必ず書くのは、どちらの分岐でも同じ型の 1 つの値を返す必要があるためです。",
         "sourceRange": {
           "startLine": 3,
           "endLine": 5
@@ -30,7 +30,7 @@
       }
     ],
     "exercise": {
-      "instruction": "1 行目の `85` を `70` に書き換えて `Run` し、`Output` が `label: retry, total: 70` に変わることを確かめてください。",
+      "instruction": "まず `else \"retry\"` を `else 0` に書き換えて `Run` し、`then` と `else` の型が揃わないと `Problems` に型不一致エラー（`expected String, actual Int`）が出ることを確かめてください。次に `else \"retry\"` に戻したうえで `let score = 85` を `let score = 70` に書き換えて `Run` し、`Output` が `label: retry, total: 70` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

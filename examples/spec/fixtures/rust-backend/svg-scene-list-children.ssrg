@@ -1,0 +1,13 @@
+// A List passed on as SVG children is refused when the node is built.
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+
+fn sized props: { width: Float } -> svg.Svg<Unit> = svg.rect props
+
+pub effect fn main = do {
+  let child: svg.Svg<Unit> = svg.circle { r: 1.0 }
+  println "before"
+  let shape = sized { width: 1.0, children: `[child] }
+  println "unreachable"
+  println (html.renderToString (svg.toHtml shape))
+}

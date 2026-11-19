@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 5 行目にある `Pen` の `amount` を `600` から `900` に書き換えて `Run` し、`Output` の 2 行目が `Pen: 900` に変わることを確かめてください。",
+      "instruction": "エディターの `Pen` の `amount` を `600` から `900` に書き換えて `Run` し、`Output` の 2 行目が `Pen: 900` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

@@ -30,7 +30,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 1 行目にある `value + 1` を `value * 2` に書き換えて `Run` し、5 つの型すべてで中の数値が 2 倍になりつつそれぞれの形が保たれることを確かめてください。",
+      "instruction": "エディターの `value + 1` を `value * 2` に書き換えて `Run` し、5 つの型すべてで中の数値が 2 倍になりつつそれぞれの形が保たれることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 4 行目にある `reportPair` の引数を `->` でつなぎ、続けて `-> Unit`・`with Console`・`fails ConsoleError` を書いて明示形にし、9 行目の `\"inferred\"` を `\"explicit\"` に書き換えて `Run` し、`Output` の 2 行目が `caller: explicit` に変わることを確かめてください。",
+      "instruction": "エディターの `effect fn reportPair` の引数を `->` でつなぎ、続けて `-> Unit`・`with Console`・`fails ConsoleError` を書いて明示形にし、`main` の `\"inferred\"` を `\"explicit\"` に書き換えて `Run` し、`Output` の 2 行目が `caller: explicit` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

@@ -108,7 +108,6 @@ const codeFocusButton = requiredElement(
 )
 const navigation = requiredElement("#tour-navigation", HTMLElement)
 const workspace = requiredElement(".tour-workspace", HTMLElement)
-const topbar = requiredElement(".tour-topbar", HTMLElement)
 const lesson = requiredElement(".tour-lesson", HTMLElement)
 const lessonResizer = requiredElement("#tour-lesson-resizer", HTMLElement)
 const lab = requiredElement(".tour-lab", HTMLElement)

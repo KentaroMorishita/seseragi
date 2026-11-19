@@ -7,7 +7,7 @@
     "walkthrough": [
       {
         "heading": "型注釈・型推論と演算・比較",
-        "body": "1 行目の `let total: Int = 20 + 22` は `: Int` と型注釈を付けながら `+` で整数を計算します。2 行目の `1.5`（`Float`）や 3 行目の `42 > 40`（`Bool`）は型注釈を省略しても右辺から型が推論され、`42 > 40` の結果は `True` になります。4 行目の `()` は値がないことを表す `Unit` 型です。",
+        "body": "初期コードの `total` は `: Int` と型注釈を付けながら `+` で整数を計算します。`ratio`（`Float`）や `isLarge`（`Bool`）は型注釈を省略しても右辺から型が推論され、`42 > 40` の結果は `True` になります。`empty` の `()` は値がないことを表す `Unit` 型です。",
         "sourceRange": {
           "startLine": 1,
           "endLine": 4
@@ -15,7 +15,7 @@
       },
       {
         "heading": "変更できない束縛を参照する",
-        "body": "`let` で付けた名前は後から値を上書きできない変更できない束縛です。`main` の中では名前をそのまま参照し、`Output` へ 4 つの型の値をまとめて表示しています。",
+        "body": "`let` で付けた名前は後から値を上書きできない束縛（不変束縛）です。`main` の中では名前をそのまま参照し、`Output` へ 4 つの型の値をまとめて表示しています。",
         "sourceRange": {
           "startLine": 6,
           "endLine": 7
@@ -40,7 +40,7 @@
       }
     ],
     "exercise": {
-      "instruction": "3 行目の `42 > 40` を `42 > 50` に書き換えて `Run` し、`Output` の `Bool: True` が `Bool: False` に変わることを確かめてください。",
+      "instruction": "`isLarge` の `42 > 40` を `42 > 50` に書き換えて `Run` し、`Output` の `Bool: True` が `Bool: False` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

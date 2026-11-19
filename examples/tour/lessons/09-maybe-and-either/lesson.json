@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 12 行目にある `Right 3` を `Left \"out of stock\"` に書き換えて `Run` し、`Output` の 2 行目が `error: out of stock` に変わることを確かめてください。",
+      "instruction": "エディターの `Right 3` を `Left \"out of stock\"` に書き換えて `Run` し、`Output` の 2 行目が `error: out of stock` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
