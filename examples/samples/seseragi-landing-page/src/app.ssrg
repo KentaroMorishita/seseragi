@@ -1,3 +1,4 @@
+// ページ全体の URL 準備とセクション合成を担います。
 import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { Signal } from "std/signal"
@@ -14,19 +15,20 @@ fn page logoUrl: html.WebUrl
   -> heroImageUrl: html.WebUrl
   -> riverImageUrl: html.WebUrl
   -> playgroundUrl: html.WebUrl
+  -> tourUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> chapter: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
   html.main {
     style: styles.pageStyle (),
     children: [
-      hero logoUrl heroImageUrl playgroundUrl repositoryUrl,
+      hero logoUrl heroImageUrl playgroundUrl tourUrl repositoryUrl,
       principles (),
       chapter,
       imageStatement riverImageUrl,
-      closing playgroundUrl repositoryUrl,
-      footer logoUrl repositoryUrl
-    ]
+      closing playgroundUrl tourUrl repositoryUrl,
+      footer logoUrl repositoryUrl,
+    ],
   }
 
 pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String = do {
@@ -34,10 +36,12 @@ pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String = do {
   heroImageUrl <- parseUrl "https://images.unsplash.com/photo-1760344594784-60ff14035eb0?auto=format&fit=crop&w=1800&q=88"
   riverImageUrl <- parseUrl "https://images.unsplash.com/photo-1769795070373-aa9021325c86?auto=format&fit=crop&w=2000&q=86"
   playgroundUrl <- parseUrl "https://seseragi.vercel.app/"
+  tourUrl <- parseUrl "https://seseragi.vercel.app/tour/"
   repositoryUrl <- parseUrl "https://github.com/KentaroMorishita/seseragi"
   chapter <- createChapter ()
   succeed (
-    signals.map (page logoUrl heroImageUrl riverImageUrl playgroundUrl repositoryUrl)
+    signals.map
+      (page logoUrl heroImageUrl riverImageUrl playgroundUrl tourUrl repositoryUrl)
       chapter
   )
 }

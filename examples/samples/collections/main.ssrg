@@ -1,30 +1,83 @@
+// ひと月の支出を、費目ごとにまとめて表にします。
 import * as arrays from "std/array"
 
-struct Sale { item: String, amount: Int }
+type Category deriving Eq =
+  | Food
+  | Housing
+  | Transport
+  | Leisure
 
-let sales: Array<Sale> = [
-  Sale { item: "Book", amount: 2400 },
-  Sale { item: "Pen", amount: 600 },
-  Sale { item: "Cancelled", amount: 0 },
-  Sale { item: "Notebook", amount: 1200 }
+struct Expense { category: Category, memo: String, yen: Int }
+
+let expenses: Array<Expense> = [
+  Expense { category: Housing, memo: "家賃", yen: 68000 },
+  Expense { category: Food, memo: "スーパー", yen: 4280 },
+  Expense { category: Transport, memo: "定期券", yen: 9800 },
+  Expense { category: Food, memo: "パン屋", yen: 760 },
+  Expense { category: Leisure, memo: "映画", yen: 1900 },
+  Expense { category: Food, memo: "スーパー", yen: 5120 },
+  Expense { category: Leisure, memo: "本", yen: 2640 },
 ]
 
-fn completed sale: Sale -> Bool = sale.amount > 0
+let categories: Array<Category> = [Housing, Food, Transport, Leisure]
 
-fn renderSale sale: Sale -> String = `${sale.item}: ${sale.amount}`
-
-fn totalSales values: Array<Sale> -> Int = sum (map (\sale: Sale -> sale.amount) values)
-
-fn report completedSales: Array<Sale> -> String = {
-  // 絞り込んだ同じ配列から、表示用の行と合計金額の両方を作ります。
-  let lines = map renderSale completedSales
-  let total = totalSales completedSales
-
-  join "\n" [`Completed: ${join ", " lines}`, `Total: ${total}`]
+fn label category: Category -> String = match category {
+  Food -> "食費"
+  Housing -> "住まい"
+  Transport -> "交通"
+  Leisure -> "楽しみ"
 }
 
-pub effect fn main -> Unit with Console fails ConsoleError =
-  sales
-  |> arrays.filter completed
-  |> report
-  |> println
+// 金額を 3 桁ごとに区切る（68000 → 68,000円）。上の桁から順に、自分を呼んで組み立てる
+fn yen amount: Int -> String = {
+  fn group n: Int -> String = {
+    let low = n % 1000
+    if n < 1000 then
+      show n
+    else if low < 10 then
+      `${group (n / 1000)},00${low}`
+    else if low < 100 then
+      `${group (n / 1000)},0${low}`
+    else
+      `${group (n / 1000)},${low}`
+  }
+
+  `${group amount}円`
+}
+
+fn totalYen items: Array<Expense> -> Int =
+  items
+  |> map (\item: Expense -> item.yen)
+  |> sum
+
+// 費目ごとの合計。支出のない費目は表に出さない
+fn subtotals items: Array<Expense> -> Array<(Category, Int)> = {
+  let byCategory =
+    [(category, totalYen [item | item <- items, item.category == category]) | category <- categories]
+  [(category, amount) | (category, amount) <- byCategory, amount > 0]
+}
+
+fn row total: Int -> entry: (Category, Int) -> String = {
+  let (category, amount) = entry
+  `${label category}  ${yen amount}（${amount * 100 / total}%）`
+}
+
+// いちばん大きい出費。支出が一つもなければ、その旨を返す
+fn largest items: Array<Expense> -> String =
+  match items |> arrays.sortBy (\item: Expense -> item.yen) |> arrays.last {
+    Just item -> `いちばん大きい出費: ${item.memo} ${yen item.yen}`
+    Nothing -> "支出はまだありません"
+  }
+
+fn report items: Array<Expense> -> String = {
+  let total = totalYen items
+  subtotals items
+    |> map (row total)
+    |> arrays.append [
+      `合計  ${yen total}`,
+      largest items
+    ]
+    |> join "\n"
+}
+
+pub effect fn main = expenses |> report |> println

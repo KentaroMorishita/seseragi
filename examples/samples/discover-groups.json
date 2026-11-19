@@ -12,31 +12,25 @@
         "fizzbuzz",
         "fibonacci-sequence",
         "collections",
+        "expression-calculator",
         "collection-patterns",
         "local-functions"
       ]
     },
     {
       "id": "domain-recipes",
-      "title": "データの形を設計する（型・不変更新・演算子）",
-      "summary": "レコード更新、取り違えを防ぐID型、型エイリアス、独自演算子を設計します。",
+      "title": "データの形と失敗",
+      "summary": "型で値を守り、失敗や外部入力を安全に扱い、複数ファイルとテストへ分けます。",
       "kind": "recipe",
       "samples": [
-        "records",
         "newtypes",
+        "either-and-monad",
+        "json-decode",
+        "stdin-greeting",
+        "project-greeting",
+        "records",
         "type-aliases",
         "impl-and-operators"
-      ]
-    },
-    {
-      "id": "effects-and-abstraction",
-      "title": "入力・エラー・複数ファイルを扱う",
-      "summary": "標準入力、Eitherによる段階的な入力検証、複数モジュールの分割を試します。",
-      "kind": "recipe",
-      "samples": [
-        "stdin-greeting",
-        "either-and-monad",
-        "project-greeting"
       ]
     },
     {

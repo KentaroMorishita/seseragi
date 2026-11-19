@@ -1,18 +1,51 @@
 {
   "$schema": "../sample.schema.json",
   "id": "newtypes",
-  "title": "newtypeで境界を作る",
-  "summary": "実行時コストを増やさず、Intと混ざらないdomainのIDを作ります。",
+  "title": "注文の金額を型で守る",
+  "summary": "金額と個数を newtype で分け、自作演算子での合計と構造体の一部更新、Decimal による正確な割引と税の丸めを行います。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["newtype", "nominal type", "pattern"],
-  "capabilities": ["console"],
+  "topics": [
+    "newtype",
+    "impl",
+    "operator",
+    "Decimal",
+    "struct update"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["hello-world"],
+  "prerequisites": [
+    "collections"
+  ],
   "featured": false,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "会員割引を 20% にする",
+        "edits": [
+          {
+            "find": "let memberOrder = Order { ...standardOrder, discountPercent: 15 }",
+            "replace": "let memberOrder = Order { ...standardOrder, discountPercent: 20 }"
+          }
+        ]
+      },
+      {
+        "label": "注文に商品を 1 つ足す",
+        "edits": [
+          {
+            "find": "    OrderLine { itemName: \"マグカップ\", unitPrice: yen 1850, quantity: Quantity 1 },\n",
+            "replace": "    OrderLine { itemName: \"マグカップ\", unitPrice: yen 1850, quantity: Quantity 1 },\n    OrderLine { itemName: \"ドリッパー\", unitPrice: yen 2100, quantity: Quantity 1 },\n"
+          }
+        ]
+      }
+    ]
   }
 }

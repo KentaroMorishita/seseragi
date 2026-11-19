@@ -1,230 +1,122 @@
+// 旅のしおりアプリのシェル: 3 画面タブ（日程と地図・予算と割り勘・しおり共有）と Signal を束ねます。
+import * as arrays from "std/array"
 import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
-import { create as createFocus } from "./focus/model"
-import { create as createNotes } from "./notes/model"
-import { eyebrow, metric } from "./ui/components"
-import { cx, heroButtonStyle, heroMutedStyle, heroStyle, pageStyle, } from "./ui/styles"
+import {
+  ActiveTab,
+  BudgetTab,
+  FinishSave,
+  PlanTab,
+  SelectTab,
+  ShareTab,
+  StartSave,
+  TripAction,
+  TripState,
+  formatYen,
+  initialState,
+  totalTripCost,
+  update,
+} from "self/trip/model"
+import * as budget from "self/components/budget"
+import * as routeMap from "self/components/route_map"
+import * as shareView from "self/components/share_view"
+import * as timeline from "self/components/timeline"
+import * as styles from "self/ui/styles"
 
-struct ShellState { nightStudio: Bool, }
-
-type ShellAction =
-  | ToggleStudio
-
-let pageClass = cx ["min-h-screen", "p-4", "sm:p-10",]
-
-let shellClass = cx ["mx-auto", "max-w-4xl",]
-
-let heroClass = cx ["rounded-2xl", "p-5", "shadow-lg",]
-
-let heroGridClass = cx ["grid", "grid-cols-1", "gap-6", "sm:grid-cols-2",]
-
-let heroImageClass = cx [
-  "aspect-2-1",
-  "h-auto",
-  "w-full",
-  "rounded-2xl",
-  "object-cover",
-]
-
-let heroHeadingClass = cx ["mt-2", "text-3xl", "font-bold", "sm:text-4xl",]
-
-let heroCopyClass = cx ["mt-2", "text-base",]
-
-let heroLinkClass = cx ["mt-4", "inline-block", "font-semibold",]
-
-let studioButtonClass = cx [
-  "mt-4",
-  "rounded-xl",
-  "border-0",
-  "px-4",
-  "py-3",
-  "font-semibold",
-]
-
-let summaryGridClass = cx ["mt-4", "grid", "grid-cols-3", "gap-2",]
-
-let workspaceClass = cx ["mt-6", "grid", "grid-cols-1", "gap-4", "sm:grid-cols-2",]
-
-fn update action: ShellAction -> state: ShellState -> ShellState = match action {
-  ToggleStudio -> ShellState { nightStudio: if state.nightStudio then False else True }
-}
-
-fn dispatch state: MutableSignal<ShellState> -> action: ShellAction -> Task<Unit> =
-  signals.update (update action) state
-
-fn studioName state: ShellState -> String =
-  if state.nightStudio then "Night studio" else "Day studio"
-
-fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> = html.img {
-  src: imageUrl,
-  alt: "ノートとノートパソコンが置かれた制作机",
-  class: heroImageClass,
-  width: 960,
-  height: 480,
-  loading: "eager"
-}
-
-fn heroHeading nightStudio: Bool -> html.Html<Task<Unit>> = html.h1 {
-  class: heroHeadingClass,
-  style: heroMutedStyle nightStudio,
-  children: "Make room for the next release."
-}
-
-fn heroCopy nightStudio: Bool -> html.Html<Task<Unit>> = html.p {
-  class: heroCopyClass,
-  style: heroMutedStyle nightStudio,
-  children: "Focus blocks and story cards live in separate Signals, then meet here as one calm workspace."
-}
-
-fn heroSourceLink nightStudio: Bool
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
-  html.a {
-    href: repositoryUrl,
-    target: "_blank",
-    rel: "noopener",
-    class: heroLinkClass,
-    style: heroMutedStyle nightStudio,
-    children: "Read the Seseragi source"
+fn dispatch state: MutableSignal<TripState> -> action: TripAction -> Task<Unit> =
+  match action {
+    StartSave -> do {
+      signals.update (update StartSave) state
+      current <- *state
+      let outcome =
+        if current.simulateFailure then
+          Left "ネットワークに接続できませんでした。チェックを外して再試行してください。"
+        else
+          Right `https://trip.example/kyoto-${arrays.length current.spots}s-${current.travelers}p`
+      signals.update (update (FinishSave outcome)) state
+    }
+    _ -> signals.update (update action) state
   }
 
-fn studioButton state: MutableSignal<ShellState>
-  -> current: ShellState
+fn navTab send: (TripAction -> Task<Unit>)
+  -> current: ActiveTab
+  -> target: ActiveTab
+  -> label: String
   -> html.Html<Task<Unit>> =
   html.button {
     buttonType: "button",
-    onClick: dispatch state ToggleStudio,
-    class: studioButtonClass,
-    style: heroButtonStyle current.nightStudio,
-    children:
-      if current.nightStudio then
-        "Use day studio"
-      else
-        "Use night studio"
+    ariaSelected: current == target,
+    onClick: send (SelectTab target),
+    style: styles.tabButtonStyle (current == target),
+    children: label,
   }
 
-fn heroSummary focusBlocks: Int
-  -> storyCards: Int
-  -> current: ShellState
-  -> html.Html<Task<Unit>> =
-  html.div {
-    class: summaryGridClass,
-    children: [
-      metric "Focus" (show focusBlocks) "blocks in rhythm",
-      metric "Stories" (show storyCards) "cards on deck",
-      metric "Mode" (studioName current) "shell-owned state"
-    ]
-  }
-
-fn heroText state: MutableSignal<ShellState>
-  -> current: ShellState
-  -> focusBlocks: Int
-  -> storyCards: Int
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
-  html.div {
-    children: [
-      eyebrow "MULTI-MODULE RELEASE ROOM",
-      heroHeading current.nightStudio,
-      heroCopy current.nightStudio,
-      heroSourceLink current.nightStudio repositoryUrl,
-      studioButton state current,
-      heroSummary focusBlocks storyCards current
-    ]
-  }
-
-fn heroGrid state: MutableSignal<ShellState>
-  -> current: ShellState
-  -> focusBlocks: Int
-  -> storyCards: Int
-  -> imageUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
-  html.div {
-    class: heroGridClass,
-    children: [
-      heroImage imageUrl,
-      heroText state current focusBlocks storyCards repositoryUrl
-    ]
-  }
-
-fn hero state: MutableSignal<ShellState>
-  -> current: ShellState
-  -> focusBlocks: Int
-  -> storyCards: Int
-  -> imageUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
-  html.section {
-    class: heroClass,
-    style: heroStyle current.nightStudio,
-    children: heroGrid state current focusBlocks storyCards imageUrl repositoryUrl
-  }
-
-fn workspace focus: html.Html<Task<Unit>>
-  -> notes: html.Html<Task<Unit>>
-  -> html.Html<Task<Unit>> =
-  html.section {
-    class: workspaceClass,
-    children: [focus, notes]
-  }
-
-fn shellContent state: MutableSignal<ShellState>
-  -> current: ShellState
-  -> focusBlocks: Int
-  -> storyCards: Int
-  -> imageUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> focus: html.Html<Task<Unit>>
-  -> notes: html.Html<Task<Unit>>
-  -> html.Html<Task<Unit>> =
-  html.div {
-    class: shellClass,
-    children: [
-      hero state current focusBlocks storyCards imageUrl repositoryUrl,
-      workspace focus notes
-    ]
-  }
-
-fn page state: MutableSignal<ShellState>
-  -> current: ShellState
-  -> focusBlocks: Int
-  -> storyCards: Int
-  -> imageUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> focus: html.Html<Task<Unit>>
-  -> notes: html.Html<Task<Unit>>
-  -> html.Html<Task<Unit>> =
-  html.main {
-    class: pageClass,
-    style: pageStyle current.nightStudio,
-    children: shellContent state current focusBlocks storyCards imageUrl repositoryUrl
-      focus notes
+fn headerView send: (TripAction -> Task<Unit>)
+  -> state: TripState
+  -> html.Html<Task<Unit>> = {
+    let total = totalTripCost state.spots
+    let titleBlock: html.Html<Task<Unit>> = html.div {
+      children: [
+        html.p { style: styles.eyebrowStyle (), children: "KYOTO & UJI · 1泊2日 旅のしおり", },
+        html.h1 { style: styles.titleStyle (), children: "京都・宇治 週末旅行プランナー", },
+        html.p {
+          style: styles.metaStyle (),
+          children: `全 ${arrays.length state.spots} スポット ・ 参加 ${state.travelers} 名 ・ 予算合計 ${formatYen total}`,
+        },
+      ],
+    }
+    let tabs: html.Html<Task<Unit>> = html.nav {
+      ariaLabel: "画面の切り替え",
+      style: styles.tabBarStyle (),
+      children: [
+        navTab send state.activeTab PlanTab "1. 日程と地図",
+        navTab send state.activeTab BudgetTab "2. 予算と割り勘",
+        navTab send state.activeTab ShareTab "3. しおり共有",
+      ],
+    }
+    html.header { style: styles.headerStyle (), children: [titleBlock, tabs], }
   }
 
 effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
   fromEither (html.parseWebUrl value)
 
-effect fn parseSampleUrl value: String -> html.WebUrl fails String =
+effect fn parseUrl value: String -> html.WebUrl fails String =
   mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
 
+fn bodyView mapAssets: routeMap.MapAssets
+  -> send: (TripAction -> Task<Unit>)
+  -> state: TripState
+  -> html.Html<Task<Unit>> =
+  match state.activeTab {
+    PlanTab -> html.div {
+      style: styles.twoColGridStyle (),
+      children: [routeMap.view mapAssets send state, timeline.view send state],
+    }
+    BudgetTab -> budget.view send state
+    ShareTab -> shareView.view send state
+  }
+
+fn pageView mapAssets: routeMap.MapAssets
+  -> state: MutableSignal<TripState>
+  -> current: TripState
+  -> html.Html<Task<Unit>> =
+  {
+    let send = dispatch state
+    html.main {
+      style: styles.pageStyle (),
+      children: html.div {
+        style: styles.shellStyle (),
+        children: [headerView send current, bodyView mapAssets send current],
+      },
+    }
+  }
+
 pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String = do {
-  imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?fit=crop&w=960&h=480&q=80"
-  repositoryUrl <- parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
-  shell <- signals.make $ ShellState { nightStudio: True }
-  let shellView = signals.map (\current: ShellState -> current) shell
-  (focus, focusBlocks) <- createFocus ()
-  (notes, storyCards) <- createNotes ()
-  let render = page shell
-  let content =
-    render
-    <$> shellView
-    <*> focusBlocks
-    <*> storyCards
-    <*> signals.constant imageUrl
-    <*> signals.constant repositoryUrl
-    <*> focus
-    <*> notes
-  succeed content
+  centralMapUrl <- parseUrl "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/samples/trip-planner/kyoto-central-map.jpg"
+  wideMapUrl <- parseUrl "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/samples/trip-planner/kyoto-uji-wide-map.jpg"
+  let mapAssets = routeMap.MapAssets { centralMapUrl, wideMapUrl }
+  let initial: TripState = initialState ()
+  state <- signals.make initial
+  succeed (signals.map (pageView mapAssets state) state)
 }

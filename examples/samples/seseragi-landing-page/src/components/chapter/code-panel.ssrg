@@ -1,13 +1,302 @@
+// Playground と同じトークン配色で Seseragi コードを描画するパネルです。
 import * as html from "std/web/html"
 import * as styles from "../../ui/styles"
 
-fn snippet key: String -> String =
+type TokenKind =
+  | Kw
+  | Ty
+  | StdTy
+  | Op
+  | Str
+  | Cmt
+  | Punc
+  | Plain
+
+struct Token { kind: TokenKind, text: String, }
+
+struct CodeLine { number: String, tokens: Array<Token>, }
+
+fn kw text: String -> Token = Token { kind: Kw, text }
+
+fn ty text: String -> Token = Token { kind: Ty, text }
+
+fn stdTy text: String -> Token = Token { kind: StdTy, text }
+
+fn op text: String -> Token = Token { kind: Op, text }
+
+fn str text: String -> Token = Token { kind: Str, text }
+
+fn cmt text: String -> Token = Token { kind: Cmt, text }
+
+fn punc text: String -> Token = Token { kind: Punc, text }
+
+fn plain text: String -> Token = Token { kind: Plain, text }
+
+fn line number: String -> tokens: Array<Token> -> CodeLine = CodeLine { number, tokens }
+
+fn tokenStyle kind: TokenKind -> html.Style = match kind {
+  Kw -> styles.synKeywordStyle ()
+  Ty -> styles.synTypeStyle ()
+  StdTy -> styles.synStandardTypeStyle ()
+  Op -> styles.synOperatorStyle ()
+  Str -> styles.synStringStyle ()
+  Cmt -> styles.synCommentStyle ()
+  Punc -> styles.synPunctStyle ()
+  Plain -> styles.synPlainStyle ()
+}
+
+fn renderToken token: Token -> html.Html<Task<Unit>> = html.span {
+  style: tokenStyle token.kind,
+  children: token.text,
+}
+
+fn renderLine entry: CodeLine -> html.Html<Task<Unit>> = {
+  let numNode: html.Html<Task<Unit>> = html.span {
+    ariaHidden: True,
+    style: styles.lineNumberStyle (),
+    children: entry.number,
+  }
+  let textNode: html.Html<Task<Unit>> = html.span {
+    style: styles.codeLineTextStyle (),
+    children: map renderToken entry.tokens,
+  }
+  html.div { style: styles.codeLineRowStyle (), children: [numNode, textNode], }
+}
+
+fn heroLines -> Array<CodeLine> = [
+  line "01" [cmt "// 型・失敗・流れを、そのまま上から読む"],
+  line "02" [
+    kw "type",
+    plain " ",
+    ty "OrderError",
+    plain " ",
+    op "=",
+    plain " ",
+    ty "OutOfStock",
+    plain " ",
+    stdTy "String"
+  ],
+  line "03" [],
+  line "04" [
+    kw "pub",
+    plain " ",
+    kw "effect",
+    plain " ",
+    kw "fn",
+    plain " checkout id",
+    punc ":",
+    plain " ",
+    ty "OrderId",
+    plain " ",
+    op "="
+  ],
+  line "05" [plain "  ", kw "do", plain " ", punc "{"],
+  line "06" [plain "    item ", op "<-", plain " Inventory.reserve id"],
+  line "07" [plain "      ", op "|>", plain " mapError ", ty "OutOfStock"],
+  line "08" [
+    plain "    succeed ",
+    punc "{",
+    plain " item",
+    punc ",",
+    plain " status",
+    punc ":",
+    plain " ",
+    str "\"confirmed\"",
+    plain " ",
+    punc "}"
+  ],
+  line "09" [plain "  ", punc "}"],
+]
+
+fn readableLines -> Array<CodeLine> = [
+  line "01" [kw "type", plain " ", ty "AppError", plain " ", op "="],
+  line "02" [plain "  ", op "|", plain " ", ty "RepoFailed", plain " ", ty "RepoError"],
+  line "03" [
+    plain "  ",
+    op "|",
+    plain " ",
+    ty "ClockFailed",
+    plain " ",
+    ty "ClockError"
+  ],
+  line "04" [],
+  line "05" [
+    kw "pub",
+    plain " ",
+    kw "effect",
+    plain " ",
+    kw "fn",
+    plain " report id",
+    punc ":",
+    plain " ",
+    ty "UserId",
+    plain " ",
+    op "="
+  ],
+  line "06" [plain "  ", kw "do", plain " ", punc "{"],
+  line "07" [
+    plain "    user ",
+    op "<-",
+    plain " ",
+    ty "UserRepo",
+    punc ".",
+    plain "find id"
+  ],
+  line "08" [
+    plain "      ",
+    op "|>",
+    plain " mapError ",
+    ty "AppError",
+    punc ".",
+    ty "RepoFailed"
+  ],
+  line "09" [plain "    now ", op "<-", plain " ", ty "Clock", punc ".", plain "now"],
+  line "10" [
+    plain "      ",
+    op "|>",
+    plain " mapError ",
+    ty "AppError",
+    punc ".",
+    ty "ClockFailed"
+  ],
+  line "11" [
+    plain "    succeed ",
+    punc "{",
+    plain " user",
+    punc ",",
+    plain " now ",
+    punc "}"
+  ],
+  line "12" [plain "  ", punc "}"],
+]
+
+fn composableLines -> Array<CodeLine> = [
+  line "01" [
+    kw "fn",
+    plain " pair",
+    punc "<",
+    ty "F",
+    punc "<",
+    op "_",
+    punc ">,",
+    plain " ",
+    ty "A",
+    punc ",",
+    plain " ",
+    ty "B",
+    punc ">"
+  ],
+  line "02" [plain "  left", punc ":", plain " ", ty "F", punc "<", ty "A", punc ">"],
+  line "03" [
+    plain "  ",
+    op "->",
+    plain " right",
+    punc ":",
+    plain " ",
+    ty "F",
+    punc "<",
+    ty "B",
+    punc ">"
+  ],
+  line "04" [
+    plain "  ",
+    op "->",
+    plain " ",
+    ty "F",
+    punc "<(",
+    ty "A",
+    punc ",",
+    plain " ",
+    ty "B",
+    punc ")>"
+  ],
+  line "05" [
+    kw "where",
+    plain " ",
+    ty "Applicative",
+    punc "<",
+    ty "F",
+    punc ">",
+    plain " ",
+    op "="
+  ],
+  line "06" [
+    plain "  ",
+    punc "(",
+    op "\\",
+    plain "a ",
+    op "->",
+    plain " ",
+    op "\\",
+    plain "b ",
+    op "->",
+    plain " ",
+    punc "(",
+    plain "a",
+    punc ",",
+    plain " b",
+    punc "))"
+  ],
+  line "07" [plain "    ", op "<$>", plain " left"],
+  line "08" [plain "    ", op "<*>", plain " right"],
+]
+
+fn aliveLines -> Array<CodeLine> = [
+  line "01" [kw "type", plain " ", ty "Mode", plain " ", op "="],
+  line "02" [plain "  ", op "|", plain " ", ty "Ready"],
+  line "03" [plain "  ", op "|", plain " ", ty "Running"],
+  line "04" [],
+  line "05" [kw "fn", plain " view mode", punc ":", plain " ", ty "Mode"],
+  line "06" [
+    plain "  ",
+    op "->",
+    plain " html",
+    punc ".",
+    stdTy "Html",
+    punc "<",
+    ty "Action",
+    punc ">",
+    plain " ",
+    op "="
+  ],
+  line "07" [plain "  html", punc ".", plain "main ", punc "{"],
+  line "08" [
+    plain "    children",
+    punc ":",
+    plain " html",
+    punc ".",
+    plain "h1 ",
+    punc "{"
+  ],
+  line "09" [plain "      children", punc ":", plain " label mode"],
+  line "10" [plain "    ", punc "}"],
+  line "11" [plain "  ", punc "}"],
+  line "12" [],
+  line "13" [
+    plain "mode ",
+    op "<-",
+    plain " signals",
+    punc ".",
+    plain "make ",
+    ty "Ready"
+  ],
+  line "14" [
+    kw "let",
+    plain " content ",
+    op "=",
+    plain " signals",
+    punc ".",
+    plain "map view mode"
+  ],
+]
+
+fn snippetLines key: String -> Array<CodeLine> =
   if key == "readable" then
-    "type AppError =\n  | RepoFailed RepoError\n  | ClockFailed ClockError\n\npub effect fn report id: UserId =\n  do {\n    user <- UserRepo.find id\n      |> mapError AppError.RepoFailed\n    now <- Clock.now\n      |> mapError AppError.ClockFailed\n    succeed { user, now }\n  }"
+    readableLines ()
   else if key == "composable" then
-    "fn pair<F<_>, A, B>\n  left: F<A>\n  -> right: F<B>\n  -> F<(A, B)>\nwhere Applicative<F> =\n  (\\a -> \\b -> (a, b))\n    <$> left\n    <*> right"
+    composableLines ()
   else
-    "type Mode =\n  | Ready\n  | Running\n\nfn view mode: Mode\n  -> html.Html<Action> =\n  html.main {\n    children: html.h1 {\n      children: label mode\n    }\n  }\n\nmode <- signals.make Ready\nlet content = signals.map view mode"
+    aliveLines ()
 
 fn chapterLabel key: String -> String =
   if key == "readable" then
@@ -17,57 +306,67 @@ fn chapterLabel key: String -> String =
   else
     "Alive · Signal reaches the DOM"
 
-fn chapterAccent key: String -> String =
+fn chapterFooterTag key: String -> String =
   if key == "readable" then
-    "#79e0ab"
+    "ADT · do · mapError"
   else if key == "composable" then
-    "#7ec8ed"
+    "Generics · Applicative · <$> / <*>"
   else
-    "#e0bc7c"
+    "Signal · std/web/html · dom.run"
 
 fn trafficDot color: String -> html.Html<Task<Unit>> = html.span {
   style: html.style {
     backgroundColor: color,
     borderRadius: "999px",
     height: "9px",
-    width: "9px"
+    width: "9px",
   },
-  children: ""
+  children: "",
 }
 
 fn trafficLights -> html.Html<Task<Unit>> = html.div {
-  style: html.style { display: "flex", gap: "7px" },
-  children: [trafficDot "#ff725f", trafficDot "#e8bd58", trafficDot "#66d38e"]
+  style: html.style { display: "flex", gap: "7px", },
+  children: [trafficDot "#ff725f", trafficDot "#e8bd58", trafficDot "#66d38e"],
 }
 
-fn panelLabel key: String -> html.Html<Task<Unit>> = html.span {
+fn panelLabel accent: String -> label: String -> html.Html<Task<Unit>> = html.span {
   style: html.style {
-    color: chapterAccent key,
+    color: accent,
     fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, monospace",
     fontSize: "11px",
-    fontWeight: "750"
+    fontWeight: "750",
   },
-  children: chapterLabel key
+  children: label,
 }
 
-fn panelHeader key: String -> html.Html<Task<Unit>> = html.div {
-  style: html.style {
-    alignItems: "center",
-    borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-    display: "flex",
-    gap: "16px",
-    justifyContent: "space-between",
-    padding: "15px 18px"
-  },
-  children: [trafficLights (), panelLabel key]
-}
+fn codeWindow accent: String
+  -> label: String
+  -> fileHint: String
+  -> surfaceTag: String
+  -> lines: Array<CodeLine>
+  -> html.Html<Task<Unit>> = {
+    let headerNode: html.Html<Task<Unit>> = html.div {
+      style: styles.codePanelHeaderStyle (),
+      children: [trafficLights (), panelLabel accent label],
+    }
+    let preNode: html.Html<Task<Unit>> = html.pre {
+      style: styles.codeContentStyle (),
+      children: map renderLine lines,
+    }
+    let hintNode: html.Html<Task<Unit>> = html.span { children: fileHint }
+    let tagNode: html.Html<Task<Unit>> = html.span { children: surfaceTag }
+    let footerNode: html.Html<Task<Unit>> = html.div {
+      style: styles.codePanelFooterStyle (),
+      children: [hintNode, tagNode],
+    }
+    html.div {
+      style: styles.codePanelStyle (),
+      children: [headerNode, preNode, footerNode],
+    }
+  }
 
-fn codeBody key: String -> html.Html<Task<Unit>> = html.pre {
-  style: styles.codeContentStyle (),
-  children: snippet key
-}
+pub fn heroCodeCard -> html.Html<Task<Unit>> =
+  codeWindow "#8de7bf" "checkout.ssrg · Seseragi" "Type-checked · Zero null" "Effect · Pipeline" (heroLines ())
 
-pub fn codePanel key: String -> html.Html<Task<Unit>> = html.div {
-  style: styles.codePanelStyle (),
-  children: [panelHeader key, codeBody key]
-}
+pub fn codePanel key: String -> html.Html<Task<Unit>> =
+  codeWindow (styles.chapterAccent key) (chapterLabel key) `${key}.ssrg` (chapterFooterTag key) (snippetLines key)

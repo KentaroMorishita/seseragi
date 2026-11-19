@@ -1,0 +1,49 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "expression-calculator",
+  "kind": "recipe",
+  "difficulty": "beginner",
+  "capabilities": [
+    "console"
+  ],
+  "outputMode": "text",
+  "prerequisites": [],
+  "featured": false,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  },
+  "title": "式を計算する電卓",
+  "summary": "式を木の形の型で表し、たどって計算します。0 で割る式は、理由の付いた失敗として返します。",
+  "topics": [
+    "ADT",
+    "recursion",
+    "match",
+    "Either",
+    "do"
+  ],
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "割る数を 2 にする",
+        "edits": [
+          {
+            "find": "Apply (Minus, Num 4, Num 4)",
+            "replace": "Apply (Minus, Num 4, Num 2)"
+          }
+        ]
+      },
+      {
+        "label": "式を一つ足す",
+        "edits": [
+          {
+            "find": "\n]\n\npub effect fn main",
+            "replace": "\n  Apply (Minus, Num 100, Apply (Divide, Num 30, Num 7)),\n]\n\npub effect fn main"
+          }
+        ]
+      }
+    ]
+  }
+}

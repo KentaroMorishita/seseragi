@@ -1,0 +1,62 @@
+// `seseragi test` で実行する座席予約ロジックの単体テストです。
+import * as arrays from "std/array"
+import * as test from "std/test"
+import { Invalid, Valid } from "std/validation"
+import {
+  AutoPickAdjacent,
+  BoxOfficePickup,
+  DeliveryChanged,
+  EmailChanged,
+  NameChanged,
+  PhoneChanged,
+  ProceedToCheckout,
+  SetPartySize,
+  SubmitBooking,
+  TermsToggled,
+  TierS,
+  TicketIssued,
+  calculateTotals,
+  findAdjacentSeats,
+  initialSeats,
+  initialState,
+  update,
+  validateBooking,
+} from "self/booking/model"
+
+let pickedTwo = findAdjacentSeats (initialSeats ()) (Just TierS) 2
+
+let pickedThree = initialState () |> update (SetPartySize 3) |> update AutoPickAdjacent
+
+let validSubmitted =
+  initialState ()
+  |> update ProceedToCheckout
+  |> update (NameChanged "佐藤 葵")
+  |> update (EmailChanged "aoi@example.com")
+  |> update (PhoneChanged "090-1234-5678")
+  |> update (DeliveryChanged BoxOfficePickup)
+  |> update (TermsToggled True)
+  |> update SubmitBooking
+
+let invalidSubmitted =
+  initialState ()
+  |> update ProceedToCheckout
+  |> update SubmitBooking
+
+pub let tests: test.Test =
+  test.suite "ticket booking" [test.test
+      "adjacent picker never splits a pair across the center aisle"
+      (test.equal (Just [
+        "B-5",
+        "B-6"
+      ]) pickedTwo), test.test
+      "validation collects all four missing buyer fields at once" (test.equal 4 (match validateBooking invalidSubmitted {
+        Invalid problems -> arrays.length (arrays.fromIterable problems)
+        Valid _ -> 0
+  })), test.test
+  "box office delivery adds 330 yen per selected seat"
+  (test.equal 24660 (calculateTotals validSubmitted).total), test.test
+  "valid submission issues an electronic ticket code"
+  (test.equal (TicketIssued "SRG-2611-B528") validSubmitted.step), test.test
+  "auto pick for 3 seats finds a contiguous block without crossing aisle"
+  (test.equal ["B-5", "B-6", "B-7"] pickedThree.selectedIds),
+]

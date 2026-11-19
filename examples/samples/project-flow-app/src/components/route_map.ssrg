@@ -1,0 +1,574 @@
+// 京都・宇治の実測位置に基づく下絵地図画像の上に、緯度経度投影で地名・ルート線・ピンを重ねる地図コンポーネントです。
+import * as arrays from "std/array"
+import * as floats from "std/float"
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+import {
+  FocusSpot,
+  Spot,
+  TripAction,
+  TripState,
+  categoryLabel,
+  dayNumber,
+  formatYen,
+  spotsForDay,
+} from "self/trip/model"
+import * as styles from "self/ui/styles"
+
+pub struct MapAssets { centralMapUrl: html.WebUrl, wideMapUrl: html.WebUrl, }
+
+type MapViewport deriving Eq =
+  | CentralKyoto
+  | KyotoUjiWide
+
+struct ProjectedPoint { x: Int, y: Int, }
+
+fn indexRange count: Int -> Array<Int> = {
+  let empty: Array<Int> = []
+  if count <= 0 then empty else arrays.fromIterable (0 ..= count - 1)
+}
+
+fn isInCentralKyoto spot: Spot -> Bool =
+  spot.latE4 >= 349820
+  && spot.latE4 <= 350160
+  && spot.lonE4 >= 1357400
+  && spot.lonE4 <= 1357980
+
+fn selectViewport spots: Array<Spot> -> MapViewport =
+  if arrays.isEmpty spots then
+    CentralKyoto
+  else if all isInCentralKyoto spots then
+    CentralKyoto
+  else
+    KyotoUjiWide
+
+// 緯度経度（1/10000 度単位）を下絵画像と同じ正角図法（420x300）へ投影します。
+fn projectSpot viewport: MapViewport -> spot: Spot -> ProjectedPoint = match viewport {
+  CentralKyoto -> ProjectedPoint {
+    x: (spot.lonE4 - 1357375) * 420 / 625,
+    y: (350175 - spot.latE4) * 300 / 367,
+  }
+  KyotoUjiWide -> ProjectedPoint {
+    x: (spot.lonE4 - 1356500) * 420 / 2000,
+    y: (350250 - spot.latE4) * 300 / 1470,
+  }
+}
+
+fn curvedSegment fromPt: ProjectedPoint -> toPt: ProjectedPoint -> idx: Int -> String =
+  {
+    let dx = toPt.x - fromPt.x
+    let dy = toPt.y - fromPt.y
+    let midX = (fromPt.x + toPt.x) / 2
+    let midY = (fromPt.y + toPt.y) / 2
+    let bend = if idx % 2 == 0 then 1 else -1
+    let ctrlX = midX - (dy * bend) / 9
+    let ctrlY = midY + (dx * bend) / 9
+    `Q ${ctrlX} ${ctrlY} ${toPt.x} ${toPt.y}`
+  }
+
+fn curvedRoutePath viewport: MapViewport -> spots: Array<Spot> -> String =
+  match arrays.head spots {
+    Nothing -> ""
+    Just first -> {
+      let start = projectSpot viewport first
+      let count = arrays.length spots
+      let segIndices = if count <= 1 then [] else indexRange (count - 1)
+      let buildSeg = \idx: Int ->
+        match (arrays.get idx spots, arrays.get (idx + 1) spots) {
+        (Just a, Just b) -> [curvedSegment (projectSpot viewport a)
+            (projectSpot viewport b) idx]
+        _ -> []
+      }
+      let segments = arrays.concat (map buildSeg segIndices)
+      join " " (arrays.concat [[`M ${start.x} ${start.y}`], segments])
+    }
+  }
+
+fn mapChrome scaleWidth: Float -> scaleLabel: String -> Array<svg.Svg<Task<Unit>>> = [
+  // 方位記号（左上）
+  svg.circle {
+    cx: 22.0,
+    cy: 22.0,
+    r: 10.0,
+    fill: "#faf8f4",
+    stroke: "#d5ccbd",
+    strokeWidth: "1",
+  }, svg.polygon { points: "22,14 24.8,22 22,20 19.2,22", fill: "#1c3d5a", }, svg.text {
+    x: 22.0,
+    y: 29.5,
+    fill: "#4a5d6e",
+    fontSize: "7px",
+    fontWeight: "700",
+    textAnchor: "middle",
+    children: "N",
+  },
+  // 実縮尺スケールバー（左下）
+  svg.rect {
+    x: 12.0,
+    y: 274.0,
+    width: scaleWidth + 36.0,
+    height: 16.0,
+    rx: 4.0,
+    fill: "#faf8f4",
+    opacity: 0.92,
+  }, svg.line {
+    x1: 18.0,
+    y1: 285.0,
+    x2: 18.0 + scaleWidth,
+    y2: 285.0,
+    stroke: "#4a5d6e",
+    strokeWidth: "1.4",
+  }, svg.line {
+    x1: 18.0,
+    y1: 282.0,
+    x2: 18.0,
+    y2: 286.0,
+    stroke: "#4a5d6e",
+    strokeWidth: "1.4",
+  }, svg.line {
+    x1: 18.0 + scaleWidth,
+    y1: 282.0,
+    x2: 18.0 + scaleWidth,
+    y2: 286.0,
+    stroke: "#4a5d6e",
+    strokeWidth: "1.4",
+  }, svg.text {
+    x: 22.0 + scaleWidth,
+    y: 286.0,
+    fill: "#4a5d6e",
+    fontSize: "8px",
+    fontWeight: "600",
+    children: scaleLabel,
+  },
+]
+
+// 地名・川名・通り名は下絵画像に含めず、SVG レイヤー側で重ねて描画します。
+fn cartographicLabels viewport: MapViewport -> Array<svg.Svg<Task<Unit>>> =
+  match viewport {
+    CentralKyoto -> arrays.concat [
+      [
+        svg.text {
+          x: 54.0,
+          y: 49.0,
+          fill: "#485e41",
+          fontSize: "8.5px",
+          fontWeight: "700",
+          letterSpacing: "0.08em",
+          children: "二条城",
+        },
+        svg.text {
+          x: 108.0,
+          y: 92.0,
+          fill: "#6f6554",
+          fontSize: "9px",
+          fontWeight: "700",
+          letterSpacing: "0.14em",
+          children: "中京・四条",
+        },
+        svg.text {
+          x: 238.0,
+          y: 34.0,
+          fill: "#3c6c87",
+          fontSize: "8.5px",
+          fontWeight: "700",
+          letterSpacing: "0.14em",
+          children: "鴨川",
+        },
+        svg.text {
+          x: 364.0,
+          y: 128.0,
+          fill: "#485e41",
+          fontSize: "9.5px",
+          fontWeight: "700",
+          letterSpacing: "0.14em",
+          children: "東山",
+        },
+        svg.text {
+          x: 154.0,
+          y: 204.0,
+          fill: "#7a705f",
+          fontSize: "7.5px",
+          fontWeight: "700",
+          children: "烏丸通",
+        },
+        svg.text {
+          x: 42.0,
+          y: 166.0,
+          fill: "#7a705f",
+          fontSize: "7.5px",
+          fontWeight: "700",
+          children: "五条通",
+        },
+      ],
+      mapChrome 74.0 "1 km",
+    ]
+    KyotoUjiWide -> arrays.concat [
+      [
+        svg.text {
+          x: 16.0,
+          y: 76.0,
+          fill: "#485e41",
+          fontSize: "9px",
+          fontWeight: "700",
+          letterSpacing: "0.12em",
+          children: "嵐山",
+        },
+        svg.text {
+          x: 184.0,
+          y: 24.0,
+          fill: "#6f6554",
+          fontSize: "8.5px",
+          fontWeight: "700",
+          letterSpacing: "0.12em",
+          children: "京都市街",
+        },
+        svg.text {
+          x: 262.0,
+          y: 18.0,
+          fill: "#3c6c87",
+          fontSize: "8px",
+          fontWeight: "700",
+          children: "鴨川",
+        },
+        svg.text {
+          x: 112.0,
+          y: 118.0,
+          fill: "#3c6c87",
+          fontSize: "8px",
+          fontWeight: "700",
+          children: "桂川",
+        },
+        svg.text {
+          x: 276.0,
+          y: 136.0,
+          fill: "#6f6554",
+          fontSize: "9px",
+          fontWeight: "700",
+          letterSpacing: "0.12em",
+          children: "伏見",
+        },
+        svg.text {
+          x: 224.0,
+          y: 186.0,
+          fill: "#3c6c87",
+          fontSize: "8px",
+          fontWeight: "700",
+          children: "宇治川",
+        },
+        svg.text {
+          x: 364.0,
+          y: 264.0,
+          fill: "#485e41",
+          fontSize: "9.5px",
+          fontWeight: "700",
+          letterSpacing: "0.14em",
+          children: "宇治",
+        },
+      ],
+      mapChrome 115.0 "5 km",
+    ]
+  }
+
+fn routeLayer viewport: MapViewport
+  -> spots: Array<Spot>
+  -> Array<svg.Svg<Task<Unit>>> = {
+    let pathData = curvedRoutePath viewport spots
+    if pathData == "" then
+      []
+    else
+      [
+        svg.path {
+          d: pathData,
+          fill: "none",
+          stroke: "#ffffff",
+          strokeWidth: "6",
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+          opacity: 0.88,
+        },
+        svg.path {
+          d: pathData,
+          fill: "none",
+          stroke: "#d65a31",
+          strokeWidth: "2.8",
+          strokeDasharray: "7 5",
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+        },
+      ]
+  }
+
+fn pinElements viewport: MapViewport
+  -> spots: Array<Spot>
+  -> focusedId: String
+  -> Array<svg.Svg<Task<Unit>>> = {
+    let count = arrays.length spots
+    let indices = indexRange count
+    let buildPin = \idx: Int -> match arrays.get idx spots {
+      Nothing -> []
+      Just spot -> {
+        let pt = projectSpot viewport spot
+        let x = floats.fromInt pt.x
+        let y = floats.fromInt pt.y
+        let isFocused = spot.id == focusedId
+        let fill = if isFocused then "#d65a31" else "#1c3d5a"
+        let baseRadius = match viewport {
+          CentralKyoto -> 9.5
+          KyotoUjiWide -> 8.5
+        }
+        let radius = if isFocused then baseRadius + 2.5 else baseRadius
+        let halo: Array<svg.Svg<Task<Unit>>> =
+          if isFocused then
+            [svg.circle { cx: x, cy: y, r: radius + 6.0, fill: "#d65a31", opacity: 0.2, }]
+          else
+            []
+        let shadow: svg.Svg<Task<Unit>> = svg.circle {
+          cx: x,
+          cy: y + 2.0,
+          r: radius,
+          fill: "#1c3d5a",
+          opacity: 0.2,
+        }
+        let outer: svg.Svg<Task<Unit>> = svg.circle {
+          cx: x,
+          cy: y,
+          r: radius,
+          fill,
+          stroke: "#ffffff",
+          strokeWidth: "2.2",
+        }
+        let num: svg.Svg<Task<Unit>> = svg.text {
+          x,
+          y: y + 3.5,
+          fill: "#ffffff",
+          fontSize:
+            if isFocused then
+              "10px"
+            else
+              "9px",
+          fontWeight: "700",
+          textAnchor: "middle",
+          children: `${idx + 1}`,
+        }
+        arrays.concat [halo, [shadow, outer, num]]
+      }
+    }
+    arrays.concat (map buildPin indices)
+  }
+
+fn calloutPosition viewport: MapViewport -> spot: Spot -> ProjectedPoint = {
+  let pt = projectSpot viewport spot
+  let rawX =
+    if spot.id == "nishiki" then
+      pt.x - 28
+    else if spot.id == "gion-inn" then
+      pt.x + 42
+    else if spot.id == "byodoin" then
+      pt.x - 78
+    else if spot.id == "uji-matcha" then
+      pt.x - 68
+    else if pt.x > 310 then
+      pt.x - 42
+    else if pt.x < 100 then
+      pt.x + 44
+    else
+      pt.x
+  let clampedX = if rawX > 338 then 338 else if rawX < 82 then 82 else rawX
+  let rawY =
+    if spot.id == "nishiki" then
+      pt.y + 24
+    else if spot.id == "gion-inn" then
+      pt.y + 22
+    else if spot.id == "byodoin" then
+      pt.y - 4
+    else if pt.y < 52 then
+      pt.y + 24
+    else
+      pt.y - 22
+  let clampedY = if rawY > 282 then 282 else if rawY < 20 then 20 else rawY
+  ProjectedPoint { x: clampedX, y: clampedY }
+}
+
+fn focusedCalloutLayer viewport: MapViewport
+  -> spots: Array<Spot>
+  -> focusedId: String
+  -> Array<svg.Svg<Task<Unit>>> =
+  match arrays.find (\s: Spot -> s.id == focusedId) spots {
+    Nothing -> []
+    Just spot -> {
+      let pos = calloutPosition viewport spot
+      let px = floats.fromInt pos.x
+      let py = floats.fromInt pos.y
+      [
+        svg.rect {
+          x: px - 74.0,
+          y: py - 10.5,
+          width: 148.0,
+          height: 19.0,
+          rx: 9.5,
+          fill: "#1c3d5a",
+          stroke: "#ffffff",
+          strokeWidth: "1.5",
+        },
+        svg.text {
+          x: px,
+          y: py + 2.5,
+          fill: "#ffffff",
+          fontSize: "8.5px",
+          fontWeight: "700",
+          textAnchor: "middle",
+          children: spot.name,
+        },
+      ]
+    }
+  }
+
+fn mapCanvas mapAssets: MapAssets
+  -> spots: Array<Spot>
+  -> focusedId: String
+  -> html.Html<Task<Unit>> = {
+    let viewport = selectViewport spots
+    let baseMapUrl = match viewport {
+      CentralKyoto -> mapAssets.centralMapUrl
+      KyotoUjiWide -> mapAssets.wideMapUrl
+    }
+    let basemapImg: html.Html<Task<Unit>> = html.img {
+      src: baseMapUrl,
+      alt: "",
+      style: html.style {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        display: "block",
+      },
+    }
+    let overlaySvg: html.Html<Task<Unit>> = svg.toHtml (
+      svg.svg {
+        viewBox: "0 0 420 300",
+        width: 420.0,
+        height: 300.0,
+        role: "img",
+        ariaLabel: "京都・宇治の実測位置に基づく旅行ルート地図",
+        style: html.style {
+          position: "relative",
+          display: "block",
+          width: "100%",
+          height: "auto",
+        },
+        children: arrays.concat [
+          cartographicLabels viewport,
+          routeLayer viewport spots,
+          pinElements viewport spots focusedId,
+          focusedCalloutLayer viewport spots focusedId,
+        ],
+      }
+    )
+    html.div {
+      style: html.style {
+        position: "relative",
+        width: "100%",
+        borderRadius: "12px",
+        overflow: "hidden",
+        border: "1px solid #ddd4c5",
+        backgroundColor: "#f5f1e7",
+      },
+      children: [basemapImg, overlaySvg],
+    }
+  }
+
+fn spotJumpChip dispatch: (TripAction -> Task<Unit>)
+  -> focusedId: String
+  -> idx: Int
+  -> spot: Spot
+  -> html.Html<Task<Unit>> =
+  {
+    let isFocused = spot.id == focusedId
+    html.button {
+      buttonType: "button",
+      ariaSelected: isFocused,
+      onClick: dispatch (FocusSpot spot.id),
+      style: styles.dayChipStyle isFocused,
+      children: `${idx + 1}. ${spot.name}`,
+    }
+  }
+
+fn spotDetailCard spots: Array<Spot> -> focusedId: String -> html.Html<Task<Unit>> =
+  match arrays.find (\s: Spot -> s.id == focusedId) spots {
+    Nothing -> html.p {
+      style: styles.metaStyle (),
+      children: "日程にスポットを追加すると、地図上のルートと立ち寄り先のメモが表示されます。",
+    }
+    Just spot -> {
+      let nameNode: html.Html<Task<Unit>> = html.strong {
+        style: html.style { color: "#1c3d5a", fontSize: "14px", },
+        children: `${spot.name}（${spot.area}）`,
+      }
+      let badgeNode: html.Html<Task<Unit>> = html.span {
+        style: styles.categoryBadgeStyle spot.category,
+        children: `${categoryLabel spot.category}・${formatYen spot.costYen}`,
+      }
+      let headerRow: html.Html<Task<Unit>> = html.div {
+        style: html.style {
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "8px",
+          marginBottom: "6px",
+        },
+        children: [nameNode, badgeNode],
+      }
+      let noteNode: html.Html<Task<Unit>> = html.p {
+        style: styles.metaStyle (),
+        children: `${spot.note}（滞在目安 ${spot.stayMinutes} 分）`,
+      }
+      html.div {
+        style: html.style {
+          backgroundColor: "#faf6ef",
+          border: "1px solid #e4ddd2",
+          borderRadius: "12px",
+          padding: "12px 14px",
+          marginTop: "12px",
+        },
+        children: [headerRow, noteNode],
+      }
+    }
+  }
+
+pub fn view mapAssets: MapAssets
+  -> dispatch: (TripAction -> Task<Unit>)
+  -> state: TripState
+  -> html.Html<Task<Unit>> = {
+    let daySpots = spotsForDay state.activeDay state.spots
+    let count = arrays.length daySpots
+    let indices = indexRange count
+    let chips: Array<html.Html<Task<Unit>>> = [
+      spotJumpChip dispatch state.focusedSpotId idx spot | idx <- indices,
+      Just spot <- [arrays.get idx daySpots]
+    ]
+    let heading: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: `${dayNumber state.activeDay}日目のルート地図（${count} スポット）`,
+    }
+    let chipRow: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "6px",
+        marginTop: "12px",
+      },
+      children: chips,
+    }
+    html.section {
+      style: styles.cardStyle (),
+      children: [
+        heading,
+        mapCanvas mapAssets daySpots state.focusedSpotId,
+        chipRow,
+        spotDetailCard daySpots state.focusedSpotId,
+      ],
+    }
+  }

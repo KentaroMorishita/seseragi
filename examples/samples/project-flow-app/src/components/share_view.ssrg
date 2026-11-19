@@ -1,0 +1,172 @@
+// 旅のしおりプレビューと、非同期 Effect（保存中・失敗と再試行・完了）による共有リンク発行です。
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import {
+  Day1,
+  Day2,
+  SaveFailed,
+  SaveIdle,
+  Saved,
+  Saving,
+  SplitSummary,
+  Spot,
+  StartSave,
+  ToggleSimulateFailure,
+  TripAction,
+  TripState,
+  calculateSplit,
+  formatYen,
+  spotsForDay,
+  totalTripCost,
+} from "self/trip/model"
+import * as styles from "self/ui/styles"
+
+fn daySummaryList title: String -> spots: Array<Spot> -> html.Html<Task<Unit>> = {
+  let heading: html.Html<Task<Unit>> = html.h3 {
+    style: html.style {
+      color: "#1c3d5a",
+      fontSize: "14px",
+      fontWeight: "700",
+      margin: "12px 0 6px 0",
+    },
+    children: title,
+  }
+  let rows: Array<html.Html<Task<Unit>>> =
+    if arrays.isEmpty spots then
+      [html.li { style: styles.metaStyle (), children: "予定なし", }]
+    else
+      {
+    let renderRow = \s: Spot -> html.li {
+      style: html.style { color: "#2c4154", fontSize: "13px", lineHeight: "1.7", },
+      children: `${s.name}（${s.area}・${s.stayMinutes}分・${formatYen s.costYen}）`,
+    }
+    map renderRow spots
+  }
+  html.div {
+    children: [
+      heading,
+      html.ol {
+        style: html.style { margin: "0", paddingLeft: "20px", },
+        children: rows,
+      },
+    ],
+  }
+}
+
+fn saveStatusView dispatch: (TripAction -> Task<Unit>)
+  -> state: TripState
+  -> html.Html<Task<Unit>> =
+  match state.saveState {
+    SaveIdle -> html.p {
+      style: html.style { color: "#4e6173", fontSize: "13px", marginTop: "12px", },
+      children: "ボタンを押すと、ブラウザ内で非同期保存（Effect）を実行して共有コードを発行します。",
+    }
+    Saving -> html.div {
+      role: "status",
+      style: styles.statusBannerStyle "info",
+      children: "しおりを保存しています…（非同期 Effect 実行中）",
+    }
+    SaveFailed message -> html.div {
+      role: "alert",
+      style: styles.statusBannerStyle "error",
+      children: [
+        html.p {
+          style: html.style { fontWeight: "700", margin: "0 0 8px 0", },
+          children: `保存に失敗しました: ${message}`,
+        },
+        html.button {
+          buttonType: "button",
+          onClick: dispatch StartSave,
+          style: styles.secondaryButtonStyle (),
+          children: "再試行する",
+        },
+      ],
+    }
+    Saved shareCode -> html.div {
+      role: "status",
+      style: styles.statusBannerStyle "success",
+      children: [
+        html.p {
+          style: html.style { fontWeight: "700", margin: "0 0 4px 0", },
+          children: "しおりを保存し、共有コードを発行しました。",
+        },
+        html.p {
+          style: html.style {
+            fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+            fontSize: "13px",
+            margin: "0",
+          },
+          children: shareCode,
+        },
+      ],
+    }
+  }
+
+pub fn view dispatch: (TripAction -> Task<Unit>)
+  -> state: TripState
+  -> html.Html<Task<Unit>> = {
+    let totalYen = totalTripCost state.spots
+    let split: SplitSummary = calculateSplit totalYen state.travelers
+    let isSaving = state.saveState == Saving
+    let itineraryHeading: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: "しおりプレビュー（京都・宇治 1泊2日）",
+    }
+    let itineraryMeta: html.Html<Task<Unit>> = html.p {
+      style: styles.metaStyle (),
+      children: `参加 ${split.travelers} 名 ・ 合計 ${formatYen split.totalYen} ・ 1人あたり ${formatYen split.perPersonYen}`,
+    }
+    let itineraryCard: html.Html<Task<Unit>> = html.section {
+      style: styles.cardStyle (),
+      children: [
+        itineraryHeading,
+        itineraryMeta,
+        daySummaryList "1日目（東山・祇園）" (spotsForDay Day1 state.spots),
+        daySummaryList "2日目（伏見・宇治）" (spotsForDay Day2 state.spots),
+      ],
+    }
+    let failureToggle: html.Html<Task<Unit>> = html.label {
+      style: html.style {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        fontSize: "13px",
+        color: "#2c4154",
+        marginBottom: "14px",
+        cursor: "pointer",
+      },
+      children: [
+        html.input {
+          id: "simulate-save-failure",
+          inputType: "checkbox",
+          checked: state.simulateFailure,
+          onChange: (
+            \e: html.ChangeEvent -> dispatch
+              (ToggleSimulateFailure (e.checked ?? False))
+          ),
+        },
+        html.span { children: "通信失敗（オフライン）を再現して再試行を確かめる", },
+      ],
+    }
+    let shareCard: html.Html<Task<Unit>> = html.section {
+      style: styles.cardStyle (),
+      children: [
+        html.h2 { style: styles.sectionHeadingStyle (), children: "しおりを保存して共有", },
+        failureToggle,
+        html.button {
+          id: "save-itinerary-button",
+          buttonType: "button",
+          disabled: isSaving,
+          onClick: dispatch StartSave,
+          style: styles.primaryButtonStyle isSaving,
+          children:
+            if isSaving then
+              "保存中…"
+            else
+              "しおりを保存して共有コードを発行",
+        },
+        saveStatusView dispatch state,
+      ],
+    }
+    html.div { style: styles.twoColGridStyle (), children: [itineraryCard, shareCard], }
+  }

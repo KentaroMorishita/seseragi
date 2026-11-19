@@ -1,0 +1,218 @@
+// 予約確定後に表示する、席番バッジと SVG バーコード付きの電子チケットを描画します。
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+import {
+  BookingAction,
+  BookingState,
+  BoxOfficePickup,
+  BuyerDraft,
+  MobileQr,
+  OrderTotals,
+  Seat,
+  StartNewBooking,
+  calculateTotals,
+  formatYen,
+  selectedSeats,
+  tierLabel,
+} from "self/booking/model"
+import * as styles from "self/ui/styles"
+
+fn barcodeBar entry: (Float, Float) -> svg.Svg<Task<Unit>> = {
+  let (x, w) = entry
+  svg.rect { x, y: 6.0, width: w, height: 46.0, fill: "#f4f1ea" }
+}
+
+fn barcodeBars -> Array<svg.Svg<Task<Unit>>> = {
+  let widths: Array<(Float, Float)> = [
+    (12.0, 4.0),
+    (20.0, 2.0),
+    (26.0, 6.0),
+    (36.0, 2.0),
+    (42.0, 4.0),
+    (52.0, 2.0),
+    (58.0, 6.0),
+    (68.0, 4.0),
+    (76.0, 2.0),
+    (84.0, 4.0),
+    (92.0, 6.0),
+    (102.0, 2.0),
+    (108.0, 4.0),
+    (118.0, 2.0),
+    (124.0, 6.0),
+    (134.0, 4.0),
+    (144.0, 2.0),
+    (150.0, 4.0),
+    (158.0, 6.0),
+    (168.0, 2.0),
+    (176.0, 4.0),
+    (184.0, 2.0),
+    (190.0, 6.0),
+    (200.0, 4.0),
+    (208.0, 2.0),
+    (216.0, 6.0),
+    (226.0, 2.0),
+    (232.0, 4.0),
+    (242.0, 6.0),
+    (252.0, 2.0),
+    (258.0, 4.0),
+    (268.0, 4.0),
+  ]
+  map barcodeBar widths
+}
+
+fn ticketBarcode code: String -> html.Html<Task<Unit>> = svg.svg {
+  viewBox: "0 0 284 72",
+  role: "img",
+  ariaLabel: `入場用バーコード ${code}`,
+  children: arrays.append [
+    svg.text {
+      x: 142.0,
+      y: 65.0,
+      fill: "#d8b36a",
+      textAnchor: "middle",
+      dominantBaseline: "middle",
+      children: code,
+    },
+  ] (barcodeBars ()),
+}
+  |> svg.toHtml
+
+fn seatBadge seat: Seat -> html.Html<Task<Unit>> = html.span {
+  style: styles.seatBadgeStyle (),
+  children: `${seat.row}列 ${seat.number}番 (${tierLabel seat.tier})`,
+}
+
+pub fn view dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> code: String
+  -> html.Html<Task<Unit>> = {
+    let chosen = selectedSeats state
+    let totals: OrderTotals = calculateTotals state
+    let buyer: BuyerDraft = state.buyer
+    let deliveryLabel = match buyer.delivery {
+      MobileQr -> "スマホ電子チケット（QR / バーコード入場）"
+      BoxOfficePickup -> "当日会場窓口にて引換"
+    }
+    let topBand: html.Html<Task<Unit>> = html.div {
+      style: styles.ticketTopBandStyle (),
+      children: [
+        html.span { children: "ELECTRONIC ADMISSION TICKET" },
+        html.span { id: "reservation-code", children: `予約番号 ${code}` },
+      ],
+    }
+    let confirmedEyebrow: html.Html<Task<Unit>> = html.p {
+      style: styles.eyebrowStyle (),
+      children: "ご予約が確定しました"
+    }
+    let concertTitle: html.Html<Task<Unit>> = html.h2 {
+      style: styles.titleStyle (),
+      children: "秋夜の室内楽特別公演 — 弦楽四重奏の夕べ"
+    }
+    let concertMeta: html.Html<Task<Unit>> = html.p {
+      style: styles.metaStyle (),
+      children: "2026年11月28日（土）18:00 開場 / 18:30 開演 ・ 東京響ホール 大ホール"
+    }
+    let tearLine: html.Html<Task<Unit>> = html.div {
+      style: styles.ticketTearLineStyle (),
+      children: ""
+    }
+    let guestTitle: html.Html<Task<Unit>> = html.p {
+      style: styles.metaStyle (),
+      children: "ご来場者"
+    }
+    let guestName: html.Html<Task<Unit>> = html.p {
+      id: "ticket-buyer-name",
+      style: html.style { margin: "4px 0 0 0", fontSize: "16px", fontWeight: "700" },
+      children: state.buyer.fullName,
+    }
+    let guestContact: html.Html<Task<Unit>> = html.p {
+      style: styles.metaStyle (),
+      children: `${state.buyer.email} ・ ${deliveryLabel}`
+    }
+    let guestInfo: html.Html<Task<Unit>> = html.div {
+      children: [guestTitle, guestName, guestContact],
+    }
+    let priceTitle: html.Html<Task<Unit>> = html.p {
+      style: styles.metaStyle (),
+      children: "お支払い金額"
+    }
+    let priceValue: html.Html<Task<Unit>> = html.p {
+      style: html.style {
+        margin: "4px 0 0 0",
+        fontSize: "18px",
+        fontWeight: "700",
+        color: "#f0d79c"
+      },
+      children: formatYen totals.total,
+    }
+    let priceInfo: html.Html<Task<Unit>> = html.div {
+      children: [priceTitle, priceValue],
+    }
+    let buyerBlock: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        gap: "16px",
+        marginBottom: "18px"
+      },
+      children: [guestInfo, priceInfo],
+    }
+    let seatsLabel: html.Html<Task<Unit>> = html.p {
+      style: styles.metaStyle (),
+      children: `指定座席 (${arrays.length chosen} 席)`
+    }
+    let seatsBlock: html.Html<Task<Unit>> = html.div {
+      style: html.style { marginBottom: "20px" },
+      children: [
+        seatsLabel,
+        html.div {
+          style: html.style {
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px",
+            marginTop: "8px"
+          },
+          children: map seatBadge chosen,
+        },
+      ],
+    }
+    let barcodeBox: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        backgroundColor: "#0c0e13",
+        borderRadius: "12px",
+        padding: "14px",
+        maxWidth: "320px",
+        margin: "0 auto 20px"
+      },
+      children: ticketBarcode code,
+    }
+    let newBookingButton: html.Html<Task<Unit>> = html.button {
+      id: "start-new-booking",
+      buttonType: "button",
+      style: styles.secondaryButtonStyle (),
+      onClick: dispatch StartNewBooking,
+      children: "別の席を新しく予約する",
+    }
+    html.section {
+      ariaLabel: "発券済み電子チケット",
+      style: styles.ticketCardStyle (),
+      children: [
+        topBand,
+        html.div {
+          style: styles.ticketBodyStyle (),
+          children: [
+            confirmedEyebrow,
+            concertTitle,
+            concertMeta,
+            tearLine,
+            buyerBlock,
+            seatsBlock,
+            barcodeBox,
+            newBookingButton,
+          ],
+        },
+      ],
+    }
+  }

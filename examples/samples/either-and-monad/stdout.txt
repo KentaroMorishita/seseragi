@@ -1,2 +1,9 @@
-valid: 3600 yen
-invalid: rejected (quantity must be positive)
+入力1 (複数エラー):
+  Either:     1件目で停止 -> 名前が空です
+  Validation: - 名前が空です
+  Validation: - メールアドレスの形が正しくありません ("mio-at-example")
+  Validation: - パスワードが短すぎます (4 文字 / 8 文字以上)
+  Validation: - 年齢が対象外です (16 歳 / 18 歳以上)
+入力2 (正しい入力):
+  Either:     登録できます (Aki)
+  Validation: 登録できます (Aki)

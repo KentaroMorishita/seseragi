@@ -1,0 +1,230 @@
+// ステージの建築 SVG と 5 列×8 席のインタラクティブ座席マップを描画します。
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+import {
+  AutoPickAdjacent,
+  BookingAction,
+  BookingState,
+  FilterByTier,
+  Seat,
+  SeatTier,
+  SetPartySize,
+  Sold,
+  TierA,
+  TierAccessible,
+  TierB,
+  TierS,
+  ToggleSeat,
+  findSeat,
+  formatYen,
+  isSelected,
+  seatPrice,
+  tierLabel,
+} from "self/booking/model"
+import * as styles from "self/ui/styles"
+
+fn stageCanopy -> html.Html<Task<Unit>> = svg.svg {
+  viewBox: "0 0 640 84",
+  role: "img",
+  ariaLabel: "コンサートホールのステージと客席の向き",
+  children: [
+    svg.polygon { points: "90,12 550,12 620,82 20,82", fill: "#d8b36a", opacity: 0.07, },
+    svg.path {
+      d: "M 70 46 Q 320 12 570 46 L 548 64 Q 320 34 92 64 Z",
+      fill: "#222532",
+      stroke: "#d8b36a",
+      strokeWidth: "1.5",
+    },
+    svg.line {
+      x1: 140.0,
+      y1: 24.0,
+      x2: 500.0,
+      y2: 24.0,
+      stroke: "#d8b36a",
+      strokeWidth: "2",
+      opacity: 0.45,
+    },
+    svg.text {
+      x: 320.0,
+      y: 45.0,
+      fill: "#f0d79c",
+      textAnchor: "middle",
+      dominantBaseline: "middle",
+      children: "STAGE / 舞台",
+    },
+  ],
+}
+  |> svg.toHtml
+
+fn tierFilterButton dispatch: (BookingAction -> Task<Unit>)
+  -> current: Maybe<SeatTier>
+  -> target: Maybe<SeatTier>
+  -> label: String
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    ariaSelected: current == target,
+    style: styles.filterChipStyle (current == target),
+    onClick: dispatch (FilterByTier target),
+    children: label,
+  }
+
+fn partySizeButton dispatch: (BookingAction -> Task<Unit>)
+  -> current: Int
+  -> size: Int
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    ariaSelected: current == size,
+    style: styles.filterChipStyle (current == size),
+    onClick: dispatch (SetPartySize size),
+    children: `${size}名`,
+  }
+
+fn seatButton dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> seat: Seat
+  -> html.Html<Task<Unit>> =
+  {
+    let selected = isSelected state.selectedIds seat.id
+    let dimmed = match state.filterTier {
+      Nothing -> False
+      Just activeTier -> seat.tier != activeTier
+    }
+    let stateText =
+      if seat.availability == Sold then "売切" else if selected then "選択中" else "空席"
+    html.button {
+      id: `seat-${seat.id}`,
+      buttonType: "button",
+      disabled: seat.availability == Sold,
+      ariaSelected: selected,
+      ariaLabel: `${seat.row}列 ${seat.number}番 ${tierLabel seat.tier} ${formatYen (seatPrice seat.tier)} ${stateText}`,
+      style: styles.seatButtonStyle seat.tier seat.availability selected dimmed,
+      onClick: dispatch (ToggleSeat seat.id),
+      children:
+        if seat.availability == Sold then
+          "×"
+        else
+          show seat.number,
+    }
+  }
+
+fn rowLabelTag label: String -> html.Html<Task<Unit>> = html.span {
+  style: styles.rowLabelStyle (),
+  children: label
+}
+
+fn aisleGapTag label: String -> html.Html<Task<Unit>> = html.span {
+  style: styles.aisleGapStyle (),
+  children: label
+}
+
+fn seatRowView dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> rowName: String
+  -> html.Html<Task<Unit>> = {
+    let leftSeats = [seat | seat <- state.seats, seat.row == rowName, seat.number <= 4]
+    let rightSeats = [seat | seat <- state.seats, seat.row == rowName, seat.number >= 5]
+    html.div {
+      style: styles.seatRowStyle (),
+      children: arrays.concat [
+        [rowLabelTag rowName],
+        map (seatButton dispatch state) leftSeats,
+        [aisleGapTag (if rowName == "C" then
+          "通路"
+        else
+          "")],
+        map (seatButton dispatch state) rightSeats,
+        [rowLabelTag rowName],
+      ],
+    }
+  }
+
+fn sightlinePanel state: BookingState -> html.Html<Task<Unit>> = {
+  let focused: Maybe<Seat> = match state.focusedSeatId {
+    Just id -> findSeat state.seats id
+    Nothing -> Nothing
+  }
+  let body = match focused {
+    Just seat -> `${seat.row}列 ${seat.number}番（${tierLabel seat.tier}・${formatYen (seatPrice seat.tier)}）— ${seat.sightline}`
+    Nothing -> "座席を選ぶと、舞台の見え方と料金をここに表示します。"
+  }
+  html.div { style: styles.sightlineBoxStyle (), children: body }
+}
+
+fn mapToolbar dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> html.Html<Task<Unit>> = {
+    let heading: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: "客席マップから選ぶ"
+    }
+    html.div {
+      style: styles.toolbarStyle (),
+      children: [
+        heading,
+        html.div {
+          style: styles.chipRowStyle (),
+          children: [
+            tierFilterButton dispatch state.filterTier Nothing "すべて",
+            tierFilterButton dispatch state.filterTier (Just TierS) "S席 12,000円",
+            tierFilterButton dispatch state.filterTier (Just TierA) "A席 8,500円",
+            tierFilterButton dispatch state.filterTier (Just TierB) "B席 5,500円",
+            tierFilterButton dispatch state.filterTier (Just TierAccessible) "車椅子席",
+          ],
+        },
+      ],
+    }
+  }
+
+fn autoPickBar dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> html.Html<Task<Unit>> = {
+    let label: html.Html<Task<Unit>> = html.span {
+      style: styles.metaStyle (),
+      children: "連番人数:"
+    }
+    let sizeRow: html.Html<Task<Unit>> = html.div {
+      style: styles.chipRowStyle (),
+      children: [
+        label,
+        partySizeButton dispatch state.partySize 1,
+        partySizeButton dispatch state.partySize 2,
+        partySizeButton dispatch state.partySize 3,
+        partySizeButton dispatch state.partySize 4,
+      ],
+    }
+    let pickButton: html.Html<Task<Unit>> = html.button {
+      id: "auto-pick-adjacent",
+      buttonType: "button",
+      style: styles.secondaryButtonStyle (),
+      onClick: dispatch AutoPickAdjacent,
+      children: `${state.partySize} 連番でおすすめ席を選ぶ`,
+    }
+    html.div { style: styles.autoPickBarStyle (), children: [sizeRow, pickButton], }
+  }
+
+pub fn view dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> html.Html<Task<Unit>> = {
+    let stageBox: html.Html<Task<Unit>> = html.div {
+      style: styles.hallStageWrapStyle (),
+      children: stageCanopy ()
+    }
+    let rowsBox: html.Html<Task<Unit>> = html.div {
+      style: styles.seatGridStyle (),
+      children: map (seatRowView dispatch state) ["A", "B", "C", "D", "E"],
+    }
+    html.section {
+      ariaLabel: "座席マップ",
+      style: styles.surfaceStyle (),
+      children: [
+        mapToolbar dispatch state,
+        autoPickBar dispatch state,
+        stageBox,
+        rowsBox,
+        sightlinePanel state,
+      ],
+    }
+  }

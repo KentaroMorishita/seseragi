@@ -1,18 +1,63 @@
 {
   "$schema": "../sample.schema.json",
   "id": "collections",
-  "title": "Collectionを整形・集計",
-  "summary": "filterしたArrayを表示用に整形し、genericなsumとjoinでreportにします。",
+  "title": "家計簿を集計する",
+  "summary": "ひと月の支出を費目ごとにまとめ、割合と、いちばん大きい出費を表にします。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["Collection", "Array", "filter", "map", "sum", "join"],
-  "capabilities": ["console"],
+  "topics": [
+    "struct",
+    "ADT",
+    "comprehension",
+    "sortBy",
+    "pipeline"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["hello-world"],
+  "prerequisites": [
+    "hello-world"
+  ],
   "featured": true,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "外食の出費を足す",
+        "edits": [
+          {
+            "find": "  Expense { category: Leisure, memo: \"本\", yen: 2640 },\n",
+            "replace": "  Expense { category: Leisure, memo: \"本\", yen: 2640 },\n  Expense { category: Food, memo: \"外食\", yen: 3200 },\n"
+          }
+        ]
+      },
+      {
+        "label": "旅行の費目を足す",
+        "edits": [
+          {
+            "find": "  | Leisure\n",
+            "replace": "  | Leisure\n  | Travel\n"
+          },
+          {
+            "find": "  Leisure -> \"楽しみ\"\n",
+            "replace": "  Leisure -> \"楽しみ\"\n  Travel -> \"旅行\"\n"
+          },
+          {
+            "find": "[Housing, Food, Transport, Leisure]",
+            "replace": "[Housing, Food, Transport, Leisure, Travel]"
+          },
+          {
+            "find": "  Expense { category: Leisure, memo: \"本\", yen: 2640 },\n",
+            "replace": "  Expense { category: Leisure, memo: \"本\", yen: 2640 },\n  Expense { category: Travel, memo: \"温泉の宿\", yen: 24000 },\n"
+          }
+        ]
+      }
+    ]
   }
 }

@@ -1,19 +1,51 @@
 {
   "$schema": "../sample.schema.json",
   "id": "fibonacci-sequence",
-  "title": "Fibonacci列を順に出力",
-  "summary": "Tail recursionでFibonacci数を求め、Rangeの順序どおりに出力します。",
+  "title": "100 番目のフィボナッチ数",
+  "summary": "桁数に上限のない BigInt で、100 番目のフィボナッチ数を正確に求めます。ループは関数の中の関数で書きます。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["local function", "tail recursion", "Range", "effectful for"],
-  "capabilities": ["console"],
+  "topics": [
+    "BigInt",
+    "local function",
+    "tail recursion",
+    "pipeline"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["local-functions"],
+  "prerequisites": [
+    "local-functions"
+  ],
   "featured": false,
   "isNew": true,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "200 番目も出す",
+        "edits": [
+          {
+            "find": "100]",
+            "replace": "100, 200]"
+          }
+        ]
+      },
+      {
+        "label": "0 番目も出す",
+        "edits": [
+          {
+            "find": "[10,",
+            "replace": "[0, 10,"
+          }
+        ]
+      }
+    ]
   }
 }

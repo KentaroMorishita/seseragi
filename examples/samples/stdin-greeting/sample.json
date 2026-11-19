@@ -1,20 +1,53 @@
 {
   "$schema": "../sample.schema.json",
   "id": "stdin-greeting",
-  "title": "標準入力を扱う",
-  "summary": "readLineのMaybeをmatchし、入力の有無を安全に処理します。",
+  "title": "貼り付けた点数から成績表を作る",
+  "summary": "Input 欄に貼り付けた CSV を標準入力からすべて読み込み、成績の集計と読めない行の行番号付きレポートを出します。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["Stdin", "readLine", "Maybe", "match"],
-  "capabilities": ["console", "stdin"],
+  "topics": [
+    "Stdin",
+    "fails",
+    "mapError",
+    "Either",
+    "CSV"
+  ],
+  "capabilities": [
+    "console",
+    "stdin"
+  ],
   "outputMode": "text",
-  "prerequisites": ["hello-world"],
+  "prerequisites": [
+    "either-and-monad"
+  ],
   "featured": false,
-  "isNew": true,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "stdin": "stdin.txt",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "合格ラインを 70 点に上げる",
+        "edits": [
+          {
+            "find": "let passingScore = 60",
+            "replace": "let passingScore = 70"
+          }
+        ]
+      },
+      {
+        "label": "S 判定を 85 点以上に広げる",
+        "edits": [
+          {
+            "find": "let sGradeThreshold = 90",
+            "replace": "let sGradeThreshold = 85"
+          }
+        ]
+      }
+    ]
   }
 }

@@ -1624,6 +1624,13 @@
       "reason": "MaybeとEitherの安全操作を本編教材へ借り、Functor・Applicative・Monadの抽象比較を補足トラックと発展Recipeに残す。"
     },
     {
+      "sampleId": "expression-calculator",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "式を再帰する型で表し、match でたどって計算する。0 で割る式は Either の失敗として返す。"
+    },
+    {
       "sampleId": "feature-composition",
       "currentKind": "showcase",
       "decision": "tour-seed-and-showcase",
@@ -1709,6 +1716,13 @@
         "14-integrated-app"
       ],
       "reason": "Web UI と総合演習へ接続し、compact な dom.app の例は Recipe に残す。"
+    },
+    {
+      "sampleId": "json-decode",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "JSON を自動導出で型に読み込み、足りない項目や型の違いを型の付いた失敗として扱う。"
     },
     {
       "sampleId": "local-functions",

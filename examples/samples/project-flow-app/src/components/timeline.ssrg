@@ -1,0 +1,256 @@
+// 日程タイムライン: 順番の入れ替え・削除・プリセット追加で地図と移動時間が即座に連動します。
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import {
+  AddPresetSpot,
+  ClearDaySpots,
+  Day1,
+  Day2,
+  FocusSpot,
+  MoveSpotDown,
+  MoveSpotUp,
+  RemoveSpot,
+  ResetTrip,
+  SelectDay,
+  Spot,
+  TripAction,
+  TripState,
+  categoryLabel,
+  dayTotalMinutes,
+  formatYen,
+  presetSpots,
+  segmentMinutes,
+  spotsForDay,
+  totalTransitMinutes,
+} from "self/trip/model"
+import * as styles from "self/ui/styles"
+
+fn spotItem dispatch: (TripAction -> Task<Unit>)
+  -> focusedId: String
+  -> daySpots: Array<Spot>
+  -> idx: Int
+  -> spot: Spot
+  -> html.Html<Task<Unit>> = {
+    let isFirst = idx == 0
+    let isLast = idx + 1 == arrays.length daySpots
+    let isFocused = spot.id == focusedId
+    let titleBtn: html.Html<Task<Unit>> = html.button {
+      buttonType: "button",
+      onClick: dispatch (FocusSpot spot.id),
+      style: html.style {
+        backgroundColor: "transparent",
+        border: "none",
+        color: "#1c3d5a",
+        cursor: "pointer",
+        fontSize: "14px",
+        fontWeight: "700",
+        padding: "0",
+        textAlign: "left",
+      },
+      children: `${idx + 1}. ${spot.name}`,
+    }
+    let badge: html.Html<Task<Unit>> = html.span {
+      style: styles.categoryBadgeStyle spot.category,
+      children: categoryLabel spot.category,
+    }
+    let topRow: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "8px",
+      },
+      children: [titleBtn, badge],
+    }
+    let metaRow: html.Html<Task<Unit>> = html.p {
+      style: html.style { color: "#4e6173", fontSize: "12px", margin: "4px 0 8px 0", },
+      children: `${spot.area} ・ 滞在 ${spot.stayMinutes}分 ・ 予算 ${formatYen spot.costYen}`,
+    }
+    let controls: html.Html<Task<Unit>> = html.div {
+      style: html.style { display: "flex", flexWrap: "wrap", gap: "6px", },
+      children: [
+        html.button {
+          buttonType: "button",
+          disabled: isFirst,
+          ariaLabel: `${spot.name}を上に移動`,
+          onClick: dispatch (MoveSpotUp spot.id),
+          style: styles.smallActionButtonStyle isFirst,
+          children: "↑ 上へ",
+        },
+        html.button {
+          buttonType: "button",
+          disabled: isLast,
+          ariaLabel: `${spot.name}を下に移動`,
+          onClick: dispatch (MoveSpotDown spot.id),
+          style: styles.smallActionButtonStyle isLast,
+          children: "↓ 下へ",
+        },
+        html.button {
+          buttonType: "button",
+          ariaLabel: `${spot.name}を削除`,
+          onClick: dispatch (RemoveSpot spot.id),
+          style: styles.smallActionButtonStyle False,
+          children: "削除",
+        },
+      ],
+    }
+    let card: html.Html<Task<Unit>> = html.div {
+      style: styles.spotCardStyle isFocused,
+      children: [topRow, metaRow, controls],
+    }
+    let connector: Array<html.Html<Task<Unit>>> = match arrays.get (idx + 1) daySpots {
+      Nothing -> []
+      Just nextSpot -> [html.div {
+        style: styles.transitConnectorStyle (),
+        children: `↓ 移動 約 ${segmentMinutes spot nextSpot} 分`,
+      }]
+    }
+    html.div { children: arrays.concat [[card], connector], }
+  }
+
+fn presetAddBar dispatch: (TripAction -> Task<Unit>)
+  -> allSpots: Array<Spot>
+  -> html.Html<Task<Unit>> = {
+    let alreadyAdded = \id: String ->
+      match arrays.find (\s: Spot -> s.id == id) allSpots {
+      Just _ -> True
+      Nothing -> False
+    }
+    let available = arrays.filter (\p: Spot -> !alreadyAdded p.id) (presetSpots ())
+    if arrays.isEmpty available then
+      html.p { style: styles.metaStyle (), children: "おすすめスポットはすべてプランに追加済みです。", }
+    else
+      {
+      let labelNode: html.Html<Task<Unit>> = html.p {
+        style: html.style {
+          color: "#1c3d5a",
+          fontSize: "12px",
+          fontWeight: "700",
+          margin: "14px 0 8px 0",
+        },
+        children: "この日に立ち寄り先を追加",
+      }
+      let renderPreset = \p: Spot -> html.button {
+        buttonType: "button",
+        onClick: dispatch (AddPresetSpot p.id),
+        style: styles.secondaryButtonStyle (),
+        children: `+ ${p.name} (${formatYen p.costYen})`,
+      }
+      let buttons: Array<html.Html<Task<Unit>>> = map renderPreset available
+      html.div {
+        children: [
+          labelNode,
+          html.div {
+            style: html.style { display: "flex", flexWrap: "wrap", gap: "8px", },
+            children: buttons,
+          },
+        ],
+      }
+    }
+  }
+
+pub fn view dispatch: (TripAction -> Task<Unit>)
+  -> state: TripState
+  -> html.Html<Task<Unit>> = {
+    let daySpots = spotsForDay state.activeDay state.spots
+    let count = arrays.length daySpots
+    let emptyIdx: Array<Int> = []
+    let indices = if count == 0 then emptyIdx else arrays.fromIterable (0 ..= count - 1)
+    let items: Array<html.Html<Task<Unit>>> = [
+      spotItem dispatch state.focusedSpotId daySpots idx spot | idx <- indices,
+      Just spot <- [arrays.get idx daySpots]
+    ]
+    let dayButtons: html.Html<Task<Unit>> = html.div {
+      style: html.style { display: "flex", flexWrap: "wrap", gap: "8px", },
+      children: [
+        html.button {
+          buttonType: "button",
+          ariaSelected: state.activeDay == Day1,
+          onClick: dispatch (SelectDay Day1),
+          style: styles.dayChipStyle (state.activeDay == Day1),
+          children: "1日目（東山・祇園）",
+        },
+        html.button {
+          buttonType: "button",
+          ariaSelected: state.activeDay == Day2,
+          onClick: dispatch (SelectDay Day2),
+          style: styles.dayChipStyle (state.activeDay == Day2),
+          children: "2日目（伏見・宇治）",
+        },
+      ],
+    }
+    let clearBtn: html.Html<Task<Unit>> = html.button {
+      buttonType: "button",
+      disabled: arrays.isEmpty daySpots,
+      onClick: dispatch ClearDaySpots,
+      style: styles.smallActionButtonStyle (arrays.isEmpty daySpots),
+      children: "この日を空にする",
+    }
+    let dayBar: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "10px",
+        marginBottom: "14px",
+      },
+      children: [dayButtons, clearBtn],
+    }
+    let summaryLine: html.Html<Task<Unit>> = html.p {
+      style: html.style { color: "#4e6173", fontSize: "13px", margin: "0 0 14px 0", },
+      children: `所要合計 ${dayTotalMinutes daySpots} 分（うち移動 ${totalTransitMinutes daySpots} 分）`,
+    }
+    let bodyNode: html.Html<Task<Unit>> =
+      if arrays.isEmpty daySpots then
+        html.div {
+          style: html.style {
+            backgroundColor: "#faf6ef",
+            border: "1px dashed #cfc6b8",
+            borderRadius: "12px",
+            padding: "20px",
+            textAlign: "center",
+          },
+          children: [
+            html.h3 {
+              style: html.style {
+                color: "#1c3d5a",
+                fontSize: "15px",
+                margin: "0 0 6px 0",
+              },
+              children: "この日の予定はまだありません。",
+            },
+            html.p {
+              style: html.style {
+                color: "#4e6173",
+                fontSize: "13px",
+                margin: "0 0 12px 0",
+              },
+              children: "下のボタンからスポットを足すか、初期プランに戻せます。",
+            },
+            html.button {
+              buttonType: "button",
+              onClick: dispatch ResetTrip,
+              style: styles.secondaryButtonStyle (),
+              children: "初期プランに戻す",
+            },
+          ],
+        }
+      else
+        html.div { children: items, }
+    let sectionHeading: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: "日程タイムライン",
+    }
+    html.section {
+      style: styles.cardStyle (),
+      children: [
+        sectionHeading,
+        dayBar,
+        summaryLine,
+        bodyNode,
+        presetAddBar dispatch state.spots,
+      ],
+    }
+  }
