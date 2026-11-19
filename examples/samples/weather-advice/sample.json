@@ -1,0 +1,70 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "weather-advice",
+  "title": "天気のアドバイス",
+  "summary": "天気を型で表し、match で言葉を選び、|> で流して、日ごとのひとことを出します。",
+  "kind": "recipe",
+  "difficulty": "beginner",
+  "topics": [
+    "type",
+    "match",
+    "pipeline",
+    "template string"
+  ],
+  "capabilities": [
+    "console"
+  ],
+  "outputMode": "text",
+  "prerequisites": [],
+  "featured": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "hint": {
+      "anchor": "Rainy 3",
+      "title": "3 を 12 に変えて、Run を押してみましょう。",
+      "body": "このコードはそのまま動きます。結果はもう出ています。"
+    },
+    "tryNext": [
+      {
+        "label": "雨量を 12mm にする",
+        "edits": [
+          {
+            "find": "Rainy 3,",
+            "replace": "Rainy 12,"
+          }
+        ]
+      },
+      {
+        "label": "くもりを足す",
+        "edits": [
+          {
+            "find": "  | Rainy Int\n",
+            "replace": "  | Rainy Int\n  | Cloudy\n"
+          },
+          {
+            "find": "\n}\n\nlet forecast",
+            "replace": "\n  Cloudy -> \"折りたたみ傘があると安心です\"\n}\n\nlet forecast"
+          },
+          {
+            "find": "let forecast = [",
+            "replace": "let forecast = [Cloudy, "
+          }
+        ]
+      },
+      {
+        "label": "予報を 1 日増やす",
+        "edits": [
+          {
+            "find": "Sunny]\n",
+            "replace": "Sunny, Rainy 25]\n"
+          }
+        ]
+      }
+    ]
+  }
+}

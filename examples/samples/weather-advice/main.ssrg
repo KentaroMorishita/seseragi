@@ -1,0 +1,13 @@
+// 天気ごとに、ひとことアドバイスを返します。
+type Weather =
+  | Sunny
+  | Rainy Int
+
+fn advice weather: Weather -> String = match weather {
+  Sunny -> "散歩日和です"
+  Rainy mm -> `傘を持って出かけましょう（${mm}mm）`
+}
+
+let forecast = [Sunny, Rainy 3, Sunny]
+
+pub effect fn main = forecast |> map advice |> join "\n" |> println

@@ -1,5 +1,11 @@
 import { expect, type Page, test } from "@playwright/test"
 import { rememberNetworkDecision } from "./network-decision-support"
+import { startQuietly } from "./quiet-start-support"
+
+// 初めて開いたときの案内（最初の例の自動実行など）は first-example.spec.ts で確かめる
+test.beforeEach(async ({ page }) => {
+  await startQuietly(page)
+})
 
 // #1375: links the user clicks inside the sandboxed Preview open in a new tab
 // through the shell, without relaxing the frame sandbox.

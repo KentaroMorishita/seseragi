@@ -1,4 +1,10 @@
 import { expect, test } from "@playwright/test"
+import { startQuietly } from "./quiet-start-support"
+
+// 初めて開いたときの案内（最初の例の自動実行など）は first-example.spec.ts で確かめる
+test.beforeEach(async ({ page }) => {
+  await startQuietly(page)
+})
 
 // Search（⌘K）は、例・レッスン・API・設定を一つにまとめた入口（DESIGN.md「探す場所は一つ」）。
 // キーボードだけで、探して、選んで、開けることを確かめる。

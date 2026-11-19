@@ -1,4 +1,10 @@
 import { expect, test } from "@playwright/test"
+import { startQuietly } from "./quiet-start-support"
+
+// 初めて開いたときの案内（最初の例の自動実行など）は first-example.spec.ts で確かめる
+test.beforeEach(async ({ page }) => {
+  await startQuietly(page)
+})
 
 test("renders every guide safely at mobile width", async ({
   page,

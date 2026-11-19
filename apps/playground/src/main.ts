@@ -27,6 +27,7 @@ import {
   createEditor,
   createEditorState,
   replaceEditorSource,
+  setEditorCoachMark,
   setEditorEditable,
   setEditorWhitespaceVisible,
 } from "./editor/create-editor"
@@ -63,6 +64,12 @@ import {
 } from "./runtime/network-permissions"
 import { connectEditorSettings } from "./ui/editor-settings"
 import { requiredElement } from "./ui/elements"
+import {
+  applyTryNext,
+  connectTryNext,
+  createCoachCard,
+  createGuidancePreferences,
+} from "./ui/guidance"
 import { connectMobilePanels } from "./ui/mobile-panels"
 import {
   allowFromNotice,
@@ -280,9 +287,10 @@ const sampleGuide = connectSampleGuide({
 })
 connectPreviewFullscreen(outputSection, fullscreenPreviewButton)
 
-const defaultSample = samples.find((sample) => sample.id === "hello-world")
+// 最初の例（#1350 の全体設計 2）。type・match・|> が一度に見え、開いたときに一度だけ動く
+const defaultSample = samples.find((sample) => sample.id === "weather-advice")
 if (defaultSample === undefined) {
-  throw new Error("canonical hello-world starter sample is missing")
+  throw new Error("first example weather-advice is missing")
 }
 const blankWorkspaceOrigin = {
   id: "playground-blank",
@@ -325,6 +333,20 @@ const networkGate = createNetworkGate({
 const networkSettings = createNetworkSettings(document, networkPermissions)
 let runNetworkAllowed = false
 let staticPreviewRequest = 0
+
+// 用意した例の案内（ひとこと、Try next、開いたときの自動実行）
+const guidancePreferences = createGuidancePreferences(browserStorage())
+const tourHref = new URL("tour/", document.baseURI).href
+const autoRunNote = requiredElement("#auto-run-note", HTMLElement)
+const tryNext = connectTryNext(requiredElement("#try-next", HTMLElement), {
+  preferences: guidancePreferences,
+  tourHref,
+  onApply: (chip, index) => applyTryNextChip(chip, index),
+})
+let coachVisible = false
+let autoRunning = false
+// この画面で開いた例。2 回目以降に前回のコードが戻ったときは、自由に書く状態として扱う
+let openedExample: (typeof samples)[number] | undefined
 const restoredBlank =
   linkedSource === undefined &&
   restoredWorkspace.status === "restored" &&
@@ -373,7 +395,10 @@ const search = connectSearchPalette({
   ),
   onExample: (id) => {
     const sample = samples.find((candidate) => candidate.id === id)
-    return sample === undefined ? false : loadSample(sample, "Sample loaded")
+    if (sample === undefined || !loadSample(sample, "Sample loaded"))
+      return false
+    openGuidance(sample, { first: false })
+    return true
   },
   // レッスンの一覧は、Search を初めて開いたときに読み込む。
   loadEntries: async () =>
@@ -548,6 +573,16 @@ if (initialSample !== undefined) {
   setStdinVisible(false)
   sampleBrowser.setBlank()
   sampleGuide.setBlank()
+}
+// 初めて開いたとき（保存したコードも共有リンクもない）だけ、最初の例の案内を出して一度動かす
+if (
+  initialSample !== undefined &&
+  linkedSource === undefined &&
+  restoredWorkspace.status !== "restored"
+) {
+  openGuidance(initialSample, { first: true })
+  // 次に開いたときは前回のコードが戻り、自由に書く状態（静か）で開く
+  persistCurrentWorkspace()
 }
 if (
   session.importedUrl !== undefined ||
@@ -789,7 +824,8 @@ function openRequestedExample(url: URL): void {
   history.replaceState(history.state, "", url)
   const sample = samples.find((candidate) => candidate.id === id)
   if (sample !== undefined && sample.id !== currentSample?.id) {
-    loadSample(sample, "Sample loaded")
+    if (loadSample(sample, "Sample loaded"))
+      openGuidance(sample, { first: false })
   }
 }
 
@@ -815,7 +851,10 @@ function searchCommands(): readonly SearchCommand[] {
       detail: `最初の例「${starterSample.title}」を開く`,
       keywords: "starter 最初",
       run: () => {
-        if (loadSample(starterSample, "Starter loaded")) editor.focus()
+        if (loadSample(starterSample, "Starter loaded")) {
+          openGuidance(starterSample, { first: false })
+          editor.focus()
+        }
         return undefined
       },
     },
@@ -869,6 +908,21 @@ function searchCommands(): readonly SearchCommand[] {
       tag: themeTag("system"),
       run: () => {
         themeController.set("system")
+        return undefined
+      },
+    },
+    {
+      id: "hints",
+      title: "Hints",
+      detail:
+        "例を開いたときのひとこと、Try next のチップ、開いたときの自動実行",
+      keywords: "hints 案内 ヒント try next coach",
+      tag: () => (guidancePreferences.hintsEnabled() ? "On" : "Off"),
+      run: () => {
+        const enabled = !guidancePreferences.hintsEnabled()
+        guidancePreferences.setHintsEnabled(enabled)
+        if (!enabled) dismissCoach({ remember: false })
+        tryNext.show(openedExample?.guidance?.tryNext)
         return undefined
       },
     },
@@ -949,6 +1003,7 @@ function loadSample(
 }
 
 function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
+  closeGuidance()
   if (
     confirmDirty &&
     !confirmDirtyWorkspaceSwitch(workspaceState, "Blank workspace", (message) =>
@@ -1046,6 +1101,8 @@ function handleEditorChange(nextSource: string): void {
     bindingConversion.invalidate()
     cancelActiveExecution()
     workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
+    dismissCoach()
+    autoRunNote.hidden = true
     interopInspector.sync(workspaceState)
     if (!wasDirty) renderWorkspaceChrome()
     persistCurrentWorkspace()
@@ -1258,6 +1315,10 @@ function setWhitespaceVisible(visible: boolean): void {
 async function run(): Promise<void> {
   cancelActiveExecution()
   networkGate.reset()
+  if (!autoRunning) {
+    dismissCoach()
+    autoRunNote.hidden = true
+  }
   const revision = runRevision
   let request: ProjectRequest
   try {
@@ -1647,4 +1708,75 @@ function currentNetworkScope(): NetworkScope {
         label: "自分のコード（このブラウザの作業場所）",
       }
     : { scope: `example:${currentSample.id}`, label: currentSample.title }
+}
+
+// 用意した例を開いたときの案内。first は「初めて開いた最初の例」
+function openGuidance(
+  sample: (typeof samples)[number],
+  options: Readonly<{ first: boolean }>
+): void {
+  openedExample = sample
+  dismissCoach({ remember: false })
+  tryNext.show(sample.guidance?.tryNext)
+  const hint = sample.guidance?.hint
+  if (
+    options.first &&
+    hint !== undefined &&
+    guidancePreferences.hintsEnabled() &&
+    !guidancePreferences.coachDone()
+  ) {
+    const from = editor.state.doc.toString().indexOf(hint.anchor)
+    if (from >= 0) {
+      coachVisible = true
+      setEditorCoachMark(editor, {
+        from,
+        to: from + hint.anchor.length,
+        render: () =>
+          createCoachCard(document, hint, {
+            tourHref,
+            onClose: () => dismissCoach(),
+          }),
+      })
+    }
+  }
+  // 開いたときの自動実行も案内の一つ。Settings の Hints をオフにすると止める
+  if (sample.guidance?.autoRun && guidancePreferences.hintsEnabled()) {
+    autoRunning = true
+    void run().finally(() => {
+      autoRunning = false
+    })
+    autoRunNote.hidden = false
+  }
+}
+
+function closeGuidance(): void {
+  openedExample = undefined
+  dismissCoach({ remember: false })
+  tryNext.show(undefined)
+  autoRunNote.hidden = true
+}
+
+// ひとことを消す。Close・書き換え・Run で消したときは、二度と出さないよう覚える
+function dismissCoach(
+  options: Readonly<{ remember: boolean }> = { remember: true }
+): void {
+  if (!coachVisible) return
+  coachVisible = false
+  setEditorCoachMark(editor, undefined)
+  if (options.remember) guidancePreferences.markCoachDone()
+}
+
+// Try next のチップ: 書き換えをコードに入れて、そのまま実行する
+function applyTryNextChip(
+  chip: NonNullable<(typeof samples)[number]["guidance"]>["tryNext"][number],
+  index: number
+): void {
+  const next = applyTryNext(activeWorkspaceSource(workspaceState), chip)
+  if (next === undefined) {
+    setStatus("error", "このチップは、今のコードには入れられません")
+    return
+  }
+  replaceEditorSource(editor, next)
+  tryNext.markUsed(index)
+  void run()
 }
