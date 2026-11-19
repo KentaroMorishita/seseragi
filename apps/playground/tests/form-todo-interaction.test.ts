@@ -98,7 +98,7 @@ describe("form-todo browser interaction fixture", () => {
     expect(combinedSource).not.toContain("html.table")
   })
 
-  test("covers every #188 interaction state and action family", () => {
+  test("covers every booking interaction state and action family", () => {
     const stepIds = new Set(fixture.steps.map(({ id }) => id))
     for (const operation of fixture.requiredOperations) {
       expect(
@@ -111,38 +111,21 @@ describe("form-todo browser interaction fixture", () => {
       fixture.steps.flatMap(({ actions }) => actions.map(({ kind }) => kind))
     )
     expect(actionKinds).toEqual(
-      new Set([
-        "input",
-        "submit",
-        "click",
-        "change",
-        "remove",
-        "filter",
-        "keyboard",
-        "pointer",
-        "clear",
-      ])
+      new Set(["input", "submit", "click", "change", "filter", "clear"])
     )
 
     expect(fixture.steps.map(({ id }) => id)).toEqual([
       "initial",
+      "filter-tier",
+      "auto-pick",
       "invalid-submit",
       "valid-submit",
-      "item-add",
-      "inline-edit",
-      "complete",
-      "pin",
-      "remove",
-      "filter-done",
-      "keyboard-arrow-right",
-      "keyboard-end",
-      "pointer",
-      "clear-completed",
+      "clear-selection",
       "empty-state",
     ])
     expect(fixture.steps.at(-1)?.assert).toMatchObject({
-      planCount: 0,
-      emptyHeading: "Your launch loop is clear.",
+      selectedCount: 0,
+      proceedDisabled: true,
     })
   })
 
