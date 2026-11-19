@@ -6,7 +6,7 @@
  * - 後半は、エクスプローラー、タブ、診断、ホバー、ダイアログなどの部品です。
  *   旧 styles.css の規則を引き継ぎ、色をトークンに置き換えています。
  * - 画面幅による切り替えは、末尾の @media にまとめます。
- * - Tour と Deep Dive は、作り直すまで旧 src/styles.css を使います。
+ * - Tour（src/tour/tour.css）と Deep Dive（src/deep-dive/deep-dive.css）も、この部品の上に作ります。
  */
 
 /* ============ 土台 ============ */
