@@ -293,7 +293,7 @@ pub fn checkoutView dispatch: (BookingAction -> Task<Unit>)
       children: [
         textField "buyer-name" "お名前（必須）" "text" "例: 佐藤 葵" buyer.fullName
           (\v: String -> dispatch (NameChanged v)),
-        textField "buyer-email" "メールアドレス（電子チケット送付先）" "email" "例: aoi@example.com" buyer.email
+        textField "buyer-email" "メールアドレス（電子チケット送付先）" "text" "例: aoi@example.com" buyer.email
           (\v: String -> dispatch (EmailChanged v)),
         textField "buyer-phone" "電話番号（ハイフンあり・なし可）" "tel" "例: 090-1234-5678" buyer.phone
           (\v: String -> dispatch (PhoneChanged v)),

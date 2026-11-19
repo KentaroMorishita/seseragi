@@ -7,7 +7,6 @@ import {
   BookingAction,
   BookingState,
   FilterByTier,
-  FocusSeat,
   Seat,
   SeatTier,
   SetPartySize,
@@ -103,7 +102,6 @@ fn seatButton dispatch: (BookingAction -> Task<Unit>)
       ariaLabel: `${seat.row}列 ${seat.number}番 ${tierLabel seat.tier} ${formatYen (seatPrice seat.tier)} ${stateText}`,
       style: styles.seatButtonStyle seat.tier seat.availability selected dimmed,
       onClick: dispatch (ToggleSeat seat.id),
-      onFocus: dispatch (FocusSeat seat.id),
       children:
         if seat.availability == Sold then
           "×"
