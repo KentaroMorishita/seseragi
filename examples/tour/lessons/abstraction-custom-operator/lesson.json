@@ -30,7 +30,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 10 行目にある `\"Sese\"` を `\"Kamo\"` に、11 行目の `\"Tour\"` を `\"Code\"` に書き換えて `Run` し、`Output` が `Kamoragi` と `Code!` に変わることを確かめてください。",
+      "instruction": "エディターの `\"Sese\"` を `\"Kamo\"` に、`\"Tour\"` を `\"Code\"` に書き換えて `Run` し、`Output` が `Kamoragi` と `Code!` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

@@ -26,6 +26,6 @@ assignees: ""
 - [ ] iPhone 390pxとAndroid 360pxのflowをhuman reviewした
 - [ ] interaction後の代表stateをhuman reviewした
 - [ ] Previewとmobile Code surfaceをhuman reviewした
-- [ ] human approval後の状態だけを#219 visual baselineへ記録した
+- [ ] human approval後の状態を、PRのプレビューで確かめた
 
 CI greenだけではこのIssueをcloseしない。

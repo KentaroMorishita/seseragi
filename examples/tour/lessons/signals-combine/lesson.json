@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 16 行目にある `count := 3` を `count := 5` に書き換えて `Run` し、`Output` の `after update` が `500` に変わることを確かめてください。",
+      "instruction": "エディターの `count := 3` を `count := 5` に書き換えて `Run` し、`Output` の `after update` が `500` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

@@ -224,3 +224,31 @@ describe("canonical Web UI visual direction", () => {
     expect(template).toContain("CI greenだけではこのIssueをcloseしない")
   })
 })
+
+describe("Web sample source", () => {
+  test("stays readable on a phone's Code surface", () => {
+    for (const sample of samples.filter(
+      ({ outputMode }) => outputMode === "html"
+    )) {
+      const source = sample.workspace.files
+        .map(({ source }) => source)
+        .join("\n")
+      const longClassLiterals = source
+        .split("\n")
+        .filter((line) => line.includes('class: "') && line.length > 96)
+
+      expect(longClassLiterals, sample.id).toEqual([])
+      expect(
+        source.includes('"min-h-screen"') ||
+          source.includes('minHeight: "100vh"'),
+        sample.id
+      ).toBe(true)
+      if (source.includes("html.img {"))
+        expect(
+          source.includes('"object-cover"') ||
+            source.includes('objectFit: "cover"'),
+          sample.id
+        ).toBe(true)
+    }
+  })
+})
