@@ -12,6 +12,7 @@ import {
 
 pub fn pageStyle -> html.Style = html.style {
   background: "radial-gradient(circle at 50% 0%, #1c1b22 0%, #0d0e13 58%)",
+  backgroundColor: "#0d0e13",
   color: "#f4f1ea",
   fontFamily: "Inter, Hiragino Sans, Noto Sans JP, sans-serif",
   margin: "0",
