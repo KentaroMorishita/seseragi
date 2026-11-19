@@ -379,6 +379,18 @@ fn makeReservationCode selectedIds: Array<String> -> String = {
   `SRG-2611-${lead}${arrays.length selectedIds}8`
 }
 
+fn refreshErrors nextState: BookingState -> BookingState =
+  if arrays.isEmpty nextState.errors then
+    nextState
+  else
+    match validateBooking nextState {
+  Valid _ -> BookingState { ...nextState, errors: [] }
+  Invalid problems -> BookingState {
+    ...nextState,
+    errors: arrays.fromIterable problems
+  }
+}
+
 pub fn update action: BookingAction -> state: BookingState -> BookingState =
   match action {
     ToggleSeat seatId -> match findSeat state.seats seatId {
@@ -430,26 +442,17 @@ pub fn update action: BookingAction -> state: BookingState -> BookingState =
       errors: [],
       statusMessage: "座席マップに戻りました。",
     }
-    NameChanged value -> BookingState {
-      ...state,
-      buyer: BuyerDraft { ...state.buyer, fullName: value },
-    }
-    EmailChanged value -> BookingState {
-      ...state,
-      buyer: BuyerDraft { ...state.buyer, email: value },
-    }
-    PhoneChanged value -> BookingState {
-      ...state,
-      buyer: BuyerDraft { ...state.buyer, phone: value },
-    }
+    NameChanged value -> refreshErrors (BookingState { ...state, buyer: BuyerDraft { ...state.buyer, fullName: value }, })
+    EmailChanged value -> refreshErrors (BookingState { ...state, buyer: BuyerDraft { ...state.buyer, email: value }, })
+    PhoneChanged value -> refreshErrors (BookingState { ...state, buyer: BuyerDraft { ...state.buyer, phone: value }, })
     DeliveryChanged delivery -> BookingState {
       ...state,
       buyer: BuyerDraft { ...state.buyer, delivery },
     }
-    TermsToggled accepted -> BookingState {
+    TermsToggled accepted -> refreshErrors (BookingState {
       ...state,
       buyer: BuyerDraft { ...state.buyer, acceptedTerms: accepted },
-    }
+    })
     SubmitBooking -> match validateBooking state {
       Invalid problems -> BookingState {
         ...state,

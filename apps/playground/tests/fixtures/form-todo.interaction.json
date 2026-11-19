@@ -4,7 +4,7 @@
   "sourcePath": "examples/samples/form-todo/src/main.ssrg",
   "manifest": {
     "sourceHash": "sha256:0a787f56f71344b395ea135efe1ddd1a8a3fba0bb6bc4cf2c9402fd1dc73a971",
-    "workspaceHash": "sha256:db21347932d27f809387259e20a8e57f88ca366cb858e14c7909db2c8ff03e7c"
+    "workspaceHash": "sha256:1b158417dcb432f915a58830b54436c9287873d5d8408ae868951b63aef5a29b"
   },
   "runner": {
     "kind": "browser-use",

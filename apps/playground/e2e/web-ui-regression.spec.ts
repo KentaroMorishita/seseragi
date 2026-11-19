@@ -451,56 +451,38 @@ test.describe("canonical Web UI browser regression", () => {
 
   test("form-todo / desktop validates, submits and empties the form", async ({
     page,
-  }, testInfo) => {
+  }) => {
     const form = sample("form-todo")
     await open(page, 1440, 1000)
     await select(page, form)
     const formPreview = await run(page, form)
+    // Clicking a seat button toggles selection on and off.
+    const seatA3 = formPreview.locator("#seat-A-3")
+    await expect(seatA3).toHaveAttribute("aria-selected", "false")
+    await seatA3.click()
+    await expect(seatA3).toHaveAttribute("aria-selected", "true")
+    await seatA3.click()
+    await expect(seatA3).toHaveAttribute("aria-selected", "false")
     await formPreview.locator("#proceed-checkout").click()
     await formPreview.locator("#submit-booking").click()
     const formAlert = formPreview.getByRole("alert")
     await expect(formAlert).toContainText("4 件の未入力・誤り")
-    await formAlert.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await capture(
-      page,
-      testInfo,
-      form,
-      "desktop",
-      "invalid-submit",
-      formPreview.locator("body")
-    )
     await formPreview.locator("#buyer-name").fill("佐藤 葵")
-    await formPreview.locator("#buyer-email").fill("aoi@example.com")
+    const emailInput = formPreview.locator("#buyer-email")
+    await emailInput.click()
+    await emailInput.pressSequentially("test@example.com")
+    await expect(emailInput).toHaveValue("test@example.com")
     await formPreview.locator("#buyer-phone").fill("090-1234-5678")
     await formPreview.locator("#buyer-terms").check()
+    // Fixing all fields clears the error summary live before re-submitting.
+    await expect(formAlert).toHaveCount(0)
     await formPreview.locator("#submit-booking").click()
     const reservationCode = formPreview.locator("#reservation-code")
     await expect(reservationCode).toContainText("SRG-2611-")
-    await reservationCode.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await capture(
-      page,
-      testInfo,
-      form,
-      "desktop",
-      "valid-submit",
-      formPreview.locator("body")
-    )
     await formPreview.locator("#start-new-booking").click()
     await formPreview.locator("#clear-seats").click()
     const proceedButton = formPreview.locator("#proceed-checkout")
     await expect(proceedButton).toBeDisabled()
-    await capture(
-      page,
-      testInfo,
-      form,
-      "desktop",
-      "empty",
-      formPreview.locator("body")
-    )
   })
 
   test("project-flow-app / desktop exposes Explorer, validates and clears the deck", async ({
