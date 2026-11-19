@@ -296,10 +296,24 @@ fn checkName name: String -> Validation<CheckoutError, String> =
   else
     validation.valid (text.trim name)
 
+fn isValidEmailAddress raw: String -> Bool = {
+  let parts = text.split "@" raw
+  match (arrays.length parts, arrays.get 0 parts, arrays.get 1 parts) {
+    (2, Just local, Just domain) -> {
+      let labels = text.split "." domain
+      ! text.isEmpty local
+        &&
+        !text.contains " " raw
+        && arrays.length labels >= 2
+        && all (\part: String -> !text.isEmpty part) labels
+    }
+    _ -> False
+  }
+}
+
 fn checkEmail email: String -> Validation<CheckoutError, String> = {
   let cleaned = text.trim email
-  if text.contains "@" cleaned
-    && text.contains "." cleaned then
+  if isValidEmailAddress cleaned then
     validation.valid cleaned
   else
     validation.invalid InvalidEmail

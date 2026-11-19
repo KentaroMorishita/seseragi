@@ -206,7 +206,7 @@ pub fn rowLabelStyle -> html.Style = html.style {
 }
 
 pub fn aisleGapStyle -> html.Style = html.style {
-  color: "#5f6472",
+  color: "#98a0b6",
   fontSize: "9px",
   letterSpacing: "0.04em",
   textAlign: "center",
@@ -224,7 +224,7 @@ pub fn seatButtonStyle tier: SeatTier
       backgroundColor: "#222531",
       border: "1px solid #2e3240",
       borderRadius: "8px 8px 4px 4px",
-      color: "#5b6070",
+      color: "#98a0b6",
       cursor: "not-allowed",
       fontSize: "12px",
       fontWeight: "600",
@@ -237,7 +237,7 @@ pub fn seatButtonStyle tier: SeatTier
         if dimmed then
           "0.3"
         else
-          "0.7"
+          "1"
     }
   else if selected then
     html.style {
