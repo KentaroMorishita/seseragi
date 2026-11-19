@@ -81,13 +81,30 @@ try {
       const page = await context.newPage()
       const errors: string[] = []
       page.on("pageerror", (error) => errors.push(error.message))
-      // Third-party photography is outside application semantics and must not make
-      // first-party/offline verification flaky. Keep its dimensions visible.
+      // Third-party photography and remote raw GitHub map assets are outside
+      // application semantics and must not make offline verification flaky.
       await page.route("https://images.unsplash.com/**", (route) =>
         route.fulfill({
           contentType: "image/svg+xml",
           body: '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480"><rect width="960" height="480" fill="#dbeafe"/></svg>',
         })
+      )
+      await page.route(
+        "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/samples/trip-planner/**",
+        (route) => {
+          const filename = new URL(route.request().url()).pathname
+            .split("/")
+            .pop()
+          const localPath = join(
+            root,
+            "assets/samples/trip-planner",
+            filename ?? ""
+          )
+          return route.fulfill({
+            contentType: "image/jpeg",
+            body: readFileSync(localPath),
+          })
+        }
       )
       try {
         await page.goto(`http://127.0.0.1:${server.port}/`)
