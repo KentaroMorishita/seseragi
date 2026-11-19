@@ -16,11 +16,11 @@ const colors = {
 }
 
 export const editorSelectionColors = {
-  primary: "#397a65aa",
-  secondary: "#385d78aa",
-  selectionMatch: "#69582188",
-  searchMatch: "#6c3b7788",
-  selectedSearchMatch: "#a1556dcc",
+  primary: "var(--cm-selection-primary, #397a65aa)",
+  secondary: "var(--cm-selection-secondary, #385d78aa)",
+  selectionMatch: "var(--cm-selection-match, #69582188)",
+  searchMatch: "var(--cm-search-match, #6c3b7788)",
+  selectedSearchMatch: "var(--cm-search-match-selected, #a1556dcc)",
 } as const
 
 export const seseragiEditorTheme = [
@@ -28,8 +28,8 @@ export const seseragiEditorTheme = [
     {
       "&": {
         color: colors.text,
-        backgroundColor: "#0d1513",
-        fontSize: "16px",
+        backgroundColor: "var(--cm-background, #0d1513)",
+        fontSize: "var(--cm-font-size, 16px)",
         lineHeight: "var(--cm-line-height, 1.4)",
       },
       "&.cm-editor": {
@@ -37,7 +37,8 @@ export const seseragiEditorTheme = [
       },
       ".cm-content": {
         caretColor: colors.accent,
-        fontFamily: '"SFMono-Regular", Consolas, "Liberation Mono", monospace',
+        fontFamily:
+          'var(--cm-font-family, "SFMono-Regular", Consolas, "Liberation Mono", monospace)',
         lineHeight: "var(--cm-line-height, 1.4)",
         padding: "var(--cm-content-padding, 18px 0 28px)",
       },
@@ -46,7 +47,7 @@ export const seseragiEditorTheme = [
       },
       ".cm-cursor, .cm-dropCursor": { borderLeftColor: colors.accent },
       ".cm-selectionBackground, ::selection": {
-        backgroundColor: "#27574899 !important",
+        backgroundColor: "var(--cm-selection, #27574899) !important",
       },
       [`& .${editorSelectionClassNames.primary}`]: {
         backgroundColor: editorSelectionColors.primary,
@@ -56,22 +57,22 @@ export const seseragiEditorTheme = [
       },
       [`& .${editorSelectionClassNames.selectionMatch}`]: {
         backgroundColor: editorSelectionColors.selectionMatch,
-        outline: "1px solid #d7b95499",
+        outline: "1px solid var(--cm-selection-match-outline, #d7b95499)",
       },
       [`& .${editorSelectionClassNames.searchMatch}`]: {
         backgroundColor: editorSelectionColors.searchMatch,
-        outline: "1px solid #d8a0e599",
+        outline: "1px solid var(--cm-search-match-outline, #d8a0e599)",
       },
       [`& .${editorSelectionClassNames.searchMatch}.${editorSelectionClassNames.selectedSearchMatch}`]:
         {
           backgroundColor: editorSelectionColors.selectedSearchMatch,
-          outline: "1px solid #ffc0d2",
+          outline: "1px solid var(--cm-search-match-selected-outline, #ffc0d2)",
         },
-      ".cm-activeLine": { backgroundColor: "#13201d" },
+      ".cm-activeLine": { backgroundColor: "var(--cm-active-line, #13201d)" },
       ".cm-gutters": {
-        backgroundColor: "#0b1210",
+        backgroundColor: "var(--cm-gutter-background, #0b1210)",
         color: colors.muted,
-        borderRight: "1px solid #1b2a26",
+        borderRight: "1px solid var(--cm-gutter-border, #1b2a26)",
         fontSize: "var(--cm-gutter-font-size, 13px)",
       },
       ".cm-lineNumbers .cm-gutterElement": {
@@ -79,7 +80,7 @@ export const seseragiEditorTheme = [
         padding: "var(--cm-line-number-padding, 0 8px 0 5px)",
       },
       ".cm-activeLineGutter": {
-        backgroundColor: "#16231f",
+        backgroundColor: "var(--cm-active-gutter, #16231f)",
         color: colors.text,
       },
       ".cm-foldPlaceholder": { backgroundColor: "transparent", border: "none" },
@@ -87,13 +88,13 @@ export const seseragiEditorTheme = [
         color: colors.text,
       },
       ".cm-panels:not(.cm-panels-top)": {
-        backgroundColor: "#101b18",
+        backgroundColor: "var(--cm-panel-background, #101b18)",
         color: colors.text,
       },
       ".cm-diagnostic": { padding: "6px 10px" },
       ".cm-tooltip": {
-        backgroundColor: "#14211e",
-        border: "1px solid #294139",
+        backgroundColor: "var(--cm-tooltip-background, #14211e)",
+        border: "1px solid var(--cm-tooltip-border, #294139)",
         color: colors.text,
       },
     },

@@ -33,6 +33,7 @@ import {
 import { resolveEditorLineWidth } from "./editor/format-width"
 import { createEditorPreferencesStore } from "./preferences/editor-preferences"
 import { createPreviewDocument } from "./preview-document"
+import { connectPreviewLinks } from "./runtime/preview-links"
 import type { BrowserExecution } from "./runtime/browser-execution"
 import { prepareBrowserForeignRuntime } from "./runtime/foreign-runtime"
 import {
@@ -54,10 +55,14 @@ import {
   workspaceBindingRequest,
 } from "./workspace/bindings"
 import "./ui/design/index.css"
-import "./styles.css"
+import "./ui/playground.css"
 import { connectEditorSettings } from "./ui/editor-settings"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
+import { renderRunStatus } from "./ui/run-status"
+import { connectSheetDrag } from "./ui/sheet-drag"
+import { createThemeController } from "./ui/theme"
+import { browserStorage, connectThemeButton } from "./ui/theme-button"
 import { connectOverflowMenu } from "./ui/overflow-menu"
 import { connectPanelLayout } from "./ui/panel-layout"
 import { connectPreviewFullscreen } from "./ui/preview-fullscreen"
@@ -214,14 +219,13 @@ const mobileToolsButton = requiredElement(
   HTMLButtonElement
 )
 const mobileToolsMenu = requiredElement("#mobile-tools-menu", HTMLElement)
-const surfaceSwitcherButton = requiredElement(
-  "#surface-switcher-button",
+const searchButton = requiredElement("#search-button", HTMLButtonElement)
+const themeButton = requiredElement("#theme-button", HTMLButtonElement)
+const themeSystemButton = requiredElement(
+  "#theme-system-button",
   HTMLButtonElement
 )
-const surfaceSwitcherMenu = requiredElement(
-  "#surface-switcher-menu",
-  HTMLElement
-)
+const runStatus = requiredElement("#run-status", HTMLElement)
 const explorerToggleButton = requiredElement(
   "#explorer-toggle-button",
   HTMLButtonElement
@@ -279,6 +283,12 @@ const sampleGuideSource = requiredElement("#sample-guide-source", HTMLElement)
 const stdinInput = requiredElement("#stdin-input", HTMLTextAreaElement)
 const output = requiredElement("#output", HTMLElement)
 const htmlPreview = requiredElement("#html-preview", HTMLIFrameElement)
+// Preview の中で押された外部リンクを、確かめてから新しいタブで開く（#1375）
+const previewLinks = connectPreviewLinks({
+  frame: htmlPreview,
+  notice: requiredElement("#preview-link-notice", HTMLElement),
+  createDocument: createPreviewDocument,
+})
 const showTextOutputButton = requiredElement(
   "#show-text-output-button",
   HTMLButtonElement
@@ -420,10 +430,19 @@ connectEditorSettings({
 })
 
 connectOverflowMenu({ button: mobileToolsButton, menu: mobileToolsMenu })
-connectOverflowMenu({
-  button: surfaceSwitcherButton,
-  menu: surfaceSwitcherMenu,
-})
+connectThemeButton(
+  themeButton,
+  createThemeController({
+    storage: browserStorage(),
+    root: document.documentElement,
+    query: window.matchMedia("(prefers-color-scheme: dark)"),
+    eventTarget: window,
+  }),
+  themeSystemButton
+)
+// Search（⌘K）は、例・レッスン・API・設定を一つにまとめる入口（#1358）。
+// 今は例の一覧を開く。
+searchButton.addEventListener("click", () => sampleBrowserButton.click())
 
 const liveAnalysis: LiveAnalysisController =
   createLiveAnalysis<WorkspaceAnalysisResult>({
@@ -717,11 +736,28 @@ clearOutputButton.addEventListener("click", () => {
   output.textContent = ""
   clearHtmlPreview()
   chooseOutputMode("text")
+  renderRunStatus(runStatus, { kind: "idle" })
   setStatus("ready", "Output cleared")
 })
 showTextOutputButton.addEventListener("click", () => closeInteractivePreview())
 showHtmlPreviewButton.addEventListener("click", () => chooseOutputMode("html"))
 const mobilePanels = connectMobilePanels(workspace)
+connectSheetDrag({
+  sheet: ioPanel,
+  handle: requiredElement(".pg-sheet-handle", HTMLButtonElement),
+  grips: [requiredElement(".pg-output-head", HTMLElement)],
+  panels: mobilePanels,
+  isSheet: () =>
+    window.matchMedia(
+      "(max-width: 760px), (max-width: 960px) and (max-height: 520px)"
+    ).matches,
+  // 畳んだ状態は、持ち手と見出しだけ（CSS の --pg-sheet-closed と同じ 64px）
+  heights: () => ({
+    closed: 64,
+    code: 196,
+    io: window.innerHeight * 0.7,
+  }),
+})
 connectPanelLayout({ workspace, workspaceResizer, ioPanel, ioResizer })
 connectWorkspaceFocusNavigation(
   {
@@ -740,14 +776,24 @@ connectWorkspaceFocusNavigation(
         editor.focus()
       }
     },
-    showCode: () => mobilePanels.show("code"),
+    // 畳んでいるときは、エディターがすでに見えているので畳んだままにする
+    showCode: () => {
+      if (mobilePanels.current() !== "closed") mobilePanels.show("code")
+    },
     showIo: () => mobilePanels.show("io"),
   }
 )
 document.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" || (!event.metaKey && !event.ctrlKey)) return
-  event.preventDefault()
-  if (!runButton.disabled) void run()
+  if (!event.metaKey && !event.ctrlKey) return
+  if (event.key === "Enter") {
+    event.preventDefault()
+    if (!runButton.disabled) void run()
+    return
+  }
+  if (event.key.toLowerCase() === "k" && !event.shiftKey && !event.altKey) {
+    event.preventDefault()
+    searchButton.click()
+  }
 })
 window.addEventListener("beforeunload", () => cancelActiveExecution())
 
@@ -789,6 +835,7 @@ function loadSample(
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
   showTextOutput("Runを押すと結果がここに表示されます。")
+  renderRunStatus(runStatus, { kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
   return true
@@ -828,6 +875,7 @@ function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
   showTextOutput("Blank workspaceです。main.ssrgへcodeを書いてRunできます。")
+  renderRunStatus(runStatus, { kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
   return true
@@ -1111,6 +1159,7 @@ async function run(): Promise<void> {
     request = runnableWorkspaceProjectRequest(workspaceState)
   } catch (error) {
     showTextOutput(error instanceof Error ? error.message : String(error))
+    renderRunStatus(runStatus, { kind: "failed" })
     setStatus("error", "Entry required")
     showIoOnSmallScreens()
     return
@@ -1131,6 +1180,7 @@ async function run(): Promise<void> {
   activeRunAnalysisRevision = requestedAnalysisRevision
   runButton.disabled = true
   showTextOutput("Compiling with the shared Rust driver…")
+  renderRunStatus(runStatus, { kind: "running" })
   setStatus("running", "Compiling…")
 
   try {
@@ -1140,6 +1190,7 @@ async function run(): Promise<void> {
       !workspaceProjectIsCurrent(requestedRevision) ||
       JSON.stringify(workspaceState.files) !== runtimeRevision
     ) {
+      renderRunStatus(runStatus, { kind: "idle" })
       setStatus("ready", "Project changed")
       return
     }
@@ -1151,6 +1202,10 @@ async function run(): Promise<void> {
     setActiveEditorDiagnostics(diagnostics)
     if (compiled.status === "failure") {
       showWorkspaceDiagnostics(diagnostics)
+      renderRunStatus(runStatus, {
+        kind: "diagnostics",
+        count: diagnostics.length,
+      })
       setStatus("error", `${diagnostics.length} diagnostic(s)`)
       showIoOnSmallScreens()
       return
@@ -1159,6 +1214,7 @@ async function run(): Promise<void> {
       showTextOutput(
         compiled.entry.error ?? "Compile succeeded. No executable main found."
       )
+      renderRunStatus(runStatus, { kind: "idle" })
       setStatus("ready", "Compile succeeded")
       showIoOnSmallScreens()
       return
@@ -1184,6 +1240,7 @@ async function run(): Promise<void> {
     ) {
       clearHtmlPreview()
       setOutputMode("text")
+      renderRunStatus(runStatus, { kind: "idle" })
       setStatus("ready", "Project changed")
       return
     }
@@ -1221,6 +1278,7 @@ async function run(): Promise<void> {
         output.className = "output-text"
         output.textContent = "Interactive preview is running."
         setOutputMode("html")
+        renderRunStatus(runStatus, { kind: "interactive" })
         setStatus("success", "Interactive")
         showIoOnSmallScreens()
       }
@@ -1230,6 +1288,9 @@ async function run(): Promise<void> {
       return
     }
     activeExecution = execution
+    // チップに出すのはプログラムの実行にかかった時間。コンパイルと、
+    // 実行環境の準備の時間は含めない。
+    const startedAt = performance.now()
     void execution.completion.then(
       (completion) => {
         if (revision !== runRevision || activeExecution !== execution) return
@@ -1240,6 +1301,10 @@ async function run(): Promise<void> {
           return
         }
         showExecutionOutput(completion.result.stdout)
+        renderRunStatus(runStatus, {
+          kind: "completed",
+          milliseconds: performance.now() - startedAt,
+        })
         setStatus("success", "Completed")
         showIoOnSmallScreens()
       },
@@ -1247,6 +1312,7 @@ async function run(): Promise<void> {
         if (revision !== runRevision || activeExecution !== execution) return
         activeExecution = undefined
         showTextOutput(error instanceof Error ? error.message : String(error))
+        renderRunStatus(runStatus, { kind: "failed" })
         setStatus("error", "Execution failed")
         showIoOnSmallScreens()
       }
@@ -1258,10 +1324,12 @@ async function run(): Promise<void> {
       !workspaceProjectIsCurrent(requestedRevision) ||
       JSON.stringify(workspaceState.files) !== runtimeRevision
     ) {
+      renderRunStatus(runStatus, { kind: "idle" })
       setStatus("ready", "Project changed")
       return
     }
     showTextOutput(error instanceof Error ? error.message : String(error))
+    renderRunStatus(runStatus, { kind: "failed" })
     setStatus("error", "Execution failed")
     showIoOnSmallScreens()
   } finally {
@@ -1273,6 +1341,10 @@ async function run(): Promise<void> {
 }
 
 function cancelActiveExecution(): void {
+  // 実行中（コンパイル中、実行中、対話のプレビューが動いている）に取り消したときだけ、
+  // チップを空に戻す。終わった実行の結果（✓ 18 ms など）は、編集しても残す。
+  const wasActive = runButton.disabled || activeExecution !== undefined
+  if (wasActive) renderRunStatus(runStatus, { kind: "idle" })
   runRevision += 1
   activePreviewPreparation?.abort()
   activePreviewPreparation = undefined
@@ -1340,7 +1412,7 @@ function renderHtmlPreview(html: string): void {
   if (html === "") return
 
   const url = URL.createObjectURL(
-    new Blob([createPreviewDocument(html, executionSettings.allowed())], {
+    new Blob([previewLinks.staticDocument(html, executionSettings.allowed())], {
       type: "text/html",
     })
   )
@@ -1368,6 +1440,7 @@ async function prepareIsolatedExecution(
     const execution = await startIsolatedProject(htmlPreview, request, {
       signal: preparation.signal,
       onDomMounted,
+      onOpenLink: previewLinks.openLink,
       networkAllowed: executionSettings.allowed(),
     })
     if (
@@ -1387,6 +1460,7 @@ async function prepareIsolatedExecution(
 function clearHtmlPreview(): void {
   activePreviewPreparation?.abort()
   activePreviewPreparation = undefined
+  previewLinks.release()
   if (htmlPreviewUrl !== undefined) URL.revokeObjectURL(htmlPreviewUrl)
   htmlPreviewUrl = undefined
   htmlPreview.removeAttribute("srcdoc")
@@ -1438,8 +1512,5 @@ function showIoOnSmallScreens(): void {
   ) {
     return
   }
-  const tab = document.querySelector<HTMLButtonElement>(
-    '[data-panel-target="io"]'
-  )
-  tab?.click()
+  mobilePanels.show("io")
 }

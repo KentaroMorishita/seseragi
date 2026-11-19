@@ -7,7 +7,8 @@ import {
 const WORKSPACE_RATIO_KEY = "seseragi.playground.workspace-ratio"
 const IO_RATIO_KEY = "seseragi.playground.io-ratio"
 
-const DEFAULT_WORKSPACE_RATIO = 0.68
+// コード 1.25 : 出力 1（DESIGN.md「7. レイアウトと画面幅」）
+const DEFAULT_WORKSPACE_RATIO = 0.55
 const DEFAULT_IO_RATIO = 0.34
 const KEYBOARD_STEP = 0.025
 

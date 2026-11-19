@@ -2675,10 +2675,15 @@ describe("Playground sample catalog", () => {
     ).text()
 
     expect(html).toContain('id="sample-browser-button"')
-    expect(html).toContain('aria-label="Workspaceとsampleを選ぶ"')
-    expect(html).toContain('id="surface-switcher-button"')
-    expect(html).toContain('href="./tour/" role="menuitem"')
-    expect(html).toContain('class="workspace-editor-chrome"')
+    expect(html).toContain('aria-label="Choose an example"')
+    expect(html).toContain('class="ui-view-switch pg-views"')
+    expect(html).toContain('<a href="./tour/">')
+    expect(html).toContain('class="ui-card-head pg-code-head"')
+    // Search の入口（⌘K）は、例の一覧を開く
+    expect(html).toContain('id="search-button"')
+    expect(main).toContain(
+      'searchButton.addEventListener("click", () => sampleBrowserButton.click())'
+    )
     expect(html).toContain("順序を持つ学習はTour")
     expect(html).toContain("Minimal / GuidedはWeb UI例の説明量")
     expect(html).not.toContain('id="sample-browser-learn-tab"')
@@ -3314,14 +3319,19 @@ fails dom.DomRuntimeError<Never> =
     expect(html).toContain('sandbox="allow-scripts allow-forms"')
     expect(html).toContain('referrerpolicy="no-referrer"')
     expect(main).toContain(
-      "createPreviewDocument(html, executionSettings.allowed())"
+      "previewLinks.staticDocument(html, executionSettings.allowed())"
     )
+    expect(main).toContain("createDocument: createPreviewDocument")
     expect(main).toContain("startIsolatedProject(htmlPreview")
     expect(main).not.toContain("startGeneratedProject(")
     expect(main).toContain("runtime-preview.html")
     expect(main).not.toContain("document.head.replaceChildren")
     expect(runtimePreview).toContain("Seseragi Runtime Preview")
-    expect(previewDocument).toContain("script-src 'none'")
+    // Scripts stay off unless the shell asks for its own link script (#1375).
+    expect(createPreviewDocument("")).toContain("script-src 'none'")
+    expect(createPreviewDocument("", false, "token-1")).toContain(
+      "script-src 'nonce-token-1'"
+    )
     expect(previewDocument).toContain("form-action 'none'")
     expect(createPreviewDocument("", true)).toContain(
       "img-src 'self' https: data: blob:"

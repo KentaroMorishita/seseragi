@@ -37,8 +37,13 @@ test("a match diagnostic stays opaque beside its type hover", async ({
   await expect(diagnostic).toBeVisible()
   await expect(diagnostic).toContainText("SES-T0301")
   await expect(page.locator(".analysis-hover")).toBeVisible()
-  await expect(diagnostic).toHaveCSS("background-color", "rgb(16, 27, 23)")
-  await expect(diagnostic).toHaveCSS("color", "rgb(220, 233, 228)")
+  // The tooltip paints an opaque surface, so the hover beside it never shows through.
+  const paint = await diagnostic.evaluate((element) => {
+    const style = getComputedStyle(element)
+    return { background: style.backgroundColor, color: style.color }
+  })
+  expect(paint.background).toMatch(/^rgb\(\d+, \d+, \d+\)$/)
+  expect(paint.color).not.toBe(paint.background)
   const bounds = await diagnostic.boundingBox()
   expect(bounds?.x).toBeGreaterThanOrEqual(0)
   expect((bounds?.x ?? 0) + (bounds?.width ?? 0)).toBeLessThanOrEqual(393)

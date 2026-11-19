@@ -21,7 +21,7 @@ describe("desktop panel layout", () => {
       new URL("../index.html", import.meta.url)
     ).text()
     const styles = await Bun.file(
-      new URL("../src/styles.css", import.meta.url)
+      new URL("../src/ui/playground.css", import.meta.url)
     ).text()
 
     expect(html).toContain('id="workspace-resizer"')
@@ -31,30 +31,40 @@ describe("desktop panel layout", () => {
     expect(html).toContain('role="toolbar"')
     expect(html).toContain('id="reset-sample-button"')
     expect(html).toContain('id="format-source-button"')
-    expect(html).toContain('class="workspace-editor-chrome"')
+    expect(html).toContain('class="ui-card-head pg-code-head"')
     expect(html.indexOf('id="format-source-button"')).toBeGreaterThan(
-      html.indexOf('class="workspace-editor-chrome"')
+      html.indexOf('class="ui-card-head pg-code-head"')
+    )
+    expect(html.indexOf('id="format-source-button"')).toBeLessThan(
+      html.indexOf('id="code-workspace"')
     )
     expect(html).toContain('id="stdin-toggle-button"')
     expect(html.indexOf('id="stdin-toggle-button"')).toBeGreaterThan(
       html.indexOf('id="output-section"')
     )
-    expect(styles).toMatch(/\.workspace \{[\s\S]*?grid-row: 3;/)
-    expect(styles).toMatch(/footer \{[\s\S]*?grid-row: 4;/)
+    // 上のバー・共有リンクの知らせ・本体・下の帯。本体だけが伸び、本体は 3 段目に固定する
+    expect(styles).toMatch(
+      /\.pg-shell \{[\s\S]*?grid-template-rows: var\(--top-h\) auto minmax\(0, 1fr\) auto;/
+    )
+    expect(styles).toMatch(/\.pg-stage \{\s*grid-row: 3;/)
+    // コード・流れ・出力の三列。コードの幅は workspace-resizer が動かす
+    expect(styles).toMatch(
+      /\.pg-stage \{[\s\S]*?min\(calc\(var\(--editor-panel-ratio\) - 52px\), calc\(100% - 404px\)\)\s*\)\s*104px minmax\(300px, 1fr\)/
+    )
   })
 
   test("locks the shell and scrolls only inside editor and output surfaces", async () => {
     const styles = await Bun.file(
-      new URL("../src/styles.css", import.meta.url)
+      new URL("../src/ui/playground.css", import.meta.url)
     ).text()
 
     expect(styles).toMatch(
       /html,\s*body \{[\s\S]*?height: 100%;[\s\S]*?overflow: hidden;/
     )
     expect(styles).toMatch(
-      /\.app-shell \{[\s\S]*?height: 100dvh;[\s\S]*?overflow: hidden;/
+      /\.pg-shell \{[\s\S]*?height: 100dvh;[\s\S]*?overflow: hidden;/
     )
-    expect(styles).toMatch(/\.workspace \{[\s\S]*?overflow: hidden;/)
+    expect(styles).toMatch(/\.pg-stage \{[\s\S]*?overflow: hidden;/)
     expect(styles).toMatch(
       /\.editor-host \.cm-scroller \{[\s\S]*?overflow: auto;/
     )

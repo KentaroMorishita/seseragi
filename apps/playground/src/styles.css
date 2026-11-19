@@ -2594,3 +2594,18 @@ footer a {
     max-height: 30dvh;
   }
 }
+
+/* Preview の中の外部リンクを新しいタブで開いたときの知らせ（#1375） */
+.preview-link-notice {
+  margin: 0;
+  padding: 6px 14px;
+  border-bottom: 1px solid #1a2a25;
+  background: #101c18;
+  color: #b8cbc3;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.preview-link-notice a {
+  color: #7ed6ad;
+}
