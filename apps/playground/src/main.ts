@@ -45,6 +45,7 @@ import {
   isPreviewNavigationCancellation,
   previewNavigationCancelled,
 } from "./runtime/preview-navigation"
+import { summarizeRunTiming } from "./runtime/run-timing"
 import { discoverGroups, samples } from "./samples"
 import { createCompatibilityView } from "./ui/compatibility-report"
 import { connectInteropInspector } from "./ui/interop-inspector"
@@ -83,7 +84,8 @@ import { connectOverflowMenu } from "./ui/overflow-menu"
 import { connectPanelLayout } from "./ui/panel-layout"
 import { connectPreviewFullscreen } from "./ui/preview-fullscreen"
 import { createReferenceCard } from "./ui/reference-card"
-import { renderRunStatus } from "./ui/run-status"
+import { type RunOutcome, renderRunStatus } from "./ui/run-status"
+import { connectRunTimingPanel } from "./ui/run-timing-panel"
 import { connectSampleGuide } from "./ui/sample-guide"
 import { exampleEntries, lessonEntries } from "./ui/search-index"
 import { connectSearchPalette, type SearchCommand } from "./ui/search-palette"
@@ -189,6 +191,10 @@ const themeSystemButton = requiredElement(
   HTMLButtonElement
 )
 const runStatus = requiredElement("#run-status", HTMLElement)
+const runTimingPanel = connectRunTimingPanel(
+  runStatus,
+  requiredElement("#run-timing", HTMLElement)
+)
 const explorerToggleButton = requiredElement(
   "#explorer-toggle-button",
   HTMLButtonElement
@@ -752,7 +758,7 @@ clearOutputButton.addEventListener("click", () => {
   output.textContent = ""
   clearHtmlPreview()
   chooseOutputMode("text")
-  renderRunStatus(runStatus, { kind: "idle" })
+  showRunStatus({ kind: "idle" })
   setStatus("ready", "Output cleared")
 })
 showTextOutputButton.addEventListener("click", () => closeInteractivePreview())
@@ -996,7 +1002,7 @@ function loadSample(
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
   showTextOutput("Run を押すと、結果がここに出ます。")
-  renderRunStatus(runStatus, { kind: "idle" })
+  showRunStatus({ kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
   return true
@@ -1036,7 +1042,7 @@ function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
   showTextOutput("空の main.ssrg です。コードを書いて Run を押してください。")
-  renderRunStatus(runStatus, { kind: "idle" })
+  showRunStatus({ kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
   return true
@@ -1325,7 +1331,7 @@ async function run(): Promise<void> {
     request = runnableWorkspaceProjectRequest(workspaceState)
   } catch (error) {
     showTextOutput(error instanceof Error ? error.message : String(error))
-    renderRunStatus(runStatus, { kind: "failed" })
+    showRunStatus({ kind: "failed" })
     setStatus("error", "Entry required")
     showIoOnSmallScreens()
     return
@@ -1346,17 +1352,19 @@ async function run(): Promise<void> {
   activeRunAnalysisRevision = requestedAnalysisRevision
   runButton.disabled = true
   showTextOutput("Compiling…")
-  renderRunStatus(runStatus, { kind: "running" })
+  showRunStatus({ kind: "running" })
   setStatus("running", "Compiling…")
 
   try {
+    const compileStartedAt = performance.now()
     const compiled = await compileProject(request)
+    const compileMilliseconds = performance.now() - compileStartedAt
     if (revision !== runRevision) return
     if (
       !workspaceProjectIsCurrent(requestedRevision) ||
       JSON.stringify(workspaceState.files) !== runtimeRevision
     ) {
-      renderRunStatus(runStatus, { kind: "idle" })
+      showRunStatus({ kind: "idle" })
       setStatus("ready", "Project changed")
       return
     }
@@ -1368,7 +1376,7 @@ async function run(): Promise<void> {
     setActiveEditorDiagnostics(diagnostics)
     if (compiled.status === "failure") {
       showWorkspaceDiagnostics(diagnostics)
-      renderRunStatus(runStatus, {
+      showRunStatus({
         kind: "diagnostics",
         count: diagnostics.length,
       })
@@ -1380,7 +1388,7 @@ async function run(): Promise<void> {
       showTextOutput(
         compiled.entry.error ?? "Compile succeeded. No executable main found."
       )
-      renderRunStatus(runStatus, { kind: "idle" })
+      showRunStatus({ kind: "idle" })
       setStatus("ready", "Compile succeeded")
       showIoOnSmallScreens()
       return
@@ -1406,7 +1414,7 @@ async function run(): Promise<void> {
     ) {
       clearHtmlPreview()
       setOutputMode("text")
-      renderRunStatus(runStatus, { kind: "idle" })
+      showRunStatus({ kind: "idle" })
       setStatus("ready", "Project changed")
       return
     }
@@ -1449,7 +1457,7 @@ async function run(): Promise<void> {
         output.className = "output-text"
         output.textContent = "Interactive preview is running."
         setOutputMode("html")
-        renderRunStatus(runStatus, { kind: "interactive" })
+        showRunStatus({ kind: "interactive" })
         setStatus("success", "Interactive")
         showIoOnSmallScreens()
       }
@@ -1459,9 +1467,6 @@ async function run(): Promise<void> {
       return
     }
     activeExecution = execution
-    // チップに出すのはプログラムの実行にかかった時間。コンパイルと、
-    // 実行環境の準備の時間は含めない。
-    const startedAt = performance.now()
     void execution.completion.then(
       (completion) => {
         if (revision !== runRevision || activeExecution !== execution) return
@@ -1472,9 +1477,13 @@ async function run(): Promise<void> {
           return
         }
         showExecutionOutput(completion.result.stdout)
-        renderRunStatus(runStatus, {
+        // チップの数字は main の実行時間。実行の準備と後片付けは内訳で見せる
+        showRunStatus({
           kind: "completed",
-          milliseconds: performance.now() - startedAt,
+          timing:
+            completion.timing === undefined
+              ? undefined
+              : summarizeRunTiming(completion.timing, compileMilliseconds),
         })
         setStatus("success", "Completed")
         showIoOnSmallScreens()
@@ -1483,7 +1492,7 @@ async function run(): Promise<void> {
         if (revision !== runRevision || activeExecution !== execution) return
         activeExecution = undefined
         showTextOutput(error instanceof Error ? error.message : String(error))
-        renderRunStatus(runStatus, { kind: "failed" })
+        showRunStatus({ kind: "failed" })
         setStatus("error", "Execution failed")
         showIoOnSmallScreens()
       }
@@ -1495,12 +1504,12 @@ async function run(): Promise<void> {
       !workspaceProjectIsCurrent(requestedRevision) ||
       JSON.stringify(workspaceState.files) !== runtimeRevision
     ) {
-      renderRunStatus(runStatus, { kind: "idle" })
+      showRunStatus({ kind: "idle" })
       setStatus("ready", "Project changed")
       return
     }
     showTextOutput(error instanceof Error ? error.message : String(error))
-    renderRunStatus(runStatus, { kind: "failed" })
+    showRunStatus({ kind: "failed" })
     setStatus("error", "Execution failed")
     showIoOnSmallScreens()
   } finally {
@@ -1515,7 +1524,7 @@ function cancelActiveExecution(): void {
   // 実行中（コンパイル中、実行中、対話のプレビューが動いている）に取り消したときだけ、
   // チップを空に戻す。終わった実行の結果（✓ 18 ms など）は、編集しても残す。
   const wasActive = runButton.disabled || activeExecution !== undefined
-  if (wasActive) renderRunStatus(runStatus, { kind: "idle" })
+  if (wasActive) showRunStatus({ kind: "idle" })
   runRevision += 1
   activePreviewPreparation?.abort()
   activePreviewPreparation = undefined
@@ -1693,6 +1702,14 @@ function showIoOnSmallScreens(): void {
     return
   }
   mobilePanels.show("io")
+}
+
+// Output の状態のチップと、チップから開く実行時間の内訳をそろえて切り替える
+function showRunStatus(outcome: RunOutcome): void {
+  renderRunStatus(runStatus, outcome)
+  runTimingPanel.update(
+    outcome.kind === "completed" ? outcome.timing : undefined
+  )
 }
 
 // 下の帯の状態の言葉。Output の Problems と同じ言い方にする（DESIGN.md「画面の言葉」）。

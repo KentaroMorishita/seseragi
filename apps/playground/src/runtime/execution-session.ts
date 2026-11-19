@@ -5,14 +5,16 @@ import {
   type BrowserExecution,
   startGeneratedProject,
 } from "./browser-execution"
-import type { IsolatedExecutionRequest } from "./isolated-execution"
 import { createExecutionCheckpoint } from "./execution-budget"
+import type { IsolatedExecutionRequest } from "./isolated-execution"
 import { createPreviewHistory } from "./preview-history"
+import { createExecutionTimingMarks } from "./run-timing"
 
 /** Runs only in an opaque frame or its dedicated Worker, never the editor. */
 export function serveExecutionPort(
   port: MessagePort,
-  domDocument?: Document
+  domDocument?: Document,
+  workerScriptStartedAt?: number
 ): void {
   const pending = new Map<
     number,
@@ -76,6 +78,8 @@ export function serveExecutionPort(
     } else if (data?.type === "run" && !started && !cancelled) {
       started = true
       const request = data.request as IsolatedExecutionRequest
+      const timing = createExecutionTimingMarks()
+      timing.workerScriptStartedAt = workerScriptStartedAt
       void (async () => {
         // Navigation is private to this preview. Opaque srcdoc cannot mutate
         // origin history; model the same-origin history inside the frame.
@@ -99,11 +103,13 @@ export function serveExecutionPort(
             onDomMounted: () => {
               if (!cancelled) port.postMessage({ type: "mounted" })
             },
+            timing,
           }
         )
         if (cancelled) await execution.cancel()
         const completion = await execution.completion
-        if (!cancelled) port.postMessage({ type: "completion", completion })
+        if (!cancelled)
+          port.postMessage({ type: "completion", completion, timing })
       })()
         .catch((error: unknown) => {
           if (!cancelled)

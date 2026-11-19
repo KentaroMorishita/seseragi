@@ -1,13 +1,20 @@
 # Change Log
 
-## [Unreleased]
+## [0.61.190] - 2026-11-19
 
 ### Changed
 
-- The Playground is rebuilt on the v2 design (#1358). The top bar keeps the `Playground` / `Tour` switch always visible and adds Search (`⌘K`, which opens the examples for now), a theme switch (System, Light, Dark; the default follows the operating system) and More. Run sits on the flow between the code card and the output card, and the output card shows the outcome as a chip such as `✓ 18 ms` or `1 error`. The bottom bar shows the analysis state, `Saved in this browser`, Docs and GitHub.
+- The Playground is rebuilt on the v2 design (#1358). The top bar keeps the `Playground` / `Tour` switch always visible and adds Search (`⌘K`), a theme switch (System, Light, Dark; the default follows the operating system) and More. Run sits on the flow between the code card and the output card, and the output card shows the outcome as a chip such as `✓ 18 ms` or `1 error`. The bottom bar shows the analysis state, `Saved in this browser`, Docs and GitHub.
 - On a narrow screen the output is a sheet that peeks from the bottom and opens to 70% of the screen after Run, and Run floats at the bottom right. The editor and inputs stay at 16px so iOS does not zoom when they get focus.
+- Search (`⌘K`) finds examples, Tour lessons, the API reference and settings in one list, with a scope switch and keyboard navigation. The Explorer, file tabs, dialogs, Guide and Input use the same v2 look, so no screen mixes the old and new designs.
+- The Tour and the Deep Dive articles are rebuilt on the v2 design (#1359). The Tour uses the Playground's code, Run and output parts, shows the course map as Contents, and switches between Lesson and Code on a phone.
+- The first visit opens the `天気のアドバイス` example, runs it once and points at the line to change. Below the output, Try next chips rewrite the code with a suggested change and run it. Turning Hints off in Settings stops the hint, the chips and the first run. Code restored from an earlier visit is not run automatically.
+- A Run that would reach the network, such as a fetch or an external image, asks once per example before it does (#1371). The answer is remembered in this browser and can be changed in Settings. Until it is allowed, the Preview blocks those requests and the output says why.
+- The run time on the output chip is the time `main` itself took. Tapping the chip opens Run timing, which lists the time of each step: Compile, starting the sandbox and the Worker, TypeScript, `main`, cleanup and messaging.
 - A link clicked inside the Playground or Tour Preview now opens in a new tab (#1375). The Preview frame keeps its sandbox; a clicked `http:` or `https:` link is passed to the page around it, which checks the URL and opens it with `noopener` and `noreferrer`. A link to the Playground itself (`/` or `/tour/`) opens in the same tab. Relative and `#` links are still handled by the program, and links the program clicks by itself or already handled, and schemes such as `javascript:`, are not opened. Because a browser may block a new tab opened this way without saying so, the output briefly shows the link so it can be opened by hand.
-- Every editor feature keeps working in its new place: the Explorer and file tabs, Guide, Format, Input, Console and Preview, full screen, diagnostics and hover, Interop and Convert bindings, and the API reference and Settings, which are in More until Search covers them. The Tour and the Deep Dive keep their current look until they are rebuilt.
+- Every editor feature keeps working in its new place: the Explorer and file tabs, Guide, Format, Input, Console and Preview, full screen, diagnostics and hover, Interop and Convert bindings, and the API reference and Settings.
+- The Discover examples are rewritten around real problems (#1374): `fizzbuzz`, `fibonacci-sequence`, `collections`, `newtypes`, `either-and-monad`, `stdin-greeting` and `project-greeting`, plus the new `expression-calculator` and `json-decode`. Each one solves one problem in its own words and has Try next chips.
+- The Web Showcases are replaced or refreshed: `form-todo` is now a concert hall seat booking (#1378), `project-flow-app` is a travel planner with a route map, a schedule and a shared bill (#1380), and `seseragi-landing-page` highlights its code and has a refreshed page (#1377).
 
 ## [0.61.189] - 2026-11-19
 

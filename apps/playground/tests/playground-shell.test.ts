@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test"
+import type { RunTiming } from "../src/runtime/run-timing"
 import { renderRunStatus, runStatusView } from "../src/ui/run-status"
 import { themeButtonLabel, themeToggleTarget } from "../src/ui/theme-button"
 
@@ -73,6 +74,7 @@ describe("Playground v2 shell", () => {
       "--stdin-panel-ratio",
       "--explorer-width",
       "--tree-level",
+      "--run-timing-share",
       "--safe-area-top",
       "--safe-area-right",
       "--safe-area-bottom",
@@ -102,18 +104,32 @@ describe("run status chip", () => {
       hidden: true,
       text: "",
       tone: "neutral",
+      details: false,
     })
     expect(runStatusView({ kind: "running" }).text).toBe("Running…")
-    expect(runStatusView({ kind: "completed", milliseconds: 17.6 })).toEqual({
+    expect(runStatusView({ kind: "completed", timing: timing(17.6) })).toEqual({
       hidden: false,
       text: "✓ 18 ms",
       tone: "ok",
+      details: true,
+    })
+    // 1 ms に満たない main は 0 ms と出さない
+    expect(runStatusView({ kind: "completed", timing: timing(0.4) }).text).toBe(
+      "✓ <1 ms"
+    )
+    // 時間が分からないときは、数字を出さず、内訳も開かない
+    expect(runStatusView({ kind: "completed" })).toEqual({
+      hidden: false,
+      text: "✓ Completed",
+      tone: "ok",
+      details: false,
     })
     expect(runStatusView({ kind: "interactive" }).text).toBe("✓ Interactive")
     expect(runStatusView({ kind: "diagnostics", count: 1 })).toEqual({
       hidden: false,
       text: "1 error",
       tone: "error",
+      details: false,
     })
     expect(runStatusView({ kind: "diagnostics", count: 3 }).text).toBe(
       "3 errors"
@@ -135,7 +151,7 @@ describe("run status chip", () => {
     expect(element.hidden).toBe(false)
     expect(element.textContent).toBe("2 errors")
     expect([...classes]).toEqual(["ui-status--error"])
-    renderRunStatus(element, { kind: "completed", milliseconds: 3 })
+    renderRunStatus(element, { kind: "completed" })
     expect([...classes]).toEqual(["ui-status--ok"])
     renderRunStatus(element, { kind: "idle" })
     expect(element.hidden).toBe(true)
@@ -150,9 +166,7 @@ describe("run status chip", () => {
     expect(cancel).toContain(
       "const wasActive = runButton.disabled || activeExecution !== undefined"
     )
-    expect(cancel).toContain(
-      'if (wasActive) renderRunStatus(runStatus, { kind: "idle" })'
-    )
+    expect(cancel).toContain('if (wasActive) showRunStatus({ kind: "idle" })')
   })
 
   test("is updated by Run, Clear and switching examples", () => {
@@ -238,3 +252,11 @@ describe("mobile output sheet dragging", () => {
     )
   })
 })
+
+function timing(mainMilliseconds: number): RunTiming {
+  return {
+    mainMilliseconds,
+    totalMilliseconds: mainMilliseconds,
+    phases: [{ id: "main", label: "main", milliseconds: mainMilliseconds }],
+  }
+}

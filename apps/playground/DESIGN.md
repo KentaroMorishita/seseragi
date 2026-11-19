@@ -311,7 +311,7 @@ Playground と Tour の画面を作り直す人のための文書です。見た
 | カード | 枠 1px、角 16px、`--shadow-card`。見出しの高さは 52px |
 | 例の名前（ピッカー） | ブランド色のバッジ、名前、`▾`。押すと Search を例の一覧で開く |
 | Run ボタン | 直径 60px の円。周りにキャンバス色の余白とティールの輪を付ける。下に `Run` と `⌘↵` |
-| 出力 | 行頭にティールの `›`。右上に状態のチップ（成功は緑、失敗は赤） |
+| 出力 | 行頭にティールの `›`。右上に状態のチップ（成功は緑、失敗は赤）。成功のチップの数字は `main` の実行時間で、押すと区間ごとの内訳（Run timing）を開く |
 | Try next | 丸いチップ。押すとコードが書き換わる。最後の一つは Tour への入口（点線） |
 | コーチマーク | 墨色の吹き出し。初回だけ出し、閉じたら二度と出さない |
 | Try it | 手順ごとに丸いチェック。今の手順はティールの輪と薄い面で示す。終わった手順は打ち消し線 |
@@ -406,6 +406,7 @@ UI ラベルの一覧です。日本語の画面と英語の画面で同じ文�
 | Saved in this browser | （なし） | 下の帯の保存の状態 |
 | Hints | （なし） | Settings の案内の切り替え |
 | Hide / Show | （なし） | Try next を畳む・開く |
+| Run timing / Total | （なし） | 状態のチップから開く実行時間の内訳。区間の名前（Compile、Sandbox start、Worker start、Worker load、TypeScript init、Transpile、Evaluate、Environment、main、Cleanup、Messaging）も英語 |
 | Contents | Curriculum | |
 | Current | （なし） | 目次の現在地 |
 | Side trips | （なし） | |
