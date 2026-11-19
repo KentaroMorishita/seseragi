@@ -1,4 +1,4 @@
-// 国土地理院の京都・宇治の実測位置を下敷きに、緯度経度から SVG へ投影するルート地図です。
+// 京都・宇治の実測位置に基づく下絵地図画像の上に、緯度経度投影で地名・ルート線・ピンを重ねる地図コンポーネントです。
 import * as arrays from "std/array"
 import * as floats from "std/float"
 import * as html from "std/web/html"
@@ -14,6 +14,8 @@ import {
   spotsForDay,
 } from "self/trip/model"
 import * as styles from "self/ui/styles"
+
+pub struct MapAssets { centralMapUrl: html.WebUrl, wideMapUrl: html.WebUrl, }
 
 type MapViewport deriving Eq =
   | CentralKyoto
@@ -40,7 +42,7 @@ fn selectViewport spots: Array<Spot> -> MapViewport =
   else
     KyotoUjiWide
 
-// 緯度経度（1/10000 度単位）を各ビューポートの正角図法（420x300）へ投影します。
+// 緯度経度（1/10000 度単位）を下絵画像と同じ正角図法（420x300）へ投影します。
 fn projectSpot viewport: MapViewport -> spot: Spot -> ProjectedPoint = match viewport {
   CentralKyoto -> ProjectedPoint {
     x: (spot.lonE4 - 1357375) * 420 / 625,
@@ -82,288 +84,6 @@ fn curvedRoutePath viewport: MapViewport -> spots: Array<Spot> -> String =
     }
   }
 
-// 京都市中心部（北緯 34.9808〜35.0175・東経 135.7375〜135.8000）の実測ベース地図
-fn centralKyotoTerrain -> Array<svg.Svg<Task<Unit>>> =
-  [svg.rect { x: 0.0, y: 0.0, width: 420.0, height: 300.0, fill: "#f5f1e7", },
-  // 東山の丘陵・等高線（南禅寺〜知恩院〜清水寺〜北花山）
-  svg.path {
-    d: "M 420 0 L 348 0 C 334 38, 326 84, 320 132 C 314 176, 322 214, 354 252 L 420 282 Z",
-    fill: "#e3ead6",
-  }, svg.path {
-    d: "M 420 26 C 378 44, 356 88, 350 138 C 344 178, 360 212, 420 236",
-    fill: "none",
-    stroke: "#cad6b6",
-    strokeWidth: "1",
-  },
-  // 二条城の緑地と堀（北西）
-  svg.rect {
-    x: 54.0,
-    y: 16.0,
-    width: 30.0,
-    height: 22.0,
-    rx: 2.0,
-    fill: "#e5ebd8",
-    stroke: "#bfd9e8",
-    strokeWidth: "2",
-  },
-  // 市街地の碁盤の目（補助街路：三条・松原・六条・大宮・新町・寺町）
-  svg.line {
-    x1: 0.0,
-    y1: 82.0,
-    x2: 268.0,
-    y2: 82.0,
-    stroke: "#e8e0d2",
-    strokeWidth: "0.9",
-  }, svg.line {
-    x1: 0.0,
-    y1: 142.0,
-    x2: 266.0,
-    y2: 142.0,
-    stroke: "#e8e0d2",
-    strokeWidth: "0.9",
-  }, svg.line {
-    x1: 0.0,
-    y1: 200.0,
-    x2: 256.0,
-    y2: 200.0,
-    stroke: "#e8e0d2",
-    strokeWidth: "0.9",
-  }, svg.line {
-    x1: 58.0,
-    y1: 42.0,
-    x2: 58.0,
-    y2: 260.0,
-    stroke: "#e8e0d2",
-    strokeWidth: "0.9",
-  }, svg.line {
-    x1: 124.0,
-    y1: 0.0,
-    x2: 124.0,
-    y2: 258.0,
-    stroke: "#e8e0d2",
-    strokeWidth: "0.9",
-  }, svg.line {
-    x1: 178.0,
-    y1: 0.0,
-    x2: 178.0,
-    y2: 258.0,
-    stroke: "#e8e0d2",
-    strokeWidth: "0.9",
-  },
-  // 主要幹線道路（実測トレース：堀川通・烏丸通・河原町通・東大路通・御池通・四条通・五条通・七条通）
-  svg.path {
-    d: "M 101 0 L 101 300",
-    fill: "none",
-    stroke: "#ffffff",
-    strokeWidth: "2.4",
-  }, svg.path {
-    d: "M 148 0 L 148 258 L 150 300",
-    fill: "none",
-    stroke: "#ffffff",
-    strokeWidth: "3.0",
-  }, svg.path {
-    d: "M 212 0 L 212 112 L 198 168 L 184 228 L 184 300",
-    fill: "none",
-    stroke: "#ffffff",
-    strokeWidth: "2.4",
-  }, svg.path {
-    d: "M 274 0 L 268 112 L 264 178 L 254 228 L 254 300",
-    fill: "none",
-    stroke: "#ffffff",
-    strokeWidth: "2.4",
-  }, svg.path {
-    d: "M 0 56 L 236 56 L 274 66 L 348 56",
-    fill: "none",
-    stroke: "#ffffff",
-    strokeWidth: "2.4",
-  }, svg.path {
-    d: "M 0 112 L 270 112",
-    fill: "none",
-    stroke: "#ffffff",
-    strokeWidth: "3.0",
-  }, svg.path {
-    d: "M 0 172 L 204 172 L 264 188 L 318 222 L 420 242",
-    fill: "none",
-    stroke: "#ffffff",
-    strokeWidth: "2.8",
-  }, svg.path {
-    d: "M 0 228 L 254 228",
-    fill: "none",
-    stroke: "#ffffff",
-    strokeWidth: "2.2",
-  },
-  // JR 東海道本線・新幹線（京都駅を通る実測カーブ）
-  svg.path {
-    d: "M 0 284 L 74 260 L 143 262 L 230 258 L 316 264 L 420 294",
-    fill: "none",
-    stroke: "#a7b4bf",
-    strokeWidth: "1.8",
-    strokeDasharray: "4 3",
-  },
-  // 琵琶湖疏水（鴨川から岡崎・南禅寺へ）
-  svg.path {
-    d: "M 228 14 L 286 14 L 286 45 L 338 45 L 352 24 L 364 0",
-    fill: "none",
-    stroke: "#bfd9e8",
-    strokeWidth: "3.2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-  },
-  // 鴨川（実測の緩やかな S 字カーブ）
-  svg.path {
-    d: "M 227 0 L 228 58 L 227 112 C 221 134, 211 154, 204 172 C 199 194, 198 220, 200 242 C 204 264, 210 282, 215 300",
-    fill: "none",
-    stroke: "#cfe3ee",
-    strokeWidth: "12.5",
-    strokeLinecap: "round",
-  }, svg.path {
-    d: "M 227 0 L 228 58 L 227 112 C 221 134, 211 154, 204 172 C 199 194, 198 220, 200 242 C 204 264, 210 282, 215 300",
-    fill: "none",
-    stroke: "#b2d2e5",
-    strokeWidth: "6.5",
-    strokeLinecap: "round",
-  },
-  // 四条大橋・五条大橋・七条大橋
-  svg.line {
-    x1: 218.0,
-    y1: 112.0,
-    x2: 236.0,
-    y2: 112.0,
-    stroke: "#ffffff",
-    strokeWidth: "3.4",
-  }, svg.line {
-    x1: 195.0,
-    y1: 172.0,
-    x2: 213.0,
-    y2: 172.0,
-    stroke: "#ffffff",
-    strokeWidth: "3.2",
-  }, svg.line {
-    x1: 191.0,
-    y1: 228.0,
-    x2: 209.0,
-    y2: 228.0,
-    stroke: "#ffffff",
-    strokeWidth: "2.8",
-  },
-]
-
-// 広域（京都・嵐山・伏見・宇治：北緯 34.8780〜35.0250・東経 135.6500〜135.8500）の実測ベース地図
-fn kyotoUjiWideTerrain -> Array<svg.Svg<Task<Unit>>> =
-  [svg.rect { x: 0.0, y: 0.0, width: 420.0, height: 300.0, fill: "#f5f1e7", },
-  // 西山・嵐山の山並み
-  svg.path {
-    d: "M 0 0 L 58 0 C 52 24, 42 54, 34 86 C 24 128, 12 162, 0 184 Z",
-    fill: "#e5ebd8",
-  },
-  // 東山〜醍醐〜宇治東部の山並み
-  svg.path {
-    d: "M 420 0 L 306 0 C 304 42, 312 88, 326 144 C 338 196, 356 244, 386 300 L 420 300 Z",
-    fill: "#e3ead6",
-  },
-  // 京都市街の繊細な碁盤の目
-  svg.line {
-    x1: 204.0,
-    y1: 44.0,
-    x2: 274.0,
-    y2: 44.0,
-    stroke: "#e8e0d2",
-    strokeWidth: "0.9",
-  }, svg.line {
-    x1: 204.0,
-    y1: 62.0,
-    x2: 274.0,
-    y2: 62.0,
-    stroke: "#e8e0d2",
-    strokeWidth: "0.9",
-  }, svg.line {
-    x1: 229.0,
-    y1: 12.0,
-    x2: 229.0,
-    y2: 92.0,
-    stroke: "#ffffff",
-    strokeWidth: "1.8",
-  },
-  // JR 東海道本線（山崎〜京都駅〜山科）
-  svg.path {
-    d: "M 106 300 L 146 210 L 176 142 L 210 92 L 229 80 L 316 86 L 420 78",
-    fill: "none",
-    stroke: "#aebac4",
-    strokeWidth: "1.5",
-    strokeDasharray: "4 3",
-  },
-  // JR 奈良線（京都駅〜伏見稲荷〜六地蔵〜宇治）
-  svg.path {
-    d: "M 229 80 L 252 84 L 255 118 L 266 172 L 300 198 L 320 258 L 326 274 L 318 300",
-    fill: "none",
-    stroke: "#9eabba",
-    strokeWidth: "1.6",
-    strokeDasharray: "3 3",
-  },
-  // 桂川（嵐山〜桂〜鴨川合流〜三川合流）
-  svg.path {
-    d: "M 16 0 C 30 14, 46 22, 60 28 C 72 40, 84 52, 114 66 C 128 84, 132 104, 146 120 C 166 142, 184 162, 186 184 C 182 204, 148 238, 104 272 L 64 300",
-    fill: "none",
-    stroke: "#d3e5ef",
-    strokeWidth: "9",
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-  }, svg.path {
-    d: "M 16 0 C 30 14, 46 22, 60 28 C 72 40, 84 52, 114 66 C 128 84, 132 104, 146 120 C 166 142, 184 162, 186 184 C 182 204, 148 238, 104 272 L 64 300",
-    fill: "none",
-    stroke: "#b8d6e7",
-    strokeWidth: "4.6",
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-  },
-  // 鴨川（市街東岸〜伏見西〜桂川へ合流）
-  svg.path {
-    d: "M 254 0 C 254 24, 253 46, 246 80 C 240 112, 232 138, 212 168 C 198 186, 188 196, 178 202",
-    fill: "none",
-    stroke: "#d3e5ef",
-    strokeWidth: "8.5",
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-  }, svg.path {
-    d: "M 254 0 C 254 24, 253 46, 246 80 C 240 112, 232 138, 212 168 C 198 186, 188 196, 178 202",
-    fill: "none",
-    stroke: "#b4d3e5",
-    strokeWidth: "4.4",
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-  },
-  // 宇治川（宇治〜伏見〜三川合流）
-  svg.path {
-    d: "M 392 300 C 368 292, 344 284, 330 272 C 318 256, 310 232, 300 206 C 282 196, 260 192, 224 202 C 188 214, 146 244, 104 272",
-    fill: "none",
-    stroke: "#cfe3ee",
-    strokeWidth: "10",
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-  }, svg.path {
-    d: "M 392 300 C 368 292, 344 284, 330 272 C 318 256, 310 232, 300 206 C 282 196, 260 192, 224 202 C 188 214, 146 244, 104 272",
-    fill: "none",
-    stroke: "#b2d2e5",
-    strokeWidth: "5.2",
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
-  },
-  // 木津川（南から三川合流へ）
-  svg.path {
-    d: "M 156 300 L 128 282 L 104 272",
-    fill: "none",
-    stroke: "#d3e5ef",
-    strokeWidth: "7.5",
-    strokeLinecap: "round",
-  }, svg.path {
-    d: "M 156 300 L 128 282 L 104 272",
-    fill: "none",
-    stroke: "#b8d6e7",
-    strokeWidth: "3.8",
-    strokeLinecap: "round",
-  },
-]
-
 fn mapChrome scaleWidth: Float -> scaleLabel: String -> Array<svg.Svg<Task<Unit>>> = [
   // 方位記号（左上）
   svg.circle {
@@ -376,7 +96,7 @@ fn mapChrome scaleWidth: Float -> scaleLabel: String -> Array<svg.Svg<Task<Unit>
   }, svg.polygon { points: "22,14 24.8,22 22,20 19.2,22", fill: "#1c3d5a", }, svg.text {
     x: 22.0,
     y: 29.5,
-    fill: "#5c6d7d",
+    fill: "#4a5d6e",
     fontSize: "7px",
     fontWeight: "700",
     textAnchor: "middle",
@@ -390,38 +110,39 @@ fn mapChrome scaleWidth: Float -> scaleLabel: String -> Array<svg.Svg<Task<Unit>
     height: 16.0,
     rx: 4.0,
     fill: "#faf8f4",
-    opacity: 0.9,
+    opacity: 0.92,
   }, svg.line {
     x1: 18.0,
     y1: 285.0,
     x2: 18.0 + scaleWidth,
     y2: 285.0,
-    stroke: "#5c6d7d",
+    stroke: "#4a5d6e",
     strokeWidth: "1.4",
   }, svg.line {
     x1: 18.0,
     y1: 282.0,
     x2: 18.0,
     y2: 286.0,
-    stroke: "#5c6d7d",
+    stroke: "#4a5d6e",
     strokeWidth: "1.4",
   }, svg.line {
     x1: 18.0 + scaleWidth,
     y1: 282.0,
     x2: 18.0 + scaleWidth,
     y2: 286.0,
-    stroke: "#5c6d7d",
+    stroke: "#4a5d6e",
     strokeWidth: "1.4",
   }, svg.text {
     x: 22.0 + scaleWidth,
     y: 286.0,
-    fill: "#5c6d7d",
+    fill: "#4a5d6e",
     fontSize: "8px",
     fontWeight: "600",
     children: scaleLabel,
   },
 ]
 
+// 地名・川名・通り名は下絵画像に含めず、SVG レイヤー側で重ねて描画します。
 fn cartographicLabels viewport: MapViewport -> Array<svg.Svg<Task<Unit>>> =
   match viewport {
     CentralKyoto -> arrays.concat [
@@ -429,53 +150,53 @@ fn cartographicLabels viewport: MapViewport -> Array<svg.Svg<Task<Unit>>> =
         svg.text {
           x: 54.0,
           y: 49.0,
-          fill: "#64785b",
-          fontSize: "8px",
-          fontWeight: "600",
+          fill: "#485e41",
+          fontSize: "8.5px",
+          fontWeight: "700",
           letterSpacing: "0.08em",
           children: "二条城",
         },
         svg.text {
           x: 108.0,
           y: 92.0,
-          fill: "#8f8574",
+          fill: "#6f6554",
           fontSize: "9px",
-          fontWeight: "600",
+          fontWeight: "700",
           letterSpacing: "0.14em",
           children: "中京・四条",
         },
         svg.text {
-          x: 236.0,
+          x: 238.0,
           y: 34.0,
-          fill: "#5b869e",
+          fill: "#3c6c87",
           fontSize: "8.5px",
-          fontWeight: "600",
+          fontWeight: "700",
           letterSpacing: "0.14em",
           children: "鴨川",
         },
         svg.text {
           x: 364.0,
           y: 128.0,
-          fill: "#64785b",
+          fill: "#485e41",
           fontSize: "9.5px",
-          fontWeight: "600",
+          fontWeight: "700",
           letterSpacing: "0.14em",
           children: "東山",
         },
         svg.text {
           x: 154.0,
           y: 204.0,
-          fill: "#998f7e",
+          fill: "#7a705f",
           fontSize: "7.5px",
-          fontWeight: "600",
+          fontWeight: "700",
           children: "烏丸通",
         },
         svg.text {
           x: 42.0,
           y: 166.0,
-          fill: "#998f7e",
+          fill: "#7a705f",
           fontSize: "7.5px",
-          fontWeight: "600",
+          fontWeight: "700",
           children: "五条通",
         },
       ],
@@ -486,60 +207,60 @@ fn cartographicLabels viewport: MapViewport -> Array<svg.Svg<Task<Unit>>> =
         svg.text {
           x: 16.0,
           y: 76.0,
-          fill: "#64785b",
+          fill: "#485e41",
           fontSize: "9px",
-          fontWeight: "600",
+          fontWeight: "700",
           letterSpacing: "0.12em",
           children: "嵐山",
         },
         svg.text {
           x: 184.0,
           y: 24.0,
-          fill: "#8f8574",
+          fill: "#6f6554",
           fontSize: "8.5px",
-          fontWeight: "600",
+          fontWeight: "700",
           letterSpacing: "0.12em",
           children: "京都市街",
         },
         svg.text {
           x: 262.0,
           y: 18.0,
-          fill: "#5b869e",
+          fill: "#3c6c87",
           fontSize: "8px",
-          fontWeight: "600",
+          fontWeight: "700",
           children: "鴨川",
         },
         svg.text {
           x: 112.0,
           y: 118.0,
-          fill: "#5b869e",
+          fill: "#3c6c87",
           fontSize: "8px",
-          fontWeight: "600",
+          fontWeight: "700",
           children: "桂川",
         },
         svg.text {
           x: 276.0,
           y: 136.0,
-          fill: "#8f8574",
+          fill: "#6f6554",
           fontSize: "9px",
-          fontWeight: "600",
+          fontWeight: "700",
           letterSpacing: "0.12em",
           children: "伏見",
         },
         svg.text {
           x: 224.0,
           y: 186.0,
-          fill: "#5b869e",
+          fill: "#3c6c87",
           fontSize: "8px",
-          fontWeight: "600",
+          fontWeight: "700",
           children: "宇治川",
         },
         svg.text {
           x: 364.0,
           y: 264.0,
-          fill: "#64785b",
+          fill: "#485e41",
           fontSize: "9.5px",
-          fontWeight: "600",
+          fontWeight: "700",
           letterSpacing: "0.14em",
           children: "宇治",
         },
@@ -563,7 +284,7 @@ fn routeLayer viewport: MapViewport
           strokeWidth: "6",
           strokeLinecap: "round",
           strokeLinejoin: "round",
-          opacity: 0.85,
+          opacity: 0.88,
         },
         svg.path {
           d: pathData,
@@ -598,13 +319,7 @@ fn pinElements viewport: MapViewport
         let radius = if isFocused then baseRadius + 2.5 else baseRadius
         let halo: Array<svg.Svg<Task<Unit>>> =
           if isFocused then
-            [svg.circle {
-              cx: x,
-              cy: y,
-              r: radius + 6.0,
-              fill: "#d65a31",
-              opacity: 0.18,
-            }]
+            [svg.circle { cx: x, cy: y, r: radius + 6.0, fill: "#d65a31", opacity: 0.2, }]
           else
             []
         let shadow: svg.Svg<Task<Unit>> = svg.circle {
@@ -612,7 +327,7 @@ fn pinElements viewport: MapViewport
           cy: y + 2.0,
           r: radius,
           fill: "#1c3d5a",
-          opacity: 0.18,
+          opacity: 0.2,
         }
         let outer: svg.Svg<Task<Unit>> = svg.circle {
           cx: x,
@@ -708,47 +423,60 @@ fn focusedCalloutLayer viewport: MapViewport
     }
   }
 
-fn mapCanvas spots: Array<Spot> -> focusedId: String -> html.Html<Task<Unit>> = {
-  let viewport = selectViewport spots
-  let terrain = match viewport {
-    CentralKyoto -> centralKyotoTerrain ()
-    KyotoUjiWide -> kyotoUjiWideTerrain ()
-  }
-  let frameBorder: Array<svg.Svg<Task<Unit>>> =
-    [svg.rect {
-      x: 0.5,
-      y: 0.5,
-      width: 419.0,
-      height: 299.0,
-      rx: 12.0,
-      fill: "none",
-      stroke: "#ddd4c5",
-      strokeWidth: "1",
-    }]
-  svg.toHtml (
-    svg.svg {
-      viewBox: "0 0 420 300",
-      width: 420.0,
-      height: 300.0,
-      role: "img",
-      ariaLabel: "京都・宇治の実測位置に基づく旅行ルート地図",
-      style: html.style {
-        display: "block",
-        width: "100%",
-        height: "auto",
-        borderRadius: "12px",
-      },
-      children: arrays.concat [
-        terrain,
-        cartographicLabels viewport,
-        routeLayer viewport spots,
-        pinElements viewport spots focusedId,
-        focusedCalloutLayer viewport spots focusedId,
-        frameBorder,
-      ],
+fn mapCanvas mapAssets: MapAssets
+  -> spots: Array<Spot>
+  -> focusedId: String
+  -> html.Html<Task<Unit>> = {
+    let viewport = selectViewport spots
+    let baseMapUrl = match viewport {
+      CentralKyoto -> mapAssets.centralMapUrl
+      KyotoUjiWide -> mapAssets.wideMapUrl
     }
-  )
-}
+    let basemapImg: html.Html<Task<Unit>> = html.img {
+      src: baseMapUrl,
+      alt: "",
+      style: html.style {
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        display: "block",
+      },
+    }
+    let overlaySvg: html.Html<Task<Unit>> = svg.toHtml (
+      svg.svg {
+        viewBox: "0 0 420 300",
+        width: 420.0,
+        height: 300.0,
+        role: "img",
+        ariaLabel: "京都・宇治の実測位置に基づく旅行ルート地図",
+        style: html.style {
+          position: "relative",
+          display: "block",
+          width: "100%",
+          height: "auto",
+        },
+        children: arrays.concat [
+          cartographicLabels viewport,
+          routeLayer viewport spots,
+          pinElements viewport spots focusedId,
+          focusedCalloutLayer viewport spots focusedId,
+        ],
+      }
+    )
+    html.div {
+      style: html.style {
+        position: "relative",
+        width: "100%",
+        borderRadius: "12px",
+        overflow: "hidden",
+        border: "1px solid #ddd4c5",
+        backgroundColor: "#f5f1e7",
+      },
+      children: [basemapImg, overlaySvg],
+    }
+  }
 
 fn spotJumpChip dispatch: (TripAction -> Task<Unit>)
   -> focusedId: String
@@ -809,7 +537,8 @@ fn spotDetailCard spots: Array<Spot> -> focusedId: String -> html.Html<Task<Unit
     }
   }
 
-pub fn view dispatch: (TripAction -> Task<Unit>)
+pub fn view mapAssets: MapAssets
+  -> dispatch: (TripAction -> Task<Unit>)
   -> state: TripState
   -> html.Html<Task<Unit>> = {
     let daySpots = spotsForDay state.activeDay state.spots
@@ -836,7 +565,7 @@ pub fn view dispatch: (TripAction -> Task<Unit>)
       style: styles.cardStyle (),
       children: [
         heading,
-        mapCanvas daySpots state.focusedSpotId,
+        mapCanvas mapAssets daySpots state.focusedSpotId,
         chipRow,
         spotDetailCard daySpots state.focusedSpotId,
       ],
