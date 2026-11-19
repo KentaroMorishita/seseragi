@@ -654,7 +654,9 @@
 }
 
 .tour-inline-rich-text {
+  box-sizing: border-box;
   min-width: 0;
+  padding-inline-end: 4px;
   overflow-wrap: anywhere;
 }
 
