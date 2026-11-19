@@ -1,0 +1,51 @@
+// HTML and SVG nodes stay trees until a page is written, and custom
+// attributes come from html.attribute.
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+
+fn checked name: String -> value: String -> String = match html.attribute name value {
+  Right _ -> name + ": ok"
+  Left error -> name + ": " + show error
+}
+
+fn doubled depth: Int -> node: html.Html<Unit> -> html.Html<Unit> =
+  if depth == 0 then node else doubled (depth - 1) (html.div { children: [node, node] })
+
+fn sized props: { width: Float } -> svg.Svg<Unit> = svg.rect props
+
+// A top-level scene without a type annotation, used as a child.
+let badge = svg.circle { r: 1.0 }
+
+pub effect fn main = do {
+  println (checked "data-note" "x")
+  println (checked "data-Note" "x")
+  println (checked "data-" "x")
+  println (checked "1bad" "x")
+  println (checked "onclick" "x")
+  println (checked "href" "x")
+  println (checked "srcdoc" "x")
+  println (checked "data-ssrg-x" "x")
+  println (checked "xlink:href" "javascript:alert(1)")
+  println (checked "xlink:href" "/ok")
+  let marks: Array<html.Attribute> = match (html.attribute "data-a" "<&\"'>", html.attribute "aria-label2" "b") {
+    (Right first, Right second) -> [first, second]
+    _ -> []
+  }
+  let page: html.Html<Unit> = html.p { attributes: marks, children: "text" }
+  println (html.renderToString page)
+  let scene: html.Html<Unit> = svg.toHtml (svg.g { attributes: marks, children: [badge] })
+  println (html.renderToString scene)
+  // A subtree used twice at every level is built once, not copied.
+  let leaf: html.Html<Unit> = html.span { children: "x" }
+  let wide = doubled 40 leaf
+  println "built a wide page"
+  println (html.renderToString (doubled 3 leaf))
+  // Values a renderer checks are checked when the page is written.
+  let late = sized { width: 1.0, title: 4 }
+  println "built with a late error"
+  println (html.renderToString (svg.toHtml (svg.rect { width: 1.0, tabIndex: 2.0 })))
+  // Unit is left out and a Char is text, as on TS.
+  println (html.renderToString (svg.toHtml (sized { width: 1.0, tabIndex: (), children: () })))
+  println (html.renderToString (svg.toHtml (sized { width: 1.0, children: '<' })))
+  println (html.renderToString (svg.toHtml (sized { width: 1.0, attributes: () })))
+}

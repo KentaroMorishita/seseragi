@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 8 行目にある `state := 30` を `state := 50` に書き換えて `Run` し、`Output` の `afterOp` が `50`、`afterUpdate` が `62` に変わることを確かめてください。",
+      "instruction": "エディターの `state := 30` を `state := 50` に書き換えて `Run` し、`Output` の `afterOp` が `50`、`afterUpdate` が `62` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

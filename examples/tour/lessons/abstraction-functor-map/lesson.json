@@ -38,7 +38,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 1 行目にある `Score` を `Rank` に、9 行目の `Just 41` を `Just 7` に書き換えて `Run` し、`Output` の両方が `Just Rank 7` に変わることを確かめてください。",
+      "instruction": "エディターの `Score` を `Rank` に、`Just 41` を `Just 7` に書き換えて `Run` し、`Output` の両方が `Just Rank 7` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

@@ -1,0 +1,13 @@
+// Rendering a scene with a number that is not finite is a Defect, after the
+// nodes around it were built without one.
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+
+pub effect fn main = do {
+  let broken: svg.Svg<Unit> = svg.rect { x: 1.0, width: 0.0 / 0.0 }
+  let scene: html.Html<Unit> = svg.toHtml (svg.g { children: [broken] })
+  let page: html.Html<Unit> = html.div { children: [scene] }
+  println "built"
+  println (html.renderToString page)
+  println "unreachable"
+}

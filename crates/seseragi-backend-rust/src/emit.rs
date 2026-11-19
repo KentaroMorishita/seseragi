@@ -82,6 +82,7 @@ mod standard_instances;
 mod standard_values;
 mod stdin;
 mod stream;
+mod svg;
 mod tail;
 mod test;
 mod text;

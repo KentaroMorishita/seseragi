@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 26 行目にある送信ボタンの `\"Add\"` を `\"Save\"` に書き換えて `Run` し、`Output` と `Preview` のボタン表示が変わることを確かめてください。",
+      "instruction": "エディターの送信ボタンの `\"Add\"` を `\"Save\"` に書き換えて `Run` し、`Output` と `Preview` のボタン表示が変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
