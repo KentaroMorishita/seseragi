@@ -87,6 +87,10 @@ Docs are read by people who did not see your work. Write for that reader.
 
 - Add focused Rust tests and execution fixtures for compiler changes.
 - Add Bun tests under `apps/playground/tests` for browser/UI behavior.
+- Add Playwright tests under `apps/playground/e2e` for behavior that needs a
+  real browser; `bun run test:e2e` runs them. Do not add screenshot
+  comparisons or baseline images. Check how a UI change looks on the PR's
+  preview in a browser instead.
 - Choose the narrowest scoped check matching the diff before pushing; do not
   run the full gate as an unconditional safety step. See
   `docs/SCOPED_CHECKS.md` for the matrix and the #201 queue contract.
