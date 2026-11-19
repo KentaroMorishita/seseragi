@@ -30,8 +30,8 @@ pub struct Spot deriving Eq, Show {
   category: SpotCategory,
   stayMinutes: Int,
   costYen: Int,
-  mapX: Int,
-  mapY: Int,
+  latE4: Int,
+  lonE4: Int,
   note: String,
 }
 
@@ -94,8 +94,8 @@ pub fn initialSpots -> Array<Spot> = [
     category: Transit,
     stayMinutes: 20,
     costYen: 1400,
-    mapX: 186,
-    mapY: 184,
+    latE4: 349858,
+    lonE4: 1357588,
     note: "コインロッカーに荷物を預けて出発",
   },
   Spot {
@@ -106,8 +106,8 @@ pub fn initialSpots -> Array<Spot> = [
     category: Sightseeing,
     stayMinutes: 90,
     costYen: 2000,
-    mapX: 330,
-    mapY: 144,
+    latE4: 349949,
+    lonE4: 1357850,
     note: "朝の澄んだ時間帯に舞台から市街を一望",
   },
   Spot {
@@ -118,8 +118,8 @@ pub fn initialSpots -> Array<Spot> = [
     category: Dining,
     stayMinutes: 60,
     costYen: 5400,
-    mapX: 192,
-    mapY: 96,
+    latE4: 350050,
+    lonE4: 1357649,
     note: "出汁巻き・湯葉・季節の総菜を分け合う",
   },
   Spot {
@@ -130,8 +130,8 @@ pub fn initialSpots -> Array<Spot> = [
     category: Dining,
     stayMinutes: 45,
     costYen: 3200,
-    mapX: 228,
-    mapY: 74,
+    latE4: 350085,
+    lonE4: 1357705,
     note: "川床を眺めながら夕暮れまで休憩",
   },
   Spot {
@@ -142,8 +142,8 @@ pub fn initialSpots -> Array<Spot> = [
     category: Lodging,
     stayMinutes: 60,
     costYen: 36000,
-    mapX: 284,
-    mapY: 96,
+    latE4: 350037,
+    lonE4: 1357751,
     note: "チェックイン後、花見小路を散策",
   },
   Spot {
@@ -154,8 +154,8 @@ pub fn initialSpots -> Array<Spot> = [
     category: Sightseeing,
     stayMinutes: 80,
     costYen: 1200,
-    mapX: 244,
-    mapY: 218,
+    latE4: 349671,
+    lonE4: 1357727,
     note: "千本鳥居を四ツ辻まで歩いて折り返し",
   },
   Spot {
@@ -166,8 +166,8 @@ pub fn initialSpots -> Array<Spot> = [
     category: Sightseeing,
     stayMinutes: 90,
     costYen: 2800,
-    mapX: 302,
-    mapY: 268,
+    latE4: 348893,
+    lonE4: 1358077,
     note: "庭園と鳳翔館をじっくり見学",
   },
   Spot {
@@ -178,8 +178,8 @@ pub fn initialSpots -> Array<Spot> = [
     category: Dining,
     stayMinutes: 50,
     costYen: 4200,
-    mapX: 352,
-    mapY: 254,
+    latE4: 348968,
+    lonE4: 1358115,
     note: "挽きたて抹茶パフェと土産を購入して帰路へ",
   },
 ]
@@ -193,8 +193,8 @@ pub fn presetSpots -> Array<Spot> = [
     category: Sightseeing,
     stayMinutes: 60,
     costYen: 1600,
-    mapX: 334,
-    mapY: 58,
+    latE4: 350112,
+    lonE4: 1357936,
     note: "赤レンガの水路閣と静かな庭園を散策",
   },
   Spot {
@@ -205,8 +205,8 @@ pub fn presetSpots -> Array<Spot> = [
     category: Sightseeing,
     stayMinutes: 90,
     costYen: 2400,
-    mapX: 64,
-    mapY: 84,
+    latE4: 350129,
+    lonE4: 1356777,
     note: "竹林の小径から川沿いをゆったり歩く",
   },
 ]
@@ -228,10 +228,11 @@ pub fn spotsForDay day: DayFilter -> spots: Array<Spot> -> Array<Spot> = {
 
 fn absDiff a: Int -> b: Int -> Int = if a >= b then a - b else b - a
 
-// 地図上の座標差から概算の移動時間（分）を算出します。
+// 実地の緯度経度差（1/10000 度単位）から概算の移動時間（分）を算出します。
 pub fn segmentMinutes fromSpot: Spot -> toSpot: Spot -> Int = {
-  let distance = absDiff fromSpot.mapX toSpot.mapX + absDiff fromSpot.mapY toSpot.mapY
-  let raw = distance / 11 + 6
+  let dLatMeters = absDiff fromSpot.latE4 toSpot.latE4 * 11
+  let dLonMeters = absDiff fromSpot.lonE4 toSpot.lonE4 * 9
+  let raw = (dLatMeters + dLonMeters) / 280 + 7
   if raw < 8 then 8 else raw
 }
 
