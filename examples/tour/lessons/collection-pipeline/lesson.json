@@ -3,19 +3,19 @@
   "id": "collection-pipeline",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "`Array` と `Range` の作り方や、`arrays.get` による安全な要素の取り出し方を学びました。ここでは複数の処理をパイプラインでつないで集計します。",
+    "prerequisite": "`Array` と `Range` の作り方を学びました。ここでは Step 04 の部分適用と Step 05 のパイプライン `|>` を使い、配列の絞り込み（`arrays.filter`）・各要素の変換（`map`）・1 つの値への集計（`reduce`）を 1 段ずつ組み合わせてみます。",
     "walkthrough": [
       {
         "heading": "絞り込み、変換、集計をパイプラインでつなぐ",
-        "body": "`values` は `|>` に沿って上から順に流れます。`arrays.filter even` で偶数だけを残し、`map double` でそれぞれ 2 倍にして、`reduce 0 (+)` で合計します。",
+        "body": "初期コードの `numbers = [1, 2, 3, 4, 5, 6]` が `|>` に沿って上から順に流れます。`arrays.filter even` で偶数だけの `[2, 4, 6]` に絞り、`map double` で 2 倍の `[4, 8, 12]` に変え、`reduce 0 (+)` で初期値 `0` から順に足し合わせて `24` を得ます（演習で書き換える前の初期コードの例です）。",
         "sourceRange": {
           "startLine": 6,
           "endLine": 10
         }
       },
       {
-        "heading": "処理関数を先に渡し、配列を最後に流す",
-        "body": "`arrays.filter`・`map`・`reduce` は判定や変換の関数を先に受け取り、対象の配列を最後の引数で受け取るため、部分適用のまま `|>` に並べられます。",
+        "heading": "部分適用と (+) で配列を最後の引数へ流す",
+        "body": "`arrays.filter`・`map`・`reduce` は条件や変換の関数を先に受け取り、対象の配列を最後の引数で受け取る設計です。そのため Step 04 の部分適用だけで `arrays.filter even` や `reduce 0 (+)` を作り、そのまま `|>` に並べられます。`(+)` は足し算演算子 `+` を 2 引数の関数として渡す書き方です。",
         "sourceRange": {
           "startLine": 8,
           "endLine": 10
@@ -23,7 +23,7 @@
       },
       {
         "heading": "演算子表記でも各要素を変換できる",
-        "body": "`double <$> numbers` は `map double numbers` と同じ要素変換です。演算子の左に関数、右に配列を置いて書けます。",
+        "body": "初期コードの `double <$> numbers` は `map double numbers` と同じ要素変換の短縮表記です。演算子の左に関数、右に配列を置いて書けます。",
         "sourceRange": {
           "startLine": 13,
           "endLine": 13
@@ -34,7 +34,7 @@
       {
         "kind": "api",
         "name": "filter、map、reduce の連携",
-        "body": "配列を最後の引数に取る関数へ条件や変換の関数を先に渡し、`|>` で絞り込み・変換・集計を順に組み合わせます。"
+        "body": "配列を最後の引数に取る `arrays.filter`（絞り込み）・`map`（各要素の変換）・`reduce`（初期値から順に集計）に条件や変換関数を先に渡し、`|>` で順に組み合わせます。"
       },
       {
         "kind": "syntax",
@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの `numbers` を `[1, 2, 3, 4]` に、`reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
+      "instruction": "`let numbers = [1, 2, 3, 4, 5, 6]` を `let numbers = [1, 2, 3, 4]` に、`|> reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

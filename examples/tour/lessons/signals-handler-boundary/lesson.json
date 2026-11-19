@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 11 行目と 12 行目にある `20` と `22` をそれぞれ `30` と `15` に書き換えて `Run` し、`Output` が `total: 45` と `observed: 3 -> 45` に変わることを確かめてください。",
+      "instruction": "エディターの `signals.planSet 20 left` を `signals.planSet 30 left` に、`signals.planSet 22 right` を `signals.planSet 15 right` に書き換えて `Run` し、`Output` が `total: 45` と `observed: 3 -> 45` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

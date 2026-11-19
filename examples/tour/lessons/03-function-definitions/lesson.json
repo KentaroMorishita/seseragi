@@ -7,7 +7,7 @@
     "walkthrough": [
       {
         "heading": "fn で関数を定義し、引数と戻り型を読む",
-        "body": "1 行目の `fn add` は副作用を持たない純粋な関数を定義します。`left: Int -> right: Int -> Int` は、`Int` 型の引数 `left` と `right` を受け取り、最後の `->` の後にある `Int` 型を返すという意味です。",
+        "body": "`fn add` は副作用を持たない純粋な関数を定義します。`left: Int -> right: Int -> Int` は、`Int` 型の引数 `left` と `right` を受け取り、最後の `->` の後にある `Int` 型を返すという意味です。",
         "sourceRange": {
           "startLine": 1,
           "endLine": 1
@@ -15,7 +15,7 @@
       },
       {
         "heading": "空白区切りの呼び出しと部分適用",
-        "body": "4 行目の `add 10 20` のように、関数名と引数を空白で並べて呼び出します。3 行目の `add 10` のように 1 つ目の引数だけを渡すと、残りの引数を受け取る関数 `add10` ができ、5 行目で `add10 22` のように呼び出せます。",
+        "body": "初期コードの `add 10 20` のように、関数名と引数を空白で並べて呼び出します。`let add10 = add 10` のように 1 つ目の引数だけを渡すと、残りの引数を受け取る関数 `add10` ができ、`add10 22` のように呼び出せます（演習で書き換える前の初期コードの例です）。",
         "sourceRange": {
           "startLine": 3,
           "endLine": 5
@@ -23,7 +23,7 @@
       },
       {
         "heading": "計算した結果を出力する",
-        "body": "純粋な関数 `add` が返した値（`30` と `32`）を、`main` の中でテンプレート文字列に埋め込んで `Output` へ出力しています。",
+        "body": "初期コードでは、純粋な関数 `add` が返した値（`30` と `32`）を `main` の中でテンプレート文字列に埋め込んで `Output` へ出力しています（書き換え後は変更した値に変わります）。",
         "sourceRange": {
           "startLine": 7,
           "endLine": 7
@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "3 行目の `let add10 = add 10` を `let add20 = add 20` に、5 行目の `add10 22` を `add20 22` に書き換えて `Run` し、`second: 42` に変わることを確かめてください。",
+      "instruction": "`let add10 = add 10` を `let add20 = add 20` に、`add10 22` を `add20 22` に書き換えて `Run` し、`second: 42` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

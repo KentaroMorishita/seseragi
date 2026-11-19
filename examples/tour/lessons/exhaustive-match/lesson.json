@@ -15,7 +15,7 @@
       },
       {
         "heading": "新しいケースを増やしても漏れに気付ける",
-        "body": "あとから `Choice` に新しいコンストラクターを追加したときも、対応し忘れた `match` をコンパイラがすべて検出してくれるため、実行時の取りこぼしを心配せずに変更できます。",
+        "body": "あとから `Choice` に新しいコンストラクターを追加したときも、対応し忘れた `match` をコンパイラが実行前にすべてエラーで教えてくれます。そのため実行時に予期しないケースを見落とす心配なく変更できます。",
         "sourceRange": {
           "startLine": 12,
           "endLine": 15
@@ -30,7 +30,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの14行目にある `choose Two` を `choose Three` に書き換えて `Run` し、`Output` の2行目が `3` に変わることを確かめてください。",
+      "instruction": "まず `match value` の中から `Three -> 3` の 1 行を消して `Run` し、`Problems` に網羅性エラー（`missing patterns: Three`）が出ることを確かめてください。次に `Three -> 3` を戻したうえで、`main` の `choose Two` を `choose Three` に書き換えて `Run` し、`Output` の 2 行目が `3` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

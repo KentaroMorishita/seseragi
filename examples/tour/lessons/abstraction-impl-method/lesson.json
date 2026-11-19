@@ -30,7 +30,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 16 行目にある `value: 21` を `value: 15` に書き換えて `Run` し、`Output` が `30` に変わることを確かめてください。",
+      "instruction": "エディターの `value: 21` を `value: 15` に書き換えて `Run` し、`Output` が `30` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
