@@ -73,16 +73,13 @@ review artifactはFirst view、Layout rhythm、Visual identity、Interaction、C
 意図を短い文章で説明し、確認したviewport、state、surface、evidenceを列挙します。
 自動testはartifactの存在と必須項目を検証しますが、文章の妥当性を代行しません。
 
-## Baseline workflow
+## 承認の手順
 
-1. 実ブラウザで上記human reviewを行い、evidenceを保存する。
+1. PRのプレビュー（Vercel）を実ブラウザで開き、上記のhuman reviewを行い、evidenceを保存する。
 2. `showcase-review.json`を`approved`にし、focused contract testを通す。
-3. 承認後の画面だけを`bun run test:visual:update -- "<review reason>"`で更新する。
-4. `e2e/visual-baselines.review.json`へPNGとShowcase review artifact双方のSHA-256を固定する。
 
-baselineは「良さ」を判定する仕組みではなく、承認済み状態からの意図しない差分を検出する
-仕組みです。generic card-gridやplaceholderをbaselineへ入れてからCI greenを完了根拠にする
-ことはできません。
+画面の見た目は、基準の画像との比較では守りません。見た目を変えるPRでは、そのたびにプレビューで
+確かめます。generic card-gridやplaceholderのままCI greenを完了の根拠にすることはできません。
 
 ## Application to #244
 
@@ -90,7 +87,7 @@ baselineは「良さ」を判定する仕組みではなく、承認済み状態
 実装・review担当者はIssue #245の文章だけで済ませず、上記screenshotとsource zipの両方を
 確認します。strong hero、page全体のsection rhythm、mobile固有のflow、code presentation、
 official identity、visual/source structureの対応を`showcase-review.json`へ記録し、human
-approval後にだけ#219 baselineを更新します。
+approvalを得てから完成とします。
 
 既存Showcaseは#188、#189、#190、#191のreview evidenceを本契約へ紐付けています。
 それらのvisual styleを新規Showcaseのtemplateとして扱わず、題材ごとのidentityを設計します。

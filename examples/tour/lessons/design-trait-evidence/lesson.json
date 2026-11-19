@@ -35,7 +35,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 12 行目にある `\"badge\"` を `\"badge-ready\"` に、16 行目の `\"device\"` を `\"device-ready\"` に書き換えて `Run` し、同じ `describe` の出力が変わることを確かめてください。",
+      "instruction": "エディターの `instance Label<Badge>` の `\"badge\"` を `\"badge-ready\"` に、`instance Label<Device>` の `\"device\"` を `\"device-ready\"` に書き換えて `Run` し、同じ `describe` の出力が変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

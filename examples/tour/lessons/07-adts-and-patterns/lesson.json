@@ -15,7 +15,7 @@
       },
       {
         "heading": "パターン束縛で中身の値を取り出して使う",
-        "body": "`Shipped city` と書くと、`Shipped \"Osaka\"` に含まれる文字列が `city` に束縛されます。右辺の `` `Shipped to ${city}` `` のように、取り出した変数は必ず処理の中で使います。",
+        "body": "`Shipped city` と書くと、`Shipped \"Osaka\"` に含まれる文字列が `city` に束縛され、右辺の `` `Shipped to ${city}` `` で参照できます。使わない変数に名前を付けてもコンパイルエラーにはなりませんが、未使用変数の警告を避けて意図を明確にする作法として、不要な値には `_` を使います。",
         "sourceRange": {
           "startLine": 8,
           "endLine": 8
@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの9行目にある `Delivered (city, _)` を `Delivered (city, stops)` に、同じ行の右辺を `` `Delivered to ${city} in ${stops} stops` `` に書き換えて `Run` し、`Output` の3行目が `Delivered to Kyoto in 2 stops` に変わることを確かめてください。",
+      "instruction": "`Delivered (city, _) -> ...` のパターンを `Delivered (city, stops)` に、同じ分岐の右辺を `` `Delivered to ${city} in ${stops} stops` `` に書き換えて `Run` し、`Output` の 3 行目が `Delivered to Kyoto in 2 stops` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
@@ -52,7 +52,7 @@
     },
     "recap": [
       "`match` でコンストラクターを判別し、中身の値を変数に束縛して利用できる。",
-      "パターンで束縛した変数は右辺で必ず使い、不要な位置には `_` を書く。",
+      "パターンで束縛した変数は右辺で参照し、不要な位置には未使用変数の警告を避ける作法として `_` を書く（コンパイル規則ではなく読みやすさと警告回避のための書き方）。",
       "タプルなどを入れ子にしたパターンでも一度に値を取り出せる。"
     ],
     "next": {

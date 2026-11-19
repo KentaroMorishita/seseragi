@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 19 行目にある `Empty` を `(Box 42)` に、20 行目の `\"Tour\"` を `\"Step\"` に書き換えて `Run` し、`Output` が `Seseragi: 42` と `22 / Step` に変わることを確かめてください。",
+      "instruction": "エディターの `unwrapOr` に渡している `Empty` を `(Box 42)` に、`\"Tour\"` を `\"Step\"` に書き換えて `Run` し、`Output` が `Seseragi: 42` と `22 / Step` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

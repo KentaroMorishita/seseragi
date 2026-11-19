@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 34 行目にある `\"2\"`（`\"coffee\"` の前）を `\"bad\"` に書き換えて `Run` し、`Output` の 2 行目が `bad count: bad` を含む表示に変わることを確かめてください。",
+      "instruction": "エディターの `prepareOrder \"2\" \"coffee\"` の `\"2\"` を `\"bad\"` に書き換えて `Run` し、`Output` の 2 行目が `bad count: bad` を含む表示に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
