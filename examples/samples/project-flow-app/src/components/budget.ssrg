@@ -1,0 +1,161 @@
+// 人数に応じた割り勘（端数計算つき）と費目別の予算内訳を表示します。
+import * as html from "std/web/html"
+import {
+  ChangeTravelers,
+  Dining,
+  Lodging,
+  Sightseeing,
+  SplitSummary,
+  SpotCategory,
+  Transit,
+  TripAction,
+  TripState,
+  calculateSplit,
+  categoryLabel,
+  categoryTotal,
+  formatYen,
+  totalTripCost,
+} from "self/trip/model"
+import * as styles from "self/ui/styles"
+
+fn categoryColor category: SpotCategory -> String = match category {
+  Sightseeing -> "#1c3d5a"
+  Dining -> "#d65a31"
+  Lodging -> "#2a6f4e"
+  Transit -> "#647687"
+}
+
+fn categoryRow totalYen: Int
+  -> spotsCost: Int
+  -> category: SpotCategory
+  -> html.Html<Task<Unit>> = {
+    let pct = if totalYen <= 0 then 0 else (spotsCost * 100) / totalYen
+    let barFill: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        backgroundColor: categoryColor category,
+        borderRadius: "999px",
+        height: "8px",
+        width: `${pct}%`,
+      },
+      children: "",
+    }
+    let topRow: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        fontSize: "13px",
+        marginBottom: "6px",
+      },
+      children: [
+        html.span {
+          style: html.style { color: "#1c3d5a", fontWeight: "700", },
+          children: `${categoryLabel category}（${pct}%）`,
+        },
+        html.span {
+          style: html.style { color: "#2c4154", fontWeight: "600", },
+          children: formatYen spotsCost,
+        },
+      ],
+    }
+    html.div {
+      style: html.style { marginBottom: "14px", },
+      children: [
+        topRow,
+        html.div {
+          style: html.style {
+            backgroundColor: "#eee8dd",
+            borderRadius: "999px",
+            height: "8px",
+            overflow: "hidden",
+          },
+          children: barFill,
+        },
+      ],
+    }
+  }
+
+pub fn view dispatch: (TripAction -> Task<Unit>)
+  -> state: TripState
+  -> html.Html<Task<Unit>> = {
+    let totalYen = totalTripCost state.spots
+    let split: SplitSummary = calculateSplit totalYen state.travelers
+    let renderTraveler = \n: Int -> html.button {
+      buttonType: "button",
+      ariaSelected: state.travelers == n,
+      onClick: dispatch (ChangeTravelers n),
+      style: styles.dayChipStyle (state.travelers == n),
+      children: `${n}名`,
+    }
+    let travelerButtons: Array<html.Html<Task<Unit>>> = map renderTraveler [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+    let remainderNote =
+      if split.remainderYen == 0 then
+        "割り切れています（端数なし）。"
+      else
+        `端数 ${formatYen split.remainderYen} は幹事精算で調整します。`
+    let splitCard: html.Html<Task<Unit>> = html.section {
+      style: styles.cardStyle (),
+      children: [
+        html.h2 { style: styles.sectionHeadingStyle (), children: "人数と割り勘計算", },
+        html.div {
+          style: html.style {
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "8px",
+            marginBottom: "18px",
+          },
+          children: travelerButtons,
+        },
+        html.div {
+          style: html.style {
+            backgroundColor: "#faf6ef",
+            border: "1px solid #e4ddd2",
+            borderRadius: "14px",
+            padding: "16px",
+          },
+          children: [
+            html.p {
+              style: html.style {
+                color: "#4e6173",
+                fontSize: "12px",
+                margin: "0 0 4px 0",
+              },
+              children: `旅行合計 ${formatYen split.totalYen} ÷ ${split.travelers} 名`,
+            },
+            html.p {
+              style: html.style {
+                color: "#d65a31",
+                fontSize: "clamp(26px, 5vw, 34px)",
+                fontWeight: "800",
+                margin: "0 0 6px 0",
+              },
+              children: `1人あたり ${formatYen split.perPersonYen}`,
+            },
+            html.p { style: styles.metaStyle (), children: remainderNote, },
+          ],
+        },
+      ],
+    }
+    let breakdownHeading: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: "費目別の内訳",
+    }
+    let breakdownCard: html.Html<Task<Unit>> = html.section {
+      style: styles.cardStyle (),
+      children: [
+        breakdownHeading,
+        categoryRow totalYen (categoryTotal Lodging state.spots) Lodging,
+        categoryRow totalYen (categoryTotal Dining state.spots) Dining,
+        categoryRow totalYen (categoryTotal Sightseeing state.spots) Sightseeing,
+        categoryRow totalYen (categoryTotal Transit state.spots) Transit,
+      ],
+    }
+    html.div { style: styles.twoColGridStyle (), children: [splitCard, breakdownCard], }
+  }

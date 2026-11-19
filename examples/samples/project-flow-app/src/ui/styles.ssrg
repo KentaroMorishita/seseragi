@@ -1,39 +1,286 @@
+// 旅のしおり（ライトなガイドブック調：アイボリー地＋濃紺＋珊瑚色）のスタイル定義です。
 import * as html from "std/web/html"
+import { Dining, Lodging, Sightseeing, SpotCategory, Transit, } from "self/trip/model"
 
-pub fn cx classes: Array<String> -> String = join " " classes
-
-pub fn pageStyle nightStudio: Bool -> html.Style =
-  if nightStudio then
-    html.style { backgroundColor: "#111827", color: "#f8fafc" }
-  else
-    html.style { backgroundColor: "#eff6ff", color: "#0f172a" }
-
-pub fn heroStyle nightStudio: Bool -> html.Style =
-  if nightStudio then
-    html.style { backgroundColor: "#312e81", color: "#ffffff" }
-  else
-    html.style { backgroundColor: "#0f766e", color: "#ffffff" }
-
-pub fn heroMutedStyle nightStudio: Bool -> html.Style =
-  if nightStudio then
-    html.style { color: "#e0e7ff" }
-  else
-    html.style { color: "#ecfdf5" }
-
-pub fn heroButtonStyle nightStudio: Bool -> html.Style =
-  if nightStudio then
-    html.style { backgroundColor: "#fbbf24", color: "#1f2937" }
-  else
-    html.style { backgroundColor: "#ffffff", color: "#065f46" }
-
-pub fn featureAccentStyle -> html.Style = html.style {
-  backgroundColor: "#fef3c7",
-  color: "#92400e"
+pub fn pageStyle -> html.Style = html.style {
+  backgroundColor: "#faf8f4",
+  color: "#1b2a38",
+  fontFamily: "Inter, 'Noto Sans JP', Hiragino Sans, sans-serif",
+  margin: "0",
+  minHeight: "100vh",
+  overflowX: "hidden",
+  padding: "20px 16px 48px",
+  boxSizing: "border-box",
 }
 
-pub fn focusValueStyle -> html.Style = html.style { color: "#0f766e" }
-
-pub fn noteButtonStyle -> html.Style = html.style {
-  backgroundColor: "#0f766e",
-  color: "#ffffff"
+pub fn shellStyle -> html.Style = html.style {
+  margin: "0 auto",
+  maxWidth: "1120px",
+  width: "100%",
 }
+
+pub fn headerStyle -> html.Style = html.style {
+  borderBottom: "1px solid #e4ddd2",
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+  gap: "16px",
+  paddingBottom: "18px",
+  marginBottom: "22px",
+}
+
+pub fn eyebrowStyle -> html.Style = html.style {
+  color: "#b84723",
+  fontSize: "11px",
+  fontWeight: "800",
+  letterSpacing: "0.14em",
+  margin: "0 0 6px 0",
+  textTransform: "uppercase",
+}
+
+pub fn titleStyle -> html.Style = html.style {
+  color: "#1c3d5a",
+  fontSize: "clamp(22px, 3.6vw, 30px)",
+  fontWeight: "700",
+  lineHeight: "1.25",
+  margin: "0 0 6px 0",
+}
+
+pub fn metaStyle -> html.Style = html.style {
+  color: "#4e6173",
+  fontSize: "13px",
+  lineHeight: "1.6",
+  margin: "0",
+}
+
+pub fn tabBarStyle -> html.Style = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "8px",
+}
+
+pub fn tabButtonStyle active: Bool -> html.Style =
+  if active then
+    html.style {
+      backgroundColor: "#1c3d5a",
+      color: "#ffffff",
+      border: "1px solid #1c3d5a",
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontSize: "13px",
+      fontWeight: "700",
+      padding: "9px 16px",
+    }
+  else
+    html.style {
+      backgroundColor: "#ffffff",
+      color: "#1c3d5a",
+      border: "1px solid #cfc6b8",
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontSize: "13px",
+      fontWeight: "600",
+      padding: "9px 16px",
+    }
+
+pub fn twoColGridStyle -> html.Style = html.style {
+  display: "grid",
+  gap: "20px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 330px), 1fr))",
+  alignItems: "start",
+}
+
+pub fn cardStyle -> html.Style = html.style {
+  backgroundColor: "#ffffff",
+  border: "1px solid #e4ddd2",
+  borderRadius: "16px",
+  boxShadow: "0 6px 20px rgba(28, 61, 90, 0.05)",
+  padding: "20px",
+}
+
+pub fn sectionHeadingStyle -> html.Style = html.style {
+  color: "#1c3d5a",
+  fontSize: "16px",
+  fontWeight: "700",
+  margin: "0 0 12px 0",
+}
+
+pub fn dayChipStyle active: Bool -> html.Style =
+  if active then
+    html.style {
+      backgroundColor: "#d65a31",
+      color: "#ffffff",
+      border: "1px solid #d65a31",
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontSize: "12px",
+      fontWeight: "700",
+      padding: "7px 14px",
+    }
+  else
+    html.style {
+      backgroundColor: "#f5f1ea",
+      color: "#2c4154",
+      border: "1px solid #d8d0c3",
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontSize: "12px",
+      fontWeight: "600",
+      padding: "7px 14px",
+    }
+
+pub fn spotCardStyle focused: Bool -> html.Style =
+  if focused then
+    html.style {
+      backgroundColor: "#fff8f4",
+      border: "1.5px solid #d65a31",
+      borderRadius: "12px",
+      padding: "12px 14px",
+      marginBottom: "8px",
+    }
+  else
+    html.style {
+      backgroundColor: "#fcfbf8",
+      border: "1px solid #e5dfd4",
+      borderRadius: "12px",
+      padding: "12px 14px",
+      marginBottom: "8px",
+    }
+
+pub fn categoryBadgeStyle category: SpotCategory -> html.Style = match category {
+  Sightseeing -> html.style {
+    backgroundColor: "#e6eff5",
+    color: "#1c3d5a",
+    borderRadius: "6px",
+    fontSize: "11px",
+    fontWeight: "700",
+    padding: "2px 8px",
+  }
+  Dining -> html.style {
+    backgroundColor: "#fbede5",
+    color: "#a33d1b",
+    borderRadius: "6px",
+    fontSize: "11px",
+    fontWeight: "700",
+    padding: "2px 8px",
+  }
+  Lodging -> html.style {
+    backgroundColor: "#e4f2eb",
+    color: "#1f5c3e",
+    borderRadius: "6px",
+    fontSize: "11px",
+    fontWeight: "700",
+    padding: "2px 8px",
+  }
+  Transit -> html.style {
+    backgroundColor: "#edeae4",
+    color: "#3d4c59",
+    borderRadius: "6px",
+    fontSize: "11px",
+    fontWeight: "700",
+    padding: "2px 8px",
+  }
+}
+
+pub fn smallActionButtonStyle disabled: Bool -> html.Style =
+  if disabled then
+    html.style {
+      backgroundColor: "#f1ede6",
+      color: "#76828d",
+      border: "1px solid #dfd8cc",
+      borderRadius: "8px",
+      cursor: "not-allowed",
+      fontSize: "12px",
+      fontWeight: "600",
+      padding: "5px 9px",
+    }
+  else
+    html.style {
+      backgroundColor: "#ffffff",
+      color: "#1c3d5a",
+      border: "1px solid #c9bfb0",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontSize: "12px",
+      fontWeight: "600",
+      padding: "5px 9px",
+    }
+
+pub fn primaryButtonStyle disabled: Bool -> html.Style =
+  if disabled then
+    html.style {
+      backgroundColor: "#d9cfc2",
+      color: "#4d5963",
+      border: "none",
+      borderRadius: "10px",
+      cursor: "not-allowed",
+      fontSize: "14px",
+      fontWeight: "700",
+      padding: "11px 18px",
+    }
+  else
+    html.style {
+      backgroundColor: "#d65a31",
+      color: "#ffffff",
+      border: "none",
+      borderRadius: "10px",
+      cursor: "pointer",
+      fontSize: "14px",
+      fontWeight: "700",
+      padding: "11px 18px",
+    }
+
+pub fn secondaryButtonStyle -> html.Style = html.style {
+  backgroundColor: "#ffffff",
+  color: "#1c3d5a",
+  border: "1px solid #c9bfb0",
+  borderRadius: "10px",
+  cursor: "pointer",
+  fontSize: "13px",
+  fontWeight: "600",
+  padding: "9px 14px",
+}
+
+pub fn transitConnectorStyle -> html.Style = html.style {
+  color: "#526575",
+  fontSize: "12px",
+  padding: "2px 0 8px 18px",
+  borderLeft: "2px dashed #d65a31",
+  marginLeft: "12px",
+}
+
+pub fn statusBannerStyle kind: String -> html.Style =
+  if kind == "error" then
+    html.style {
+      backgroundColor: "#fdf0ec",
+      border: "1px solid #d65a31",
+      borderRadius: "12px",
+      color: "#8f2f12",
+      fontSize: "13px",
+      lineHeight: "1.6",
+      padding: "12px 14px",
+      marginTop: "14px",
+    }
+  else if kind == "success" then
+    html.style {
+      backgroundColor: "#ebf6f0",
+      border: "1px solid #2a6f4e",
+      borderRadius: "12px",
+      color: "#1b4f36",
+      fontSize: "13px",
+      lineHeight: "1.6",
+      padding: "12px 14px",
+      marginTop: "14px",
+    }
+  else
+    html.style {
+      backgroundColor: "#eef3f7",
+      border: "1px solid #7d9bb5",
+      borderRadius: "12px",
+      color: "#1c3d5a",
+      fontSize: "13px",
+      lineHeight: "1.6",
+      padding: "12px 14px",
+      marginTop: "14px",
+    }

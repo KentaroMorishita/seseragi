@@ -1,85 +1,24 @@
-このsampleを選ぶ理由: 一つのlarge Action unionへ全部を集めず、featureが
-自分のstate、Action、update、event adapterを持ったまま、app shellで
-一つのapplicationを作る読み方を試したいときに選びます。Previewは
-releaseを整える一つのRelease Roomであり、Focus rhythmとStory deckは
-ただ隣にあるwidgetではなく、同じheroへ現在の数を報告します。
+このsampleを選ぶ理由: 地図ルート・日程タイムライン・割り勘計算・しおり共有の複数画面がひとつの状態から連動する実用 Web アプリを、複数ファイルに分けて組む見本として選びます。
 
-## 実packageとしてbuildする
+## この画面で試すこと
 
-このdirectoryはPlayground専用のvirtual workspaceではなく、`seseragi.toml`と
-`src/`を持つcanonical Web packageです。directoryへ移動すると、そのままbuild
-できます。
+1. **日程と地図の連動**: タイムラインの「↑ 上へ」「↓ 下へ」「削除」やプリセット追加を押し、左側の SVG 地図上のルート線・ピン番号・各区間の移動時間が即座に描き換わるのを見る
+2. **日程切り替えと空状態**: 「1日目」「2日目」を切り替え、「この日を空にする」から空状態と「初期プランに戻す」を確かめる
+3. **予算と割り勘**: 「2. 予算と割り勘」タブで参加人数（1〜6名）を切り替え、1 人あたりの金額・端数・費目別バーが連動して変わるのを見る
+4. **しおり共有（非同期保存と再試行）**: 「3. しおり共有」タブで「通信失敗（オフライン）を再現」にチェックを入れて保存し、エラー表示からチェックを外して「再試行する」で共有コードが発行されるのを見る
 
-```sh
-seseragi build . --out-dir dist
-```
-
-`seseragi.toml`の`run.target = "web"`がWeb buildを選びます。Playgroundも同じ
-manifestと`src/`のsource treeを読み込むため、CLI用のsource copyはありません。
-
-通常開発ではpackage rootから`seseragi dev`を起動すると、同じWeb target resolverと
-production build semanticsを使って`.seseragi/dev`へbuildし、localhostで配信します。
-`src/**/*.ssrg`または`seseragi.toml`を保存するとfull project rebuild後にbrowserを
-reloadします。compile error中もserverと最後の成功buildは維持され、修正すると自動で
-復旧します。
-
-```sh
-seseragi dev --open
-```
-
-既定は`127.0.0.1:3000`です。共有開発環境では`--host`と`--port`を明示できます。
-
-## まずExplorerで読む順番
-
-1. `app.ssrg` を開きます。ここはshellのvisual state、fixed image / document
-   linkのURL検証、二つのfeature生成、`<$>` / `<*>`によるSignal合成だけを持ちます。
-2. `focus/model.ssrg` を開きます。Focus rhythmはprivateな`FocusState`と
-   `FocusAction`を持ち、view Signalとblock数のsummary Signalを同時に返します。
-3. `notes/model.ssrg` を開きます。Story deckはform draft、validation、cardの
-   add / edit / remove / clearを自分の`NotesState`へ閉じ込めます。
-4. `notes/form.ssrg` と `notes/view.ssrg` を開きます。modelがbrowser eventの
-   snapshotをTaskへ変換し、view側はpresentationalなform / card listだけを受け取ります。
-5. 最後に `ui/styles.ssrg` と `ui/components.ssrg` を開きます。`cx`、named
-   style、metric、headingをshared UIとして一箇所に置いています。
-
-## 画面とmoduleの対応
+## ファイル構成
 
 ```text
-Release Room page (`app.ssrg`)
-├─ app shell hero + derived metrics
-│  ├─ `ui/styles.ssrg`       page / hero / accent styles
-│  └─ `ui/components.ssrg`   eyebrow / metric / heading
-├─ Focus rhythm              `focus/model.ssrg` + `focus/view.ssrg`
-│  └─ blocksのSignalとAdd / Remove Action
-└─ Story deck                `notes/model.ssrg` + `notes/form.ssrg` + `notes/view.ssrg`
-   └─ draft、validation、cardのAdd / Edit / Remove / Clear Action
+main.ssrg                   実行の入口（dom.run）
+app.ssrg                    3 画面タブの切り替えと Signal 管理
+trip/model.ssrg             状態・ADT・移動時間・並べ替え・割り勘計算
+components/route_map.ssrg   京都・宇治エリアの SVG 地図とルート線
+components/timeline.ssrg    日程タイムライン・並べ替え・プリセット追加
+components/budget.ssrg      人数別の割り勘と費目別グラフ
+components/share_view.ssrg  しおりプレビューと保存・再試行 UI
+ui/styles.ssrg              アイボリー・濃紺・珊瑚色の名前付きスタイル
+tests/planner.ssrg          移動時間・並べ替え・割り勘の単体テスト
 ```
 
-`app.ssrg`はfeature viewとcount Signalを受け、`<$>` / `<*>`でheroと二つの
-feature surfaceを一つのpageへ合成します。feature間でstateやActionを渡さないので、
-Previewの二つの領域とExplorerのmodule境界がそのまま対応します。
-
-`main.ssrg` はfeatureを知りません。`create ()`で完成済みのcontent Signalを受け、
-`dom.query`、`dom.defaultOptions ()`、`dom.run`だけを実行します。このsampleで
-`dom.app`を使わないのは、複数のfeature-owned MutableSignal、各featureのeffectful
-dispatch、app-levelのApplicative composition、そしてExplorerで追えるmodule境界を
-明示する必要があるためです。
-
-## Previewで試すこと
-
-- `Add a focus block` と `Take one away` はFocus rhythmだけを更新します。heroの
-  Focus metricも同じSignalから更新されます。
-- Story card titleを空のまま送信するとvalidationが出ます。titleを入力して
-  `Add a story card`を押すと、heroのStories metricとdeckが同時に変わります。
-- card titleはinline editでき、`Remove`と`Clear deck`でempty stateまで到達します。
-- `Use day studio` / `Use night studio`はapp shellだけが所有するvisual stateです。
-  page background、hero surface、accent、text contrastをまとめて切り替えます。
-
-固定Unsplash imageにはalt、width、height、cropを指定し、外部document linkには
-`parseWebUrl`の検証結果だけを渡します。class utilityは長いliteralへ戻さず、
-`ui/styles.ssrg`の`cx [...]`とnamed `html.Style`を使います。
-
-pure reducerだけの最小構成は`interactive-app`、明示的な`dom.run`の最小構成は
-`web-starter`、single-fileでformと多様なeventを確認する完成例は`form-todo`です。
-このRelease Roomは、その次にExplorerを開いて「featureの境界が画面の境界とどう対応するか」を
-読むためのmulti-module Showcaseです。
+純粋な計算（移動時間・並べ替え・割り勘）を `trip/model.ssrg` に閉じているため、手元の CLI で `seseragi test examples/samples/project-flow-app` を実行して画面なしで単体テストできます。

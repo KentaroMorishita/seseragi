@@ -84,11 +84,11 @@ describe("project-flow-app browser interaction fixture", () => {
       openFiles: [
         "main.ssrg",
         "app.ssrg",
-        "ui/components.ssrg",
-        "focus/model.ssrg",
-        "notes/model.ssrg",
+        "trip/model.ssrg",
+        "components/route_map.ssrg",
+        "components/timeline.ssrg",
       ],
-      expandedFolders: ["ui", "focus", "notes"],
+      expandedFolders: ["trip", "components", "ui"],
     })
 
     const sourceByPath = new Map(
@@ -97,12 +97,11 @@ describe("project-flow-app browser interaction fixture", () => {
     expect([...sourceByPath.keys()]).toEqual([
       "main.ssrg",
       "app.ssrg",
-      "focus/model.ssrg",
-      "focus/view.ssrg",
-      "notes/form.ssrg",
-      "notes/model.ssrg",
-      "notes/view.ssrg",
-      "ui/components.ssrg",
+      "components/budget.ssrg",
+      "components/route_map.ssrg",
+      "components/share_view.ssrg",
+      "components/timeline.ssrg",
+      "trip/model.ssrg",
       "ui/styles.ssrg",
     ])
 
@@ -115,24 +114,18 @@ describe("project-flow-app browser interaction fixture", () => {
     expect(source("main.ssrg")).toContain('dom.query "#app"')
     expect(source("main.ssrg")).toContain("dom.defaultOptions ()")
     expect(source("main.ssrg")).toContain("dom.run")
-    expect(source("app.ssrg")).toContain("signals.make $ ShellState")
+    expect(source("app.ssrg")).toContain("signals.make")
     expect(source("app.ssrg")).toContain("signals.map")
-    expect(source("app.ssrg")).toContain("<$>")
-    expect(source("app.ssrg")).toContain("<*>")
-    expect(source("app.ssrg")).toContain("createFocus")
-    expect(source("app.ssrg")).toContain("createNotes")
-    expect(source("app.ssrg")).toContain("parseSampleUrl")
     expect(source("app.ssrg")).not.toContain("dom.app")
-    expect(source("focus/model.ssrg")).toContain("struct FocusState")
-    expect(source("focus/model.ssrg")).toContain("type FocusAction")
-    expect(source("focus/model.ssrg")).toContain("signals.make")
-    expect(source("notes/model.ssrg")).toContain("struct NotesState")
-    expect(source("notes/model.ssrg")).toContain("type NotesAction")
-    expect(source("notes/model.ssrg")).toContain("signals.make")
-    expect(source("notes/form.ssrg")).toContain('id: "story-draft"')
-    expect(source("notes/view.ssrg")).toContain("fn emptyState")
-    expect(source("ui/styles.ssrg")).toContain("pub fn cx")
-    expect(source("ui/components.ssrg")).toContain("pub fn metric")
+    expect(source("trip/model.ssrg")).toContain("pub struct TripState")
+    expect(source("trip/model.ssrg")).toContain("pub type TripAction")
+    expect(source("trip/model.ssrg")).toContain("pub fn calculateSplit")
+    expect(source("components/route_map.ssrg")).toContain("svg.toHtml")
+    expect(source("components/route_map.ssrg")).toContain("svg.polyline")
+    expect(source("components/share_view.ssrg")).toContain(
+      'id: "save-itinerary-button"'
+    )
+    expect(source("ui/styles.ssrg")).toContain("pub fn pageStyle")
   })
 
   test("covers every #189 state transition, including app composition and cleanup", () => {

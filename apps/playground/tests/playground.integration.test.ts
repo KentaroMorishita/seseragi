@@ -2651,11 +2651,11 @@ describe("Playground sample catalog", () => {
         openFiles: [
           "main.ssrg",
           "app.ssrg",
-          "ui/components.ssrg",
-          "focus/model.ssrg",
-          "notes/model.ssrg",
+          "trip/model.ssrg",
+          "components/route_map.ssrg",
+          "components/timeline.ssrg",
         ],
-        expandedFolders: ["ui", "focus", "notes"],
+        expandedFolders: ["trip", "components", "ui"],
       },
       workspace: {
         explorer: { visible: true },

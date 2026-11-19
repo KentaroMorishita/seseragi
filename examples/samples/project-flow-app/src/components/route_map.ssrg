@@ -1,0 +1,283 @@
+// 京都・宇治エリアの地図 SVG に日程順のルート線と番号付きピンを描画します。
+import * as arrays from "std/array"
+import * as floats from "std/float"
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+import {
+  FocusSpot,
+  Spot,
+  TripAction,
+  TripState,
+  categoryLabel,
+  dayNumber,
+  formatYen,
+  spotsForDay,
+} from "self/trip/model"
+import * as styles from "self/ui/styles"
+
+fn routePoints spots: Array<Spot> -> String =
+  spots
+  |> map (\s: Spot -> `${s.mapX},${s.mapY}`)
+  |> join " "
+
+fn indexRange count: Int -> Array<Int> = {
+  let empty: Array<Int> = []
+  if count <= 0 then empty else arrays.fromIterable (0 ..= count - 1)
+}
+
+fn pinElements spots: Array<Spot> -> focusedId: String -> Array<svg.Svg<Task<Unit>>> = {
+  let count = arrays.length spots
+  let indices = indexRange count
+  let buildPin = \idx: Int -> match arrays.get idx spots {
+    Nothing -> []
+    Just spot -> {
+      let x = floats.fromInt spot.mapX
+      let y = floats.fromInt spot.mapY
+      let isFocused = spot.id == focusedId
+      let fill = if isFocused then "#d65a31" else "#1c3d5a"
+      let radius = if isFocused then 12.0 else 10.0
+      let outer: svg.Svg<Task<Unit>> = svg.circle {
+        cx: x,
+        cy: y,
+        r: radius,
+        fill,
+        stroke: "#ffffff",
+        strokeWidth: "2.5",
+      }
+      let num: svg.Svg<Task<Unit>> = svg.text {
+        x,
+        y: y + 4.0,
+        fill: "#ffffff",
+        fontSize: "10px",
+        fontWeight: "700",
+        textAnchor: "middle",
+        children: `${idx + 1}`,
+      }
+      [outer, num]
+    }
+  }
+  arrays.concat (map buildPin indices)
+}
+
+fn mapCanvas spots: Array<Spot> -> focusedId: String -> html.Html<Task<Unit>> = {
+  let bg: svg.Svg<Task<Unit>> = svg.rect {
+    x: 0.0,
+    y: 0.0,
+    width: 380.0,
+    height: 290.0,
+    fill: "#f3efe6",
+    stroke: "#ded6c8",
+    strokeWidth: "1",
+  }
+  // 鴨川・宇治川をイメージした水路カーブ
+  let kamoRiver: svg.Svg<Task<Unit>> = svg.path {
+    d: "M 238 0 C 232 68, 224 128, 212 190 C 202 232, 230 256, 305 290",
+    fill: "none",
+    stroke: "#c9dfeb",
+    strokeWidth: "10",
+    strokeLinecap: "round",
+  }
+  let katsuraRiver: svg.Svg<Task<Unit>> = svg.path {
+    d: "M 55 0 C 60 72, 80 142, 130 290",
+    fill: "none",
+    stroke: "#d5e7f0",
+    strokeWidth: "7",
+    strokeLinecap: "round",
+  }
+  let gridH1: svg.Svg<Task<Unit>> = svg.line {
+    x1: 0.0,
+    y1: 96.0,
+    x2: 380.0,
+    y2: 96.0,
+    stroke: "#e4ddd0",
+    strokeWidth: "1",
+  }
+  let gridH2: svg.Svg<Task<Unit>> = svg.line {
+    x1: 0.0,
+    y1: 192.0,
+    x2: 380.0,
+    y2: 192.0,
+    stroke: "#e4ddd0",
+    strokeWidth: "1",
+  }
+  let gridV1: svg.Svg<Task<Unit>> = svg.line {
+    x1: 126.0,
+    y1: 0.0,
+    x2: 126.0,
+    y2: 290.0,
+    stroke: "#e4ddd0",
+    strokeWidth: "1",
+  }
+  let gridV2: svg.Svg<Task<Unit>> = svg.line {
+    x1: 252.0,
+    y1: 0.0,
+    x2: 252.0,
+    y2: 290.0,
+    stroke: "#e4ddd0",
+    strokeWidth: "1",
+  }
+  let lblArashi: svg.Svg<Task<Unit>> = svg.text {
+    x: 42.0,
+    y: 58.0,
+    fill: "#7a8996",
+    fontSize: "10px",
+    fontWeight: "700",
+    children: "嵐山",
+  }
+  let lblGion: svg.Svg<Task<Unit>> = svg.text {
+    x: 288.0,
+    y: 50.0,
+    fill: "#7a8996",
+    fontSize: "10px",
+    fontWeight: "700",
+    children: "東山・祇園",
+  }
+  let lblFushimi: svg.Svg<Task<Unit>> = svg.text {
+    x: 130.0,
+    y: 215.0,
+    fill: "#7a8996",
+    fontSize: "10px",
+    fontWeight: "700",
+    children: "伏見",
+  }
+  let lblUji: svg.Svg<Task<Unit>> = svg.text {
+    x: 296.0,
+    y: 274.0,
+    fill: "#7a8996",
+    fontSize: "10px",
+    fontWeight: "700",
+    children: "宇治",
+  }
+  let routeLine: svg.Svg<Task<Unit>> = svg.polyline {
+    points: routePoints spots,
+    fill: "none",
+    stroke: "#d65a31",
+    strokeWidth: "3",
+    strokeDasharray: "6 4",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+  }
+  let baseLayers: Array<svg.Svg<Task<Unit>>> = [
+    bg,
+    gridH1,
+    gridH2,
+    gridV1,
+    gridV2,
+    kamoRiver,
+    katsuraRiver,
+    lblArashi,
+    lblGion,
+    lblFushimi,
+    lblUji,
+    routeLine,
+  ]
+  svg.toHtml (
+    svg.svg {
+      viewBox: "0 0 380 290",
+      width: 380.0,
+      height: 290.0,
+      role: "img",
+      ariaLabel: "京都・宇治の旅行ルート地図",
+      style: html.style {
+        display: "block",
+        width: "100%",
+        height: "auto",
+        borderRadius: "12px",
+      },
+      children: arrays.concat [baseLayers, pinElements spots focusedId],
+    }
+  )
+}
+
+fn spotJumpChip dispatch: (TripAction -> Task<Unit>)
+  -> focusedId: String
+  -> idx: Int
+  -> spot: Spot
+  -> html.Html<Task<Unit>> =
+  {
+    let isFocused = spot.id == focusedId
+    html.button {
+      buttonType: "button",
+      ariaSelected: isFocused,
+      onClick: dispatch (FocusSpot spot.id),
+      style: styles.dayChipStyle isFocused,
+      children: `${idx + 1}. ${spot.name}`,
+    }
+  }
+
+fn spotDetailCard spots: Array<Spot> -> focusedId: String -> html.Html<Task<Unit>> =
+  match arrays.find (\s: Spot -> s.id == focusedId) spots {
+    Nothing -> html.p {
+      style: styles.metaStyle (),
+      children: "日程にスポットを追加すると、地図上のルートと立ち寄り先のメモが表示されます。",
+    }
+    Just spot -> {
+      let nameNode: html.Html<Task<Unit>> = html.strong {
+        style: html.style { color: "#1c3d5a", fontSize: "14px", },
+        children: `${spot.name}（${spot.area}）`,
+      }
+      let badgeNode: html.Html<Task<Unit>> = html.span {
+        style: styles.categoryBadgeStyle spot.category,
+        children: `${categoryLabel spot.category}・${formatYen spot.costYen}`,
+      }
+      let headerRow: html.Html<Task<Unit>> = html.div {
+        style: html.style {
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "8px",
+          marginBottom: "6px",
+        },
+        children: [nameNode, badgeNode],
+      }
+      let noteNode: html.Html<Task<Unit>> = html.p {
+        style: styles.metaStyle (),
+        children: `${spot.note}（滞在目安 ${spot.stayMinutes} 分）`,
+      }
+      html.div {
+        style: html.style {
+          backgroundColor: "#faf6ef",
+          border: "1px solid #e4ddd2",
+          borderRadius: "12px",
+          padding: "12px 14px",
+          marginTop: "12px",
+        },
+        children: [headerRow, noteNode],
+      }
+    }
+  }
+
+pub fn view dispatch: (TripAction -> Task<Unit>)
+  -> state: TripState
+  -> html.Html<Task<Unit>> = {
+    let daySpots = spotsForDay state.activeDay state.spots
+    let count = arrays.length daySpots
+    let indices = indexRange count
+    let chips: Array<html.Html<Task<Unit>>> = [
+      spotJumpChip dispatch state.focusedSpotId idx spot | idx <- indices,
+      Just spot <- [arrays.get idx daySpots]
+    ]
+    let heading: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: `${dayNumber state.activeDay}日目のルート地図（${count} スポット）`,
+    }
+    let chipRow: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "6px",
+        marginTop: "12px",
+      },
+      children: chips,
+    }
+    html.section {
+      style: styles.cardStyle (),
+      children: [
+        heading,
+        mapCanvas daySpots state.focusedSpotId,
+        chipRow,
+        spotDetailCard daySpots state.focusedSpotId,
+      ],
+    }
+  }

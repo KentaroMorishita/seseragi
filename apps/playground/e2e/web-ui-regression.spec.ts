@@ -505,7 +505,7 @@ test.describe("canonical Web UI browser regression", () => {
 
   test("project-flow-app / desktop exposes Explorer, validates and clears the deck", async ({
     page,
-  }, testInfo) => {
+  }) => {
     await routeImages(page)
     const project = sample("project-flow-app")
     await open(page, 1440, 1000)
@@ -517,65 +517,50 @@ test.describe("canonical Web UI browser regression", () => {
     }
     await expect(page.locator("#explorer-tree")).toBeVisible()
     await expect(page.locator("#workspace-tabs")).toBeVisible()
-    await capture(
-      page,
-      testInfo,
-      project,
-      "desktop",
-      "explorer-code-preview",
-      undefined,
-      page.locator('[data-testid="workspace-shell"]')
-    )
+    await expect(
+      projectPreview.getByRole("heading", {
+        name: "京都・宇治 週末旅行プランナー",
+      })
+    ).toBeVisible()
+    await expect(
+      projectPreview.getByRole("img", { name: "京都・宇治の旅行ルート地図" })
+    ).toBeVisible()
+    // Reorder & add preset spot
     await projectPreview
-      .getByRole("button", { name: "Add a story card" })
+      .getByRole("button", { name: "+ 南禅寺・水路閣 (1600円)" })
       .click()
+    await expect(
+      projectPreview.getByText("1日目のルート地図（6 スポット）")
+    ).toBeVisible()
+    // Budget & split-bill tab
+    await projectPreview
+      .getByRole("button", { name: "2. 予算と割り勘" })
+      .click()
+    await projectPreview.getByRole("button", { name: "4名" }).click()
+    await expect(projectPreview.getByText("1人あたり")).toBeVisible()
+    // Share tab: simulate failure -> alert -> retry -> saved share code
+    await projectPreview.getByRole("button", { name: "3. しおり共有" }).click()
+    await projectPreview.locator("#simulate-save-failure").check()
+    await projectPreview.locator("#save-itinerary-button").click()
     const projectAlert = projectPreview.getByRole("alert")
-    await expect(projectAlert).toContainText("Give this card a title")
-    await projectAlert.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await capture(
-      page,
-      testInfo,
-      project,
-      "desktop",
-      "invalid-submit",
-      projectPreview.locator("body")
-    )
-    await projectPreview.getByRole("button", { name: "Use day studio" }).click()
-    const nightStudio = projectPreview.getByRole("button", {
-      name: "Use night studio",
+    await expect(projectAlert).toContainText("保存に失敗しました")
+    await projectPreview.locator("#simulate-save-failure").uncheck()
+    await projectPreview.getByRole("button", { name: "再試行する" }).click()
+    await expect(
+      projectPreview.getByText("しおりを保存し、共有コードを発行しました。")
+    ).toBeVisible()
+    // Back to plan tab -> clear day -> empty state
+    await projectPreview.getByRole("button", { name: "1. 日程と地図" }).click()
+    const clearDay = projectPreview.getByRole("button", {
+      name: "この日を空にする",
     })
-    await expect(nightStudio).toBeVisible()
-    await nightStudio.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await capture(
-      page,
-      testInfo,
-      project,
-      "desktop",
-      "day-studio",
-      projectPreview.locator("body")
-    )
-    const clearDeck = projectPreview.getByRole("button", { name: "Clear deck" })
-    await clearDeck.click()
-    const clearHeading = projectPreview.getByRole("heading", {
-      name: "The deck is clear.",
-    })
-    await expect(clearHeading).toBeVisible()
-    await expect(clearDeck).toBeDisabled()
-    await clearHeading.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await capture(
-      page,
-      testInfo,
-      project,
-      "desktop",
-      "empty-disabled",
-      projectPreview.locator("body")
-    )
+    await clearDay.click()
+    await expect(
+      projectPreview.getByRole("heading", {
+        name: "この日の予定はまだありません。",
+      })
+    ).toBeVisible()
+    await expect(clearDay).toBeDisabled()
   })
 
   test("seseragi-landing-page / desktop links to Playground and selects Composable", async ({

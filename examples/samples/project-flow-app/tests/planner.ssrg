@@ -1,0 +1,55 @@
+// 旅行プランナーの移動時間・並べ替え・割り勘計算を確かめる単体テストです。
+import * as arrays from "std/array"
+import * as test from "std/test"
+import {
+  AddPresetSpot,
+  Dining,
+  Day1,
+  MoveSpotDown,
+  SplitSummary,
+  Spot,
+  calculateSplit,
+  categoryTotal,
+  dayTotalMinutes,
+  initialState,
+  segmentMinutes,
+  spotsForDay,
+  totalTransitMinutes,
+  update,
+} from "self/trip/model"
+
+pub let tests: test.Test = test.suite "旅行プランナー" [test.test "割り勘計算は 1 人あたりと端数を正確に求める" (
+  test.equal
+    (SplitSummary {
+      totalYen: 10000,
+      travelers: 3,
+      perPersonYen: 3333,
+      remainderYen: 1
+    }) (calculateSplit 10000 3)
+), test.test "スポットを下に移動すると日程の順番が入れ替わる" ({
+      let next = update (MoveSpotDown "kyoto-station") (initialState ())
+      let day1 = spotsForDay Day1 next.spots
+      let firstId = match arrays.head day1 {
+        Just spot -> spot.id
+        Nothing -> ""
+      }
+      test.equal "kiyomizu" firstId
+    }
+  ), test.test "プリセット追加で 1 日目のスポット数と合計時間が増える" ({
+      let before = initialState ()
+      let after = update (AddPresetSpot "nanzenji") before
+      let beforeMin = dayTotalMinutes (spotsForDay Day1 before.spots)
+      let afterMin = dayTotalMinutes (spotsForDay Day1 after.spots)
+      test.equal True (afterMin > beforeMin)
+    }
+  ), test.test "移動時間は 2 地点の座標差から最小 8 分以上で算出される" ({
+      let day1 = spotsForDay Day1 (initialState ()).spots
+      let transit = totalTransitMinutes day1
+      let firstLeg = match (arrays.get 0 day1, arrays.get 1 day1) {
+        (Just a, Just b) -> segmentMinutes a b
+        _ -> 0
+      }
+      test.equal True (firstLeg >= 8 && transit >= firstLeg)
+    }
+  ), test.test "食事カテゴリの合計金額を正しく集計する" (test.equal 12800 (categoryTotal Dining (initialState ()).spots)),
+]

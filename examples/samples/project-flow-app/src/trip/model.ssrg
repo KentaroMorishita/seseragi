@@ -1,0 +1,385 @@
+// 旅行プランナーの状態・スポット・移動時間・割り勘計算を純粋関数でまとめます。
+import * as arrays from "std/array"
+
+pub type SpotCategory deriving Eq, Show =
+  | Sightseeing
+  | Dining
+  | Lodging
+  | Transit
+
+pub type DayFilter deriving Eq, Show =
+  | Day1
+  | Day2
+
+pub type ActiveTab deriving Eq, Show =
+  | PlanTab
+  | BudgetTab
+  | ShareTab
+
+pub type SaveState deriving Eq, Show =
+  | SaveIdle
+  | Saving
+  | SaveFailed String
+  | Saved String
+
+pub struct Spot deriving Eq, Show {
+  id: String,
+  day: Int,
+  name: String,
+  area: String,
+  category: SpotCategory,
+  stayMinutes: Int,
+  costYen: Int,
+  mapX: Int,
+  mapY: Int,
+  note: String,
+}
+
+pub struct SplitSummary deriving Eq, Show, Debug { totalYen: Int, travelers: Int, perPersonYen: Int, remainderYen: Int, }
+
+pub struct TripState {
+  activeTab: ActiveTab,
+  activeDay: DayFilter,
+  spots: Array<Spot>,
+  focusedSpotId: String,
+  travelers: Int,
+  simulateFailure: Bool,
+  saveState: SaveState,
+}
+
+pub type TripAction =
+  | SelectTab ActiveTab
+  | SelectDay DayFilter
+  | FocusSpot String
+  | MoveSpotUp String
+  | MoveSpotDown String
+  | RemoveSpot String
+  | AddPresetSpot String
+  | ClearDaySpots
+  | ChangeTravelers Int
+  | ToggleSimulateFailure Bool
+  | StartSave
+  | FinishSave (Either<String, String>)
+  | ResetTrip
+
+pub fn dayNumber day: DayFilter -> Int = match day {
+  Day1 -> 1
+  Day2 -> 2
+}
+
+pub fn categoryLabel category: SpotCategory -> String = match category {
+  Sightseeing -> "観光"
+  Dining -> "食事"
+  Lodging -> "宿泊"
+  Transit -> "移動"
+}
+
+pub fn formatYen amount: Int -> String = `${amount}円`
+
+pub fn initialSpots -> Array<Spot> = [
+  Spot {
+    id: "kyoto-station",
+    day: 1,
+    name: "京都駅",
+    area: "下京区",
+    category: Transit,
+    stayMinutes: 20,
+    costYen: 1400,
+    mapX: 110,
+    mapY: 165,
+    note: "コインロッカーに荷物を預けて出発",
+  },
+  Spot {
+    id: "kiyomizu",
+    day: 1,
+    name: "清水寺・産寧坂",
+    area: "東山",
+    category: Sightseeing,
+    stayMinutes: 90,
+    costYen: 2000,
+    mapX: 295,
+    mapY: 145,
+    note: "朝の澄んだ時間帯に舞台から市街を一望",
+  },
+  Spot {
+    id: "nishiki",
+    day: 1,
+    name: "錦市場で昼ごはん",
+    area: "中京区",
+    category: Dining,
+    stayMinutes: 60,
+    costYen: 5400,
+    mapX: 175,
+    mapY: 98,
+    note: "出汁巻き・湯葉・季節の総菜を分け合う",
+  },
+  Spot {
+    id: "kamogawa",
+    day: 1,
+    name: "鴨川沿いの珈琲店",
+    area: "木屋町",
+    category: Dining,
+    stayMinutes: 45,
+    costYen: 3200,
+    mapX: 225,
+    mapY: 112,
+    note: "川床を眺めながら夕暮れまで休憩",
+  },
+  Spot {
+    id: "gion-inn",
+    day: 1,
+    name: "祇園の町家宿",
+    area: "祇園",
+    category: Lodging,
+    stayMinutes: 60,
+    costYen: 36000,
+    mapX: 278,
+    mapY: 108,
+    note: "チェックイン後、花見小路を散策",
+  },
+  Spot {
+    id: "fushimi",
+    day: 2,
+    name: "伏見稲荷大社",
+    area: "伏見",
+    category: Sightseeing,
+    stayMinutes: 80,
+    costYen: 1200,
+    mapX: 185,
+    mapY: 205,
+    note: "千本鳥居を四ツ辻まで歩いて折り返し",
+  },
+  Spot {
+    id: "byodoin",
+    day: 2,
+    name: "宇治・平等院鳳凰堂",
+    area: "宇治",
+    category: Sightseeing,
+    stayMinutes: 90,
+    costYen: 2800,
+    mapX: 265,
+    mapY: 255,
+    note: "庭園と鳳翔館をじっくり見学",
+  },
+  Spot {
+    id: "uji-matcha",
+    day: 2,
+    name: "宇治橋通りの抹茶甘味処",
+    area: "宇治",
+    category: Dining,
+    stayMinutes: 50,
+    costYen: 4200,
+    mapX: 315,
+    mapY: 238,
+    note: "挽きたて抹茶パフェと土産を購入して帰路へ",
+  },
+]
+
+pub fn presetSpots -> Array<Spot> = [
+  Spot {
+    id: "nanzenji",
+    day: 1,
+    name: "南禅寺・水路閣",
+    area: "左京区",
+    category: Sightseeing,
+    stayMinutes: 60,
+    costYen: 1600,
+    mapX: 335,
+    mapY: 72,
+    note: "赤レンガの水路閣と静かな庭園を散策",
+  },
+  Spot {
+    id: "arashiyama",
+    day: 2,
+    name: "嵐山・渡月橋",
+    area: "右京区",
+    category: Sightseeing,
+    stayMinutes: 90,
+    costYen: 2400,
+    mapX: 62,
+    mapY: 88,
+    note: "竹林の小径から川沿いをゆったり歩く",
+  },
+]
+
+pub fn initialState -> TripState = TripState {
+  activeTab: PlanTab,
+  activeDay: Day1,
+  spots: initialSpots (),
+  focusedSpotId: "kiyomizu",
+  travelers: 3,
+  simulateFailure: False,
+  saveState: SaveIdle,
+}
+
+pub fn spotsForDay day: DayFilter -> spots: Array<Spot> -> Array<Spot> = {
+  let targetDay = dayNumber day
+  arrays.filter (\spot: Spot -> spot.day == targetDay) spots
+}
+
+fn absDiff a: Int -> b: Int -> Int = if a >= b then a - b else b - a
+
+// 地図上の座標差から概算の移動時間（分）を算出します。
+pub fn segmentMinutes fromSpot: Spot -> toSpot: Spot -> Int = {
+  let distance = absDiff fromSpot.mapX toSpot.mapX + absDiff fromSpot.mapY toSpot.mapY
+  let raw = distance / 11 + 6
+  if raw < 8 then 8 else raw
+}
+
+fn sumTransitHelper spots: Array<Spot> -> idx: Int -> acc: Int -> Int =
+  match (arrays.get idx spots, arrays.get (idx + 1) spots) {
+    (Just a, Just b) -> sumTransitHelper spots (idx + 1) (acc + segmentMinutes a b)
+    _ -> acc
+  }
+
+pub fn totalTransitMinutes spots: Array<Spot> -> Int = sumTransitHelper spots 0 0
+
+pub fn totalStayMinutes spots: Array<Spot> -> Int =
+  spots
+  |> map (\s: Spot -> s.stayMinutes)
+  |> sum
+
+pub fn dayTotalMinutes spots: Array<Spot> -> Int =
+  totalStayMinutes spots + totalTransitMinutes spots
+
+pub fn totalTripCost spots: Array<Spot> -> Int =
+  spots
+  |> map (\s: Spot -> s.costYen)
+  |> sum
+
+pub fn categoryTotal category: SpotCategory -> spots: Array<Spot> -> Int =
+  spots
+  |> arrays.filter (\s: Spot -> s.category == category)
+  |> map (\s: Spot -> s.costYen)
+  |> sum
+
+pub fn calculateSplit totalYen: Int -> travelers: Int -> SplitSummary = {
+  let safeTravelers = if travelers < 1 then 1 else travelers
+  let perPerson = totalYen / safeTravelers
+  let remainder = totalYen - perPerson * safeTravelers
+  SplitSummary {
+    totalYen,
+    travelers: safeTravelers,
+    perPersonYen: perPerson,
+    remainderYen: remainder,
+  }
+}
+
+fn findIndexHelper spots: Array<Spot> -> id: String -> idx: Int -> Int =
+  match arrays.get idx spots {
+    Nothing -> -1
+    Just spot -> if spot.id == id then idx else findIndexHelper spots id (idx + 1)
+  }
+
+fn swapAdjacent spots: Array<Spot> -> leftIdx: Int -> Array<Spot> = {
+  let total = arrays.length spots
+  let indices = arrays.fromIterable (0 ..= total - 1)
+  let build = \i: Int ->
+    if i == leftIdx then
+      arrays.get (leftIdx + 1) spots
+    else if i == leftIdx + 1 then
+      arrays.get leftIdx spots
+    else
+      arrays.get i spots
+  [spot | Just spot <- map build indices]
+}
+
+fn reorderWithinDay day: DayFilter
+  -> id: String
+  -> moveUp: Bool
+  -> spots: Array<Spot>
+  -> Array<Spot> = {
+    let targetDay = dayNumber day
+    let daySpots = spotsForDay day spots
+    let otherSpots = arrays.filter (\s: Spot -> s.day != targetDay) spots
+    let idx = findIndexHelper daySpots id 0
+    let reordered = if moveUp && idx > 0 then swapAdjacent daySpots (idx - 1) else if
+    ! moveUp
+      && idx >= 0
+      && idx + 1 < arrays.length daySpots then
+      swapAdjacent daySpots idx
+    else
+      daySpots
+    if targetDay == 1 then
+      arrays.concat [
+        reordered,
+        otherSpots
+      ]
+    else
+      arrays.concat [
+        otherSpots,
+        reordered
+      ]
+  }
+
+fn hasSpot id: String -> spots: Array<Spot> -> Bool = findIndexHelper spots id 0 >= 0
+
+fn addPresetById id: String -> day: DayFilter -> spots: Array<Spot> -> Array<Spot> =
+  if hasSpot id spots then
+    spots
+  else
+    match arrays.find (\s: Spot -> s.id == id) (presetSpots ()) {
+  Nothing -> spots
+  Just preset -> arrays.append [Spot { ...preset, day: dayNumber day }] spots
+}
+
+pub fn update action: TripAction -> state: TripState -> TripState = match action {
+  SelectTab tab -> TripState { ...state, activeTab: tab }
+  SelectDay day -> {
+    let dayList = spotsForDay day state.spots
+    let nextFocus = match arrays.head dayList {
+      Just first -> first.id
+      Nothing -> ""
+    }
+    TripState { ...state, activeDay: day, focusedSpotId: nextFocus }
+  }
+  FocusSpot id -> TripState { ...state, focusedSpotId: id }
+  MoveSpotUp id -> TripState {
+    ...state,
+    spots: reorderWithinDay state.activeDay id True state.spots,
+    focusedSpotId: id,
+    saveState: SaveIdle,
+  }
+  MoveSpotDown id -> TripState {
+    ...state,
+    spots: reorderWithinDay state.activeDay id False state.spots,
+    focusedSpotId: id,
+    saveState: SaveIdle,
+  }
+  RemoveSpot id -> {
+    let nextSpots = arrays.filter (\s: Spot -> s.id != id) state.spots
+    let dayList = spotsForDay state.activeDay nextSpots
+    let nextFocus = match arrays.head dayList {
+      Just first -> first.id
+      Nothing -> ""
+    }
+    TripState {
+      ...state,
+      spots: nextSpots,
+      focusedSpotId: nextFocus,
+      saveState: SaveIdle,
+    }
+  }
+  AddPresetSpot id -> TripState {
+    ...state,
+    spots: addPresetById id state.activeDay state.spots,
+    focusedSpotId: id,
+    saveState: SaveIdle,
+  }
+  ClearDaySpots -> {
+    let targetDay = dayNumber state.activeDay
+    let nextSpots = arrays.filter (\s: Spot -> s.day != targetDay) state.spots
+    TripState { ...state, spots: nextSpots, focusedSpotId: "", saveState: SaveIdle, }
+  }
+  ChangeTravelers count -> {
+    let clamped = if count < 1 then 1 else if count > 6 then 6 else count
+    TripState { ...state, travelers: clamped }
+  }
+  ToggleSimulateFailure flag -> TripState { ...state, simulateFailure: flag }
+  StartSave -> TripState { ...state, saveState: Saving }
+  FinishSave outcome -> match outcome {
+    Left msg -> TripState { ...state, saveState: SaveFailed msg }
+    Right url -> TripState { ...state, saveState: Saved url }
+  }
+  ResetTrip -> initialState ()
+}
