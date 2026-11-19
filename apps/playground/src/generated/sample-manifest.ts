@@ -570,7 +570,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:81d7e7953ab270ea17bcd53edaabef97f24f03c58fb989d8faaa69626fa8c45c",
       "guidePath": "examples/samples/form-todo/guide.md",
       "sourceHash": "sha256:0a787f56f71344b395ea135efe1ddd1a8a3fba0bb6bc4cf2c9402fd1dc73a971",
-      "workspaceHash": "sha256:db21347932d27f809387259e20a8e57f88ca366cb858e14c7909db2c8ff03e7c",
+      "workspaceHash": "sha256:1b158417dcb432f915a58830b54436c9287873d5d8408ae868951b63aef5a29b",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -602,7 +602,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "booking/model.ssrg",
             "sourcePath": "examples/samples/form-todo/src/booking/model.ssrg",
-            "sourceHash": "sha256:fb59ccfbb754f48a28a3873b9bfc334350867ed22c98f195296bb17db177b970"
+            "sourceHash": "sha256:a8b56796275a5da14752db1f439b6d842696f2e8799a16e07694edb720b09b79"
           },
           {
             "path": "components/checkout.ssrg",
