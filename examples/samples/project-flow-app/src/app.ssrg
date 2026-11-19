@@ -78,19 +78,27 @@ fn headerView send: (TripAction -> Task<Unit>)
     html.header { style: styles.headerStyle (), children: [titleBlock, tabs], }
   }
 
-fn bodyView send: (TripAction -> Task<Unit>)
+effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+effect fn parseUrl value: String -> html.WebUrl fails String =
+  mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
+
+fn bodyView mapAssets: routeMap.MapAssets
+  -> send: (TripAction -> Task<Unit>)
   -> state: TripState
   -> html.Html<Task<Unit>> =
   match state.activeTab {
     PlanTab -> html.div {
       style: styles.twoColGridStyle (),
-      children: [routeMap.view send state, timeline.view send state],
+      children: [routeMap.view mapAssets send state, timeline.view send state],
     }
     BudgetTab -> budget.view send state
     ShareTab -> shareView.view send state
   }
 
-fn pageView state: MutableSignal<TripState>
+fn pageView mapAssets: routeMap.MapAssets
+  -> state: MutableSignal<TripState>
   -> current: TripState
   -> html.Html<Task<Unit>> =
   {
@@ -99,13 +107,16 @@ fn pageView state: MutableSignal<TripState>
       style: styles.pageStyle (),
       children: html.div {
         style: styles.shellStyle (),
-        children: [headerView send current, bodyView send current],
+        children: [headerView send current, bodyView mapAssets send current],
       },
     }
   }
 
 pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String = do {
+  centralMapUrl <- parseUrl "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/samples/trip-planner/kyoto-central-map.jpg"
+  wideMapUrl <- parseUrl "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/samples/trip-planner/kyoto-uji-wide-map.jpg"
+  let mapAssets = routeMap.MapAssets { centralMapUrl, wideMapUrl }
   let initial: TripState = initialState ()
   state <- signals.make initial
-  succeed (signals.map (pageView state) state)
+  succeed (signals.map (pageView mapAssets state) state)
 }
