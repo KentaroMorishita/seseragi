@@ -2666,7 +2666,7 @@ describe("Playground sample catalog", () => {
     }
   })
 
-  test("keeps surface switching global and Discover workspace-local", async () => {
+  test("keeps surface switching global and opens examples from Search", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)
     ).text()
@@ -2679,43 +2679,31 @@ describe("Playground sample catalog", () => {
     expect(html).toContain('class="ui-view-switch pg-views"')
     expect(html).toContain('<a href="./tour/">')
     expect(html).toContain('class="ui-card-head pg-code-head"')
-    // Search の入口（⌘K）は、例の一覧を開く
+    // 例・レッスン・API・設定は、一つの Search（⌘K）から探す
     expect(html).toContain('id="search-button"')
+    expect(html).toContain('id="search-dialog"')
+    expect(html).toContain('role="combobox"')
+    expect(html).toContain('role="listbox"')
+    for (const removed of [
+      'id="sample-browser-dialog"',
+      'id="reference-browser-dialog"',
+      'id="reference-browser-button"',
+      'id="settings-button"',
+      'id="sample-kind-filter"',
+      "Recipe",
+      "Showcase",
+    ]) {
+      expect(html).not.toContain(removed)
+    }
+    expect(main).toContain("connectSearchPalette({")
+    expect(main).toContain("search.open({ opener: searchButton })")
     expect(main).toContain(
-      'searchButton.addEventListener("click", () => sampleBrowserButton.click())'
+      'search.open({ filter: "examples", opener: sampleBrowserButton })'
     )
-    expect(html).toContain("順序を持つ学習はTour")
-    expect(html).toContain("Minimal / GuidedはWeb UI例の説明量")
-    expect(html).not.toContain('id="sample-browser-learn-tab"')
-    expect(html).not.toContain('id="sample-browser-discover-tab"')
-    expect(html).not.toContain('class="sample-browser-tabs"')
-    expect(html).not.toContain('id="sample-learning-paths"')
-    expect(html).toContain('id="sample-search"')
-    expect(html).toContain('id="sample-kind-filter"')
-    expect(html).toContain('id="sample-topic-filter"')
-    expect(html).toContain('id="sample-capability-filter"')
-    expect(html).toContain('id="sample-featured-filter"')
-    expect(html).toContain('id="sample-new-filter"')
-    expect(html).not.toContain('<option value="lesson">')
-    expect(html).not.toContain('id="sample-select"')
-    expect(html).not.toContain("初級 01")
-    expect(main).toContain("connectSampleBrowser(")
+    expect(main).toContain("exampleEntries(")
+    expect(main).toContain('kind !== "lesson"')
     expect(main).toContain("discoverGroups")
-    expect(main).not.toContain("sampleBrowserLearnTab")
-    const browser = await Bun.file(
-      new URL("../src/ui/sample-browser.ts", import.meta.url)
-    ).text()
-    expect(browser).toContain('kind !== "lesson"')
-    expect(browser).toContain("sample-discover-group")
-    expect(browser).toContain("experienceLabel(sample.experience)")
-    expect(browser).toContain("architectureLabel(sample.architecture)")
-    expect(browser).toContain("sample-card-prerequisite")
-    expect(browser).toContain("sample-card-comparison")
-    expect(browser).not.toContain("setMode")
-    expect(browser).not.toContain("前提:")
-    expect(browser).not.toContain("次:")
   })
-
   test("starts from the canonical starter and keeps Blank distinct", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)
@@ -2726,10 +2714,11 @@ describe("Playground sample catalog", () => {
     const hello = samples.find((sample) => sample.id === "hello-world")
 
     expect(hello).toBeDefined()
-    expect(html).toContain('id="sample-new-blank-button"')
-    expect(html).toContain('id="sample-starter-button"')
+    // New file と最初の例は Search の Settings から、Reset はコードの見出しから
     expect(html).toContain('id="reset-sample-button"')
-    expect(html).toContain("空のmain.ssrgから書く")
+    expect(main).toContain('id: "new-file"')
+    expect(main).toContain('id: "first-example"')
+    expect(main).toContain('id: "reset"')
     expect(main).toContain('sample.id === "hello-world"')
     expect(main).toContain("createWorkspace(defaultSample.workspace)")
     expect(main).toContain('createSingleFileWorkspace("")')
@@ -2740,7 +2729,6 @@ describe("Playground sample catalog", () => {
     expect(main).toContain("cancelActiveExecution()")
     expect(main).toContain("showTextOutput(")
   })
-
   test("keeps Input and clear controls independent", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)
@@ -2982,19 +2970,19 @@ describe("Playground sample catalog", () => {
     const main = await Bun.file(
       new URL("../src/main.ts", import.meta.url)
     ).text()
-    const reference = await Bun.file(
-      new URL("../src/ui/reference-browser.ts", import.meta.url)
+    const palette = await Bun.file(
+      new URL("../src/ui/search-palette.ts", import.meta.url)
     ).text()
 
-    expect(html).toContain('id="reference-browser-button"')
-    expect(html).toContain('id="reference-search"')
-    expect(html).toContain('id="reference-category"')
+    // API は Search の範囲の一つ。選んだ項目の説明だけを描く
+    expect(html).toContain('id="search-detail"')
+    expect(palette).toContain("options.renderApiDetail(item)")
+    expect(palette).toContain("if (dialog.open) render()")
     expect(main).toContain("createLiveAnalysis<WorkspaceAnalysisResult>({")
     expect(main).toMatch(/analysisHoverAt\(\s*latestAnalysis,/)
     expect(main).toContain(
-      "referenceBrowser.setCatalog(analysis.activeDocument.standardLibrary)"
+      "search.setApiCatalog(analysis.activeDocument.standardLibrary)"
     )
-    expect(reference).not.toContain("const referenceItems")
   })
 
   test("keeps pending live analysis from overwriting Run diagnostics", async () => {

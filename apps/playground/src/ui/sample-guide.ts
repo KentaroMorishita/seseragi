@@ -1,10 +1,5 @@
 import type { PlaygroundSample } from "../samples"
 import { renderGuideMarkdown } from "./guide-markdown"
-import {
-  architectureLabel,
-  experienceLabel,
-  focusLabel,
-} from "./sample-browser"
 
 type SampleGuideElements = {
   readonly button: HTMLButtonElement
@@ -16,6 +11,8 @@ type SampleGuideElements = {
   readonly topics: HTMLUListElement
   readonly body: HTMLElement
   readonly source: HTMLElement
+  // 見出しの上に出す、例のグループ名（「ブラウザの画面」など）
+  readonly groupTitle: (sample: PlaygroundSample) => string
 }
 
 export function connectSampleGuide(elements: SampleGuideElements): {
@@ -55,10 +52,8 @@ export function connectSampleGuide(elements: SampleGuideElements): {
   return {
     setSample: (sample) => {
       elements.button.hidden = false
-      elements.category.textContent =
-        sample.experience === undefined
-          ? `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
-          : `${experienceLabel(sample.experience)} · ${architectureLabel(sample.architecture)} · ${difficultyLabel(sample.difficulty)} · ${focusLabel(sample.focus)}`
+      // 内部の分類名（Recipe など）は出さず、例のグループ名を出す
+      elements.category.textContent = elements.groupTitle(sample)
       elements.title.textContent = sample.title
       elements.summary.textContent = sample.summary
       renderGuideMarkdown(elements.body, sample.guide)
@@ -83,12 +78,4 @@ export function connectSampleGuide(elements: SampleGuideElements): {
       elements.source.textContent = ""
     },
   }
-}
-
-function difficultyLabel(value: PlaygroundSample["difficulty"]): string {
-  return { beginner: "初級", intermediate: "中級", advanced: "上級" }[value]
-}
-
-function kindLabel(value: PlaygroundSample["kind"]): string {
-  return { lesson: "Lesson", recipe: "Recipe", showcase: "Showcase" }[value]
 }

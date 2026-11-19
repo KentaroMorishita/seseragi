@@ -28,12 +28,14 @@ for (const action of ["sample", "reset", "clear"] as const) {
     if (action === "clear") {
       await page.locator("#clear-output-button").click()
     } else {
-      await page.locator("#sample-browser-button").click()
-      await page
-        .locator(
-          action === "reset" ? "#reset-sample-button" : "#sample-starter-button"
-        )
-        .click()
+      if (action === "reset") {
+        await page.locator("#reset-sample-button").click()
+      } else {
+        // 最初の例に戻る操作は、Search の Settings にある
+        await page.locator("#search-button").click()
+        await page.locator('[data-filter="settings"]').click()
+        await page.locator('[data-command="first-example"]').click()
+      }
     }
     await expect(page.locator("#run-button")).toBeEnabled()
     expect(await listenerCount(page)).toBe(0)

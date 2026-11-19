@@ -33,13 +33,13 @@ import {
 import { resolveEditorLineWidth } from "./editor/format-width"
 import { createEditorPreferencesStore } from "./preferences/editor-preferences"
 import { createPreviewDocument } from "./preview-document"
-import { connectPreviewLinks } from "./runtime/preview-links"
 import type { BrowserExecution } from "./runtime/browser-execution"
 import { prepareBrowserForeignRuntime } from "./runtime/foreign-runtime"
 import {
   type IsolatedExecutionRequest,
   startIsolatedProject,
 } from "./runtime/isolated-execution"
+import { connectPreviewLinks } from "./runtime/preview-links"
 import {
   isPreviewNavigationCancellation,
   previewNavigationCancelled,
@@ -58,17 +58,19 @@ import "./ui/design/index.css"
 import "./ui/playground.css"
 import { connectEditorSettings } from "./ui/editor-settings"
 import { requiredElement } from "./ui/elements"
+import { connectExecutionSettings } from "./ui/execution-settings"
 import { connectMobilePanels } from "./ui/mobile-panels"
-import { renderRunStatus } from "./ui/run-status"
-import { connectSheetDrag } from "./ui/sheet-drag"
-import { createThemeController } from "./ui/theme"
-import { browserStorage, connectThemeButton } from "./ui/theme-button"
 import { connectOverflowMenu } from "./ui/overflow-menu"
 import { connectPanelLayout } from "./ui/panel-layout"
 import { connectPreviewFullscreen } from "./ui/preview-fullscreen"
-import { connectReferenceBrowser } from "./ui/reference-browser"
-import { connectSampleBrowser } from "./ui/sample-browser"
+import { createReferenceCard } from "./ui/reference-card"
+import { renderRunStatus } from "./ui/run-status"
 import { connectSampleGuide } from "./ui/sample-guide"
+import { exampleEntries, lessonEntries } from "./ui/search-index"
+import { connectSearchPalette, type SearchCommand } from "./ui/search-palette"
+import { connectSheetDrag } from "./ui/sheet-drag"
+import { createThemeController } from "./ui/theme"
+import { browserStorage, connectThemeButton } from "./ui/theme-button"
 import { createWorkspaceEditorSessions } from "./workspace/editor-session"
 import {
   connectWorkspaceTabs,
@@ -103,7 +105,6 @@ import {
   workspaceProjectRevision,
 } from "./workspace/project-request"
 import { playgroundSession } from "./workspace/shared-session"
-import { connectExecutionSettings } from "./ui/execution-settings"
 
 type WorkspaceAnalysisResult = Readonly<{
   activeDocument?: AnalysisDocument
@@ -138,68 +139,11 @@ const sampleBrowserButton = requiredElement(
   "#sample-browser-button",
   HTMLButtonElement
 )
-const sampleBrowserDialog = requiredElement(
-  "#sample-browser-dialog",
-  HTMLDialogElement
-)
-const sampleBrowserClose = requiredElement(
-  "#sample-browser-close",
-  HTMLButtonElement
-)
-const sampleNewBlankButton = requiredElement(
-  "#sample-new-blank-button",
-  HTMLButtonElement
-)
-const sampleStarterButton = requiredElement(
-  "#sample-starter-button",
-  HTMLButtonElement
-)
-const referenceBrowserButton = requiredElement(
-  "#reference-browser-button",
-  HTMLButtonElement
-)
-const settingsButton = requiredElement("#settings-button", HTMLButtonElement)
-const referenceBrowserDialog = requiredElement(
-  "#reference-browser-dialog",
-  HTMLDialogElement
-)
-const referenceBrowserClose = requiredElement(
-  "#reference-browser-close",
-  HTMLButtonElement
-)
-const referenceSearch = requiredElement("#reference-search", HTMLInputElement)
-const referenceCategory = requiredElement(
-  "#reference-category",
-  HTMLSelectElement
-)
-const referenceResultCount = requiredElement(
-  "#reference-result-count",
-  HTMLElement
-)
-const referenceResults = requiredElement("#reference-results", HTMLElement)
-const sampleSearch = requiredElement("#sample-search", HTMLInputElement)
-const sampleKindFilter = requiredElement(
-  "#sample-kind-filter",
-  HTMLSelectElement
-)
-const sampleTopicFilter = requiredElement(
-  "#sample-topic-filter",
-  HTMLSelectElement
-)
-const sampleCapabilityFilter = requiredElement(
-  "#sample-capability-filter",
-  HTMLSelectElement
-)
-const sampleFeaturedFilter = requiredElement(
-  "#sample-featured-filter",
-  HTMLInputElement
-)
-const sampleNewFilter = requiredElement("#sample-new-filter", HTMLInputElement)
-const sampleResultCount = requiredElement("#sample-result-count", HTMLElement)
-const sampleDiscoverResults = requiredElement(
-  "#sample-discover-results",
-  HTMLElement
-)
+const searchDialog = requiredElement("#search-dialog", HTMLDialogElement)
+const searchInput = requiredElement("#search-input", HTMLInputElement)
+const searchScopes = requiredElement("#search-scopes", HTMLElement)
+const searchResults = requiredElement("#search-results", HTMLElement)
+const searchDetail = requiredElement("#search-detail", HTMLElement)
 const currentSampleTitle = requiredElement("#current-sample-title", HTMLElement)
 const convertBindingsButton = requiredElement(
   "#convert-bindings-button",
@@ -318,15 +262,9 @@ const sampleGuide = connectSampleGuide({
   topics: sampleGuideConcepts,
   body: sampleGuideBody,
   source: sampleGuideSource,
-})
-const referenceBrowser = connectReferenceBrowser({
-  buttons: [referenceBrowserButton],
-  dialog: referenceBrowserDialog,
-  closeButton: referenceBrowserClose,
-  search: referenceSearch,
-  category: referenceCategory,
-  count: referenceResultCount,
-  results: referenceResults,
+  groupTitle: (sample) =>
+    discoverGroups.find((group) => group.samples.includes(sample.id))?.title ??
+    "",
 })
 connectPreviewFullscreen(outputSection, fullscreenPreviewButton)
 
@@ -388,25 +326,44 @@ let latestAnalysis: AnalysisDocument | undefined
 let persistenceFailureShown = false
 let editorEditable: boolean | undefined
 
-const sampleBrowser = connectSampleBrowser(
-  {
-    button: sampleBrowserButton,
-    dialog: sampleBrowserDialog,
-    closeButton: sampleBrowserClose,
-    search: sampleSearch,
-    kindFilter: sampleKindFilter,
-    topicFilter: sampleTopicFilter,
-    capabilityFilter: sampleCapabilityFilter,
-    featuredFilter: sampleFeaturedFilter,
-    newFilter: sampleNewFilter,
-    resultCount: sampleResultCount,
-    results: sampleDiscoverResults,
-    currentTitle: currentSampleTitle,
+// Search（⌘K）は、例・レッスン・API・設定を一つにまとめる入口（DESIGN.md「探す場所は一つ」）。
+const search = connectSearchPalette({
+  dialog: searchDialog,
+  input: searchInput,
+  scopes: searchScopes,
+  results: searchResults,
+  detail: searchDetail,
+  examples: exampleEntries(
+    samples.filter(({ kind }) => kind !== "lesson"),
+    discoverGroups
+  ),
+  onExample: (id) => {
+    const sample = samples.find((candidate) => candidate.id === id)
+    return sample === undefined ? false : loadSample(sample, "Sample loaded")
   },
-  samples,
-  discoverGroups,
-  (sample) => loadSample(sample, "Sample loaded")
-)
+  // レッスンの一覧は、Search を初めて開いたときに読み込む。
+  loadLessons: async () =>
+    lessonEntries(
+      (await import("../../../examples/tour/curriculum.json")).default
+    ),
+  onLesson: (id) =>
+    window.location.assign(
+      new URL(`tour/?lesson=${encodeURIComponent(id)}`, document.baseURI)
+    ),
+  commands: searchCommands(),
+  renderApiDetail: (item) => createReferenceCard(document, item),
+})
+// コードのカードの見出しに出す例の名前と、Search の中の「今開いている例」の印
+const sampleBrowser = {
+  setCurrent: (sample: (typeof samples)[number]): void => {
+    currentSampleTitle.textContent = sample.title
+    search.setCurrentExample(sample.id)
+  },
+  setBlank: (): void => {
+    currentSampleTitle.textContent = "Blank workspace"
+    search.setCurrentExample(undefined)
+  },
+}
 
 const editor = createEditor(
   editorHost,
@@ -422,27 +379,29 @@ let showWhitespace = preferences.get().showWhitespace
 preferences.subscribe(({ showWhitespace: visible }) =>
   setWhitespaceVisible(visible)
 )
+// エディターの設定のダイアログは、Search の Settings から開く。
+const settingsTrigger = document.createElement("button")
 connectEditorSettings({
-  button: settingsButton,
-  returnFocus: mobileToolsButton,
+  button: settingsTrigger,
+  returnFocus: searchButton,
   idPrefix: "playground",
   store: preferences,
 })
 
 connectOverflowMenu({ button: mobileToolsButton, menu: mobileToolsMenu })
-connectThemeButton(
-  themeButton,
-  createThemeController({
-    storage: browserStorage(),
-    root: document.documentElement,
-    query: window.matchMedia("(prefers-color-scheme: dark)"),
-    eventTarget: window,
-  }),
-  themeSystemButton
+const themeController = createThemeController({
+  storage: browserStorage(),
+  root: document.documentElement,
+  query: window.matchMedia("(prefers-color-scheme: dark)"),
+  eventTarget: window,
+})
+connectThemeButton(themeButton, themeController, themeSystemButton)
+searchButton.addEventListener("click", () =>
+  search.open({ opener: searchButton })
 )
-// Search（⌘K）は、例・レッスン・API・設定を一つにまとめる入口（#1358）。
-// 今は例の一覧を開く。
-searchButton.addEventListener("click", () => sampleBrowserButton.click())
+sampleBrowserButton.addEventListener("click", () =>
+  search.open({ filter: "examples", opener: sampleBrowserButton })
+)
 
 const liveAnalysis: LiveAnalysisController =
   createLiveAnalysis<WorkspaceAnalysisResult>({
@@ -471,7 +430,7 @@ const liveAnalysis: LiveAnalysisController =
       if (!workspaceAnalysisIsCurrent(identity)) return
       latestAnalysis = analysis.activeDocument
       if (analysis.activeDocument !== undefined) {
-        referenceBrowser.setCatalog(analysis.activeDocument.standardLibrary)
+        search.setApiCatalog(analysis.activeDocument.standardLibrary)
       }
       if (runButton.disabled && identity === activeRunAnalysisRevision) return
       setActiveEditorDiagnostics(analysis.diagnostics)
@@ -640,21 +599,9 @@ const resetSample = (): void => {
   } else {
     loadSample(currentSample, "Workspace reset", false)
   }
-  if (sampleBrowserDialog.open) sampleBrowserDialog.close()
   editor.focus()
 }
 resetSampleButton.addEventListener("click", resetSample)
-const newBlank = (): void => {
-  if (!loadBlankWorkspace("Blank workspace created")) return
-  if (sampleBrowserDialog.open) sampleBrowserDialog.close()
-  editor.focus()
-}
-sampleNewBlankButton.addEventListener("click", newBlank)
-sampleStarterButton.addEventListener("click", () => {
-  if (!loadSample(defaultSample, "Starter loaded")) return
-  sampleBrowserDialog.close()
-  editor.focus()
-})
 const formatSource = async (): Promise<void> => {
   const requestedFile = workspaceState.activeFile
   if (requestedFile === undefined || !isWorkspaceSourcePath(requestedFile)) {
@@ -796,6 +743,98 @@ document.addEventListener("keydown", (event) => {
   }
 })
 window.addEventListener("beforeunload", () => cancelActiveExecution())
+
+function searchCommands(): readonly SearchCommand[] {
+  const starterSample = defaultSample as (typeof samples)[number]
+  const themeTag =
+    (preference: "light" | "dark" | "system") => (): string | undefined =>
+      themeController.get().preference === preference ? "Current" : undefined
+  return [
+    {
+      id: "new-file",
+      title: "New file",
+      detail: "空の main.ssrg から書き始める",
+      keywords: "blank 白紙 新規",
+      run: () => {
+        if (loadBlankWorkspace("Blank workspace created")) editor.focus()
+        return undefined
+      },
+    },
+    {
+      id: "first-example",
+      title: "Open first example",
+      detail: `最初の例「${starterSample.title}」を開く`,
+      keywords: "starter 最初",
+      run: () => {
+        if (loadSample(starterSample, "Starter loaded")) editor.focus()
+        return undefined
+      },
+    },
+    {
+      id: "reset",
+      title: "Reset",
+      detail: "今のコードを、開いたときの状態に戻す",
+      keywords: "元に戻す",
+      run: () => {
+        resetSample()
+        return undefined
+      },
+    },
+    {
+      id: "clear-file",
+      title: "Clear file",
+      detail: "開いているファイルを空にする",
+      visible: () => !clearSourceButton.disabled,
+      run: () => {
+        clearSourceButton.click()
+        return undefined
+      },
+    },
+    {
+      id: "theme-light",
+      title: "Light theme",
+      detail: "明るい色で表示する",
+      keywords: "theme テーマ",
+      tag: themeTag("light"),
+      run: () => {
+        themeController.set("light")
+        return undefined
+      },
+    },
+    {
+      id: "theme-dark",
+      title: "Dark theme",
+      detail: "暗い色で表示する",
+      keywords: "theme テーマ",
+      tag: themeTag("dark"),
+      run: () => {
+        themeController.set("dark")
+        return undefined
+      },
+    },
+    {
+      id: "theme-system",
+      title: "System theme",
+      detail: "OS の設定に合わせる",
+      keywords: "theme テーマ",
+      tag: themeTag("system"),
+      run: () => {
+        themeController.set("system")
+        return undefined
+      },
+    },
+    {
+      id: "editor-settings",
+      title: "Editor settings",
+      detail: "インデントの表示と、Format の行の幅を変える",
+      keywords: "settings 設定 whitespace width",
+      run: () => {
+        settingsTrigger.click()
+        return undefined
+      },
+    },
+  ]
+}
 
 function loadSample(
   sample: (typeof samples)[number],

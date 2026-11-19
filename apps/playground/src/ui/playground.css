@@ -604,13 +604,235 @@ body.preview-fullscreen-fallback-open {
   }
 }
 
+/* ---------- Search（⌘K） ---------- */
+/* 例・レッスン・API・設定を一つにまとめた入口。入力欄、範囲のチップ、結果、
+   API の説明、キーの案内を縦に並べる。モバイルでは下から出るシートにする。 */
+
+.pg-search-dialog {
+  width: min(680px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(640px, calc(100dvh - 96px));
+  margin: 12vh auto auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  color: var(--fg-1);
+  background: var(--surface);
+  box-shadow: var(--shadow-float);
+}
+
+.pg-search-dialog[open] {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+}
+
+.pg-search-dialog::backdrop {
+  background: var(--scrim);
+  backdrop-filter: blur(6px);
+}
+
+.pg-search-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 58px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--line);
+  color: var(--fg-3);
+}
+
+.pg-search-field-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.pg-search-field input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  color: var(--fg-1);
+  background: transparent;
+  font: inherit;
+  font-size: var(--text-lg);
+}
+
+.pg-search-field input::placeholder {
+  color: var(--fg-3);
+}
+
+/* フォーカスは入力欄の枠ではなく、行の下線で示す */
+.pg-search-field input:focus-visible {
+  outline: 0;
+}
+
+.pg-search-field:focus-within {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.pg-search-scopes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pg-search-scope {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: var(--fg-2);
+  background: transparent;
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pg-search-scope:hover {
+  background: var(--surface-2);
+}
+
+.pg-search-scope[aria-pressed="true"] {
+  color: var(--on-primary);
+  background: var(--primary);
+}
+
+.pg-search-scope:focus-visible {
+  outline: 2px solid var(--accent-ring);
+  outline-offset: 2px;
+}
+
+.pg-search-results {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 6px 8px 10px;
+}
+
+.pg-search-group h3 {
+  margin: 10px 10px 4px;
+  color: var(--fg-3);
+  font-size: var(--text-2xs);
+  font-weight: 650;
+  letter-spacing: 0.06em;
+}
+
+.pg-search-result {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.pg-search-result[aria-selected="true"] {
+  background: var(--accent-soft);
+}
+
+.pg-search-icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--fg-2);
+  background: var(--surface-2);
+}
+
+.pg-search-result[data-scope="examples"] .pg-search-icon {
+  border: 0;
+  color: var(--on-brand);
+  background: linear-gradient(135deg, var(--brand-from), var(--brand-to));
+}
+
+.pg-search-result[data-scope="lessons"] .pg-search-icon {
+  color: var(--syn-keyword);
+}
+
+.pg-search-result[data-scope="api"] .pg-search-icon {
+  color: var(--syn-type);
+}
+
+.pg-search-text {
+  min-width: 0;
+}
+
+.pg-search-text strong {
+  display: block;
+  overflow: hidden;
+  font-size: var(--text-md);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pg-search-result[data-scope="api"] .pg-search-text strong,
+.pg-search-signature {
+  font-family: var(--font-code);
+}
+
+.pg-search-text small {
+  display: block;
+  overflow: hidden;
+  color: var(--fg-3);
+  font-size: var(--text-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pg-search-result[aria-current="true"] .pg-search-text strong::after {
+  content: " ·  Open";
+  color: var(--accent-ink);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+}
+
+.pg-search-empty {
+  margin: 0;
+  padding: 28px 18px;
+  color: var(--fg-3);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.pg-search-detail {
+  max-height: 200px;
+  overflow: auto;
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+.pg-search-detail[hidden] {
+  display: none;
+}
+
+.pg-search-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+  color: var(--fg-3);
+  background: var(--surface-2);
+  font-size: var(--text-xs);
+}
+
 /* ============ 部品（旧 styles.css から引き継ぎ、色をトークンに置き換え） ============ */
 
 body.preview-fullscreen-fallback-open {
   overflow: hidden !important;
   overscroll-behavior: none;
 }
-.sample-browser-dialog {
+.pg-dialog {
   width: min(960px, calc(100vw - 40px));
   max-width: none;
   max-height: min(780px, calc(100dvh - 40px));
@@ -623,15 +845,15 @@ body.preview-fullscreen-fallback-open {
   background: var(--surface);
   box-shadow: var(--shadow-float);
 }
-.sample-browser-dialog::backdrop {
+.pg-dialog::backdrop {
   background: var(--scrim);
   backdrop-filter: blur(8px);
 }
-.sample-browser-dialog[open] {
+.pg-dialog[open] {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
 }
-.sample-browser-dialog-header {
+.pg-dialog-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -640,23 +862,23 @@ body.preview-fullscreen-fallback-open {
   border-bottom: 1px solid var(--line-strong);
   background: linear-gradient(135deg, var(--surface-2), var(--surface) 58%);
 }
-.sample-browser-kicker {
+.pg-dialog-kicker {
   color: var(--accent-ink);
   font-size: 10px;
   font-weight: 850;
   letter-spacing: 0.15em;
 }
-.sample-browser-dialog h2 {
+.pg-dialog h2 {
   margin: 5px 0 4px;
   color: var(--fg-1);
   font-size: 24px;
 }
-.sample-browser-dialog-header p {
+.pg-dialog-head p {
   margin: 0;
   color: var(--fg-2);
   font-size: 13px;
 }
-.sample-browser-close {
+.pg-dialog-close {
   width: 38px;
   min-height: 38px;
   flex: 0 0 auto;
@@ -667,57 +889,11 @@ body.preview-fullscreen-fallback-open {
   cursor: pointer;
   font-size: 21px;
 }
-.sample-browser-content {
+.pg-dialog-content {
   min-height: 0;
   overflow: auto;
   overscroll-behavior: contain;
   padding: 22px 26px 30px;
-}
-.reference-browser-dialog[open] {
-  grid-template-rows: auto auto minmax(0, 1fr);
-}
-.reference-browser-filters {
-  display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(150px, 220px) auto;
-  align-items: end;
-  gap: 12px;
-  padding: 14px 26px;
-  border-bottom: 1px solid var(--line-strong);
-  background: var(--surface);
-}
-.reference-browser-filters label {
-  display: grid;
-  gap: 5px;
-  color: var(--fg-3);
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.reference-browser-filters input,
-.reference-browser-filters select {
-  min-height: 40px;
-  border: 1px solid var(--line-strong);
-  border-radius: 9px;
-  padding: 0 11px;
-  color: var(--fg-1);
-  background: var(--surface);
-  outline: none;
-}
-.reference-browser-filters input:focus,
-.reference-browser-filters select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-ring);
-}
-.reference-results {
-  min-height: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  align-content: start;
-  gap: 12px;
-  overflow: auto;
-  overscroll-behavior: contain;
-  padding: 20px 26px 28px;
 }
 .reference-card {
   min-width: 0;
@@ -799,6 +975,12 @@ body.preview-fullscreen-fallback-open {
   display: block;
   margin-top: 9px;
   color: var(--syn-keyword);
+}
+
+.pg-search-detail .reference-card {
+  border: 0;
+  padding: 0;
+  background: transparent;
 }
 .analysis-hover {
   max-width: min(520px, calc(100vw - 36px));
@@ -886,213 +1068,6 @@ body.preview-fullscreen-fallback-open {
   color: var(--fg-2);
   font-size: 11px;
   line-height: 1.45;
-}
-.sample-start-section {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr);
-  gap: 18px;
-  margin-bottom: 20px;
-  border: 1px solid var(--line-strong);
-  border-radius: 14px;
-  padding: 16px;
-  background: var(--surface);
-}
-.sample-start-section h3 {
-  margin: 5px 0 4px;
-  color: var(--fg-1);
-  font-size: 15px;
-}
-.sample-start-section p {
-  margin: 0;
-  color: var(--fg-3);
-  font-size: 11px;
-  line-height: 1.5;
-}
-.sample-start-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-.sample-start-actions button {
-  display: grid;
-  gap: 3px;
-  min-height: 58px;
-  border: 1px solid var(--line-strong);
-  border-radius: 10px;
-  padding: 9px 11px;
-  color: var(--fg-1);
-  background: var(--surface-2);
-  cursor: pointer;
-  text-align: left;
-}
-.sample-start-actions button:hover,
-.sample-start-actions button:focus-visible {
-  border-color: var(--accent);
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-.sample-start-actions button span {
-  color: var(--fg-3);
-  font-size: 10px;
-}
-.sample-discover-intro {
-  margin-bottom: 16px;
-  color: var(--fg-2);
-  font-size: 12px;
-  line-height: 1.6;
-}
-.sample-discover-intro strong {
-  color: var(--fg-1);
-}
-.sample-discover-group + .sample-discover-group {
-  margin-top: 30px;
-}
-.sample-discover-heading {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 11px;
-}
-.sample-discover-kind {
-  color: var(--accent-ink);
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.sample-discover-heading h3 {
-  margin: 0;
-  color: var(--fg-1);
-  font-size: 15px;
-}
-.sample-discover-heading p {
-  margin: 0;
-  color: var(--fg-3);
-  font-size: 11px;
-}
-.sample-discover-filters {
-  display: grid;
-  grid-template-columns: minmax(210px, 2fr) repeat(3, minmax(120px, 1fr));
-  align-items: end;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.sample-discover-filters label:not(.sample-check) {
-  display: grid;
-  gap: 5px;
-  color: var(--fg-3);
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.04em;
-}
-.sample-discover-filters input[type="search"],
-.sample-discover-filters select {
-  min-width: 0;
-  min-height: 38px;
-  border: 1px solid var(--line-strong);
-  border-radius: 9px;
-  padding: 0 10px;
-  color: var(--fg-1);
-  background: var(--surface);
-  font: inherit;
-}
-.sample-check {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--fg-2);
-  font-size: 11px;
-}
-.sample-result-count {
-  margin: 0 0 10px;
-  color: var(--fg-3);
-  font-size: 11px;
-}
-.sample-discover-groups:empty::after {
-  content: "条件に一致するRecipe / Showcaseはありません。";
-  display: block;
-  border: 1px dashed var(--line-strong);
-  border-radius: 12px;
-  padding: 22px;
-  color: var(--fg-3);
-  font-size: 12px;
-  text-align: center;
-}
-.sample-card-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-.sample-card {
-  min-height: 146px;
-  display: grid;
-  grid-template-rows: auto auto auto auto auto;
-  align-content: start;
-  gap: 5px;
-  padding: 15px;
-  border: 1px solid var(--line-strong);
-  border-radius: 13px;
-  color: var(--fg-1);
-  background: var(--surface);
-  cursor: pointer;
-  text-align: left;
-}
-.sample-card:hover,
-.sample-card:focus-visible {
-  border-color: var(--accent);
-  background: var(--surface-2);
-  outline: none;
-}
-.sample-card[aria-current="true"] {
-  border-color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent-ring);
-}
-.sample-card-meta {
-  color: var(--accent-ink);
-  font-size: 10px;
-  font-weight: 800;
-  line-height: 1.45;
-  letter-spacing: 0.04em;
-}
-.sample-card strong {
-  color: var(--fg-1);
-  font-size: 14px;
-  line-height: 1.35;
-}
-.sample-card-summary {
-  color: var(--fg-2);
-  font-size: 12px;
-  line-height: 1.5;
-}
-.sample-card-topics {
-  margin-top: 3px;
-  color: var(--fg-3);
-  font-size: 10px;
-}
-.sample-card-prerequisite {
-  color: var(--fg-2);
-  font-size: 10px;
-  line-height: 1.4;
-}
-.sample-card-comparison {
-  color: var(--accent-ink);
-  font-size: 10px;
-  line-height: 1.4;
-}
-.sample-card-badges {
-  min-height: 18px;
-  display: flex;
-  gap: 5px;
-  margin-top: 4px;
-}
-.sample-card-badge {
-  padding: 2px 6px;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  color: var(--accent-ink);
-  font-size: 8px;
-  font-weight: 850;
-  letter-spacing: 0.08em;
 }
 .code-workspace[data-explorer-visible="true"] {
   grid-template-columns: minmax(180px, var(--explorer-width)) 7px minmax(
@@ -1832,57 +1807,23 @@ body.preview-fullscreen-fallback-open {
   text-underline-offset: 3px;
 }
 @media (max-width: 760px), (max-width: 960px) and (max-height: 520px) {
-  .reference-browser-filters {
-    grid-template-columns: 1fr;
-    padding: 12px 14px;
-  }
-  .reference-browser-filters input,
-  .reference-browser-filters select {
-    font-size: 16px;
-  }
-  .reference-results {
-    grid-template-columns: 1fr;
-    padding: 14px;
-  }
-  .sample-browser-dialog {
+  .pg-dialog {
     width: calc(100vw - 16px);
     max-height: calc(100dvh - 16px);
     border-radius: 16px;
   }
-  .sample-browser-dialog-header {
+  .pg-dialog-head {
     padding: 18px 18px 15px;
   }
-  .sample-browser-dialog h2 {
+  .pg-dialog h2 {
     font-size: 20px;
   }
-  .sample-browser-dialog-header p {
+  .pg-dialog-head p {
     max-width: 32rem;
     font-size: 12px;
   }
-  .sample-browser-content {
+  .pg-dialog-content {
     padding: 17px 18px 24px;
-  }
-  .sample-start-section {
-    grid-template-columns: 1fr;
-  }
-  .sample-discover-heading {
-    display: block;
-  }
-  .sample-discover-heading p {
-    margin-top: 3px;
-  }
-  .sample-discover-filters {
-    grid-template-columns: 1fr;
-  }
-  .sample-discover-filters input[type="search"],
-  .sample-discover-filters select {
-    font-size: 16px;
-  }
-  .sample-card-grid {
-    grid-template-columns: 1fr;
-  }
-  .sample-card {
-    min-height: 0;
   }
   .code-workspace[data-explorer-visible="true"] {
     width: 100%;
@@ -2129,7 +2070,7 @@ body.preview-fullscreen-fallback-open {
 .interop-dialog {
   width: min(1120px, calc(100vw - 32px));
 }
-.interop-dialog .sample-browser-dialog-header > div {
+.interop-dialog .pg-dialog-head > div {
   min-width: 0;
 }
 .interop-content {
@@ -2531,6 +2472,25 @@ body.preview-fullscreen-fallback-open {
   }
 
   .code-workspace[data-explorer-visible="true"] .explorer-resizer {
+    display: none;
+  }
+}
+
+/* Search は、狭い画面では下から出るシートにする（DESIGN.md「Search」） */
+@media (max-width: 760px), (max-width: 960px) and (max-height: 520px) {
+  .pg-search-dialog {
+    width: 100vw;
+    max-height: 86dvh;
+    margin: auto 0 0;
+    border-bottom: 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .pg-search-field input {
+    font-size: 16px;
+  }
+
+  .pg-search-foot {
     display: none;
   }
 }
