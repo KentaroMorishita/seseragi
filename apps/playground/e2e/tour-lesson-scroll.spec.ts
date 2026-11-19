@@ -24,7 +24,9 @@ test("resets only the desktop lesson pane for every lesson route", async ({
   await expectLessonAtTop(page)
 
   await scrollLessonToEnd(page)
-  await page.locator('[data-lesson-id="web-link-image"]').click()
+  // 目次（コースマップ）から別のレッスンを選ぶ
+  await page.locator("#tour-menu-button").click()
+  await page.locator('#tour-chapters [data-lesson-id="web-link-image"]').click()
   await expectLessonAtTop(page)
   await expect(page.locator("#tour-lesson-title")).toContainText(
     "外部リンクと画像を表示する"
@@ -51,16 +53,17 @@ test("resets only the desktop lesson pane for every lesson route", async ({
   expect(scrollTargets).not.toContain("tour-navigation")
 })
 
-test("keeps the mobile page scroll reset", async ({ page }) => {
+test("keeps the mobile lesson scroll reset", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto("/tour/?lesson=web-feature-state")
-  await page.evaluate(() => {
-    document.body.scrollTop = document.body.scrollHeight
-  })
-  expect(await page.evaluate(() => document.body.scrollTop)).toBeGreaterThan(0)
+  await expect(page.locator("#tour-lesson-title")).toContainText(
+    "部品の分割と状態の管理を保つ"
+  )
+  // 狭い画面でも、レッスンは自分の列の中でスクロールする
+  await scrollLessonToEnd(page)
 
   await page.locator("#tour-next-button").click()
-  await expect.poll(() => page.evaluate(() => document.body.scrollTop)).toBe(0)
+  await expectLessonAtTop(page)
   await expect(page.locator("#tour-lesson-title")).toContainText(
     "Listを組み立てる"
   )

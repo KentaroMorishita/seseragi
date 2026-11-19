@@ -31,7 +31,8 @@ export type SearchPaletteOptions = Readonly<{
   detail: HTMLElement
   examples: readonly SearchEntry[]
   onExample: (id: string) => boolean | undefined
-  loadLessons: () => Promise<readonly SearchEntry[]>
+  // 開いたときに読み込む項目（レッスン、Tour では例も）。どの範囲の項目を混ぜてもよい
+  loadEntries: () => Promise<readonly SearchEntry[]>
   onLesson: (id: string) => void
   commands: readonly SearchCommand[]
   renderApiDetail: (item: AnalysisReferenceItem) => HTMLElement
@@ -293,7 +294,7 @@ export function connectSearchPalette(
     if (lessonsRequested) return
     lessonsRequested = true
     void options
-      .loadLessons()
+      .loadEntries()
       .then((loaded) => {
         lessons = loaded
         render()

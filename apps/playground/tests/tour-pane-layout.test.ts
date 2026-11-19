@@ -13,46 +13,31 @@ describe("Tour desktop pane layout", () => {
     expect(layout).toContain("beginExclusiveResize(")
     expect(layout).toContain("ownsExclusiveResize(")
     expect(layout).toContain("finishExclusiveResize(")
-    expect(layout).toContain('window.matchMedia("(min-width: 1181px)")')
+    expect(layout).toContain('window.matchMedia("(min-width: 761px)")')
     expect(layout).toContain("onLayoutChange()")
+    // 目次はコースマップとして重ねて開くので、目次の列の幅は持たない
+    expect(layout).not.toContain("navigation")
   })
 
-  test("exposes three separators and two compact accessible toggles", async () => {
+  test("exposes two separators and an accessible Output toggle", async () => {
     const html = await Bun.file(new URL("tour/index.html", root)).text()
 
-    for (const id of [
-      "tour-navigation-resizer",
-      "tour-lesson-resizer",
-      "tour-output-resizer",
-    ]) {
+    for (const id of ["tour-lesson-resizer", "tour-output-resizer"]) {
       expect(html).toContain(`id="${id}"`)
-      expect(html).toContain('role="separator"')
     }
-    expect(html).toContain('id="tour-navigation-pane-toggle"')
-    expect(html).toContain('aria-label="lesson一覧を閉じる"')
+    expect(html.match(/role="separator"/g)).toHaveLength(2)
+    expect(html).not.toContain('id="tour-navigation-resizer"')
     expect(html).toContain('id="tour-output-pane-toggle"')
     expect(html).toContain('aria-label="Outputを閉じる"')
   })
 
-  test("keeps desktop collapse state out of the narrow layout", async () => {
-    const styles = await Bun.file(new URL("src/tour/styles.css", root)).text()
+  test("keeps the code, Run and Output in one column with a collapsible Output", async () => {
+    const styles = await Bun.file(new URL("src/tour/tour.css", root)).text()
 
-    expect(styles).toContain("@media (min-width: 1181px)")
-    expect(styles).toContain(
-      '.tour-workspace[data-navigation-collapsed="true"]'
-    )
-    expect(styles).toMatch(
-      /data-navigation-collapsed="true"[\s\S]*?\.tour-navigation-boundary-toggle \{[\s\S]*?left: 0;[\s\S]*?transform: none;/
-    )
     expect(styles).toContain('.tour-lab[data-output-collapsed="true"]')
     expect(styles).toMatch(
-      /@media \(max-width: 1180px\)[\s\S]*?\.tour-pane-toggle,[\s\S]*?display: none;/
+      /\.tour-lesson-resizer \{[\s\S]*?cursor: col-resize;/
     )
-    expect(styles).toMatch(
-      /\.tour-pane-resizer--vertical \{[\s\S]*?cursor: col-resize;/
-    )
-    expect(styles).toMatch(
-      /\.tour-pane-resizer--horizontal \{[\s\S]*?cursor: row-resize;/
-    )
+    expect(styles).toMatch(/\.tour-flow-line \{[\s\S]*?cursor: row-resize;/)
   })
 })

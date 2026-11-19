@@ -3,170 +3,124 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0b1110" />
+    <meta name="theme-color" content="#f4f6f7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0e10" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
-      content="現行Seseragiを編集・実行しながら順に学ぶcanonical Tour"
+      content="Seseragi のコードを書き換えて動かしながら、順に学ぶ Tour"
     />
     <title>A Tour of Seseragi</title>
   </head>
-  <body class="tour-body">
-    <div id="tour-app" class="tour-shell">
-      <header class="tour-topbar" style="position: sticky; top: 0">
-        <div class="tour-brand">
+  <body class="ui-app">
+    <div id="tour-app" class="app-shell pg-shell tour-shell">
+      <header class="pg-top tour-topbar">
+        <a class="pg-brand" href="../" aria-label="Seseragi Playground">
+          <img src="/brand/seseragi-icon.svg" alt="" width="28" height="28" />
           <strong>Seseragi</strong>
-        </div>
-        <div class="surface-switcher tour-surface-switcher">
+          <span class="pg-version">v__SESERAGI_VERSION__</span>
+        </a>
+        <nav class="ui-view-switch pg-views" aria-label="Views">
+          <a href="../"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5" /></svg><span>Playground</span></a>
+          <a href="./" aria-current="page"><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h4a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 0-1.5-1.5h-4zM13.5 3.5h-4A1.5 1.5 0 0 0 8 5v8a1.5 1.5 0 0 1 1.5-1.5h4z" /></svg><span>Tour</span></a>
+        </nav>
+        <div class="pg-top-actions">
           <button
-            id="tour-surface-switcher-button"
-            class="surface-switcher-button"
+            id="tour-search-button"
+            class="ui-search-trigger pg-search"
             type="button"
-            aria-haspopup="menu"
-            aria-controls="tour-surface-switcher-menu"
-            aria-expanded="false"
+            aria-haspopup="dialog"
+            aria-controls="search-dialog"
+            aria-keyshortcuts="Meta+K Control+K"
           >
-            <span>Tour</span>
-            <span aria-hidden="true">⌄</span>
+            <svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+            <span class="ui-search-trigger-text">Examples, lessons, API…</span>
+            <kbd class="ui-kbd">⌘K</kbd>
           </button>
-          <div
-            id="tour-surface-switcher-menu"
-            class="surface-switcher-menu"
-            role="menu"
-            hidden
-          >
-            <a href="../" role="menuitem">Playground</a>
-            <a href="./" role="menuitem" aria-current="page">Tour</a>
-          </div>
-        </div>
-        <div class="tour-location" aria-live="polite">
-          <span id="tour-step-label">Step 1</span>
-          <progress id="tour-progress" max="1" value="0">0 completed</progress>
-          <span id="tour-progress-label">0 completed</span>
-        </div>
-        <div class="tour-actions" role="toolbar" aria-label="Tour tools">
+          <button
+            id="tour-theme-button"
+            class="ui-button ui-button--icon"
+            type="button"
+            aria-label="Switch to dark theme"
+            title="Switch to dark theme"
+          ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" /><path d="M8 2.5v11A5.5 5.5 0 0 0 8 2.5z" fill="currentColor" stroke="none" /></svg></button>
           <button
             id="tour-tools-button"
-            class="global-tools-button"
+            class="ui-button ui-button--icon"
             type="button"
             aria-haspopup="menu"
             aria-controls="tour-tools-menu"
             aria-expanded="false"
-            aria-label="Tour menu"
-          >•••</button>
-          <div id="tour-tools-menu" class="global-tools-menu" role="menu" hidden>
-            <button id="tour-reset-button" type="button" role="menuitem">
-              <span aria-hidden="true">↺</span> Reset lesson
-            </button>
-            <button
-              id="tour-settings-button"
-              type="button"
-              role="menuitem"
-              aria-haspopup="dialog"
-            >
-              <span aria-hidden="true">⚙</span> Settings…
-            </button>
+            aria-label="More"
+          ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="3.5" cy="8" r="0.75" fill="currentColor" /><circle cx="8" cy="8" r="0.75" fill="currentColor" /><circle cx="12.5" cy="8" r="0.75" fill="currentColor" /></svg></button>
+          <div id="tour-tools-menu" class="pg-menu" role="menu" hidden>
+            <button id="tour-reset-button" type="button" role="menuitem">Reset lesson</button>
+            <button id="tour-theme-system-button" type="button" role="menuitem" hidden>Use system theme</button>
           </div>
-          <button id="tour-run-button" class="run-button" type="button">
-            <span aria-hidden="true">▶</span>
-            <span>Run</span>
-            <kbd>⌘↵</kbd>
-          </button>
         </div>
       </header>
 
-      <nav class="tour-local-navigation" aria-label="Tour workspace panels">
-        <button
-          id="tour-menu-button"
-          class="tour-menu-button"
-          type="button"
-          aria-controls="tour-navigation"
-          aria-expanded="false"
-        >Curriculum</button>
-        <button id="tour-lesson-focus-button" type="button">Lesson</button>
-        <button id="tour-code-focus-button" type="button">Code</button>
-      </nav>
-
-      <main class="tour-workspace">
-        <aside
-          id="tour-navigation"
-          class="tour-navigation"
-          aria-label="Tour category、chapter、lesson"
+      <main class="tour-workspace" data-mobile-panel="lesson">
+        <article
+          id="tour-lesson"
+          class="tour-lesson"
+          aria-labelledby="tour-lesson-title"
         >
-          <div class="tour-navigation-heading">
-            <span>CURRICULUM</span>
-            <strong>A Tour of Seseragi</strong>
+          <div class="tour-lesson-bar">
             <button
-              id="tour-menu-close-button"
-              class="tour-navigation-close"
+              id="tour-menu-button"
+              class="ui-button ui-button--ghost tour-contents-button"
               type="button"
-              aria-label="Category / chapter / lesson一覧を閉じる"
-            >閉じる</button>
+              aria-controls="tour-navigation"
+              aria-expanded="false"
+            ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h10M3 8h10M3 12h10" /></svg><span>Contents</span></button>
+            <span id="tour-chapter-label" class="tour-chapter-label"></span>
+            <span
+              id="tour-chapter-progress"
+              class="tour-chapter-progress"
+              role="img"
+            ></span>
+            <span id="tour-step-label" class="tour-step-label ui-numeric"></span>
           </div>
-          <nav id="tour-chapters"></nav>
-        </aside>
 
-        <div
-          id="tour-navigation-resizer"
-          class="tour-pane-resizer tour-pane-resizer--vertical tour-navigation-resizer"
-          role="separator"
-          tabindex="0"
-          aria-label="lesson一覧の幅を変更"
-          aria-controls="tour-navigation"
-          aria-orientation="vertical"
-          aria-valuemin="240"
-          aria-valuemax="640"
-          aria-valuenow="280"
-        >
-          <button
-            id="tour-navigation-pane-toggle"
-            class="tour-pane-toggle tour-navigation-boundary-toggle"
-            type="button"
-            aria-controls="tour-navigation"
-            aria-expanded="true"
-            aria-label="lesson一覧を閉じる"
-            title="lesson一覧を閉じる"
-          ><span aria-hidden="true">◧</span></button>
-        </div>
-
-        <article class="tour-lesson" aria-labelledby="tour-lesson-title">
-          <div>
-            <span id="tour-chapter-label" class="tour-kicker"></span>
+          <header class="tour-lesson-head">
             <h1 id="tour-lesson-title" tabindex="-1"></h1>
             <p id="tour-lesson-summary" class="tour-lead"></p>
-          </div>
-
-          <section class="tour-learning-section" aria-labelledby="tour-focus-title">
-            <h2 id="tour-focus-title">今回できるようになること</h2>
             <p id="tour-goal" class="tour-goal"></p>
-            <ul id="tour-focus-list" class="tour-focus-list"></ul>
-          </section>
+          </header>
 
           <section
-            id="tour-prerequisite-section"
-            class="tour-learning-section"
-            aria-labelledby="tour-prerequisite-title"
-            hidden
+            id="tour-try-card"
+            class="ui-card tour-try"
+            aria-labelledby="tour-try-title"
           >
-            <h2 id="tour-prerequisite-title">前提lesson</h2>
-            <p id="tour-prerequisite-copy"></p>
-            <ul id="tour-prerequisite-list" class="tour-prerequisite-list"></ul>
-          </section>
-
-          <section
-            id="tour-run-section"
-            class="tour-learning-section"
-            aria-labelledby="tour-run-title"
-            hidden
-          >
-            <h2 id="tour-run-title">実行して確認</h2>
-            <p id="tour-run-copy"></p>
-            <pre id="tour-expected-output" class="tour-result-contract"></pre>
+            <div class="tour-try-head">
+              <h2 id="tour-try-title">Try it</h2>
+              <span class="ui-spacer"></span>
+              <button
+                id="tour-exercise-button"
+                class="ui-button ui-button--ghost ui-button--sm"
+                type="button"
+                hidden
+              >Show answer</button>
+              <button
+                id="tour-try-reset-button"
+                class="ui-button ui-button--ghost ui-button--sm"
+                type="button"
+              >Reset</button>
+            </div>
+            <ol id="tour-try-steps" class="tour-try-steps"></ol>
+            <details id="tour-expected" class="tour-expected">
+              <summary>期待する出力</summary>
+              <pre id="tour-expected-output" class="tour-result-contract"></pre>
+              <pre id="tour-exercise-output" class="tour-result-contract" hidden></pre>
+            </details>
           </section>
 
           <section
             id="tour-guide-section"
-            class="tour-learning-section"
+            class="tour-section"
             aria-labelledby="tour-guide-title"
+            hidden
           >
             <h2 id="tour-guide-title">読み方</h2>
             <div id="tour-guide" class="tour-guide"></div>
@@ -174,120 +128,109 @@
 
           <section
             id="tour-walkthrough-section"
-            class="tour-learning-section"
+            class="tour-section"
             aria-labelledby="tour-walkthrough-title"
             hidden
           >
-            <h2 id="tour-walkthrough-title">codeを上から追う</h2>
+            <h2 id="tour-walkthrough-title">Walkthrough</h2>
             <div id="tour-walkthrough" class="tour-walkthrough"></div>
           </section>
 
-          <section
-            id="tour-introduced-section"
-            class="tour-learning-section"
-            aria-labelledby="tour-introduced-title"
-            hidden
-          >
-            <h2 id="tour-introduced-title">新しく導入する構文・型・API</h2>
-            <dl id="tour-introduced" class="tour-introduced"></dl>
-          </section>
+          <details id="tour-further" class="tour-further">
+            <summary>Going further</summary>
+            <section
+              id="tour-focus-section"
+              class="tour-further-item"
+              aria-labelledby="tour-focus-title"
+            >
+              <h3 id="tour-focus-title">このレッスンで学ぶこと</h3>
+              <ul id="tour-focus-list" class="tour-focus-list"></ul>
+              <ul id="tour-topic-list" class="tour-topic-list" hidden></ul>
+            </section>
+            <section
+              id="tour-introduced-section"
+              class="tour-further-item"
+              aria-labelledby="tour-introduced-title"
+              hidden
+            >
+              <h3 id="tour-introduced-title">新しく出てきたもの</h3>
+              <dl id="tour-introduced" class="tour-introduced"></dl>
+            </section>
+            <section
+              id="tour-diagnostic-section"
+              class="tour-further-item"
+              aria-labelledby="tour-diagnostic-title"
+              hidden
+            >
+              <h3 id="tour-diagnostic-title">よくある間違い</h3>
+              <p id="tour-diagnostic-heading" class="tour-diagnostic-heading"></p>
+              <p id="tour-diagnostic-copy"></p>
+              <button
+                id="tour-diagnostic-button"
+                class="ui-button ui-button--sm"
+                type="button"
+              >間違いの例をエディターで開く</button>
+              <pre
+                id="tour-diagnostic-output"
+                class="tour-diagnostic-contract"
+              ></pre>
+            </section>
+            <section
+              id="tour-recap-section"
+              class="tour-further-item"
+              aria-labelledby="tour-recap-title"
+              hidden
+            >
+              <h3 id="tour-recap-title">振り返り</h3>
+              <ul id="tour-recap-list" class="tour-recap-list"></ul>
+            </section>
+            <section
+              id="tour-prerequisite-section"
+              class="tour-further-item"
+              aria-labelledby="tour-prerequisite-title"
+              hidden
+            >
+              <h3 id="tour-prerequisite-title">前提のレッスン</h3>
+              <p id="tour-prerequisite-copy"></p>
+              <ul id="tour-prerequisite-list" class="tour-prerequisite-list"></ul>
+            </section>
+            <section
+              id="tour-next-section"
+              class="tour-further-item"
+              aria-labelledby="tour-next-title"
+              hidden
+            >
+              <h3 id="tour-next-title">次につながること</h3>
+              <p id="tour-next-copy"></p>
+              <ul id="tour-notes-list" class="tour-notes-list" hidden></ul>
+            </section>
+            <section
+              id="tour-deep-dive-section"
+              class="tour-further-item tour-deep-dive-section"
+              aria-labelledby="tour-deep-dive-title"
+              hidden
+            >
+              <h3 id="tour-deep-dive-title">設計の背景を読む</h3>
+              <ul id="tour-deep-dive-list"></ul>
+            </section>
+          </details>
 
-          <section
-            id="tour-try-section"
-            class="tour-learning-section"
-            aria-labelledby="tour-try-title"
-          >
-            <h2 id="tour-try-title">やってみよう</h2>
-            <p id="tour-challenge"></p>
-            <ul id="tour-topic-list" class="tour-topic-list"></ul>
-          </section>
-
-          <section
-            id="tour-exercise-section"
-            class="tour-learning-section"
-            aria-labelledby="tour-exercise-title"
-            hidden
-          >
-            <h2 id="tour-exercise-title">一箇所だけ変更する</h2>
-            <p id="tour-exercise-copy"></p>
-            <div class="tour-section-actions">
-              <button id="tour-exercise-button" type="button">
-                課題sourceを開く
-              </button>
-              <span>↺ Resetでlesson sourceへ戻ります</span>
-            </div>
-            <p class="tour-result-label">課題の期待結果</p>
-            <pre
-              id="tour-exercise-output"
-              class="tour-result-contract"
-            ></pre>
-          </section>
-
-          <section
-            id="tour-diagnostic-section"
-            class="tour-learning-section"
-            aria-labelledby="tour-diagnostic-title"
-            hidden
-          >
-            <h2 id="tour-diagnostic-title">よくある間違いとdiagnostic</h2>
-            <h3 id="tour-diagnostic-heading"></h3>
-            <p id="tour-diagnostic-copy"></p>
-            <button id="tour-diagnostic-button" type="button">
-              失敗例をエディタで開く
-            </button>
-            <pre
-              id="tour-diagnostic-output"
-              class="tour-diagnostic-contract"
-            ></pre>
-          </section>
-
-          <section
-            id="tour-recap-section"
-            class="tour-learning-section"
-            aria-labelledby="tour-recap-title"
-            hidden
-          >
-            <h2 id="tour-recap-title">振り返り</h2>
-            <ul id="tour-recap-list" class="tour-recap-list"></ul>
-          </section>
-
-          <section
-            id="tour-next-section"
-            class="tour-learning-section"
-            aria-labelledby="tour-next-title"
-            hidden
-          >
-            <h2 id="tour-next-title">次のlessonへ</h2>
-            <p id="tour-next-copy"></p>
-            <ul id="tour-notes-list" class="tour-notes-list" hidden></ul>
-          </section>
-
-          <section
-            id="tour-deep-dive-section"
-            class="tour-learning-section tour-deep-dive-section"
-            aria-labelledby="tour-deep-dive-title"
-            hidden
-          >
-            <span class="tour-kicker">RELATED ARTICLES</span>
-            <h2 id="tour-deep-dive-title">設計背景を読む</h2>
-            <p>
-              このlessonの背景、内部意味論、trade-offを関連記事で確認できます。
-            </p>
-            <ul id="tour-deep-dive-list"></ul>
-          </section>
-
-          <div class="tour-lesson-navigation">
-            <button id="tour-previous-button" type="button">← 前へ</button>
-            <button id="tour-next-button" type="button">次へ →</button>
-          </div>
+          <nav class="tour-lesson-navigation" aria-label="Lessons">
+            <button id="tour-next-button" class="tour-next-card" type="button"></button>
+            <button
+              id="tour-previous-button"
+              class="ui-button ui-button--ghost ui-button--sm tour-previous"
+              type="button"
+            ></button>
+          </nav>
         </article>
 
         <div
           id="tour-lesson-resizer"
-          class="tour-pane-resizer tour-pane-resizer--vertical tour-lesson-resizer"
+          class="tour-lesson-resizer"
           role="separator"
           tabindex="0"
-          aria-label="lesson本文とeditorの幅を変更"
+          aria-label="レッスンとコードの幅を変更"
           aria-controls="tour-lesson tour-lab"
           aria-orientation="vertical"
           aria-valuemin="300"
@@ -295,46 +238,38 @@
           aria-valuenow="420"
         ></div>
 
-        <section id="tour-lab" class="tour-lab" aria-label="Lesson editor and output">
+        <section id="tour-lab" class="tour-lab" aria-label="Lesson code and output">
           <div id="tour-code-pane" class="tour-code-pane">
-            <section class="tour-editor-panel" aria-label="Seseragi editor">
-              <div class="panel-heading">
-                <div>
-                  <span class="status-dot" id="tour-status-dot"></span>
-                  <span id="tour-status-text">Rust compiler ready</span>
-                </div>
-                <div class="tour-editor-heading-actions">
-                  <span class="file-name">main.ssrg</span>
-                  <button
-                    id="tour-format-button"
-                    class="editor-local-button"
-                    type="button"
-                    title="Format code with the shared Seseragi formatter"
-                  ><span aria-hidden="true">≡</span> Format</button>
-                  <button
-                    id="tour-output-pane-toggle"
-                    class="tour-pane-toggle"
-                    type="button"
-                    aria-controls="tour-output-section"
-                    aria-expanded="true"
-                    aria-label="Outputを閉じる"
-                    title="Outputを閉じる"
-                  ><span aria-hidden="true">▤</span></button>
-                </div>
+            <section class="ui-card tour-code-card" aria-label="Code">
+              <div class="ui-card-head tour-code-head">
+                <span class="tour-file-name">main.ssrg</span>
+                <span class="ui-spacer"></span>
+                <button
+                  id="tour-format-button"
+                  class="ui-button ui-button--ghost"
+                  type="button"
+                  title="Format code with the shared Seseragi formatter"
+                ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 4h10M3 7h7M3 10h10M3 13h5" /></svg><span class="pg-label">Format</span></button>
+                <button
+                  id="tour-output-pane-toggle"
+                  class="ui-button ui-button--icon"
+                  type="button"
+                  aria-controls="tour-output-section"
+                  aria-expanded="true"
+                  aria-label="Outputを閉じる"
+                  title="Outputを閉じる"
+                ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h11v9h-11zM2.5 9.5h11" /></svg></button>
               </div>
               <div id="tour-editor" class="editor-host"></div>
             </section>
 
             <section
               id="tour-input-section"
-              class="tour-input-section"
+              class="tour-input-section pg-input"
               aria-labelledby="tour-input-title"
               hidden
             >
-              <div class="panel-heading">
-                <span id="tour-input-title">Input</span>
-                <span class="hint">このlessonで使用</span>
-              </div>
+              <label id="tour-input-title" class="pg-input-label" for="tour-stdin-input">Input</label>
               <textarea
                 id="tour-stdin-input"
                 rows="3"
@@ -344,55 +279,67 @@
             </section>
           </div>
 
-          <div
-            id="tour-output-resizer"
-            class="tour-pane-resizer tour-pane-resizer--horizontal"
-            role="separator"
-            tabindex="0"
-            aria-label="editorとOutputの高さを変更"
-            aria-controls="tour-code-pane tour-output-section"
-            aria-orientation="horizontal"
-            aria-valuemin="280"
-            aria-valuemax="720"
-            aria-valuenow="480"
-          ></div>
+          <div class="tour-flow">
+            <div
+              id="tour-output-resizer"
+              class="tour-flow-line"
+              role="separator"
+              tabindex="0"
+              aria-label="コードと Output の高さを変更"
+              aria-controls="tour-code-pane tour-output-section"
+              aria-orientation="horizontal"
+              aria-valuemin="280"
+              aria-valuemax="720"
+              aria-valuenow="480"
+            ></div>
+            <div class="ui-run tour-run">
+              <button
+                id="tour-run-button"
+                class="ui-run-button"
+                type="button"
+                aria-label="Run"
+                aria-keyshortcuts="Meta+Enter Control+Enter"
+              ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.75v10.5L13 8z" /></svg></button>
+              <span class="ui-run-label" aria-hidden="true">Run <kbd class="ui-kbd">⌘↵</kbd></span>
+            </div>
+          </div>
 
           <section
             id="tour-output-section"
-            class="tour-output-section preview-fullscreen-surface"
+            class="ui-card tour-output-card preview-fullscreen-surface"
             aria-label="Program output"
           >
-            <div class="panel-heading">
-              <span>Output</span>
-              <div class="output-heading-actions">
-                <div class="output-view-toggle" aria-label="出力表示">
-                  <button
-                    id="tour-show-text-button"
-                    type="button"
-                    aria-pressed="true"
-                  >Text</button>
-                  <button
-                    id="tour-show-preview-button"
-                    type="button"
-                    aria-pressed="false"
-                  >Preview</button>
-                </div>
+            <div class="ui-card-head pg-output-head">
+              <h2 class="ui-card-title">Output</h2>
+              <div class="ui-segmented" role="group" aria-label="Output view">
                 <button
-                  id="tour-fullscreen-button"
-                  class="output-action-button"
+                  id="tour-show-text-button"
+                  type="button"
+                  aria-pressed="true"
+                >Console</button>
+                <button
+                  id="tour-show-preview-button"
                   type="button"
                   aria-pressed="false"
-                >Full screen</button>
+                >Preview</button>
               </div>
+              <span class="ui-spacer"></span>
+              <span id="tour-run-check" class="ui-status ui-status--ok" hidden>✓ 期待どおり</span>
+              <button
+                id="tour-fullscreen-button"
+                class="ui-button ui-button--ghost ui-button--sm"
+                type="button"
+                aria-pressed="false"
+              >Full screen</button>
             </div>
-            <p id="tour-preview-link-notice" class="preview-link-notice" role="status" aria-live="polite" hidden></p>
-            <div class="output-content">
+            <div class="output-content pg-output-body">
+              <p id="tour-preview-link-notice" class="preview-link-notice" role="status" aria-live="polite" hidden></p>
               <div
                 id="tour-output"
                 class="output-text"
                 tabindex="0"
                 aria-live="polite"
-              >Runを押すと結果がここに表示されます。</div>
+              >Run を押すと、結果がここに出ます。</div>
               <iframe
                 id="tour-html-preview"
                 title="Seseragi Tour HTML preview"
@@ -404,7 +351,74 @@
           </section>
         </section>
       </main>
+
+      <section
+        id="tour-navigation"
+        class="tour-map"
+        aria-labelledby="tour-map-title"
+        data-mobile-open="false"
+        hidden
+      >
+        <div class="tour-map-head">
+          <div>
+            <h2 id="tour-map-title">Contents</h2>
+            <p class="tour-map-progress">
+              <progress id="tour-progress" max="1" value="0">0 completed</progress>
+              <span id="tour-progress-label" class="ui-numeric">0 completed</span>
+            </p>
+          </div>
+          <button
+            id="tour-menu-close-button"
+            class="ui-button ui-button--icon"
+            type="button"
+            aria-label="Close contents"
+          ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="m4.5 4.5 7 7M11.5 4.5l-7 7" /></svg></button>
+        </div>
+        <nav id="tour-chapters" class="tour-map-chapters" aria-label="Chapters"></nav>
+      </section>
+
+      <nav class="tour-mobile-switch ui-segmented" aria-label="Lesson and code">
+        <button id="tour-lesson-focus-button" type="button" aria-pressed="true">Lesson</button>
+        <button id="tour-code-focus-button" type="button" aria-pressed="false">Code</button>
+      </nav>
+
+      <footer class="pg-foot">
+        <span class="pg-foot-status">
+          <span class="status-dot" id="tour-status-dot"></span>
+          <span id="tour-status-text">Ready</span>
+        </span>
+        <span class="ui-spacer"></span>
+        <a href="https://seseragi-docs.vercel.app/">Docs</a>
+        <a href="https://github.com/KentaroMorishita/seseragi">GitHub</a>
+      </footer>
     </div>
+
+    <dialog id="search-dialog" class="pg-search-dialog" aria-label="Search">
+      <div class="pg-search-field">
+        <svg class="ui-icon pg-search-field-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+        <input
+          id="search-input"
+          type="text"
+          role="combobox"
+          aria-label="Search examples, lessons, API, and settings"
+          aria-expanded="true"
+          aria-controls="search-results"
+          aria-autocomplete="list"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="Examples, lessons, API…"
+        />
+        <kbd class="ui-kbd">esc</kbd>
+      </div>
+      <div id="search-scopes" class="pg-search-scopes" role="group" aria-label="Scope"></div>
+      <div id="search-results" class="pg-search-results" role="listbox" aria-label="Results"></div>
+      <div id="search-detail" class="pg-search-detail" hidden></div>
+      <div class="pg-search-foot" aria-hidden="true">
+        <span><kbd class="ui-kbd">↑</kbd> <kbd class="ui-kbd">↓</kbd> Navigate</span>
+        <span><kbd class="ui-kbd">↵</kbd> Open</span>
+        <span><kbd class="ui-kbd">esc</kbd> Close</span>
+      </div>
+    </dialog>
     <script type="module" src="/src/tour/main.ts"></script>
     <script type="module" src="/src/tour/lesson-scroll.ts"></script>
   </body>

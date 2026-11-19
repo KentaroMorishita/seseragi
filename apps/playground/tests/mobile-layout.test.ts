@@ -91,21 +91,15 @@ describe("mobile editing layout contract", () => {
   })
 
   test("shows only the canonical brand icon in mobile headers", async () => {
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
-    const tourStyles = await Bun.file(
-      new URL("src/tour/styles.css", root)
-    ).text()
+    const tour = await Bun.file(new URL("tour/index.html", root)).text()
+    const playground = await Bun.file(new URL("index.html", root)).text()
 
-    expect(styles).toMatch(
-      /@media \(max-width: 760px\)[\s\S]*?\.brand strong \{[\s\S]*?font-size: 0;/
-    )
-    expect(tourStyles).toMatch(
-      /@media \(max-width: 760px\)[\s\S]*?\.tour-brand strong \{[\s\S]*?font-size: 0;/
-    )
-    expect(styles).not.toContain('content: "S"')
-    expect(tourStyles).not.toContain('content: "S"')
+    // Tour も Playground と同じ上のバー（ロゴの画像）を使う
+    for (const html of [tour, playground]) {
+      expect(html).toContain('<img src="/brand/seseragi-icon.svg"')
+      expect(html).not.toContain('content: "S"')
+    }
   })
-
   test("shows Search as a bottom sheet without internal category names", async () => {
     const palette = await Bun.file(
       new URL("src/ui/search-palette.ts", root)

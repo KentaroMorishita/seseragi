@@ -164,23 +164,31 @@ describe("Tour curriculum UI", () => {
 
     expect(playgroundHtml).toContain('class="ui-view-switch pg-views"')
     expect(playgroundHtml).toContain('<a href="./tour/">')
-    expect(tourHtml).toContain('href="../"')
-    expect(tourHtml).toContain('id="tour-surface-switcher-button"')
-    expect(tourHtml).toContain('id="tour-chapters"')
-    expect(tourHtml).toContain('id="tour-editor"')
-    expect(tourHtml).toContain('id="tour-run-button"')
-    expect(tourHtml).toContain('id="tour-reset-button"')
-    expect(tourHtml).toContain('id="tour-format-button"')
-    expect(tourHtml).toContain('id="tour-settings-button"')
-    expect(tourHtml).toContain('id="tour-guide"')
-    expect(tourHtml).toContain('id="tour-walkthrough"')
-    expect(tourHtml).toContain('id="tour-exercise-button"')
-    expect(tourHtml).toContain('id="tour-diagnostic-output"')
-    expect(tourHtml).toContain('id="tour-recap-list"')
-    expect(tourHtml).toContain('id="tour-input-section"')
-    expect(tourHtml).toContain('id="tour-output"')
-    expect(tourHtml).toContain('id="tour-html-preview"')
+    expect(tourHtml).toContain('class="ui-view-switch pg-views"')
+    expect(tourHtml).toContain('<a href="./" aria-current="page">')
+    for (const id of [
+      "tour-chapters",
+      "tour-editor",
+      "tour-run-button",
+      "tour-reset-button",
+      "tour-format-button",
+      "tour-search-button",
+      "search-dialog",
+      "tour-try-steps",
+      "tour-guide",
+      "tour-walkthrough",
+      "tour-exercise-button",
+      "tour-diagnostic-output",
+      "tour-recap-list",
+      "tour-input-section",
+      "tour-output",
+      "tour-html-preview",
+      "tour-next-button",
+    ]) {
+      expect(tourHtml).toContain(`id="${id}"`)
+    }
     expect(tourHtml).toContain('sandbox="allow-scripts allow-forms"')
+    expect(tourHtml).toContain("<summary>Going further</summary>")
     expect(tourMain).toContain("compileSingleFile(requestedSource)")
     expect(tourMain).toContain(
       "formatSingleFile(requestedSource, { lineWidth })"
@@ -194,11 +202,13 @@ describe("Tour curriculum UI", () => {
     expect(tourMain).toContain('code.className = "seseragi-highlight"')
     expect(tourMain).toContain("currentLesson.exerciseSource")
     expect(tourMain).toContain("currentLesson.diagnosticSource")
+    expect(tourMain).toContain("setEditorLinePins(")
+    expect(tourMain).toContain("markTryProgress(")
+    expect(tourMain).toContain("connectSearchPalette({")
     expect(tourMain).not.toContain("compile_single_file(")
     expect(vite).toContain("tour:")
     expect(vite).toContain("tour/index.html")
   })
-
   test("uses the shared full-screen control on both pages", async () => {
     const root = new URL("..", import.meta.url)
     const playgroundHtml = await Bun.file(new URL("index.html", root)).text()
@@ -208,15 +218,13 @@ describe("Tour curriculum UI", () => {
     const controller = await Bun.file(
       new URL("src/ui/preview-fullscreen.ts", root)
     ).text()
-    const styles = await Bun.file(new URL("src/styles.css", root)).text()
-
     expect(playgroundHtml).toContain('id="fullscreen-preview-button"')
     expect(tourHtml).toContain('id="tour-fullscreen-button"')
     expect(playgroundHtml).toContain(
       'class="output-section pg-output preview-fullscreen-surface"'
     )
     expect(tourHtml).toContain(
-      'class="tour-output-section preview-fullscreen-surface"'
+      'class="ui-card tour-output-card preview-fullscreen-surface"'
     )
     expect(playgroundMain).toContain("connectPreviewFullscreen(")
     expect(tourMain).toContain("connectPreviewFullscreen(")
@@ -227,7 +235,7 @@ describe("Tour curriculum UI", () => {
     const playgroundStyles = await Bun.file(
       new URL("src/ui/playground.css", root)
     ).text()
-    for (const css of [styles, playgroundStyles]) {
+    for (const css of [playgroundStyles]) {
       expect(css).toContain("body.preview-fullscreen-fallback-open")
       expect(css).toContain(
         '.preview-fullscreen-surface[data-preview-fullscreen="fallback"]'
@@ -240,77 +248,42 @@ describe("Tour curriculum UI", () => {
     const root = new URL("..", import.meta.url)
     const tourHtml = await Bun.file(new URL("tour/index.html", root)).text()
     const tourMain = await Bun.file(new URL("src/tour/main.ts", root)).text()
-    const styles = await Bun.file(
-      new URL("../src/tour/styles.css", import.meta.url)
-    ).text()
+    const styles = await Bun.file(new URL("src/tour/tour.css", root)).text()
 
     expect(tourHtml).toContain('id="tour-menu-close-button"')
-    expect(tourHtml).toContain(
-      'aria-label="Category / chapter / lesson一覧を閉じる"'
-    )
+    expect(tourHtml).toContain('aria-label="Close contents"')
     expect(tourHtml).toContain('id="tour-lesson-title" tabindex="-1"')
+    // 狭い画面では、下の Lesson / Code でレッスンとコードを切り替える
+    expect(tourHtml).toContain('id="tour-lesson-focus-button"')
+    expect(tourHtml).toContain('id="tour-code-focus-button"')
     expect(styles).toContain(
       "@media (max-width: 760px), (max-width: 960px) and (max-height: 520px)"
     )
     expect(styles).toContain(
-      "@media (orientation: landscape) and (max-width: 960px) and (max-height: 520px)"
-    )
-    expect(styles).toMatch(
-      /\.tour-navigation\[data-mobile-open="true"\] \{\s*transform: translateX\(0\);/
-    )
-    expect(styles).toMatch(
-      /\.tour-navigation \{[\s\S]*?inset: 0;[\s\S]*?width: 100vw;[\s\S]*?height: 100dvh;/
-    )
-    expect(styles).toMatch(
-      /\.tour-lesson-link-title \{[\s\S]*?white-space: normal;/
-    )
-    expect(styles).toContain("calc(var(--safe-area-top) + 14px)")
-    expect(styles).toContain(".tour-body.tour-navigation-sheet-open")
-    expect(styles).not.toContain("top: 109px")
-    expect(styles).not.toContain(
-      "scroll-margin-top: calc(var(--safe-area-top) + 154px)"
+      '.tour-workspace[data-mobile-panel="lesson"] .tour-lab'
     )
     expect(styles).toContain(
-      ".tour-topbar {\n    position: relative;\n    top: auto;"
+      '.tour-workspace[data-mobile-panel="code"] .tour-lesson'
     )
-    expect(styles).toContain(
-      ".tour-local-navigation {\n    position: sticky;\n    z-index: 30;\n    top: calc(var(--safe-area-top) + 54px);"
-    )
-    expect(styles).toMatch(
-      /@media \(max-width: 1180px\)[\s\S]*?\.tour-local-navigation \.tour-menu-button \{[\s\S]*?display: block;/
-    )
-    expect(
-      styles.match(/scroll-margin-top: calc\(var\(--safe-area-top\) \+ 98px\)/g)
-    ).toHaveLength(2)
-    expect(styles).toMatch(
-      /\.tour-input-section textarea,[\s\S]*?font-size: 16px;/
-    )
-    expect(styles).toMatch(
-      /\.tour-walkthrough-card pre,[\s\S]*?overflow-wrap: anywhere;/
-    )
-    expect(styles).toMatch(/\.tour-section-actions button,[\s\S]*?width: 100%;/)
+    expect(styles).toMatch(/\.tour-run \{[\s\S]*?position: fixed;/)
+    expect(tourMain).toContain("showMobilePanel(")
     expect(tourMain).toContain('event.key === "Escape"')
     expect(tourMain).toContain('event.key !== "Tab"')
     expect(tourMain).toContain('navigation.setAttribute("aria-modal", "true")')
     expect(tourMain).toContain("navigation.inert = !open")
     expect(tourMain).toContain("setNavigationBackgroundInert(open)")
-    expect(tourMain).toContain(
-      "document.body.scrollTop = navigationBackgroundScrollTop"
-    )
     expect(tourMain).toContain("menuButton.focus({ preventScroll: true })")
-    expect(tourMain).toContain('lesson.scrollIntoView({ block: "start" })')
     expect(tourMain).toContain('button.setAttribute("aria-expanded"')
     expect(tourMain).toContain('event.key !== "ArrowLeft"')
     expect(tourMain).toContain('button.setAttribute("aria-current", "step")')
     expect(tourMain).toContain('"未着手"')
     expect(tourMain).toContain('"完了"')
   })
-
   test("keeps hierarchy, progress and routes understandable as the Tour grows", async () => {
     const root = new URL("..", import.meta.url)
     const tourMain = await Bun.file(new URL("src/tour/main.ts", root)).text()
     const styles = await Bun.file(
-      new URL("../src/tour/styles.css", import.meta.url)
+      new URL("../src/tour/tour.css", import.meta.url)
     ).text()
 
     expect(tourMain).toContain("buildTourNavigationModel(")
@@ -321,10 +294,9 @@ describe("Tour curriculum UI", () => {
     expect(tourMain).toContain("neighbor.crossesCategory")
     expect(tourMain).toContain('window.addEventListener("popstate"')
     expect(tourMain).toContain('history[mode === "push" ? "pushState"')
-    expect(styles).toContain("clamp(240px, 20vw, 310px)")
-    expect(styles).toMatch(
-      /\.tour-lesson-link-title \{[\s\S]*?white-space: normal;/
-    )
+    // コースマップは章のカードを並べ、今いる部を縁取る
+    expect(styles).toContain("repeat(auto-fill, minmax(300px, 1fr))")
+    expect(styles).toContain('.tour-category:has([aria-current="step"])')
   })
 })
 

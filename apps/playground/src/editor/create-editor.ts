@@ -1,7 +1,9 @@
 import { lintGutter } from "@codemirror/lint"
-import { Compartment, EditorState } from "@codemirror/state"
+import { Compartment, EditorState, StateField } from "@codemirror/state"
 import {
   activateHover,
+  Decoration,
+  type DecorationSet,
   EditorView,
   highlightActiveLine,
   highlightActiveLineGutter,
@@ -12,6 +14,7 @@ import {
   repositionTooltips,
   tooltips,
   ViewPlugin,
+  WidgetType,
 } from "@codemirror/view"
 import type { EditorHover } from "../analysis/hover"
 import { editingExtensions } from "./editing-extensions"
@@ -21,6 +24,7 @@ import { seseragiEditorTheme } from "./theme"
 
 const whitespaceCompartment = new Compartment()
 const editableCompartment = new Compartment()
+const linePinsCompartment = new Compartment()
 
 export function createEditor(
   parent: HTMLElement,
@@ -50,6 +54,7 @@ export function createEditorState(
       lintGutter(),
       whitespaceCompartment.of([]),
       editableCompartment.of(EditorView.editable.of(true)),
+      linePinsCompartment.of([]),
       ...(hoverAt === undefined ? [] : analysisTooltipExtensions(hoverAt)),
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({
@@ -211,5 +216,53 @@ function analysisHoverTooltip(
 export function replaceEditorSource(editor: EditorView, source: string): void {
   editor.dispatch({
     changes: { from: 0, to: editor.state.doc.length, insert: source },
+  })
+}
+
+export type EditorLinePin = Readonly<{ line: number; label: string }>
+
+class LinePinWidget extends WidgetType {
+  constructor(private readonly label: string) {
+    super()
+  }
+
+  override eq(other: LinePinWidget): boolean {
+    return other.label === this.label
+  }
+
+  override toDOM(): HTMLElement {
+    const pin = document.createElement("span")
+    pin.className = "cm-line-pin"
+    pin.setAttribute("aria-hidden", "true")
+    // 番号は CSS で描く。エディターの文字（コピーや読み上げ）に混ぜない
+    pin.dataset.label = this.label
+    return pin
+  }
+}
+
+// Tour の Walkthrough の番号（①②）を、エディターの該当する行の先頭にピンとして出す。
+// 書き換えでコードがずれても、ピンは同じ行に付いていく。
+export function setEditorLinePins(
+  editor: EditorView,
+  pins: readonly EditorLinePin[]
+): void {
+  const field = StateField.define<DecorationSet>({
+    create: (state) =>
+      Decoration.set(
+        pins
+          .filter(({ line }) => line >= 1 && line <= state.doc.lines)
+          .map(({ line, label }) =>
+            Decoration.widget({
+              widget: new LinePinWidget(label),
+              side: -1,
+            }).range(state.doc.line(line).from)
+          ),
+        true
+      ),
+    update: (decorations, transaction) => decorations.map(transaction.changes),
+    provide: (value) => EditorView.decorations.from(value),
+  })
+  editor.dispatch({
+    effects: linePinsCompartment.reconfigure(pins.length === 0 ? [] : field),
   })
 }
