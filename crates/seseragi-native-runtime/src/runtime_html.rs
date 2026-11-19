@@ -16,59 +16,6 @@ fn native_html_escape(value: &str, attribute: bool) -> String {
     output
 }
 
-fn native_html_value<'a>(value: &'a V, kind: &str) -> &'a str {
-    match native_html_node(value, kind) {
-        Ok(text) => text,
-        // The TS renderer checks an SVG number only when it writes the text.
-        Err(message) => panic!("{message}"),
-    }
-}
-
-/// The rendered text of a node, or the message of the first value it could
-/// not render.
-fn native_html_node<'a>(value: &'a V, kind: &str) -> Result<&'a str, &'a str> {
-    let V::Adt(node) = value else {
-        panic!("Rust ABI: expected HTML {kind}")
-    };
-    assert_eq!(node.get().0, kind, "Rust ABI: HTML value owner");
-    match &node.get().1 {
-        V::Adt(invalid) if invalid.get().0 == "\0html.invalid" => {
-            Err(native_text(&invalid.get().1))
-        }
-        text => Ok(native_text(text)),
-    }
-}
-
-fn native_html_invalid(kind: &'static str, message: &str) -> V {
-    V::adt(kind, V::adt("\0html.invalid", V::text(message)))
-}
-
-fn native_html_children(value: &V, kind: &str) -> Result<String, String> {
-    fn node<'a>(value: &'a V, kind: &str) -> Result<&'a str, String> {
-        native_html_node(value, kind).map_err(str::to_owned)
-    }
-    Ok(match value {
-        V::Text(text) => native_html_escape(text.get(), false),
-        V::Adt(_) => node(value, kind)?.into(),
-        V::Array(values) => values
-            .get()
-            .iter()
-            .map(|value| node(value, kind))
-            .collect::<Result<String, String>>()?,
-        V::ListEmpty | V::List(_) => {
-            let mut output = String::new();
-            let mut cursor = value;
-            while let V::List(cell) = cursor {
-                output.push_str(node(&cell.get().head, kind)?);
-                cursor = &cell.get().tail;
-            }
-            assert!(matches!(cursor, V::ListEmpty), "Rust ABI: HTML child List");
-            output
-        }
-        _ => panic!("Rust ABI: unsupported HTML children"),
-    })
-}
-
 fn native_html_kebab(value: &str) -> String {
     let mut output = String::new();
     for ch in value.chars() {
@@ -104,42 +51,192 @@ fn native_html_style(value: V) -> V {
     V::adt("\0html.style", V::text(&properties.join("; ")))
 }
 
-fn native_html_attribute(
-    output: &mut String,
-    props: &BTreeMap<String, V>,
-    property: &str,
-    name: &str,
-    kind: &str,
-    default: Option<&str>,
-) {
-    let value = props.get(property);
-    let rendered = match (kind, value) {
-        ("bool", Some(V::Bool(true))) => {
-            output.push(' ');
-            output.push_str(name);
-            return;
-        }
-        ("bool", Some(V::Bool(false)) | None) => return,
-        ("bool", _) => panic!("Rust ABI: HTML boolean attribute"),
-        ("enum", Some(V::Bool(value))) => value.to_string(),
-        ("int", Some(V::Int(value))) => value.to_string(),
-        ("url", Some(value)) => native_html_value(value, "\0html.url").into(),
-        ("style", Some(value)) => native_html_value(value, "\0html.style").into(),
-        ("string", Some(value)) => native_text(value).into(),
-        (_, None) => match default {
-            Some(value) => value.into(),
-            None => return,
-        },
-        _ => panic!("Rust ABI: HTML attribute type"),
-    };
-    output.push_str(&format!(
-        " {name}=\"{}\"",
-        native_html_escape(&rendered, true)
-    ));
+// HTML and SVG nodes are trees until `renderToString` or `renderDocument`
+// writes them, as on TS, so a shared subtree stays shared. A node is
+// `\0html.node` (or `\0svg.node` before `toHtml`) around one of:
+// - `\0html.text`: the unescaped text;
+// - `\0html.element`: (namespace, tag, props, children, void);
+// - `\0html.fragment`: the children.
+// Children are kept without their node wrapper. Building checks only what the
+// TS constructors check; attributes are checked when they are written.
+
+fn native_html_tree<'a>(value: &'a V, kind: &str) -> Option<&'a V> {
+    match value {
+        V::Adt(node) if node.get().0 == kind => Some(&node.get().1),
+        _ => None,
+    }
 }
 
-/// The attributes every element writes, HTML or SVG, in the TS order.
-fn native_html_common_attributes(output: &mut String, props: &BTreeMap<String, V>) {
+fn native_html_text_tree(value: &str) -> V {
+    V::adt("\0html.text", V::text(value))
+}
+
+/// The children TS's `normalizeChildren` accepts: text, one node, or an Array
+/// or a List of nodes.
+fn native_html_children(value: Option<&V>) -> Vec<V> {
+    let node = |value: &V, message: &str| -> V {
+        native_html_tree(value, "\0html.node")
+            .unwrap_or_else(|| panic!("{message}"))
+            .clone()
+    };
+    match value {
+        // Unit is `undefined` and a Char is a string on TS.
+        None | Some(V::Unit) => Vec::new(),
+        Some(V::Text(text)) => vec![native_html_text_tree(text.get())],
+        Some(V::Char(ch)) => vec![native_html_text_tree(&ch.to_string())],
+        Some(value @ V::Adt(_)) => vec![node(value, "unsupported HTML children value")],
+        Some(V::Array(values)) => values
+            .get()
+            .iter()
+            .map(|value| node(value, "HTML child arrays may contain only Html values"))
+            .collect(),
+        Some(mut cursor @ (V::ListEmpty | V::List(_))) => {
+            let mut children = Vec::new();
+            while let V::List(cell) = cursor {
+                children.push(node(
+                    &cell.get().head,
+                    "HTML child lists may contain only Html values",
+                ));
+                cursor = &cell.get().tail;
+            }
+            children
+        }
+        Some(_) => panic!("unsupported HTML children value"),
+    }
+}
+
+/// The children TS's SVG `unwrapChildren` accepts: text, one scene node, or an
+/// Array of them. A List is refused when the node is built.
+fn native_svg_children(value: Option<&V>) -> Vec<V> {
+    let node = |value: &V, message: &str| -> V {
+        native_html_tree(value, "\0svg.node")
+            .unwrap_or_else(|| panic!("{message}"))
+            .clone()
+    };
+    match value {
+        // Unit is `undefined` and a Char is a string on TS.
+        None | Some(V::Unit) => Vec::new(),
+        Some(V::Text(text)) => vec![native_html_text_tree(text.get())],
+        Some(V::Char(ch)) => vec![native_html_text_tree(&ch.to_string())],
+        Some(value @ V::Adt(_)) => vec![node(value, "unsupported SVG children value")],
+        Some(V::Array(values)) => values
+            .get()
+            .iter()
+            .map(|value| node(value, "SVG child arrays may contain only Svg values"))
+            .collect(),
+        Some(_) => panic!("unsupported SVG children value"),
+    }
+}
+
+fn native_html_element_tree(
+    namespace: &str,
+    tag: &str,
+    props: V,
+    children: Vec<V>,
+    void: bool,
+) -> V {
+    V::adt(
+        "\0html.element",
+        V::Tuple(Shared::new(vec![
+            V::text(namespace),
+            V::text(tag),
+            props,
+            V::Array(Shared::new(children)),
+            V::Bool(void),
+        ])),
+    )
+}
+
+fn native_html_element(tag: &str, value: V, void: bool) -> V {
+    let fields = value.record_fields();
+    if void && fields.contains_key("children") {
+        panic!("void HTML element {tag} cannot have children");
+    }
+    let children = if void {
+        Vec::new()
+    } else if tag == "textarea" {
+        // TS gives a textarea its value, or "", as its children.
+        match fields.get("value") {
+            None | Some(V::Unit) => vec![native_html_text_tree("")],
+            value => native_html_children(value),
+        }
+    } else {
+        native_html_children(fields.get("children"))
+    };
+    V::adt(
+        "\0html.node",
+        native_html_element_tree("html", tag, value, children, void),
+    )
+}
+
+fn native_svg_element(tag: &str, value: V) -> V {
+    let children = native_svg_children(value.record_fields().get("children"));
+    V::adt(
+        "\0svg.node",
+        native_html_element_tree("svg", tag, value, children, false),
+    )
+}
+
+/// One attribute, checked and written as the TS renderer does.
+fn native_html_attribute(output: &mut String, name: &str, value: Option<&V>, kind: &str) {
+    // Unit is `undefined` on TS, so the attribute is left out.
+    let Some(value) = value.filter(|value| !matches!(value, V::Unit)) else {
+        return;
+    };
+    let text = match kind {
+        "bool" => {
+            if matches!(value, V::Bool(true)) {
+                output.push(' ');
+                output.push_str(name);
+            }
+            return;
+        }
+        "string" => match value {
+            V::Text(text) => text.get().clone(),
+            V::Char(ch) => ch.to_string(),
+            _ => panic!("HTML attribute {name} must be a string"),
+        },
+        "enum" => match value {
+            V::Bool(value) => value.to_string(),
+            _ => panic!("HTML attribute {name} must be a boolean"),
+        },
+        "int" => match value {
+            V::Int(value) => value.to_string(),
+            V::Byte(value) => value.to_string(),
+            V::Float(value) if value.fract() == 0.0 && value.abs() <= 9_007_199_254_740_991.0 => {
+                native_number_text(*value)
+            }
+            _ => panic!("HTML attribute {name} must be an Int"),
+        },
+        "number" => match value {
+            V::Int(value) => value.to_string(),
+            V::Byte(value) => value.to_string(),
+            V::Float(value) if value.is_finite() => native_number_text(*value),
+            _ => panic!("SVG attribute {name} must be a finite number"),
+        },
+        "style" => match native_html_tree(value, "\0html.style") {
+            Some(css) => native_text(css).to_owned(),
+            None => panic!("HTML style must be created with html.style"),
+        },
+        "url" => match native_html_tree(value, "\0html.url") {
+            Some(url) => native_text(url).to_owned(),
+            None => panic!("HTML URL attribute {name} must be created with html.parseWebUrl"),
+        },
+        _ => unreachable!("Rust ABI: HTML attribute kind"),
+    };
+    output.push_str(&format!(" {name}=\"{}\"", native_html_escape(&text, true)));
+}
+
+/// Every attribute of an element, in the TS renderer's order.
+fn native_html_attributes(
+    output: &mut String,
+    namespace: &str,
+    tag: &str,
+    props: &BTreeMap<String, V>,
+) {
+    let mut write = |property: &str, name: &str, kind: &str| {
+        native_html_attribute(output, name, props.get(property), kind);
+    };
     for (property, name, kind) in [
         ("id", "id", "string"),
         ("class", "class", "string"),
@@ -159,248 +256,369 @@ fn native_html_common_attributes(output: &mut String, props: &BTreeMap<String, V
         ("ariaHidden", "aria-hidden", "enum"),
         ("ariaSelected", "aria-selected", "enum"),
     ] {
-        native_html_attribute(output, props, property, name, kind, None);
+        write(property, name, kind);
     }
-}
-
-/// The `attributes` field, written last as on the TS target.
-fn native_html_custom_attributes(output: &mut String, props: &BTreeMap<String, V>) {
-    if let Some(value) = props.get("attributes") {
-        let V::Array(attributes) = value else {
-            panic!("Rust ABI: HTML custom attributes Array")
-        };
-        let mut names = std::collections::BTreeSet::new();
-        for value in attributes.get() {
-            let V::Adt(attribute) = value else {
-                panic!("Rust ABI: HTML custom attribute")
-            };
-            assert_eq!(
-                attribute.get().0,
-                "\0html.attribute",
-                "Rust ABI: HTML attribute owner"
-            );
-            let name = attribute.get().1.field("name");
-            let name = native_text(&name);
-            assert!(
-                names.insert(name.to_ascii_lowercase()),
-                "Rust ABI: duplicate HTML attribute"
-            );
-            output.push_str(&format!(
-                " {name}=\"{}\"",
-                native_html_escape(native_text(&attribute.get().1.field("value")), true)
-            ));
+    if namespace == "svg" {
+        for (property, name) in [
+            ("viewBox", "viewBox"),
+            ("preserveAspectRatio", "preserveAspectRatio"),
+            ("transform", "transform"),
+            ("d", "d"),
+            ("points", "points"),
+            ("fill", "fill"),
+            ("stroke", "stroke"),
+            ("strokeWidth", "stroke-width"),
+            ("strokeLinecap", "stroke-linecap"),
+            ("strokeLinejoin", "stroke-linejoin"),
+            ("textAnchor", "text-anchor"),
+            ("dominantBaseline", "dominant-baseline"),
+            ("pointerEvents", "pointer-events"),
+        ] {
+            write(property, name, "string");
+        }
+        for name in [
+            "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "width", "height",
+            "opacity",
+        ] {
+            write(name, name, "number");
         }
     }
-}
-
-fn native_html_element(tag: &str, value: V, void: bool) -> V {
-    let props = value.record_fields();
-    assert!(
-        !void || !props.contains_key("children"),
-        "Rust ABI: void HTML children"
-    );
-    let mut output = format!("<{tag}");
-    native_html_common_attributes(&mut output, props);
-    let attributes: &[(&str, &str, &str, Option<&str>)] = match tag {
+    let attributes: &[(&str, &str, &str)] = match tag {
         "button" => &[
-            ("disabled", "disabled", "bool", None),
-            ("buttonType", "type", "string", Some("button")),
-            ("name", "name", "string", None),
-            ("value", "value", "string", None),
-            ("autoFocus", "autofocus", "bool", None),
+            ("disabled", "disabled", "bool"),
+            ("buttonType", "type", "string"),
+            ("name", "name", "string"),
+            ("value", "value", "string"),
+            ("autoFocus", "autofocus", "bool"),
         ],
         "form" => &[
-            ("name", "name", "string", None),
-            ("autoComplete", "autocomplete", "string", None),
+            ("name", "name", "string"),
+            ("autoComplete", "autocomplete", "string"),
         ],
         "input" => &[
-            ("value", "value", "string", None),
-            ("checked", "checked", "bool", None),
-            ("name", "name", "string", None),
-            ("disabled", "disabled", "bool", None),
-            ("required", "required", "bool", None),
-            ("readOnly", "readonly", "bool", None),
-            ("multiple", "multiple", "bool", None),
-            ("placeholder", "placeholder", "string", None),
-            ("autoComplete", "autocomplete", "string", None),
-            ("autoFocus", "autofocus", "bool", None),
-            ("min", "min", "string", None),
-            ("max", "max", "string", None),
-            ("step", "step", "string", None),
-            ("pattern", "pattern", "string", None),
-            ("inputType", "type", "string", Some("text")),
+            ("value", "value", "string"),
+            ("checked", "checked", "bool"),
+            ("name", "name", "string"),
+            ("disabled", "disabled", "bool"),
+            ("required", "required", "bool"),
+            ("readOnly", "readonly", "bool"),
+            ("multiple", "multiple", "bool"),
+            ("placeholder", "placeholder", "string"),
+            ("autoComplete", "autocomplete", "string"),
+            ("autoFocus", "autofocus", "bool"),
+            ("min", "min", "string"),
+            ("max", "max", "string"),
+            ("step", "step", "string"),
+            ("pattern", "pattern", "string"),
+            ("inputType", "type", "string"),
         ],
         "textarea" => &[
-            ("name", "name", "string", None),
-            ("disabled", "disabled", "bool", None),
-            ("required", "required", "bool", None),
-            ("readOnly", "readonly", "bool", None),
-            ("placeholder", "placeholder", "string", None),
-            ("autoComplete", "autocomplete", "string", None),
-            ("autoFocus", "autofocus", "bool", None),
-            ("rows", "rows", "int", None),
-            ("cols", "cols", "int", None),
+            ("name", "name", "string"),
+            ("disabled", "disabled", "bool"),
+            ("required", "required", "bool"),
+            ("readOnly", "readonly", "bool"),
+            ("placeholder", "placeholder", "string"),
+            ("autoComplete", "autocomplete", "string"),
+            ("autoFocus", "autofocus", "bool"),
+            ("rows", "rows", "int"),
+            ("cols", "cols", "int"),
         ],
-        "label" => &[("htmlFor", "for", "string", None)],
+        "label" => &[("htmlFor", "for", "string")],
         "a" => &[
-            ("href", "href", "url", None),
-            ("target", "target", "string", None),
-            ("rel", "rel", "string", None),
-            ("download", "download", "bool", None),
+            ("href", "href", "url"),
+            ("target", "target", "string"),
+            ("rel", "rel", "string"),
+            ("download", "download", "bool"),
         ],
         "img" => &[
-            ("src", "src", "url", None),
-            ("alt", "alt", "string", None),
-            ("width", "width", "int", None),
-            ("height", "height", "int", None),
-            ("loading", "loading", "string", None),
+            ("src", "src", "url"),
+            ("alt", "alt", "string"),
+            ("width", "width", "int"),
+            ("height", "height", "int"),
+            ("loading", "loading", "string"),
         ],
         "source" => &[
-            ("src", "src", "url", None),
-            ("media", "media", "string", None),
-            ("mimeType", "type", "string", None),
+            ("src", "src", "url"),
+            ("media", "media", "string"),
+            ("mimeType", "type", "string"),
         ],
-        "audio" => &[("src", "src", "url", None)],
+        "audio" => &[("src", "src", "url")],
         "video" => &[
-            ("src", "src", "url", None),
-            ("width", "width", "int", None),
-            ("height", "height", "int", None),
+            ("src", "src", "url"),
+            ("width", "width", "int"),
+            ("height", "height", "int"),
         ],
         "meta" => &[
-            ("charSet", "charset", "string", None),
-            ("name", "name", "string", None),
-            ("content", "content", "string", None),
-            ("httpEquiv", "http-equiv", "string", None),
+            ("charSet", "charset", "string"),
+            ("name", "name", "string"),
+            ("content", "content", "string"),
+            ("httpEquiv", "http-equiv", "string"),
         ],
-        "link" => &[
-            ("rel", "rel", "string", None),
-            ("href", "href", "url", None),
-        ],
+        "link" => &[("rel", "rel", "string"), ("href", "href", "url")],
         "select" => &[
-            ("name", "name", "string", None),
-            ("value", "value", "string", None),
-            ("disabled", "disabled", "bool", None),
-            ("required", "required", "bool", None),
-            ("multiple", "multiple", "bool", None),
-            ("autoFocus", "autofocus", "bool", None),
+            ("name", "name", "string"),
+            ("value", "value", "string"),
+            ("disabled", "disabled", "bool"),
+            ("required", "required", "bool"),
+            ("multiple", "multiple", "bool"),
+            ("autoFocus", "autofocus", "bool"),
         ],
         "option" => &[
-            ("value", "value", "string", None),
-            ("selected", "selected", "bool", None),
-            ("disabled", "disabled", "bool", None),
+            ("value", "value", "string"),
+            ("selected", "selected", "bool"),
+            ("disabled", "disabled", "bool"),
         ],
-        "th" | "td" => &[
-            ("colSpan", "colspan", "int", None),
-            ("rowSpan", "rowspan", "int", None),
-        ],
-        "details" | "dialog" => &[("open", "open", "bool", None)],
+        "th" | "td" => &[("colSpan", "colspan", "int"), ("rowSpan", "rowspan", "int")],
+        "details" | "dialog" => &[("open", "open", "bool")],
         _ => &[],
     };
-    for &(property, name, kind, default) in attributes {
-        native_html_attribute(&mut output, props, property, name, kind, default);
-    }
-    native_html_custom_attributes(&mut output, props);
-    output.push('>');
-    if !void {
-        if tag == "textarea" {
-            if let Some(value) = props.get("value") {
-                output.push_str(&native_html_escape(native_text(value), false));
+    for &(property, name, kind) in attributes {
+        // `buttonType` and `inputType` fall back as on TS.
+        let fallback = match (tag, property) {
+            ("button", "buttonType") => Some("button"),
+            ("input", "inputType") => Some("text"),
+            _ => None,
+        };
+        let value = props
+            .get(property)
+            .filter(|value| !matches!(value, V::Unit));
+        match (value, fallback) {
+            (None, Some(fallback)) => {
+                native_html_attribute(output, name, Some(&V::text(fallback)), kind)
             }
-        } else if let Some(children) = props.get("children") {
-            match native_html_children(children, "\0html.node") {
-                Ok(children) => output.push_str(&children),
-                Err(message) => return native_html_invalid("\0html.node", &message),
+            (value, _) => native_html_attribute(output, name, value, kind),
+        }
+    }
+    match props.get("attributes") {
+        None | Some(V::Unit) => {}
+        Some(V::Array(items)) => {
+            let mut names = std::collections::BTreeSet::new();
+            for item in items.get() {
+                let Some(attribute) = native_html_tree(item, "\0html.attribute") else {
+                    panic!("HTML custom attributes must be created with html.attribute")
+                };
+                let name = attribute.field("name");
+                let name = native_text(&name);
+                if !names.insert(name.to_lowercase()) {
+                    panic!("duplicate HTML custom attribute {name}");
+                }
+                output.push_str(&format!(
+                    " {name}=\"{}\"",
+                    native_html_escape(native_text(&attribute.field("value")), true)
+                ));
             }
         }
-        output.push_str(&format!("</{tag}>"));
+        Some(_) => panic!("HTML custom attributes must be an Array"),
     }
-    V::adt("\0html.node", V::text(&output))
 }
 
-/// An SVG scene node, rendered at once like an HTML element. Its text stays
-/// apart from HTML nodes until `toHtml`.
-fn native_svg_element(tag: &str, value: V) -> V {
-    let props = value.record_fields();
-    // The TS scene takes text, one node or an Array as children, and refuses
-    // a List when the node is built.
-    if matches!(props.get("children"), Some(V::ListEmpty | V::List(_))) {
-        panic!("unsupported SVG children value");
+/// Writes a tree depth first, with an explicit stack so a deep tree cannot
+/// exhaust the native stack.
+fn native_html_render(tree: &V) -> String {
+    enum Step<'a> {
+        Tree(&'a V),
+        Close(&'a str),
     }
-    let mut output = format!("<{tag}");
-    native_html_common_attributes(&mut output, props);
-    for (property, name) in [
-        ("viewBox", "viewBox"),
-        ("preserveAspectRatio", "preserveAspectRatio"),
-        ("transform", "transform"),
-        ("d", "d"),
-        ("points", "points"),
-        ("fill", "fill"),
-        ("stroke", "stroke"),
-        ("strokeWidth", "stroke-width"),
-        ("strokeLinecap", "stroke-linecap"),
-        ("strokeLinejoin", "stroke-linejoin"),
-        ("textAnchor", "text-anchor"),
-        ("dominantBaseline", "dominant-baseline"),
-        ("pointerEvents", "pointer-events"),
-    ] {
-        native_html_attribute(&mut output, props, property, name, "string", None);
-    }
-    for name in [
-        "x", "y", "x1", "y1", "x2", "y2", "cx", "cy", "r", "rx", "ry", "width", "height", "opacity",
-    ] {
-        match props.get(name) {
-            None => {}
-            Some(V::Float(value)) if value.is_finite() => {
-                output.push_str(&format!(" {name}=\"{}\"", native_number_text(*value)));
+    let mut output = String::new();
+    let mut steps = vec![Step::Tree(tree)];
+    while let Some(step) = steps.pop() {
+        let tree = match step {
+            Step::Close(tag) => {
+                output.push_str("</");
+                output.push_str(tag);
+                output.push('>');
+                continue;
             }
-            // A field the parameter type left out keeps its value when a
-            // wider record is passed on, as on TS.
-            Some(V::Int(value)) => output.push_str(&format!(" {name}=\"{value}\"")),
-            Some(V::Float(_)) => {
-                return native_html_invalid(
-                    "\0svg.node",
-                    &format!("SVG attribute {name} must be a finite number"),
-                )
+            Step::Tree(tree) => tree,
+        };
+        let V::Adt(node) = tree else {
+            panic!("Rust ABI: HTML tree")
+        };
+        match node.get().0 {
+            "\0html.text" => {
+                output.push_str(&native_html_escape(native_text(&node.get().1), false))
             }
-            Some(_) => panic!("Rust ABI: SVG number attribute"),
+            "\0html.fragment" => {
+                let V::Array(children) = &node.get().1 else {
+                    panic!("Rust ABI: HTML fragment")
+                };
+                steps.extend(children.get().iter().rev().map(Step::Tree));
+            }
+            "\0html.element" => {
+                let V::Tuple(parts) = &node.get().1 else {
+                    panic!("Rust ABI: HTML element")
+                };
+                let [namespace, tag, props, V::Array(children), V::Bool(void)] =
+                    parts.get().as_slice()
+                else {
+                    panic!("Rust ABI: HTML element parts")
+                };
+                let tag = native_text(tag);
+                output.push('<');
+                output.push_str(tag);
+                native_html_attributes(
+                    &mut output,
+                    native_text(namespace),
+                    tag,
+                    props.record_fields(),
+                );
+                output.push('>');
+                if !*void {
+                    steps.push(Step::Close(tag));
+                    steps.extend(children.get().iter().rev().map(Step::Tree));
+                }
+            }
+            _ => panic!("Rust ABI: HTML tree kind"),
         }
     }
-    native_html_custom_attributes(&mut output, props);
-    output.push('>');
-    if let Some(children) = props.get("children") {
-        match native_html_children(children, "\0svg.node") {
-            Ok(children) => output.push_str(&children),
-            Err(message) => return native_html_invalid("\0svg.node", &message),
+    output
+}
+
+const NATIVE_HTML_RESERVED_ATTRIBUTES: [&str; 56] = [
+    "alt",
+    "attributes",
+    "autocomplete",
+    "autofocus",
+    "buttontype",
+    "checked",
+    "children",
+    "class",
+    "classname",
+    "cols",
+    "colspan",
+    "contenteditable",
+    "dir",
+    "disabled",
+    "download",
+    "draggable",
+    "for",
+    "height",
+    "hidden",
+    "htmlfor",
+    "href",
+    "id",
+    "inputtype",
+    "key",
+    "lang",
+    "loading",
+    "max",
+    "media",
+    "min",
+    "mimetype",
+    "multiple",
+    "name",
+    "charset",
+    "content",
+    "http-equiv",
+    "open",
+    "pattern",
+    "placeholder",
+    "readonly",
+    "rel",
+    "elementref",
+    "required",
+    "role",
+    "rows",
+    "rowspan",
+    "selected",
+    "src",
+    "step",
+    "style",
+    "tabindex",
+    "target",
+    "title",
+    "type",
+    "value",
+    "width",
+    "srcdoc",
+];
+
+const NATIVE_HTML_URL_ATTRIBUTES: [&str; 16] = [
+    "action",
+    "background",
+    "cite",
+    "classid",
+    "codebase",
+    "data",
+    "formaction",
+    "href",
+    "icon",
+    "longdesc",
+    "manifest",
+    "poster",
+    "profile",
+    "src",
+    "usemap",
+    "xlink:href",
+];
+
+/// `html.attribute name value`, checked as on TS.
+pub fn native_html_custom_attribute(name: V, value: V) -> V {
+    let text = native_text(&name);
+    let mut chars = text.chars();
+    let valid = chars
+        .next()
+        .is_some_and(|ch| ch.is_ascii_alphabetic() || ch == '_' || ch == ':')
+        && chars.all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '_' | '.' | ':' | '-'));
+    let normalized = text.to_ascii_lowercase();
+    if !valid
+        || ((normalized.starts_with("data-") || normalized.starts_with("aria-"))
+            && (text != normalized || normalized.len() <= 5))
+    {
+        return native_left(V::adt("std/web/html::InvalidAttributeName", name));
+    }
+    if normalized.starts_with("on")
+        || normalized == "data-ssrg"
+        || normalized.starts_with("data-ssrg-")
+        || NATIVE_HTML_RESERVED_ATTRIBUTES.contains(&normalized.as_str())
+    {
+        return native_left(V::adt("std/web/html::ReservedAttributeName", name));
+    }
+    if NATIVE_HTML_URL_ATTRIBUTES.contains(&normalized.as_str()) {
+        let parsed = native_html_parse_url(value.clone());
+        if parsed.tagged("std/prelude::Left") {
+            return parsed;
         }
     }
-    output.push_str(&format!("</{tag}>"));
-    V::adt("\0svg.node", V::text(&output))
+    native_right(V::adt(
+        "\0html.attribute",
+        V::Record(Shared::new(BTreeMap::from([
+            ("name".to_owned(), name),
+            ("value".to_owned(), value),
+        ]))),
+    ))
 }
 
 pub fn native_html_operation(name: &str, value: V, void: bool) -> V {
     match name {
-        "std/web/svg::toHtml" => match native_html_node(&value, "\0svg.node") {
-            Ok(text) => V::adt("\0html.node", V::text(text)),
-            Err(message) => native_html_invalid("\0html.node", message),
+        "std/web/svg::toHtml" => match native_html_tree(&value, "\0svg.node") {
+            Some(tree) => V::adt("\0html.node", tree.clone()),
+            None => panic!("expected std/web/svg Svg"),
         },
         name if name.starts_with("std/web/svg::") => {
             native_svg_element(&name["std/web/svg::".len()..], value)
         }
         "style" => native_html_style(value),
         "parseWebUrl" => native_html_parse_url(value),
-        "text" => V::adt(
+        "text" => V::adt("\0html.node", native_html_text_tree(native_text(&value))),
+        "fragment" => V::adt(
             "\0html.node",
-            V::text(&native_html_escape(native_text(&value), false)),
+            V::adt(
+                "\0html.fragment",
+                V::Array(Shared::new(native_html_children(Some(&value)))),
+            ),
         ),
-        "fragment" => match native_html_children(&value, "\0html.node") {
-            Ok(children) => V::adt("\0html.node", V::text(&children)),
-            Err(message) => native_html_invalid("\0html.node", &message),
-        },
-        "renderToString" => V::text(native_html_value(&value, "\0html.node")),
-        "renderDocument" => V::text(&format!(
-            "<!doctype html>{}",
-            native_html_value(&value, "\0html.node")
-        )),
+        "renderToString" | "renderDocument" => {
+            let Some(tree) = native_html_tree(&value, "\0html.node") else {
+                panic!("Rust ABI: expected HTML node")
+            };
+            let text = native_html_render(tree);
+            V::text(&if name == "renderDocument" {
+                format!("<!doctype html>{text}")
+            } else {
+                text
+            })
+        }
         tag => native_html_element(tag, value, void),
     }
 }
