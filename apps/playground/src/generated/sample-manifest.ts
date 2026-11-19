@@ -1182,7 +1182,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:fc0ae07afa43259aceef4b81e4385cc8b2340973075035d8d47bf35a9a2c1950",
       "guidePath": "examples/samples/seseragi-landing-page/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:d0aea8339e877057d6572be96791f183d92dedddf1bea917d30abe6695ddf781",
+      "workspaceHash": "sha256:0a94af1d2d58a1e0139e955f9faf492f63bddd581f6d7bed0300ef98f5381dcf",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1207,27 +1207,27 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/app.ssrg",
-            "sourceHash": "sha256:29b061f65297e048fc58ba84a18238fdb5c5dbacc438353b476d2786771516dd"
+            "sourceHash": "sha256:4adbb5f7ba980868db2d49725bf8a0fb60d23ce4605297e52a78a059c65f5e72"
           },
           {
             "path": "components/chapter/code-panel.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg",
-            "sourceHash": "sha256:1cddd8788e13a035cfae1f0b60248ef060f4c447a303beffa47e99f84715722e"
+            "sourceHash": "sha256:7bc6e0bc1d4b078fa6eb0be0aac657a216e4eace28ae230aa6f3d9f592532481"
           },
           {
             "path": "components/chapter/model.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg",
-            "sourceHash": "sha256:394242206494de84f70a7cda9ff62cabb03c888986d5c51ee583c91213f1e89b"
+            "sourceHash": "sha256:a0e2d8d2c78960ef29bda2ea846a624d6bc272da27080f0cd9c3b6ef4052eada"
           },
           {
             "path": "components/chapter/view.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg",
-            "sourceHash": "sha256:6a49b4619facbddca85b519a845c4b9fa25aa36dde96cd3ac8e3adad1f2bf5b8"
+            "sourceHash": "sha256:94a9ee1ff2cfa6d63bcf347728a71a14262e5078d850aba9f383f33a1701b8df"
           },
           {
             "path": "components/closing.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/closing.ssrg",
-            "sourceHash": "sha256:995b7f47f5b6be7b615d5464c658594638370c21e2e8b36b2f08e4e1621bf6c9"
+            "sourceHash": "sha256:e6a87402c1986ded8ede9bee0545cece3d807781396f082a7816f972bbcb6548"
           },
           {
             "path": "components/footer.ssrg",
@@ -1237,27 +1237,27 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "components/header.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/header.ssrg",
-            "sourceHash": "sha256:4b1878c09e805b6ae81cc395cf8e25f7b099a51511bb846f87c557fc7a6783e6"
+            "sourceHash": "sha256:492e5056cf850a6b9b58347ad2e95ddb18e8a7e27c33cd49f1c2fb3de3fde5be"
           },
           {
             "path": "components/hero.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/hero.ssrg",
-            "sourceHash": "sha256:82316c814d01cf3ab92c7eba01cc2f6fd3a6be599e8a2262a1e4245430c098af"
+            "sourceHash": "sha256:e18b0219de4c3da654c400fc69cc93d5f7c7adb1759bc8c4337545610b8c5666"
           },
           {
             "path": "components/image-statement.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/image-statement.ssrg",
-            "sourceHash": "sha256:50aab4926a38328fa1e1ca2b756358acd3016928bae2c15dbeac97d0d46ecc50"
+            "sourceHash": "sha256:336e410038dfa1281e7a7832253dec7acb94b556cd9bd0a5ac682f5bfa831394"
           },
           {
             "path": "components/principles.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/principles.ssrg",
-            "sourceHash": "sha256:703e564d1d897baf680c7fef25f7e9e14e2bb9b8b8e9a6488f280848de2924ee"
+            "sourceHash": "sha256:44c1afa534b060750a46567cdb36ef0157d537bf03586f889a159104f49ca2aa"
           },
           {
             "path": "ui/styles.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/ui/styles.ssrg",
-            "sourceHash": "sha256:4d142421877f72b28807185db366445baa295dca77116f4c819ff62f7886e50e"
+            "sourceHash": "sha256:9ed95f3c66be248f65f616588578a1038c7e699044198636587d1aaab234530e"
           },
           {
             "path": "url.ssrg",

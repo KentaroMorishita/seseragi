@@ -1,54 +1,27 @@
-このsampleを選ぶ理由: Seseragiだけで、実際のproduct landing pageとして成立するWeb UIと、
-見た目のsectionに対応するmulti-module sourceを一緒に読みたいときに選びます。
+このサンプルを選ぶ理由: Seseragi だけでランディングページ全体を組み立て、見た目の区切りごとに分けた複数ファイルの構成とシンタックスハイライト付きコード表示を一緒に読みたいときに選びます。
 
 ## この画面で試すこと
 
-- HeroのPlayground / GitHub linkをkeyboardまたはpointerで開く。
-- Readable / Composable / Aliveのtabを切り替える。
-- chapterごとにcopy、accent、code presentationがSignal経由で差し替わることを確認する。
-- desktop、tablet、mobileでhero、principles、chapter、image statement、CTAのflowを比べる。
-- Explorerからvisual sectionとsource moduleの対応を追う。
+- ファーストビューの Playground・Tour・GitHub の各リンクをキーボードやクリックで開く
+- `Three ways to see it` の `Readable` / `Composable` / `Alive` タブを切り替える
+- タブに応じて見出し・説明文・強調色・Playground と同じ配色のシンタックスハイライト付きコードが `Signal` 経由で差し替わることを確認する
+- デスクトップとスマートフォン幅で、ファーストビューからフッターまでの流れを比べる
+- Explorer から画面の区切りとソースファイルの対応を追う
 
-## Module boundary
+## ファイル構成
 
 ```text
-main.ssrg                    entry / dom.run
-app.ssrg                     URL準備とpage composition
-url.ssrg                     String -> WebUrl
-components/header.ssrg       brand navigation
-components/hero.ssrg         first view
-components/principles.ssrg   editorial principles
-components/chapter/          state / Action / tabs / code panel
+main.ssrg                    実行の入口（dom.run）
+app.ssrg                     URL 準備とページ全体の合成
+url.ssrg                     文字列から WebUrl への変換
+components/header.ssrg       ロゴと主要リンク
+components/hero.ssrg         ファーストビューとコードカード
+components/principles.ssrg   3 つの設計方針
+components/chapter/          タブ状態・コードのトークン色分け・表示
 components/image-statement.ssrg
-components/closing.ssrg
-components/footer.ssrg
-ui/styles.ssrg               shared named styles
+components/closing.ssrg      締めくくりと行動リンク
+components/footer.ssrg       フッター
+ui/styles.ssrg               共通の配色と名前付きスタイル
 ```
 
-`components/chapter/model.ssrg`はChapter state、Action、dispatchを内部に保持し、外には
-`Signal<Html<Task<Unit>>>`だけを返します。`app.ssrg`はそのSignalへpage compositionをmapし、
-`main.ssrg`はqueryと`dom.run`の実行境界へ責務を絞ります。
-
-## Visual design
-
-Heroはfixed HTTPS imageを構造の一部として使い、公式Seseragi logo、
-`Code that keeps flowing.`、二つのprimary linkの優先順位を作ります。中盤はcard gridを
-反復せず、sparseなprinciple list、情報量のあるinteractive code chapter、全幅river imageへ
-密度を切り替え、closing CTAとfooterまで一つのpage rhythmを保ちます。
-
-主要なfont sizeとsection spacingは`clamp`で変化し、gridは`auto-fit`と`minmax`でmobile固有の
-一列flowへreflowします。page rootは横overflowを隠すだけに頼らず、各sectionがviewport内へ
-収まるwidthを持ちます。code panelは短いsample lineと明示的indentでnarrow widthでも読めます。
-
-## Source quality
-
-見た目のために一つの巨大なsourceやtop-level `let`を増やさず、再利用するstyleとcomponentは
-named `fn`にします。official logo、Unsplash image、Playground、repository URLは`url.ssrg`の
-`String -> WebUrl`境界を通し、external anchorは`target: "_blank"`と
-`rel: "noopener noreferrer"`を明示します。
-
-## 前提と次のsample
-
-`html-components`でHtml tree、`web-starter`で明示的な`dom.run`、
-`feature-composition`でfeature-owned Signalを先に読むと追いやすくなります。form validationを
-中心に見るなら`form-todo`、複数featureのapplication ownershipを見るなら`project-flow-app`へ進みます。
+`components/chapter/model.ssrg` は選択中タブの `Chapter` 状態だけを `MutableSignal` で持ち、外には `Signal<Html<Task<Unit>>>` だけを返します。`components/chapter/code-panel.ssrg` は Seseragi コードをトークン種別ごとの ADT で表し、Playground のダークテーマと同じ配色で色分け描画します。
