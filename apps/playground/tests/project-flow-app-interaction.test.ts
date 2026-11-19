@@ -121,7 +121,7 @@ describe("project-flow-app browser interaction fixture", () => {
     expect(source("trip/model.ssrg")).toContain("pub type TripAction")
     expect(source("trip/model.ssrg")).toContain("pub fn calculateSplit")
     expect(source("components/route_map.ssrg")).toContain("svg.toHtml")
-    expect(source("components/route_map.ssrg")).toContain("svg.polyline")
+    expect(source("components/route_map.ssrg")).toContain("svg.path")
     expect(source("components/share_view.ssrg")).toContain(
       'id: "save-itinerary-button"'
     )
