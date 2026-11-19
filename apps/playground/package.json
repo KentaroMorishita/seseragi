@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/playground",
-  "version": "0.61.187",
+  "version": "0.61.189",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,9 +18,8 @@
     "build": "bun run catalog:check && bun run brand:check && vite build",
     "build:wasm": "../../scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
     "test": "bun run catalog:check && bun test tests",
-    "test:visual": "bun scripts/visual-baselines.ts check && playwright test --config playwright.config.ts",
-    "test:visual:update": "bun scripts/visual-baselines.ts update",
-    "test:visual:install": "playwright install chromium",
+    "test:e2e": "playwright test --config playwright.config.ts",
+    "test:e2e:install": "playwright install chromium",
     "test:web-build": "bun scripts/web-build-smoke.ts",
     "typecheck": "bun run catalog:check && tsc --noEmit"
   },

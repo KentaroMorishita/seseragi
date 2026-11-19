@@ -14,7 +14,8 @@
 | サンプルの `sample.json`、`discover-groups.json`、Discover への表示 | `bun run check:sample-catalog` |
 | Tour のレッスン（`examples/tour/`）、`examples/spec/lessons/`、`examples/spec/playground/` | `bun run check:tour` |
 | Playground の画面 | `bun run check:playground` |
-| Web UI の見た目 | `cd apps/playground && bun run test:visual`（[Web UI の見た目の確認](#web-ui-の見た目の確認)） |
+| Playground の動作（ブラウザーで操作する） | `cd apps/playground && bun run test:e2e`（[Playground の e2e](#playground-の-e2e)） |
+| 画面の見た目 | PR のプレビューをブラウザーで開いて確かめる（[画面の見た目の確認](#画面の見た目の確認)） |
 | Rust のコード（コンパイラー、CLI、LSP） | `bun run check:rust`。1つのクレートだけなら `bun run check:rust -- -p <crate>` |
 | コンパイラーの中間成果物の形 | 下の[各チェックの中身](#各チェックの中身)の「コンパイラーの成果物」 |
 | fixture（`examples/spec/fixtures/`） | `bun run check:conformance`。対象のフォルダーを引数で絞れる |
@@ -82,7 +83,7 @@ SESERAGI_TEST_BROWSER_PATH=/path/to/google/chrome bun test tests
 ```
 
 - 起動したブラウザーのパスと版をログに残します。指定したパスで起動できなければ失敗します。
-- この設定は Bun のテストだけのものです。`test:visual` や本番用のブラウザーのチェックには効きません。
+- この設定は Bun のテストだけのものです。`test:e2e` や本番用のブラウザーのチェックには効きません。
 
 ## 各チェックの中身
 
@@ -94,7 +95,7 @@ SESERAGI_TEST_BROWSER_PATH=/path/to/google/chrome bun test tests
 | サンプルのカタログ | `bun run check:sample-catalog` | `sample.json` の形式、`discover-groups.json` との整合性、Preview の CSS クラス、Playground のサンプル一覧が最新か。すべてのサンプルを WASM でコンパイルし、整形の結果が同じかを確かめる。Rust のビルドは要らない |
 | Tour | `bun run check:tour` | Tour のレッスン、演習、診断の例を native の CLI で整形の確認・実行・出力の比較にかける。Tour の一覧が最新か。すべてのレッスンを WASM でコンパイルする。`examples/spec/lessons` と `examples/spec/playground` の整形も確かめる |
 | Playground | `bun run check:playground` | カタログと Tour のチェック、Playground の lint、Playground のテスト、TypeScript の型検査、Vite のビルド |
-| Web UI の見た目 | `cd apps/playground && bun run test:visual` | Chromium で、すべての HTML サンプルの画面の大きさごとの表示、操作、画像が読めないときの代わりの表示、Code と Explorer を確かめる。確認用の PNG と HTML の報告を出す |
+| Playground の e2e | `cd apps/playground && bun run test:e2e` | Chromium で Playground と Tour を操作し、隔離した実行、Preview のリンク、外部通信の確認、最初の例の案内などの動作を確かめる。失敗したら trace と HTML の報告を出す |
 | Rust | `bun run check:rust` | Rust の整形と、ワークスペースのテスト |
 | 本番用ビルドをブラウザーで | `bun run check:production:browser` | CLI で Web のひな形と Flow を開発用とリリース用にビルドし、Chromium で操作して、表示と入力の値、ソースマップの既定、JavaScript の例外を確かめる。Playground の依存と Chromium が必要。全体のチェックとリリースのチェックにも含まれる |
 | 本番用の成果物 | `bun run check:production` | 6つの fixture のリリース用ビルド、成果物の情報の形、必要な実行時のライブラリ、大きさの上限、ハッシュと同一性、ビルドし直したときの一致、プロセスとしての実行。全体のチェックとリリースのチェックにも含まれる |
@@ -147,40 +148,27 @@ SESERAGI_TEST_BROWSER_PATH=/path/to/google/chrome bun test tests
 - `prelude::surface` の仮の「実装がない」テストは、今の一覧が空でも、この約束と JSON の `trackingIssue` を確かめます。
 - 確認表だけを変えたときは、この意味のテストと、fixture の `stdlib_surface` のテストを先に実行できます。
 
-## Web UI の見た目の確認
+## Playground の e2e
 
-`apps/playground/tests/fixtures/web-ui-regression.json` が、すべての HTML サンプル、画面の大きさ（320px、iPhone、Android、横向き、デスクトップ）、確かめる部分、操作の状態を決めています。
-ふだんの `check:playground` は、この表とソースの読みやすさを Bun のテストで確かめ、Chromium を勝手にダウンロードしません。
-実際のブラウザーで見るときだけ、次を実行します。
+`apps/playground/e2e/` のテストは、Chromium で Playground を操作して、動作を確かめます。見た目はスクリーンショットで比べません。
+ふだんの `check:playground` は Chromium をダウンロードしないので、ブラウザーで確かめるときだけ次を実行します。
 
 ```sh
 cd apps/playground
-bun run test:visual:install
-bun run test:visual
+bun run test:e2e:install
+bun run test:e2e
 ```
 
-- Playwright は、決まった Unsplash の URL を手元の SVG に置き換え、配置、はみ出し、コントラスト、キーボードで届く操作、画像が読めないときの代わりの表示を確かめます。
-- 代表の状態は、確認済みの画面の画像（基準の画像）とも比べます。失敗したら、`test-results/web-ui-review/` に期待した画像、実際の画像、差分、trace、HTML の報告を残します。
-- OS ごとの文字の描き方の違いを配置の違いと取り違えないように、基準の画像は OS ごとに持ちます。手元でも GitHub Actions でも、確かめるコマンドは `bun run test:visual` です。
+- 失敗したら、`test-results/e2e/` に trace、動画、HTML の報告を残します。
+- GitHub Actions では、`Playground e2e` のワークフローが同じコマンドを実行します。対象は、Playground、サンプル、Tour、TypeScript の実行時のライブラリが変わった PR です。
 
-**許す差分**
+## 画面の見た目の確認
 
-- 画面全体の基準の画像は、Playground の枠と Preview、Editor、Explorer の位置の関係を確かめるために残します。
-- 許す差分は、画像全体の割合ではなく、それぞれの基準の画像が見ている部分（Preview の本文、Editor の枠、Workspace の枠）の面積の1%を画素の数に直して決めます。
-- 色の差のしきい値 0.25 で、OS ごとの文字の描き方の違いを吸収します。部分の余白、文字、そろえ方の違いが、大きな余白に薄まって見逃されないようにするためです。
-- 感度のテストで、3種類の意図した部分の差分が、この上限を超えて失敗になることを確かめます。
+画面の見た目は、基準の画像との比較では確かめません。PR のプレビュー（Vercel）をブラウザーで開いて、人が確かめます。
 
-**基準の画像を更新する**
-
-意図して UI を変えたときは、先に [`SHOWCASE_QUALITY.md`](./SHOWCASE_QUALITY.md) の人による確認を済ませてから、理由を必ず書いて次を実行します。
-
-```sh
-bun run test:visual:update -- "変更理由"
-```
-
-- PNG と、承認済みの `showcase-review.json` の SHA-256 と理由が、`e2e/visual-baselines.review.json` に記録されます。PNG だけ、または承認の記録だけを変えると、確認の前に失敗します。
-- 更新のコマンドは、基準の画像を持つ Web UI のテストだけを実行し直します。ふだんの `bun run test:visual` は、ガイドを含むすべての Playwright のテストを実行します。
-- Linux の基準の画像も同じコマンドで作ります。`Web UI visual regression` のワークフローを手動で実行し、`update_reason` を渡します。
+- 基準の画像との比較は、意図しない変化よりも、基準の画像のずれで落ちることがほとんどでした。基準の画像の更新と再実行で作業も遅くなるので、やめました。
+- 見る画面の大きさは、デスクトップ、iPhone、Android の 3 つです。
+- Web の Showcase は、[`SHOWCASE_QUALITY.md`](./SHOWCASE_QUALITY.md) の手順で確かめ、承認を `showcase-review.json` に記録します。
 
 ## CI と手元の分担
 

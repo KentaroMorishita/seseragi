@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 13 行目にある `\"Seseragi Web\"` を `\"Hello HTML\"` に書き換えて `Run` し、`Output` と `Preview` の見出しが変わることを確かめてください。",
+      "instruction": "エディターの `\"Seseragi Web\"` を `\"Hello HTML\"` に書き換えて `Run` し、`Output` と `Preview` の見出しが変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

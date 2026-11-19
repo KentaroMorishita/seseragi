@@ -35,7 +35,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 10 行目にある `\"Welcome\"` を `\"Components\"` に、`\"Seseragi\"` を `\"Reusable UI\"` に書き換えて `Run` し、`Output` と `Preview` の表示が変わることを確かめてください。",
+      "instruction": "エディターの `\"Welcome\"` を `\"Components\"` に、`\"Seseragi\"` を `\"Reusable UI\"` に書き換えて `Run` し、`Output` と `Preview` の表示が変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
