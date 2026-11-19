@@ -192,6 +192,103 @@ body.preview-fullscreen-fallback-open {
   cursor: not-allowed;
 }
 
+/* 実行時間の内訳。Output の状態のチップから開く。出力のカードは中身を
+   はみ出させないので body の直下に置き、位置は run-timing-panel.ts が決める */
+.pg-run-timing {
+  position: fixed;
+  z-index: 1010;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg-1);
+  box-shadow: var(--shadow-float);
+}
+
+.pg-run-timing-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.pg-run-timing-title {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 650;
+}
+
+.pg-run-timing-total {
+  color: var(--fg-2);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-run-timing-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+
+.pg-run-timing-row {
+  display: grid;
+  /* 区間の名前・長さの棒・時間を一行に並べ、狭い画面でも低く収める */
+  grid-template-columns: 7.5rem minmax(24px, 1fr) 4.5rem;
+  align-items: center;
+  column-gap: var(--space-2);
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+}
+
+.pg-run-timing-row dt {
+  color: var(--fg-2);
+}
+
+.pg-run-timing-row dd {
+  grid-column: 3;
+  grid-row: 1;
+  margin: 0;
+  font-family: var(--font-code);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* 区間の長さを、一番長い区間に対する割合の棒で見せる */
+.pg-run-timing-bar {
+  grid-column: 2;
+  grid-row: 1;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background:
+    linear-gradient(var(--fg-3), var(--fg-3)) no-repeat left /
+    var(--run-timing-share) 100%,
+    var(--surface-2);
+  opacity: 0.6;
+}
+
+/* チップの数字（main）の行。色だけに頼らず、太さでも示す */
+.pg-run-timing-row[data-phase="main"] {
+  background: var(--ok-soft);
+}
+
+.pg-run-timing-row[data-phase="main"] dt,
+.pg-run-timing-row[data-phase="main"] dd {
+  color: var(--ok);
+  font-weight: 650;
+}
+
+.pg-run-timing-row[data-phase="main"] .pg-run-timing-bar {
+  background:
+    linear-gradient(var(--ok), var(--ok)) no-repeat left /
+    var(--run-timing-share) 100%,
+    var(--surface-2);
+  opacity: 1;
+}
+
 /* ---------- 本体（コード・流れ・出力） ---------- */
 
 .pg-stage {

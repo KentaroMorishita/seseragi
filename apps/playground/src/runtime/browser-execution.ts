@@ -27,8 +27,13 @@ import type {
   DisplayDictionaryContract,
   EntryContract,
 } from "../compiler/types"
-import type { ForeignRuntimeBundle } from "./foreign-runtime"
 import { checkpointTransformer } from "./execution-budget"
+import type { ForeignRuntimeBundle } from "./foreign-runtime"
+import {
+  type ExecutionTimingMarks,
+  type ExecutionTimingReport,
+  timingClock,
+} from "./run-timing"
 import { runtimeModules } from "./runtime-modules"
 
 type ModuleExports = Record<string, unknown>
@@ -47,7 +52,12 @@ export type ExecutionResult = {
 }
 
 export type BrowserExecutionCompletion =
-  | Readonly<{ readonly kind: "completed"; readonly result: ExecutionResult }>
+  | Readonly<{
+      readonly kind: "completed"
+      readonly result: ExecutionResult
+      /** 実行用のフレームで動かしたときだけ付く、区間ごとの時刻 */
+      readonly timing?: ExecutionTimingReport
+    }>
   | Readonly<{ readonly kind: "cancelled" }>
 
 export type BrowserExecution = Readonly<{
@@ -63,6 +73,8 @@ export type BrowserExecutionOptions = Readonly<{
   readonly navigationProvider?: ProviderPackageEntry
   readonly maxOutputCodeUnits?: number
   readonly checkpoint?: () => void
+  /** 実行時間の内訳を記録する先。Output のチップの数字と内訳に使う */
+  readonly timing?: ExecutionTimingMarks
 }>
 
 export class ProjectExecutionError extends Error {
@@ -134,12 +146,16 @@ export async function startGeneratedProject(
 ): Promise<BrowserExecution> {
   processHashSeed()
   const entryModulePath = generatedModulePath(entryPath)
+  const timing = options.timing
+  if (timing !== undefined) timing.evaluateStartedAt = timingClock()
   const evaluated = await evaluateProject(
     modules,
     entryPath,
     options.foreignRuntime,
-    options.checkpoint
+    options.checkpoint,
+    timing
   )
+  if (timing !== undefined) timing.evaluatedAt = timingClock()
   const generated = evaluated.modules.get(entryModulePath)
   if (generated === undefined) {
     throw new ProjectExecutionError(entryPath)
@@ -280,6 +296,8 @@ async function startEvaluatedModule(
     )
     return domDisposal
   }
+  const timing = options.timing
+  if (timing !== undefined) timing.mainStartedAt = timingClock()
   const completion = effectRuntime
     .run(
       main(undefined) as effectRuntime.Effect<unknown, unknown, unknown>,
@@ -287,6 +305,7 @@ async function startEvaluatedModule(
       effectExecution.context
     )
     .then((result) => {
+      if (timing !== undefined) timing.mainEndedAt = timingClock()
       if (result.kind === "failure") {
         throw new Error(renderFailure(entry, resolveModule, result.error))
       }
@@ -309,6 +328,7 @@ async function startEvaluatedModule(
     .finally(async () => {
       await disposeDom()
       await providerRuntime.shutdown()
+      if (timing !== undefined) timing.cleanedUpAt = timingClock()
     })
   let cancellation: Promise<void> | undefined
   return Object.freeze({
@@ -371,7 +391,8 @@ async function evaluateProject(
   modules: readonly GeneratedProjectModule[],
   entryPath: string,
   foreignRuntime?: ForeignRuntimeBundle,
-  checkpoint?: () => void
+  checkpoint?: () => void,
+  timing?: ExecutionTimingMarks
 ): Promise<Readonly<{ modules: ReadonlyMap<string, ModuleExports> }>> {
   const guardName =
     checkpoint === undefined
@@ -404,7 +425,8 @@ async function evaluateProject(
             )
           return `${artifact.exactIdentity}#${artifact.contentDigest}#${foreignRuntime?.snapshotDigest}`
         },
-        guardName
+        guardName,
+        timing
       )
     )
   }
@@ -428,7 +450,8 @@ async function evaluateProject(
             )
           return `${artifact.exactIdentity}#${artifact.contentDigest}#${foreignRuntime?.snapshotDigest}`
         },
-        guardName
+        guardName,
+        timing
       )
     )
   }
@@ -489,9 +512,29 @@ async function evaluateProject(
 async function transpile(
   source: string,
   resolveIdentity?: (specifier: string) => string,
-  guardName?: string
+  guardName?: string,
+  timing?: ExecutionTimingMarks
 ): Promise<string> {
+  // 最初の import で、Worker に入っている TypeScript コンパイラが初期化される
+  const importStartedAt = performance.now()
   const ts = await import("typescript")
+  const transpileStartedAt = performance.now()
+  try {
+    return transpileWith(ts, source, resolveIdentity, guardName)
+  } finally {
+    if (timing !== undefined) {
+      timing.compilerInitMilliseconds += transpileStartedAt - importStartedAt
+      timing.transpileMilliseconds += performance.now() - transpileStartedAt
+    }
+  }
+}
+
+function transpileWith(
+  ts: typeof import("typescript"),
+  source: string,
+  resolveIdentity?: (specifier: string) => string,
+  guardName?: string
+): string {
   const javascript = ts.transpileModule(source, {
     transformers:
       resolveIdentity === undefined

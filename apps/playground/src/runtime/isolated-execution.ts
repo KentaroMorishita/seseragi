@@ -13,6 +13,7 @@ import type {
 } from "./browser-execution"
 import type { ForeignRuntimeBundle } from "./foreign-runtime"
 import { previewNavigationCancelled } from "./preview-navigation"
+import { timingClock } from "./run-timing"
 
 export type IsolatedExecutionRequest = Readonly<{
   modules: readonly GeneratedProjectModule[]
@@ -63,6 +64,9 @@ export async function startIsolatedProject(
   request: IsolatedExecutionRequest,
   options: IsolatedExecutionOptions
 ): Promise<BrowserExecution> {
+  // 実行時間の内訳の始まり。実行用のフレームを読み込む時間から数える
+  const frameStartedAt = timingClock()
+  let runSentAt = frameStartedAt
   const { default: source } = await import("virtual:seseragi-execution-frame")
   if (options.signal.aborted) throw previewNavigationCancelled()
   const session = crypto.randomUUID()
@@ -212,6 +216,7 @@ export async function startIsolatedProject(
             reject(previewNavigationCancelled())
             return
           }
+          runSentAt = timingClock()
           port.postMessage({ type: "run", request })
           if (
             !request.entry.environment.some(({ service }) => service === "dom")
@@ -255,6 +260,14 @@ export async function startIsolatedProject(
               result: {
                 stdout: value.result.stdout,
                 debug: value.result.debug,
+              },
+              // フレームと Worker の値は、表示する前に summarizeRunTiming が確かめる
+              timing: {
+                frameStartedAt,
+                runSentAt,
+                completedAt: timingClock(),
+                frame: data.frameTiming,
+                worker: data.timing,
               },
             })
             frame.removeEventListener("load", onLoad)

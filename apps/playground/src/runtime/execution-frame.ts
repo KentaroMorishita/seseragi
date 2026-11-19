@@ -2,6 +2,7 @@
 import { serveExecutionPort } from "./execution-session"
 import type { IsolatedExecutionRequest } from "./isolated-execution"
 import { installPreviewLinkBridge } from "./preview-links"
+import { type FrameTimingMarks, timingClock } from "./run-timing"
 
 declare const __SESERAGI_EXECUTION_WORKER__: string
 
@@ -53,10 +54,16 @@ window.addEventListener("message", function connect(event: MessageEvent) {
       port.dispatchEvent(new MessageEvent("message", { data: message.data }))
       return
     }
+    const runReceivedAt = timingClock()
     const url = URL.createObjectURL(
       new Blob([__SESERAGI_EXECUTION_WORKER__], { type: "text/javascript" })
     )
     const worker = new Worker(url)
+    // Worker を作るのにかかった時間を、完了の知らせに添える（実行時間の内訳）
+    const frameTiming: FrameTimingMarks = {
+      runReceivedAt,
+      workerCreatedAt: timingClock(),
+    }
     const channel = new MessageChannel()
     const stop = () => {
       worker.terminate()
@@ -67,7 +74,11 @@ window.addEventListener("message", function connect(event: MessageEvent) {
     }
     window.addEventListener("pagehide", stop, { once: true })
     channel.port1.onmessage = (event: MessageEvent) => {
-      port.postMessage(event.data)
+      port.postMessage(
+        event.data?.type === "completion"
+          ? { ...event.data, frameTiming }
+          : event.data
+      )
       if (event.data?.type === "completion" || event.data?.type === "error")
         stop()
     }

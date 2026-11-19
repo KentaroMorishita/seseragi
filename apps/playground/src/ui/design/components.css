@@ -398,6 +398,29 @@
   color: var(--warn);
 }
 
+/* 押せる状態のチップ（✓ 1 ms を押すと実行時間の内訳を開く）。見た目はチップのまま */
+.ui-status--action {
+  padding: 0;
+}
+
+.ui-status-button {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 10px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ui-status-button:hover,
+.ui-status-button[aria-expanded="true"] {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
 /* 件数のバッジ */
 .ui-badge {
   display: inline-grid;
