@@ -296,7 +296,9 @@ impl Backend<'_> {
         }
         let mut argument = local::method_argument_type(&arguments[0])
             .ok_or("Rust backend: missing HTML argument type")?;
-        if argument == CoreType::Hole && matches!(name, "renderToString" | "renderDocument") {
+        let renders = matches!(name, "renderToString" | "renderDocument");
+        let converts = name == "std/web/svg::toHtml";
+        if argument == CoreType::Hole && (renders || converts) {
             if let CoreExpr::Variable { name, evidence, .. } = &arguments[0] {
                 if evidence.is_empty() && !scope.contains(name) {
                     let symbol = if name.contains("::") {
@@ -323,7 +325,16 @@ impl Backend<'_> {
                             false,
                         )
                         .ok_or("Rust backend: unproven global Html initializer type")?;
-                        html_action(&argument)?;
+                        if converts {
+                            if !matches!(&argument, CoreType::Named { name, .. } if name == "std/web/svg::Svg")
+                            {
+                                return Err(
+                                    "Rust backend: unproven global Svg initializer type".into()
+                                );
+                            }
+                        } else {
+                            html_action(&argument)?;
+                        }
                     }
                 }
             }

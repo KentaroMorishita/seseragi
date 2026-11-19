@@ -321,6 +321,11 @@ fn native_html_element(tag: &str, value: V, void: bool) -> V {
 /// apart from HTML nodes until `toHtml`.
 fn native_svg_element(tag: &str, value: V) -> V {
     let props = value.record_fields();
+    // The TS scene takes text, one node or an Array as children, and refuses
+    // a List when the node is built.
+    if matches!(props.get("children"), Some(V::ListEmpty | V::List(_))) {
+        panic!("unsupported SVG children value");
+    }
     let mut output = format!("<{tag}");
     native_html_common_attributes(&mut output, props);
     for (property, name) in [
@@ -348,6 +353,9 @@ fn native_svg_element(tag: &str, value: V) -> V {
             Some(V::Float(value)) if value.is_finite() => {
                 output.push_str(&format!(" {name}=\"{}\"", native_number_text(*value)));
             }
+            // A field the parameter type left out keeps its value when a
+            // wider record is passed on, as on TS.
+            Some(V::Int(value)) => output.push_str(&format!(" {name}=\"{value}\"")),
             Some(V::Float(_)) => {
                 return native_html_invalid(
                     "\0svg.node",
