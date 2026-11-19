@@ -64,10 +64,14 @@
     },
     {
       "id": "project-flow-app",
-      "identity": "ivory and deep-indigo editorial Kyoto travel planner with synced SVG route map",
+      "identity": "ivory and deep-indigo editorial Kyoto travel planner with illustrated map and synced SVG route",
       "photoId": null,
+      "repoAssets": [
+        "assets/samples/trip-planner/kyoto-central-map.jpg",
+        "assets/samples/trip-planner/kyoto-uji-wide-map.jpg"
+      ],
       "photoGroup": "project-flow-app",
-      "layoutMarkers": ["svg.svg {", "minHeight: \"100vh\""],
+      "layoutMarkers": ["objectFit: \"cover\"", "minHeight: \"100vh\""],
       "states": ["initial", "populated", "empty", "day studio"],
       "artifacts": [
         "docs/reviews/issue-189/visual/explorer-code-preview.png",

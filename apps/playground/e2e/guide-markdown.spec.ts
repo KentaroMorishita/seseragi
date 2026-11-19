@@ -77,13 +77,13 @@ test("renders every guide safely at mobile width", async ({
   await expect(
     body.getByRole("heading", { name: "この画面で試すこと" })
   ).toBeVisible()
-  await expect(body.locator("ul > li")).toHaveCount(8)
+  await expect(body.locator("ul > li")).toHaveCount(4)
 
   await selectDiscoverSample(page, "project-flow-app")
   await page.locator("#sample-guide-button").click()
-  await expect(body.locator("ol > li")).toHaveCount(5)
+  await expect(body.locator("ol > li")).toHaveCount(4)
   await expect(
-    body.locator("pre > code").filter({ hasText: "Release Room page" })
+    body.locator("pre > code").filter({ hasText: "components/route_map.ssrg" })
   ).toBeVisible()
   expect(
     await body.evaluate((element) => element.scrollWidth <= element.clientWidth)

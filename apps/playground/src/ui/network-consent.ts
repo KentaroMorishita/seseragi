@@ -187,9 +187,28 @@ export function createNetworkGate(
     current: () => NetworkScope
     /** 許可されたあとに、同じコードを実行し直す */
     rerun: () => void
+    /** 今のスコープの許可が取り消されたときに、実行中のプレビューを止める */
+    onRevoke?: () => void
   }>
 ): NetworkGate {
   const decision = () => options.store.get(options.current().scope)?.decision
+  const readAllowedScopes = () =>
+    new Set(
+      options.store
+        .list()
+        .filter((permission) => permission.decision === "allowed")
+        .map((permission) => permission.scope)
+    )
+  let allowedScopes = readAllowedScopes()
+  options.store.subscribe(() => {
+    const nextAllowed = readAllowedScopes()
+    const activeScope = options.current().scope
+    if (allowedScopes.has(activeScope) && !nextAllowed.has(activeScope)) {
+      options.notice.hide()
+      options.onRevoke?.()
+    }
+    allowedScopes = nextAllowed
+  })
   const ask = async (): Promise<boolean> => {
     const { scope, label } = options.current()
     const allowed = await options.consent.ask(label)
