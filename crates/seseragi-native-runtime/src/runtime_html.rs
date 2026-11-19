@@ -379,7 +379,10 @@ fn native_html_attributes(
             ("input", "inputType") => Some("text"),
             _ => None,
         };
-        match (props.get(property), fallback) {
+        let value = props
+            .get(property)
+            .filter(|value| !matches!(value, V::Unit));
+        match (value, fallback) {
             (None, Some(fallback)) => {
                 native_html_attribute(output, name, Some(&V::text(fallback)), kind)
             }
@@ -387,7 +390,7 @@ fn native_html_attributes(
         }
     }
     match props.get("attributes") {
-        None => {}
+        None | Some(V::Unit) => {}
         Some(V::Array(items)) => {
             let mut names = std::collections::BTreeSet::new();
             for item in items.get() {

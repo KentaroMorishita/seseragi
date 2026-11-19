@@ -47,4 +47,5 @@ pub effect fn main = do {
   // Unit is left out and a Char is text, as on TS.
   println (html.renderToString (svg.toHtml (sized { width: 1.0, tabIndex: (), children: () })))
   println (html.renderToString (svg.toHtml (sized { width: 1.0, children: '<' })))
+  println (html.renderToString (svg.toHtml (sized { width: 1.0, attributes: () })))
 }
