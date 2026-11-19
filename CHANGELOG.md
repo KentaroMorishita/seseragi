@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.188] - 2026-11-19
+
+### Fixed
+
+- The native target renders static `std/web/svg` scenes: `svg`, `g`, `rect`, `path`, `circle`, `line`, `polyline`, `polygon`, `text` and `toHtml`. They print the same HTML text as the TS target, with the same attribute order, number spelling and escaping, so the `html-components` sample, which draws its book covers with SVG, now runs natively too. A field the scene types do not define, such as `fontSize`, is left out on both targets. The binding targets such as `viewBoxTarget`, event handlers and `elementRef` need a browser DOM and are still refused when compiling for native.
+
 ## [0.61.187] - 2026-11-18
 
 ### Changed

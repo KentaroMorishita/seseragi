@@ -71,6 +71,50 @@ fn style_image_and_document_match_ts() {
 }
 
 #[test]
+fn static_svg_scenes_match_ts() {
+    let scratch = tempfile::tempdir().unwrap();
+    let fixture = root().join("examples/spec/fixtures/rust-backend/svg-scene.ssrg");
+    compare(&fixture, &fixture.with_extension("stdout"), scratch.path());
+}
+
+#[test]
+fn svg_defects_happen_at_the_same_point_as_on_ts() {
+    // A number that is not finite fails when the text is written; a List of
+    // children fails when the node is built.
+    for name in ["svg-scene-defect", "svg-scene-list-children"] {
+        let scratch = tempfile::tempdir().unwrap();
+        let fixture = root().join(format!("examples/spec/fixtures/rust-backend/{name}.ssrg"));
+        let input = process::copy_input(&fixture, scratch.path());
+        let cli = env!("CARGO_BIN_EXE_seseragi");
+        let ts = bounded(Command::new(cli).arg("run").arg(&input), scratch.path());
+        let native = scratch.path().join("native");
+        successful(bounded(
+            Command::new(cli)
+                .args(["experimental", "build-native"])
+                .arg(&input)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(&native),
+            scratch.path(),
+        ));
+        let output = bounded(
+            Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", ""),
+            scratch.path(),
+        );
+        let expected = fs::read(fixture.with_extension("stdout")).unwrap();
+        for (target, output) in [("TS", &ts), ("native", &output)] {
+            assert_eq!(
+                output.status.code(),
+                Some(70),
+                "{name} {target}: {output:?}"
+            );
+            assert_eq!(output.stdout, expected, "{name} {target}");
+        }
+        assert_eq!(output.stderr, ts.stderr, "{name}");
+    }
+}
+
+#[test]
 fn every_standard_html_element_and_its_attributes_match_ts() {
     let scratch = tempfile::tempdir().unwrap();
     let mut source = String::from("import * as html from \"std/web/html\"\npub effect fn main = match html.parseWebUrl \"/image?a=1&b=2\" { Left error -> println (show error); Right url -> do {\n");

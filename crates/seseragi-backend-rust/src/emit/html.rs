@@ -1,6 +1,11 @@
 use super::*;
 
 fn operation(name: &str) -> Option<&str> {
+    if svg::operation(name).is_some() {
+        // SVG scene nodes keep their module, so the runtime cannot mistake
+        // `svg.text` for `html.text`.
+        return Some(name);
+    }
     let name = name.strip_prefix("std/web/html::")?;
     (seseragi_project::standard_html_tag(name).is_some()
         || matches!(
@@ -91,6 +96,12 @@ impl Backend<'_> {
         let CoreType::Function { parameter, result } = &ty else {
             return Err("Rust backend: HTML callable contract".into());
         };
+        if let Some(operation) = svg::operation(name) {
+            if !evidence.is_empty() || !svg::valid(operation, parameter, result) {
+                return Err("Rust backend: unproven SVG argument/result type".into());
+            }
+            return Ok(());
+        }
         let string = named("std/prelude::String", vec![]);
         let valid = match name {
             "style" => {
@@ -285,7 +296,9 @@ impl Backend<'_> {
         }
         let mut argument = local::method_argument_type(&arguments[0])
             .ok_or("Rust backend: missing HTML argument type")?;
-        if argument == CoreType::Hole && matches!(name, "renderToString" | "renderDocument") {
+        let renders = matches!(name, "renderToString" | "renderDocument");
+        let converts = name == "std/web/svg::toHtml";
+        if argument == CoreType::Hole && (renders || converts) {
             if let CoreExpr::Variable { name, evidence, .. } = &arguments[0] {
                 if evidence.is_empty() && !scope.contains(name) {
                     let symbol = if name.contains("::") {
@@ -312,7 +325,16 @@ impl Backend<'_> {
                             false,
                         )
                         .ok_or("Rust backend: unproven global Html initializer type")?;
-                        html_action(&argument)?;
+                        if converts {
+                            if !matches!(&argument, CoreType::Named { name, .. } if name == "std/web/svg::Svg")
+                            {
+                                return Err(
+                                    "Rust backend: unproven global Svg initializer type".into()
+                                );
+                            }
+                        } else {
+                            html_action(&argument)?;
+                        }
                     }
                 }
             }
