@@ -451,71 +451,38 @@ test.describe("canonical Web UI browser regression", () => {
 
   test("form-todo / desktop validates, submits and empties the form", async ({
     page,
-  }, testInfo) => {
-    await routeImages(page)
+  }) => {
     const form = sample("form-todo")
     await open(page, 1440, 1000)
     await select(page, form)
     const formPreview = await run(page, form)
-    const planTitle = formPreview.locator("#plan-title")
-    const planDetails = formPreview.locator("#plan-details")
-    const addToLaunchLoop = formPreview.getByRole("button", {
-      name: "Add to launch loop",
-    })
-    await planTitle.scrollIntoViewIfNeeded()
-    await planTitle.fill("Review the launch loop")
-    await addToLaunchLoop.scrollIntoViewIfNeeded()
-    await addToLaunchLoop.click()
+    // Clicking a seat button toggles selection on and off.
+    const seatA3 = formPreview.locator("#seat-A-3")
+    await expect(seatA3).toHaveAttribute("aria-selected", "false")
+    await seatA3.click()
+    await expect(seatA3).toHaveAttribute("aria-selected", "true")
+    await seatA3.click()
+    await expect(seatA3).toHaveAttribute("aria-selected", "false")
+    await formPreview.locator("#proceed-checkout").click()
+    await formPreview.locator("#submit-booking").click()
     const formAlert = formPreview.getByRole("alert")
-    await expect(formAlert).toContainText("clear purpose")
-    await formAlert.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await capture(
-      page,
-      testInfo,
-      form,
-      "desktop",
-      "invalid-submit",
-      formPreview.locator("body")
-    )
-    await planDetails.scrollIntoViewIfNeeded()
-    await planDetails.fill("Walk through every control once.")
-    await addToLaunchLoop.scrollIntoViewIfNeeded()
-    await addToLaunchLoop.click()
-    const addedPlan = formPreview.locator('input[id="4"]')
-    await expect(addedPlan).toHaveValue("Review the launch loop")
-    await addedPlan.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await capture(
-      page,
-      testInfo,
-      form,
-      "desktop",
-      "valid-submit",
-      formPreview.locator("body")
-    )
-    while (await formPreview.getByRole("button", { name: "Remove" }).count()) {
-      const remove = formPreview.getByRole("button", { name: "Remove" }).first()
-      await remove.scrollIntoViewIfNeeded()
-      await remove.click()
-    }
-    const emptyHeading = formPreview.getByRole("heading", {
-      name: "Your launch loop is clear.",
-    })
-    await expect(emptyHeading).toBeVisible()
-    await emptyHeading.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await capture(
-      page,
-      testInfo,
-      form,
-      "desktop",
-      "empty",
-      formPreview.locator("body")
-    )
+    await expect(formAlert).toContainText("4 件の未入力・誤り")
+    await formPreview.locator("#buyer-name").fill("佐藤 葵")
+    const emailInput = formPreview.locator("#buyer-email")
+    await emailInput.click()
+    await emailInput.pressSequentially("test@example.com")
+    await expect(emailInput).toHaveValue("test@example.com")
+    await formPreview.locator("#buyer-phone").fill("090-1234-5678")
+    await formPreview.locator("#buyer-terms").check()
+    // Fixing all fields clears the error summary live before re-submitting.
+    await expect(formAlert).toHaveCount(0)
+    await formPreview.locator("#submit-booking").click()
+    const reservationCode = formPreview.locator("#reservation-code")
+    await expect(reservationCode).toContainText("SRG-2611-")
+    await formPreview.locator("#start-new-booking").click()
+    await formPreview.locator("#clear-seats").click()
+    const proceedButton = formPreview.locator("#proceed-checkout")
+    await expect(proceedButton).toBeDisabled()
   })
 
   test("project-flow-app / desktop exposes Explorer, validates and clears the deck", async ({

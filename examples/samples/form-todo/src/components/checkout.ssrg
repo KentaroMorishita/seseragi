@@ -1,0 +1,331 @@
+// 選択席のサマリーと、Validation による一括検証付き購入者フォームを描画します。
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import {
+  BackToSeats,
+  BookingAction,
+  BookingState,
+  BoxOfficePickup,
+  BuyerDraft,
+  CheckoutError,
+  ClearSelection,
+  DeliveryChanged,
+  EmailChanged,
+  MobileQr,
+  NameChanged,
+  OrderTotals,
+  PhoneChanged,
+  ProceedToCheckout,
+  Seat,
+  SubmitBooking,
+  TermsToggled,
+  ToggleSeat,
+  calculateTotals,
+  errorText,
+  formatYen,
+  seatPrice,
+  selectedSeats,
+  tierLabel,
+} from "self/booking/model"
+import * as styles from "self/ui/styles"
+
+fn plainSpan value: String -> html.Html<Task<Unit>> = html.span { children: value }
+
+fn fieldLabel htmlFor: String -> caption: String -> html.Html<Task<Unit>> = html.label {
+  htmlFor,
+  style: styles.labelStyle (),
+  children: caption
+}
+
+fn selectedSeatRow dispatch: (BookingAction -> Task<Unit>)
+  -> removable: Bool
+  -> seat: Seat
+  -> html.Html<Task<Unit>> = {
+    let priceNode = plainSpan (formatYen (seatPrice seat.tier))
+    let controls: Array<html.Html<Task<Unit>>> =
+      if removable then
+        [
+          priceNode,
+          html.button {
+            buttonType: "button",
+            ariaLabel: `${seat.row}列 ${seat.number}番を外す`,
+            style: styles.smallGhostButtonStyle (),
+            onClick: dispatch (ToggleSeat seat.id),
+            children: "外す",
+          },
+        ]
+      else
+        [priceNode]
+    html.div {
+      style: styles.selectedSeatItemStyle (),
+      children: [
+        plainSpan `${seat.row}列 ${seat.number}番（${tierLabel seat.tier}）`,
+        html.div { style: styles.chipRowStyle (), children: controls },
+      ],
+    }
+  }
+
+pub fn summarySidebar dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> html.Html<Task<Unit>> = {
+    let chosen = selectedSeats state
+    let totals = calculateTotals state
+    let empty = arrays.isEmpty chosen
+    let heading: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: `選択中の座席 (${arrays.length chosen}/4)`
+    }
+    let clearControl: html.Html<Task<Unit>> =
+      if empty then
+        plainSpan ""
+      else
+        html.button {
+          id: "clear-seats",
+          buttonType: "button",
+          style: styles.smallGhostButtonStyle (),
+          onClick: dispatch ClearSelection,
+          children: "すべて解除",
+        }
+    let listArea: html.Html<Task<Unit>> =
+      if empty then
+        html.p {
+          style: styles.metaStyle (),
+          children: "左の座席マップから希望の席を選ぶか、「おすすめ席を選ぶ」を押してください。",
+        }
+      else
+        html.div { children: map (selectedSeatRow dispatch True) chosen }
+    let totalArea: html.Html<Task<Unit>> = html.div {
+      style: styles.totalRowStyle (),
+      children: [
+        plainSpan "合計金額",
+        html.span { id: "summary-total", children: formatYen totals.total },
+      ],
+    }
+    let proceedArea: html.Html<Task<Unit>> = html.div {
+      style: html.style { marginTop: "16px" },
+      children: html.button {
+        id: "proceed-checkout",
+        buttonType: "button",
+        disabled: empty,
+        style: styles.primaryButtonStyle empty,
+        onClick: dispatch ProceedToCheckout,
+        children:
+          if empty then
+            "座席を選んでください"
+          else
+            `購入手続きへ進む (${arrays.length chosen}席)`,
+      },
+    }
+    let statusArea: html.Html<Task<Unit>> = html.p {
+      role: "status",
+      style: styles.statusBannerStyle (),
+      children: state.statusMessage,
+    }
+    html.aside {
+      ariaLabel: "予約内容サマリー",
+      style: styles.surfaceStyle (),
+      children: [
+        html.div { style: styles.toolbarStyle (), children: [heading, clearControl] },
+        listArea,
+        totalArea,
+        proceedArea,
+        statusArea,
+      ],
+    }
+  }
+
+fn errorSummary errors: Array<CheckoutError> -> html.Html<Task<Unit>> =
+  if arrays.isEmpty errors then plainSpan "" else {
+  let lead: html.Html<Task<Unit>> = html.p {
+    style: html.style { fontWeight: "700", margin: "0 0 6px 0" },
+    children: `入力内容に ${arrays.length errors} 件の未入力・誤りがあります:`,
+  }
+  let items: Array<html.Html<Task<Unit>>> = map (\err: CheckoutError -> html.li {
+    children: errorText err
+  }) errors
+  html.div {
+    role: "alert",
+    style: styles.alertBoxStyle (),
+    children: [
+      lead,
+      html.ul {
+        style: html.style { margin: "0", paddingLeft: "18px" },
+        children: items
+      },
+    ],
+  }
+}
+
+fn textField fieldId: String
+  -> caption: String
+  -> inputKind: String
+  -> hint: String
+  -> currentValue: String
+  -> onChangeText: (String -> Task<Unit>)
+  -> html.Html<Task<Unit>> =
+  html.div {
+    style: styles.fieldGroupStyle (),
+    children: [
+      fieldLabel fieldId caption,
+      html.input {
+        id: fieldId,
+        inputType: inputKind,
+        placeholder: hint,
+        value: currentValue,
+        style: styles.inputStyle (),
+        onInput: (\event: html.InputEvent -> onChangeText event.value),
+      },
+    ],
+  }
+
+fn deliveryField dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> html.Html<Task<Unit>> = {
+    let caption: html.Html<Task<Unit>> = html.span {
+      style: styles.labelStyle (),
+      children: "受取方法"
+    }
+    html.div {
+      style: styles.fieldGroupStyle (),
+      children: [
+        caption,
+        html.div {
+          style: styles.chipRowStyle (),
+          children: [
+            html.button {
+              id: "delivery-mobile",
+              buttonType: "button",
+              ariaSelected: state.buyer.delivery == MobileQr,
+              style: styles.filterChipStyle (state.buyer.delivery == MobileQr),
+              onClick: dispatch (DeliveryChanged MobileQr),
+              children: "スマホ電子チケット（手数料無料）",
+            },
+            html.button {
+              id: "delivery-boxoffice",
+              buttonType: "button",
+              ariaSelected: state.buyer.delivery == BoxOfficePickup,
+              style: styles.filterChipStyle (state.buyer.delivery == BoxOfficePickup),
+              onClick: dispatch (DeliveryChanged BoxOfficePickup),
+              children: "当日窓口引換（+330円/枚）",
+            },
+          ],
+        },
+      ],
+    }
+  }
+
+fn termsCheckbox dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> html.Html<Task<Unit>> =
+  html.label {
+    htmlFor: "buyer-terms",
+    style: html.style {
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      marginBottom: "18px",
+      fontSize: "13px",
+      color: "#dcd8cf",
+      cursor: "pointer"
+    },
+    children: [
+      html.input {
+        id: "buyer-terms",
+        inputType: "checkbox",
+        checked: state.buyer.acceptedTerms,
+        onChange: (\event: html.ChangeEvent -> dispatch (TermsToggled (event.checked ?? False))),
+      },
+      plainSpan "公演中止時を除き、発券後のキャンセル・席変更ができないことに同意します。",
+    ],
+  }
+
+pub fn checkoutView dispatch: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> html.Html<Task<Unit>> = {
+    let chosen = selectedSeats state
+    let totals: OrderTotals = calculateTotals state
+    let buyer: BuyerDraft = state.buyer
+    let formTitle: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: "お客様情報の入力"
+    }
+    let submitRow: html.Html<Task<Unit>> = html.div {
+      style: styles.chipRowStyle (),
+      children: [
+        html.button {
+          id: "back-to-seats",
+          buttonType: "button",
+          style: styles.secondaryButtonStyle (),
+          onClick: dispatch BackToSeats,
+          children: "席を選び直す",
+        },
+        html.div {
+          style: html.style { flex: "1 1 200px" },
+          children: html.button {
+            id: "submit-booking",
+            buttonType: "submit",
+            style: styles.primaryButtonStyle False,
+            children: `予約を確定して発券する (${formatYen totals.total})`,
+          },
+        },
+      ],
+    }
+    let orderTitle: html.Html<Task<Unit>> = html.h2 {
+      style: styles.sectionHeadingStyle (),
+      children: "ご予約内容"
+    }
+    let feeRow: html.Html<Task<Unit>> = html.div {
+      style: html.style {
+        display: "flex",
+        justifyContent: "space-between",
+        paddingTop: "10px",
+        fontSize: "13px",
+        color: "#aca79d"
+      },
+      children: [plainSpan "発券手数料", plainSpan (formatYen totals.fee)],
+    }
+    let orderTotalRow: html.Html<Task<Unit>> = html.div {
+      style: styles.totalRowStyle (),
+      children: [plainSpan "お支払い合計", plainSpan (formatYen totals.total)],
+    }
+    let formNode: html.Html<Task<Unit>> = html.form {
+      onSubmit: dispatch SubmitBooking,
+      children: [
+        textField "buyer-name" "お名前（必須）" "text" "例: 佐藤 葵" buyer.fullName
+          (\v: String -> dispatch (NameChanged v)),
+        textField "buyer-email" "メールアドレス（電子チケット送付先）" "text" "例: aoi@example.com" buyer.email
+          (\v: String -> dispatch (EmailChanged v)),
+        textField "buyer-phone" "電話番号（ハイフンあり・なし可）" "tel" "例: 090-1234-5678" buyer.phone
+          (\v: String -> dispatch (PhoneChanged v)),
+        deliveryField dispatch state,
+        termsCheckbox dispatch state,
+        submitRow,
+      ],
+    }
+    let formCard: html.Html<Task<Unit>> = html.div {
+      style: styles.surfaceStyle (),
+      children: [formTitle, errorSummary state.errors, formNode],
+    }
+    let chosenList: html.Html<Task<Unit>> = html.div {
+      children: map (selectedSeatRow dispatch False) chosen,
+    }
+    let summaryCard: html.Html<Task<Unit>> = html.div {
+      style: styles.surfaceStyle (),
+      children: [orderTitle, chosenList, feeRow, orderTotalRow],
+    }
+    html.div {
+      style: styles.workspaceStyle (),
+      children: [
+        html.section {
+          ariaLabel: "購入者情報入力",
+          style: styles.mainColumnStyle (),
+          children: formCard,
+        },
+        html.aside {
+          ariaLabel: "ご注文内容の確認",
+          style: styles.sideColumnStyle (),
+          children: summaryCard,
+        },
+      ],
+    }
+  }

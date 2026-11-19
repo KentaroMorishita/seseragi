@@ -60,16 +60,15 @@
     },
     {
       "id": "form-todo",
-      "pickerLabel": "Signal + dom.runのLaunch Loop Showcase",
-      "heading": "Plan a calmer launch.",
+      "pickerLabel": "座席指定チケット予約（コンサートホール）",
+      "heading": "秋夜の室内楽特別公演 — 弦楽四重奏の夕べ",
       "architecture": "signal-run",
       "requiredSurfaces": ["sample-picker", "code", "preview"],
       "requiredStates": [
         "initial",
         "invalid-submit",
         "valid-submit",
-        "empty",
-        "image-fallback"
+        "empty"
       ]
     },
     {

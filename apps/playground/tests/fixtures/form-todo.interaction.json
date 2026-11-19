@@ -1,29 +1,23 @@
 {
   "schema": 1,
   "sampleId": "form-todo",
-  "sourcePath": "examples/samples/form-todo/main.ssrg",
+  "sourcePath": "examples/samples/form-todo/src/main.ssrg",
   "manifest": {
-    "sourceHash": "sha256:279a6c5fde288ce855cff63b789482e7120609eb0d37eea48430034edca79712",
-    "workspaceHash": "sha256:4768e03902abc8cd8f9601bd6c9c8de9518b6fa0a9b3db68d379aceb9832db61"
+    "sourceHash": "sha256:0a787f56f71344b395ea135efe1ddd1a8a3fba0bb6bc4cf2c9402fd1dc73a971",
+    "workspaceHash": "sha256:3ca416d5bf7baa57ae5db8fb55b36046938fe64abeabbf4c849d615bd93d4a51"
   },
   "runner": {
     "kind": "browser-use",
-    "url": "http://127.0.0.1:5173/",
+    "url": "http://127.0.0.1:4173/",
     "previewSelector": "#html-preview",
-    "recordedAt": "2026-08-02",
-    "note": "Vite PreviewでsampleをRunし、iframeの実DOMへ入力・click・change・keydown・pointerdownを配送して観測した。"
+    "recordedAt": "2026-11-19",
+    "note": "Playground Preview で座席指定チケット予約（form-todo）を実行し、座席選択・フィルター・一括バリデーション・電子チケット発券・空状態を観測した。"
   },
   "requiredOperations": [
+    "filter",
+    "auto-pick",
     "invalid-submit",
     "valid-submit",
-    "item-add",
-    "filter",
-    "inline-edit",
-    "complete",
-    "pin",
-    "keyboard",
-    "pointer",
-    "remove",
     "clear",
     "empty-state"
   ],
@@ -65,161 +59,80 @@
       "id": "initial",
       "actions": [],
       "assert": {
-        "planCount": 3,
-        "planTitles": [
-          "Outline the launch story",
-          "Invite two people to review",
-          "Leave room for a quiet reset"
-        ],
-        "summary": "All plans: 3 plan(s) visible.",
-        "status": "Ready for a focused planning session."
+        "selectedSeats": ["B5", "B6"],
+        "subtotalYen": 24000,
+        "heading": "秋夜の室内楽特別公演 — 弦楽四重奏の夕べ"
+      }
+    },
+    {
+      "id": "filter-tier",
+      "actions": [{ "kind": "filter", "buttonText": "S席 12,000円" }],
+      "assert": {
+        "activeFilter": "S席",
+        "selectedSeats": ["B5", "B6"]
+      }
+    },
+    {
+      "id": "auto-pick",
+      "actions": [
+        { "kind": "click", "buttonText": "すべて" },
+        { "kind": "click", "buttonText": "2 連番でおすすめ席を選ぶ" }
+      ],
+      "assert": {
+        "contiguousPair": true,
+        "crossesCenterAisle": false
       }
     },
     {
       "id": "invalid-submit",
       "actions": [
-        {
-          "kind": "input",
-          "selector": "#plan-title",
-          "value": "Review the launch loop"
-        },
-        { "kind": "submit", "buttonText": "Add to launch loop" }
+        { "kind": "click", "selector": "#proceed-checkout" },
+        { "kind": "submit", "selector": "#submit-booking" }
       ],
       "assert": {
-        "planCount": 3,
-        "alert": "Add one sentence so the plan has a clear purpose.",
-        "status": "Validation: add a short purpose."
+        "alert": "入力内容を確認してください（4 件の未入力・不備）"
       }
     },
     {
       "id": "valid-submit",
       "actions": [
+        { "kind": "input", "selector": "#buyer-name", "value": "佐藤 葵" },
         {
           "kind": "input",
-          "selector": "#plan-details",
-          "value": "Walk through every control once."
+          "selector": "#buyer-email",
+          "value": "aoi@example.com"
         },
-        { "kind": "click", "buttonText": "Share" },
-        { "kind": "change", "selector": "#plan-pinned", "checked": true },
-        { "kind": "submit", "buttonText": "Add to launch loop" }
-      ],
-      "assert": {
-        "planCount": 4,
-        "addedPlanId": "4",
-        "addedPlanTitle": "Review the launch loop",
-        "addedPlanTrack": "Share",
-        "addedPlanPinned": true,
-        "status": "Plan added to the launch loop."
-      }
-    },
-    {
-      "id": "item-add",
-      "actions": [],
-      "assert": {
-        "planCount": 4,
-        "addedPlanId": "4",
-        "addedPlanTitle": "Review the launch loop"
-      }
-    },
-    {
-      "id": "inline-edit",
-      "actions": [
         {
           "kind": "input",
-          "selector": "input[id=\"4\"]",
-          "value": "Review the launch loop notes"
-        }
+          "selector": "#buyer-phone",
+          "value": "090-1234-5678"
+        },
+        { "kind": "change", "selector": "#accept-terms", "checked": true },
+        { "kind": "submit", "selector": "#submit-booking" }
       ],
       "assert": {
-        "planId": "4",
-        "title": "Review the launch loop notes",
-        "status": "Plan title edited inline."
+        "ticketIssued": true,
+        "ticketHeading": "ご予約が確定しました",
+        "barcodeRendered": true
       }
     },
     {
-      "id": "complete",
+      "id": "clear-selection",
       "actions": [
-        { "kind": "click", "cardId": "4", "buttonText": "Mark complete" }
+        { "kind": "click", "buttonText": "別の席を新しく予約する" },
+        { "kind": "clear", "buttonText": "選択をクリア" }
       ],
       "assert": {
-        "planId": "4",
-        "buttonText": "Mark open",
-        "status": "Plan completion changed."
-      }
-    },
-    {
-      "id": "pin",
-      "actions": [
-        { "kind": "click", "cardId": "2", "buttonText": "Pin for focus" }
-      ],
-      "assert": {
-        "planId": "2",
-        "buttonText": "Unpin",
-        "status": "Plan pin changed."
-      }
-    },
-    {
-      "id": "remove",
-      "actions": [{ "kind": "remove", "cardId": "4", "buttonText": "Remove" }],
-      "assert": {
-        "planCount": 3,
-        "removedPlanId": "4",
-        "status": "Plan removed from the launch loop."
-      }
-    },
-    {
-      "id": "filter-done",
-      "actions": [{ "kind": "filter", "buttonText": "Done" }],
-      "assert": {
-        "planCount": 1,
-        "summary": "Completed: 1 plan(s) visible.",
-        "status": "View changed."
-      }
-    },
-    {
-      "id": "keyboard-arrow-right",
-      "actions": [
-        { "kind": "keyboard", "filter": "Done", "key": "ArrowRight" }
-      ],
-      "assert": {
-        "summary": "All plans: 3 plan(s) visible.",
-        "status": "View changed."
-      }
-    },
-    {
-      "id": "keyboard-end",
-      "actions": [{ "kind": "keyboard", "filter": "All", "key": "End" }],
-      "assert": {
-        "summary": "Completed: 1 plan(s) visible.",
-        "status": "View changed."
-      }
-    },
-    {
-      "id": "pointer",
-      "actions": [
-        { "kind": "pointer", "selector": "article p", "pointerType": "touch" }
-      ],
-      "assert": {
-        "status": "Plan details explored with pointer input."
-      }
-    },
-    {
-      "id": "clear-completed",
-      "actions": [{ "kind": "clear", "buttonText": "Clear completed" }],
-      "assert": {
-        "planCount": 2,
-        "summary": "All plans: 2 plan(s) visible.",
-        "status": "Completed plans cleared."
+        "selectedCount": 0
       }
     },
     {
       "id": "empty-state",
-      "actions": [{ "kind": "remove", "buttonText": "Remove", "repeat": 2 }],
+      "actions": [],
       "assert": {
-        "planCount": 0,
-        "summary": "All plans: 0 plan(s) visible.",
-        "emptyHeading": "Your launch loop is clear.",
-        "status": "Plan removed from the launch loop."
+        "selectedCount": 0,
+        "emptyMessage": "左の座席マップからご希望の席をクリックするか、上の連番自動選択ボタンをお試しください。",
+        "proceedDisabled": true
       }
     }
   ]
