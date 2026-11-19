@@ -569,7 +569,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:81d7e7953ab270ea17bcd53edaabef97f24f03c58fb989d8faaa69626fa8c45c",
       "guidePath": "examples/samples/form-todo/guide.md",
       "sourceHash": "sha256:0a787f56f71344b395ea135efe1ddd1a8a3fba0bb6bc4cf2c9402fd1dc73a971",
-      "workspaceHash": "sha256:30035f74c340ce4a3d90afd62ded5fc89cd2d05e45f371fc58bb6b5840ba3192",
+      "workspaceHash": "sha256:db21347932d27f809387259e20a8e57f88ca366cb858e14c7909db2c8ff03e7c",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -606,12 +606,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "components/checkout.ssrg",
             "sourcePath": "examples/samples/form-todo/src/components/checkout.ssrg",
-            "sourceHash": "sha256:6e49134fcb049986590cacb9264928eb33c670ad88cbee5957b5981676d5828d"
+            "sourceHash": "sha256:b478d8d1652d817c03568b5710711fa0cce74f2c7ebd59fe41e20be5fefe0b88"
           },
           {
             "path": "components/seat_map.ssrg",
             "sourcePath": "examples/samples/form-todo/src/components/seat_map.ssrg",
-            "sourceHash": "sha256:5ed54b4c707a4b8f5e69ae850f29085592821633c5e5a8a19b89d5f8e4211cd7"
+            "sourceHash": "sha256:5d49f3a132d84bdebdb128f8b71a31cb65ca4f09ad71cb2329472360237c0505"
           },
           {
             "path": "components/ticket.ssrg",
@@ -621,7 +621,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "ui/styles.ssrg",
             "sourcePath": "examples/samples/form-todo/src/ui/styles.ssrg",
-            "sourceHash": "sha256:e390e103e5e970fe71891ffab24ce0082cfdff034510a72320370e8051f1811b"
+            "sourceHash": "sha256:d8f5185423d2254f834c600b125b9d3af3d978d9907c1f9fc505054513be4fe7"
           }
         ]
       }

@@ -181,32 +181,36 @@ pub fn hallStageWrapStyle -> html.Style = html.style {
 pub fn seatGridStyle -> html.Style = html.style {
   display: "flex",
   flexDirection: "column",
-  gap: "10px",
-  marginBottom: "16px"
+  gap: "8px",
+  marginBottom: "16px",
+  overflowX: "auto",
+  paddingBottom: "4px",
+  width: "100%"
 }
 
 pub fn seatRowStyle -> html.Style = html.style {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  gap: "6px"
+  gap: "4px",
+  minWidth: "264px"
 }
 
 pub fn rowLabelStyle -> html.Style = html.style {
   color: "#9a958b",
-  fontSize: "12px",
+  fontSize: "11px",
   fontWeight: "700",
-  width: "20px",
+  width: "14px",
   textAlign: "center",
   flexShrink: "0"
 }
 
 pub fn aisleGapStyle -> html.Style = html.style {
   color: "#5f6472",
-  fontSize: "10px",
-  letterSpacing: "0.08em",
+  fontSize: "9px",
+  letterSpacing: "0.04em",
   textAlign: "center",
-  width: "24px",
+  width: "18px",
   flexShrink: "0"
 }
 
@@ -224,10 +228,10 @@ pub fn seatButtonStyle tier: SeatTier
       cursor: "not-allowed",
       fontSize: "12px",
       fontWeight: "600",
-      height: "36px",
-      minWidth: "32px",
-      flex: "1 1 32px",
-      maxWidth: "46px",
+      height: "34px",
+      minWidth: "24px",
+      flex: "1 1 24px",
+      maxWidth: "44px",
       padding: "0",
       opacity:
         if dimmed then
@@ -245,10 +249,10 @@ pub fn seatButtonStyle tier: SeatTier
       cursor: "pointer",
       fontSize: "12px",
       fontWeight: "800",
-      height: "36px",
-      minWidth: "32px",
-      flex: "1 1 32px",
-      maxWidth: "46px",
+      height: "34px",
+      minWidth: "24px",
+      flex: "1 1 24px",
+      maxWidth: "44px",
       padding: "0"
     }
   else
@@ -273,10 +277,10 @@ pub fn seatButtonStyle tier: SeatTier
     cursor: "pointer",
     fontSize: "12px",
     fontWeight: "600",
-    height: "36px",
-    minWidth: "32px",
-    flex: "1 1 32px",
-    maxWidth: "46px",
+    height: "34px",
+    minWidth: "24px",
+    flex: "1 1 24px",
+    maxWidth: "44px",
     padding: "0",
     opacity:
       if dimmed then
