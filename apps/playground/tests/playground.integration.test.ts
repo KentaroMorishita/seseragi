@@ -3307,7 +3307,7 @@ fails dom.DomRuntimeError<Never> =
     expect(html).toContain('sandbox="allow-scripts allow-forms"')
     expect(html).toContain('referrerpolicy="no-referrer"')
     expect(main).toContain(
-      "previewLinks.staticDocument(html, executionSettings.allowed())"
+      "previewLinks.staticDocument(html, networkAllowed)"
     )
     expect(main).toContain("createDocument: createPreviewDocument")
     expect(main).toContain("startIsolatedProject(htmlPreview")

@@ -1,9 +1,12 @@
 import { expect, type Page, test } from "@playwright/test"
+import { rememberNetworkDecision } from "./network-decision-support"
 
 // #1375: links the user clicks inside the sandboxed Preview open in a new tab
 // through the shell, without relaxing the frame sandbox.
 
 async function openSample(page: Page, id: string): Promise<void> {
+  // リンクを確かめるテスト。外部の画像は止めたままにしておく
+  await rememberNetworkDecision(page, [`example:${id}`], "denied")
   await page.goto("/")
   await expect(page.locator("#status-text")).toHaveText("Analysis ready", {
     timeout: 60_000,

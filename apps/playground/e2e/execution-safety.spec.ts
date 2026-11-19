@@ -162,16 +162,9 @@ test("Worker HTTP is blocked by default and available only with explicit permiss
   expect(requests).toBe(0)
   expect(await runFixture(page, script, { network: true })).toBe("completed")
   expect(requests).toBe(1)
-  const permission = page.getByRole("menuitemcheckbox", {
-    name: "Allow preview HTTP, WebSocket and external images",
-  })
+  // 外部通信の切り替えは More に置かない。許可は Run のときに確かめる（#1371）
   await page.locator("#mobile-tools-button").click()
-  await permission.click()
-  await page
-    .getByRole("textbox", { name: "Seseragi source editor" })
-    .fill('pub effect fn main = println "changed"')
-  await page.locator("#mobile-tools-button").click()
-  await expect(permission).toHaveAttribute("aria-checked", "false")
+  await expect(page.getByRole("menuitemcheckbox")).toHaveCount(0)
 })
 
 test("output cannot grow past the per-run bound", async ({ page }) => {
@@ -232,15 +225,19 @@ test("Text output does not load external images until Preview is selected", asyn
     .fill(
       "pub effect fn main = println \"<img src='https://preview-images.invalid/marker'>\"\n"
     )
-  await page.locator("#mobile-tools-button").click()
-  await page
-    .getByRole("menuitemcheckbox", {
-      name: "Allow preview HTTP, WebSocket and external images",
-    })
-    .click()
   await page.locator("#run-button").click()
   await expect(page.locator("#status-text")).toHaveText("Completed")
   expect(images).toBe(0)
+  // Preview を選んで外部の画像が要ると分かったときに、初めて許可を確かめる
+  await page.locator("#show-html-preview-button").click()
+  const consent = page.locator("#network-consent-dialog")
+  await consent.getByRole("button", { name: "Cancel" }).click()
+  await expect(page.locator("#preview-network-notice")).toBeVisible()
+  expect(images).toBe(0)
+  await page
+    .locator("#preview-network-notice")
+    .getByRole("button", { name: "Allow" })
+    .click()
   await page.locator("#show-html-preview-button").click()
   await expect.poll(() => images).toBe(1)
 })

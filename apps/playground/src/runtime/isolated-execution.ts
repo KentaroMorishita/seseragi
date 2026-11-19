@@ -29,6 +29,8 @@ export type IsolatedExecutionOptions = Readonly<{
   onDomMounted?: () => void
   /** 利用者が Preview の中で押した外部リンク（#1375）。シェルが確かめてから開く */
   onOpenLink?: (href: string) => void
+  /** 外部の画像や通信が CSP に止められた（#1371）。シェルが許可を確かめる */
+  onNetworkBlocked?: () => void
   networkAllowed?: boolean
   /** Only reduced deadlines are accepted, primarily for deterministic tests. */
   timeoutMs?: number
@@ -234,6 +236,8 @@ export async function startIsolatedProject(
           void handleStorage(data)
         } else if (data.type === "mounted" && !settled) {
           options.onDomMounted?.()
+        } else if (data.type === "network-blocked") {
+          options.onNetworkBlocked?.()
         } else if (data.type === "open-link") {
           if (typeof data.href === "string" && data.href.length <= 2048)
             options.onOpenLink?.(data.href)
