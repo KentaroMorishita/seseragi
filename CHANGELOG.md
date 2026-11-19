@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.61.189] - 2026-11-19
+
+### Fixed
+
+- On the native target, HTML and SVG nodes stay trees until `renderToString` or `renderDocument` writes them, as on the TS target. A subtree used in several places is shared instead of copied, so building a large page that is never written stays small. A value a renderer checks, such as an attribute whose type a wider record left unchecked, fails when the page is written with the TS message, not when the node is built.
+- `html.attribute` works on the native target, with the same name rules, reserved names and URL checks as on TS. Duplicate custom attribute names fail when the page is written.
+- On the native target, an SVG or HTML child or attribute that is `()` is left out, a `Char` is text and a `Byte` is a number, as on TS.
+
+## [0.61.188] - 2026-11-19
+
+### Fixed
+
+- The native target renders static `std/web/svg` scenes: `svg`, `g`, `rect`, `path`, `circle`, `line`, `polyline`, `polygon`, `text` and `toHtml`. They print the same HTML text as the TS target, with the same attribute order, number spelling and escaping, so the `html-components` sample, which draws its book covers with SVG, now runs natively too. A field the scene types do not define, such as `fontSize`, is left out on both targets. The binding targets such as `viewBoxTarget`, event handlers and `elementRef` need a browser DOM and are still refused when compiling for native.
+
 ## [0.61.187] - 2026-11-18
 
 ### Changed
