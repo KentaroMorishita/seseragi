@@ -46,74 +46,78 @@ import sample10Output from "../../../../examples/samples/impl-and-operators/stdo
 import sample11Source from "../../../../examples/samples/interactive-app/main.ssrg?raw"
 import sample11Guide from "../../../../examples/samples/interactive-app/guide.md?raw"
 
-import sample12Source from "../../../../examples/samples/local-functions/main.ssrg?raw"
-import sample12Guide from "../../../../examples/samples/local-functions/guide.md?raw"
-import sample12Output from "../../../../examples/samples/local-functions/stdout.txt?raw"
+import sample12Source from "../../../../examples/samples/json-decode/main.ssrg?raw"
+import sample12Guide from "../../../../examples/samples/json-decode/guide.md?raw"
+import sample12Output from "../../../../examples/samples/json-decode/stdout.txt?raw"
 
-import sample13Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
-import sample13Guide from "../../../../examples/samples/newtypes/guide.md?raw"
-import sample13Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
+import sample13Source from "../../../../examples/samples/local-functions/main.ssrg?raw"
+import sample13Guide from "../../../../examples/samples/local-functions/guide.md?raw"
+import sample13Output from "../../../../examples/samples/local-functions/stdout.txt?raw"
 
-import sample14Manifest from "../../../../examples/samples/project-flow-app/seseragi.toml?raw"
-import sample14Source from "../../../../examples/samples/project-flow-app/src/main.ssrg?raw"
-import sample14Source2 from "../../../../examples/samples/project-flow-app/src/app.ssrg?raw"
-import sample14Source3 from "../../../../examples/samples/project-flow-app/src/focus/model.ssrg?raw"
-import sample14Source4 from "../../../../examples/samples/project-flow-app/src/focus/view.ssrg?raw"
-import sample14Source5 from "../../../../examples/samples/project-flow-app/src/notes/form.ssrg?raw"
-import sample14Source6 from "../../../../examples/samples/project-flow-app/src/notes/model.ssrg?raw"
-import sample14Source7 from "../../../../examples/samples/project-flow-app/src/notes/view.ssrg?raw"
-import sample14Source8 from "../../../../examples/samples/project-flow-app/src/ui/components.ssrg?raw"
-import sample14Source9 from "../../../../examples/samples/project-flow-app/src/ui/styles.ssrg?raw"
-import sample14Guide from "../../../../examples/samples/project-flow-app/guide.md?raw"
+import sample14Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
+import sample14Guide from "../../../../examples/samples/newtypes/guide.md?raw"
+import sample14Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
 
-import sample15Manifest from "../../../../examples/samples/project-greeting/seseragi.toml?raw"
-import sample15Source from "../../../../examples/samples/project-greeting/src/main.ssrg?raw"
-import sample15Source2 from "../../../../examples/samples/project-greeting/src/feature/greeting.ssrg?raw"
-import sample15Guide from "../../../../examples/samples/project-greeting/guide.md?raw"
-import sample15Stdin from "../../../../examples/samples/project-greeting/stdin.txt?raw"
-import sample15Output from "../../../../examples/samples/project-greeting/stdout.txt?raw"
+import sample15Manifest from "../../../../examples/samples/project-flow-app/seseragi.toml?raw"
+import sample15Source from "../../../../examples/samples/project-flow-app/src/main.ssrg?raw"
+import sample15Source2 from "../../../../examples/samples/project-flow-app/src/app.ssrg?raw"
+import sample15Source3 from "../../../../examples/samples/project-flow-app/src/focus/model.ssrg?raw"
+import sample15Source4 from "../../../../examples/samples/project-flow-app/src/focus/view.ssrg?raw"
+import sample15Source5 from "../../../../examples/samples/project-flow-app/src/notes/form.ssrg?raw"
+import sample15Source6 from "../../../../examples/samples/project-flow-app/src/notes/model.ssrg?raw"
+import sample15Source7 from "../../../../examples/samples/project-flow-app/src/notes/view.ssrg?raw"
+import sample15Source8 from "../../../../examples/samples/project-flow-app/src/ui/components.ssrg?raw"
+import sample15Source9 from "../../../../examples/samples/project-flow-app/src/ui/styles.ssrg?raw"
+import sample15Guide from "../../../../examples/samples/project-flow-app/guide.md?raw"
 
-import sample16Source from "../../../../examples/samples/records/main.ssrg?raw"
-import sample16Guide from "../../../../examples/samples/records/guide.md?raw"
-import sample16Output from "../../../../examples/samples/records/stdout.txt?raw"
+import sample16Manifest from "../../../../examples/samples/project-greeting/seseragi.toml?raw"
+import sample16Source from "../../../../examples/samples/project-greeting/src/main.ssrg?raw"
+import sample16Source2 from "../../../../examples/samples/project-greeting/src/pricing/format.ssrg?raw"
+import sample16Source3 from "../../../../examples/samples/project-greeting/src/pricing/shipping.ssrg?raw"
+import sample16Guide from "../../../../examples/samples/project-greeting/guide.md?raw"
+import sample16Output from "../../../../examples/samples/project-greeting/stdout.txt?raw"
 
-import sample17Manifest from "../../../../examples/samples/seseragi-landing-page/seseragi.toml?raw"
-import sample17Source from "../../../../examples/samples/seseragi-landing-page/src/main.ssrg?raw"
-import sample17Source2 from "../../../../examples/samples/seseragi-landing-page/src/app.ssrg?raw"
-import sample17Source3 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg?raw"
-import sample17Source4 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg?raw"
-import sample17Source5 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg?raw"
-import sample17Source6 from "../../../../examples/samples/seseragi-landing-page/src/components/closing.ssrg?raw"
-import sample17Source7 from "../../../../examples/samples/seseragi-landing-page/src/components/footer.ssrg?raw"
-import sample17Source8 from "../../../../examples/samples/seseragi-landing-page/src/components/header.ssrg?raw"
-import sample17Source9 from "../../../../examples/samples/seseragi-landing-page/src/components/hero.ssrg?raw"
-import sample17Source10 from "../../../../examples/samples/seseragi-landing-page/src/components/image-statement.ssrg?raw"
-import sample17Source11 from "../../../../examples/samples/seseragi-landing-page/src/components/principles.ssrg?raw"
-import sample17Source12 from "../../../../examples/samples/seseragi-landing-page/src/ui/styles.ssrg?raw"
-import sample17Source13 from "../../../../examples/samples/seseragi-landing-page/src/url.ssrg?raw"
-import sample17Guide from "../../../../examples/samples/seseragi-landing-page/guide.md?raw"
+import sample17Source from "../../../../examples/samples/records/main.ssrg?raw"
+import sample17Guide from "../../../../examples/samples/records/guide.md?raw"
+import sample17Output from "../../../../examples/samples/records/stdout.txt?raw"
 
-import sample18Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
-import sample18Guide from "../../../../examples/samples/signal-state/guide.md?raw"
-import sample18Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
+import sample18Manifest from "../../../../examples/samples/seseragi-landing-page/seseragi.toml?raw"
+import sample18Source from "../../../../examples/samples/seseragi-landing-page/src/main.ssrg?raw"
+import sample18Source2 from "../../../../examples/samples/seseragi-landing-page/src/app.ssrg?raw"
+import sample18Source3 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg?raw"
+import sample18Source4 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg?raw"
+import sample18Source5 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg?raw"
+import sample18Source6 from "../../../../examples/samples/seseragi-landing-page/src/components/closing.ssrg?raw"
+import sample18Source7 from "../../../../examples/samples/seseragi-landing-page/src/components/footer.ssrg?raw"
+import sample18Source8 from "../../../../examples/samples/seseragi-landing-page/src/components/header.ssrg?raw"
+import sample18Source9 from "../../../../examples/samples/seseragi-landing-page/src/components/hero.ssrg?raw"
+import sample18Source10 from "../../../../examples/samples/seseragi-landing-page/src/components/image-statement.ssrg?raw"
+import sample18Source11 from "../../../../examples/samples/seseragi-landing-page/src/components/principles.ssrg?raw"
+import sample18Source12 from "../../../../examples/samples/seseragi-landing-page/src/ui/styles.ssrg?raw"
+import sample18Source13 from "../../../../examples/samples/seseragi-landing-page/src/url.ssrg?raw"
+import sample18Guide from "../../../../examples/samples/seseragi-landing-page/guide.md?raw"
 
-import sample19Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
-import sample19Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
-import sample19Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
-import sample19Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
+import sample19Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
+import sample19Guide from "../../../../examples/samples/signal-state/guide.md?raw"
+import sample19Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
 
-import sample20Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
-import sample20Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
-import sample20Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+import sample20Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
+import sample20Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
+import sample20Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
+import sample20Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
 
-import sample21Source from "../../../../examples/samples/weather-advice/main.ssrg?raw"
-import sample21Guide from "../../../../examples/samples/weather-advice/guide.md?raw"
-import sample21Output from "../../../../examples/samples/weather-advice/stdout.txt?raw"
+import sample21Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
+import sample21Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
+import sample21Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
 
-import sample22Manifest from "../../../../examples/samples/web-starter/seseragi.toml?raw"
-import sample22Source from "../../../../examples/samples/web-starter/src/main.ssrg?raw"
-import sample22Source2 from "../../../../examples/samples/web-starter/src/app.ssrg?raw"
-import sample22Guide from "../../../../examples/samples/web-starter/guide.md?raw"
+import sample22Source from "../../../../examples/samples/weather-advice/main.ssrg?raw"
+import sample22Guide from "../../../../examples/samples/weather-advice/guide.md?raw"
+import sample22Output from "../../../../examples/samples/weather-advice/stdout.txt?raw"
+
+import sample23Manifest from "../../../../examples/samples/web-starter/seseragi.toml?raw"
+import sample23Source from "../../../../examples/samples/web-starter/src/main.ssrg?raw"
+import sample23Source2 from "../../../../examples/samples/web-starter/src/app.ssrg?raw"
+import sample23Guide from "../../../../examples/samples/web-starter/guide.md?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -233,31 +237,54 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "either-and-monad",
-      "title": "EitherとMonad",
-      "summary": "段階的な入力検証をEitherとdoで組み立て、成功時と失敗時の分岐を確認します。",
+      "title": "会員登録の入力チェック",
+      "summary": "同じ入力チェックを、最初の失敗で止まる Either と、すべての失敗を集める Validation で比べます。",
       "kind": "recipe",
-      "difficulty": "advanced",
+      "difficulty": "intermediate",
       "topics": [
         "Either",
-        "Monad",
-        "do",
-        ">>="
+        "Validation",
+        "Applicative",
+        "do"
       ],
       "capabilities": [
         "console"
       ],
       "outputMode": "text",
       "prerequisites": [
-        "hello-world"
+        "expression-calculator"
       ],
       "featured": false,
       "isNew": false,
       "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "名前だけ先に直す",
+            "edits": [
+              {
+                "find": "let brokenForm = SignupForm {\n  name: \"\",",
+                "replace": "let brokenForm = SignupForm {\n  name: \"Mio\","
+              }
+            ]
+          },
+          {
+            "label": "メールアドレスも直す",
+            "edits": [
+              {
+                "find": "  email: \"mio-at-example\",",
+                "replace": "  email: \"mio@example.com\","
+              }
+            ]
+          }
+        ]
+      },
       "sourcePath": "examples/samples/either-and-monad/main.ssrg",
       "guidePath": "examples/samples/either-and-monad/guide.md",
       "expectedOutputPath": "examples/samples/either-and-monad/stdout.txt",
-      "sourceHash": "sha256:52f6f3be54b5364df66965194c7ed1c2c80f4e0ac91dcd2665a0441eebea2f1c",
-      "workspaceHash": "sha256:6d609d7d0746fe55aa0946cabfe507f9f5bbcf5fdf686bdc15a85aa3d4dee079"
+      "sourceHash": "sha256:885d45b3664775ece94bb6b8f0f8aebd95089be91026831f5259ccc38ef0b100",
+      "workspaceHash": "sha256:3065c68dda31aa478ac8fa1df3721559309d491424863a06879bdcc88b1cc827"
     },
     source: sample2Source,
     manifest: "",
@@ -709,6 +736,67 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
+      "id": "json-decode",
+      "title": "JSON を型に読み込む",
+      "summary": "deriving JsonDecode で JSON 文字列を型へ変換し、不足フィールドや型違いを場所と理由付きの失敗として取り出します。",
+      "kind": "recipe",
+      "difficulty": "intermediate",
+      "topics": [
+        "JSON",
+        "deriving",
+        "JsonDecode",
+        "Either"
+      ],
+      "capabilities": [
+        "console"
+      ],
+      "outputMode": "text",
+      "prerequisites": [
+        "either-and-monad"
+      ],
+      "featured": false,
+      "isNew": true,
+      "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "足りない tls 項目を足す",
+            "edits": [
+              {
+                "find": "\"port\":8443},\"regions\":[\"tokyo\"]}",
+                "replace": "\"port\":8443},\"tls\":false,\"regions\":[\"tokyo\"]}"
+              }
+            ]
+          },
+          {
+            "label": "配列に数値を混ぜて型エラーを見る",
+            "edits": [
+              {
+                "find": "\"regions\":[\"tokyo\",\"osaka\"]}",
+                "replace": "\"regions\":[\"tokyo\",123]}"
+              }
+            ]
+          }
+        ]
+      },
+      "sourcePath": "examples/samples/json-decode/main.ssrg",
+      "guidePath": "examples/samples/json-decode/guide.md",
+      "expectedOutputPath": "examples/samples/json-decode/stdout.txt",
+      "sourceHash": "sha256:319504d9bd6c2fc93c3e5b246e4ebafcb3f237bf788a359ae18e56a53df9d577",
+      "workspaceHash": "sha256:782e8b2bd2c9a44cd22fbedc7e4b0493099390cfda33b898b4637749a0d2ce44"
+    },
+    source: sample12Source,
+    manifest: "",
+    projectFiles: [
+      { path: "main.ssrg", source: sample12Source },
+    ],
+    guide: sample12Guide,
+    stdin: "",
+    expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
       "id": "local-functions",
       "title": "Local functionと再帰",
       "summary": "Pure blockで値をcaptureし、generic関数とself recursionを組み立てます。",
@@ -737,43 +825,6 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:dfa83bfe8cc623bd7bf37fb03c375a22d9dc813f12567808b2803f1596f9c8ea",
       "workspaceHash": "sha256:e28f2898b1bc24aea37b48c497b57cfb226e554b2d3deb46b449430a59333646"
     },
-    source: sample12Source,
-    manifest: "",
-    projectFiles: [
-      { path: "main.ssrg", source: sample12Source },
-    ],
-    guide: sample12Guide,
-    stdin: "",
-    expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
-  },
-  {
-    definition: {
-      "id": "newtypes",
-      "title": "newtypeで境界を作る",
-      "summary": "実行時コストを増やさず、Intと混ざらないdomainのIDを作ります。",
-      "kind": "recipe",
-      "difficulty": "intermediate",
-      "topics": [
-        "newtype",
-        "nominal type",
-        "pattern"
-      ],
-      "capabilities": [
-        "console"
-      ],
-      "outputMode": "text",
-      "prerequisites": [
-        "hello-world"
-      ],
-      "featured": false,
-      "isNew": false,
-      "interactive": false,
-      "sourcePath": "examples/samples/newtypes/main.ssrg",
-      "guidePath": "examples/samples/newtypes/guide.md",
-      "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
-      "sourceHash": "sha256:b3c4693ad5fa119b312c2bafa4635573a882f0ad5728d916fe4404afb3db0c0a",
-      "workspaceHash": "sha256:7145483a01035009c91898c420b7086dc967cdfbb1a511253c4282e8aba279c4"
-    },
     source: sample13Source,
     manifest: "",
     projectFiles: [
@@ -782,6 +833,68 @@ export const generatedSamples: readonly GeneratedSample[] = [
     guide: sample13Guide,
     stdin: "",
     expectedOutput: (sample13Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
+      "id": "newtypes",
+      "title": "注文の金額を型で守る",
+      "summary": "金額と個数を newtype で分け、自作演算子での合計と構造体の一部更新、Decimal による正確な割引と税の丸めを行います。",
+      "kind": "recipe",
+      "difficulty": "intermediate",
+      "topics": [
+        "newtype",
+        "impl",
+        "operator",
+        "Decimal",
+        "struct update"
+      ],
+      "capabilities": [
+        "console"
+      ],
+      "outputMode": "text",
+      "prerequisites": [
+        "collections"
+      ],
+      "featured": false,
+      "isNew": false,
+      "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "会員割引を 20% にする",
+            "edits": [
+              {
+                "find": "let memberOrder = Order { ...standardOrder, discountPercent: 15 }",
+                "replace": "let memberOrder = Order { ...standardOrder, discountPercent: 20 }"
+              }
+            ]
+          },
+          {
+            "label": "注文に商品を 1 つ足す",
+            "edits": [
+              {
+                "find": "    OrderLine { itemName: \"マグカップ\", unitPrice: yen 1850, quantity: Quantity 1 },\n",
+                "replace": "    OrderLine { itemName: \"マグカップ\", unitPrice: yen 1850, quantity: Quantity 1 },\n    OrderLine { itemName: \"ドリッパー\", unitPrice: yen 2100, quantity: Quantity 1 },\n"
+              }
+            ]
+          }
+        ]
+      },
+      "sourcePath": "examples/samples/newtypes/main.ssrg",
+      "guidePath": "examples/samples/newtypes/guide.md",
+      "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
+      "sourceHash": "sha256:ab134b97170243ff425fe63be338de66b64072d70ffa80630f94dc104862cdaa",
+      "workspaceHash": "sha256:5e8ec7d7ec77b10f60205096d699eb3d2eb005bfdd79f0f2a57ce3b8c6b05d40"
+    },
+    source: sample14Source,
+    manifest: "",
+    projectFiles: [
+      { path: "main.ssrg", source: sample14Source },
+    ],
+    guide: sample14Guide,
+    stdin: "",
+    expectedOutput: (sample14Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -884,88 +997,117 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample14Source,
-    manifest: sample14Manifest,
+    source: sample15Source,
+    manifest: sample15Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample14Source },
-      { path: "app.ssrg", source: sample14Source2 },
-      { path: "focus/model.ssrg", source: sample14Source3 },
-      { path: "focus/view.ssrg", source: sample14Source4 },
-      { path: "notes/form.ssrg", source: sample14Source5 },
-      { path: "notes/model.ssrg", source: sample14Source6 },
-      { path: "notes/view.ssrg", source: sample14Source7 },
-      { path: "ui/components.ssrg", source: sample14Source8 },
-      { path: "ui/styles.ssrg", source: sample14Source9 },
+      { path: "main.ssrg", source: sample15Source },
+      { path: "app.ssrg", source: sample15Source2 },
+      { path: "focus/model.ssrg", source: sample15Source3 },
+      { path: "focus/view.ssrg", source: sample15Source4 },
+      { path: "notes/form.ssrg", source: sample15Source5 },
+      { path: "notes/model.ssrg", source: sample15Source6 },
+      { path: "notes/view.ssrg", source: sample15Source7 },
+      { path: "ui/components.ssrg", source: sample15Source8 },
+      { path: "ui/styles.ssrg", source: sample15Source9 },
     ],
-    guide: sample14Guide,
+    guide: sample15Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     definition: {
       "id": "project-greeting",
-      "title": "複数fileのprojectを動かす",
-      "summary": "moduleを跨ぐ関数と標準入力を一つのworkspaceで編集します。",
+      "title": "ファイルを分けたパッケージとテスト",
+      "summary": "送料計算のモジュール、表示整形、main、単体テストをファイルごとに分け、pub で公開する範囲を保ちます。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
         "project",
         "module",
+        "pub",
         "import",
-        "Stdin"
+        "test"
       ],
       "capabilities": [
-        "console",
-        "stdin"
+        "console"
       ],
       "outputMode": "text",
       "prerequisites": [
-        "stdin-greeting"
+        "newtypes"
       ],
       "featured": true,
       "isNew": true,
       "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "珈琲豆を 5000 円にして送料無料を見る",
+            "edits": [
+              {
+                "find": "  Parcel { label: \"珈琲豆 1kg\", subtotalYen: 4800, weightGrams: 1000, zone: Domestic },",
+                "replace": "  Parcel { label: \"珈琲豆 1kg\", subtotalYen: 5000, weightGrams: 1000, zone: Domestic },"
+              }
+            ]
+          },
+          {
+            "label": "配送見積もりに箱物を 1 件足す",
+            "edits": [
+              {
+                "find": "  Parcel { label: \"陶器ポット (離島)\", subtotalYen: 6000, weightGrams: 2600, zone: Island },\n]",
+                "replace": "  Parcel { label: \"陶器ポット (離島)\", subtotalYen: 6000, weightGrams: 2600, zone: Island },\n  Parcel { label: \"保存瓶セット\", subtotalYen: 3200, weightGrams: 2400, zone: Domestic },\n]"
+              }
+            ]
+          }
+        ]
+      },
       "sourcePath": "examples/samples/project-greeting/src/main.ssrg",
       "manifestPath": "examples/samples/project-greeting/seseragi.toml",
-      "manifestHash": "sha256:58d4fce5c9e09d14b06c656833d2cc5e2a0cea2d6c652f1e49ebf2b419d6258c",
+      "manifestHash": "sha256:1cc99f98d8ff8db12f37887a8042eb69d5ebb976c6d026708d5a549617b6f9e8",
       "guidePath": "examples/samples/project-greeting/guide.md",
-      "stdinPath": "examples/samples/project-greeting/stdin.txt",
       "expectedOutputPath": "examples/samples/project-greeting/stdout.txt",
-      "sourceHash": "sha256:ca91d9b02a4f64525e5ec755f12e78b95bb840092fc5531a41415a98c0af9e6f",
-      "workspaceHash": "sha256:32943f1a2202b2af1aa3292aaed367d055f3237f0be8320ef52bc1516abfd358",
+      "sourceHash": "sha256:1a7dca28095f2f9df7aff0ec04b7f9e3c3f22e8888a213c0c65af916b137ad17",
+      "workspaceHash": "sha256:47acacd8a7ebabe5433ddb81780aed16613e4d02297d66feb9c886c8ea322d59",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "main.ssrg",
         "openFiles": [
           "main.ssrg",
-          "feature/greeting.ssrg"
+          "pricing/shipping.ssrg",
+          "pricing/format.ssrg"
         ],
         "expandedFolders": [
-          "feature"
+          "pricing"
         ],
         "files": [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/project-greeting/src/main.ssrg",
-            "sourceHash": "sha256:ca91d9b02a4f64525e5ec755f12e78b95bb840092fc5531a41415a98c0af9e6f"
+            "sourceHash": "sha256:1a7dca28095f2f9df7aff0ec04b7f9e3c3f22e8888a213c0c65af916b137ad17"
           },
           {
-            "path": "feature/greeting.ssrg",
-            "sourcePath": "examples/samples/project-greeting/src/feature/greeting.ssrg",
-            "sourceHash": "sha256:694bcd9c41c5efef1e2ebbe9bd4adf50b80c84fcee31ecf1689a5463e21639c4"
+            "path": "pricing/format.ssrg",
+            "sourcePath": "examples/samples/project-greeting/src/pricing/format.ssrg",
+            "sourceHash": "sha256:ca224bb2b857ee95c45bf183933a1b240a3911a5199487272fc9bc407150b911"
+          },
+          {
+            "path": "pricing/shipping.ssrg",
+            "sourcePath": "examples/samples/project-greeting/src/pricing/shipping.ssrg",
+            "sourceHash": "sha256:207a2ebdfe52b5dc1d96d333c1155e07b20e3a41043d3b44ff1e07236426b2e5"
           }
         ]
       }
     },
-    source: sample15Source,
-    manifest: sample15Manifest,
+    source: sample16Source,
+    manifest: sample16Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample15Source },
-      { path: "feature/greeting.ssrg", source: sample15Source2 },
+      { path: "main.ssrg", source: sample16Source },
+      { path: "pricing/format.ssrg", source: sample16Source2 },
+      { path: "pricing/shipping.ssrg", source: sample16Source3 },
     ],
-    guide: sample15Guide,
-    stdin: sample15Stdin,
-    expectedOutput: (sample15Output).replace(/\r?\n$/u, ""),
+    guide: sample16Guide,
+    stdin: "",
+    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -995,14 +1137,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:83c2ba746060a0e815b5e34dd3a2db09a8a29b38cadfaf2d797d322fc75b72c0",
       "workspaceHash": "sha256:d6c3566df89c577d5105e7c882158a6129b8b6eb01af2fd444ae98749f4a4b52"
     },
-    source: sample16Source,
+    source: sample17Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample16Source },
+      { path: "main.ssrg", source: sample17Source },
     ],
-    guide: sample16Guide,
+    guide: sample17Guide,
     stdin: "",
-    expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1125,24 +1267,24 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample17Source,
-    manifest: sample17Manifest,
+    source: sample18Source,
+    manifest: sample18Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample17Source },
-      { path: "app.ssrg", source: sample17Source2 },
-      { path: "components/chapter/code-panel.ssrg", source: sample17Source3 },
-      { path: "components/chapter/model.ssrg", source: sample17Source4 },
-      { path: "components/chapter/view.ssrg", source: sample17Source5 },
-      { path: "components/closing.ssrg", source: sample17Source6 },
-      { path: "components/footer.ssrg", source: sample17Source7 },
-      { path: "components/header.ssrg", source: sample17Source8 },
-      { path: "components/hero.ssrg", source: sample17Source9 },
-      { path: "components/image-statement.ssrg", source: sample17Source10 },
-      { path: "components/principles.ssrg", source: sample17Source11 },
-      { path: "ui/styles.ssrg", source: sample17Source12 },
-      { path: "url.ssrg", source: sample17Source13 },
+      { path: "main.ssrg", source: sample18Source },
+      { path: "app.ssrg", source: sample18Source2 },
+      { path: "components/chapter/code-panel.ssrg", source: sample18Source3 },
+      { path: "components/chapter/model.ssrg", source: sample18Source4 },
+      { path: "components/chapter/view.ssrg", source: sample18Source5 },
+      { path: "components/closing.ssrg", source: sample18Source6 },
+      { path: "components/footer.ssrg", source: sample18Source7 },
+      { path: "components/header.ssrg", source: sample18Source8 },
+      { path: "components/hero.ssrg", source: sample18Source9 },
+      { path: "components/image-statement.ssrg", source: sample18Source10 },
+      { path: "components/principles.ssrg", source: sample18Source11 },
+      { path: "ui/styles.ssrg", source: sample18Source12 },
+      { path: "url.ssrg", source: sample18Source13 },
     ],
-    guide: sample17Guide,
+    guide: sample18Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
@@ -1174,27 +1316,28 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:f5ecbf0e887c574881e24e312e9a57161aea381479bd5ab369eae66713f54f86",
       "workspaceHash": "sha256:5086e44587ccffb1bda5b6fdb7066662c54b947b3ac2f9d0fdee46a81aeaf586"
     },
-    source: sample18Source,
+    source: sample19Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample18Source },
+      { path: "main.ssrg", source: sample19Source },
     ],
-    guide: sample18Guide,
+    guide: sample19Guide,
     stdin: "",
-    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
       "id": "stdin-greeting",
-      "title": "標準入力を扱う",
-      "summary": "readLineのMaybeをmatchし、入力の有無を安全に処理します。",
+      "title": "貼り付けた点数から成績表を作る",
+      "summary": "Input 欄に貼り付けた CSV を標準入力からすべて読み込み、成績の集計と読めない行の行番号付きレポートを出します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
         "Stdin",
-        "readLine",
-        "Maybe",
-        "match"
+        "fails",
+        "mapError",
+        "Either",
+        "CSV"
       ],
       "capabilities": [
         "console",
@@ -1202,26 +1345,49 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [
-        "hello-world"
+        "either-and-monad"
       ],
       "featured": false,
-      "isNew": true,
+      "isNew": false,
       "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "合格ラインを 70 点に上げる",
+            "edits": [
+              {
+                "find": "let passingScore = 60",
+                "replace": "let passingScore = 70"
+              }
+            ]
+          },
+          {
+            "label": "S 判定を 85 点以上に広げる",
+            "edits": [
+              {
+                "find": "let sGradeThreshold = 90",
+                "replace": "let sGradeThreshold = 85"
+              }
+            ]
+          }
+        ]
+      },
       "sourcePath": "examples/samples/stdin-greeting/main.ssrg",
       "guidePath": "examples/samples/stdin-greeting/guide.md",
       "stdinPath": "examples/samples/stdin-greeting/stdin.txt",
       "expectedOutputPath": "examples/samples/stdin-greeting/stdout.txt",
-      "sourceHash": "sha256:7079c9993feaf754ce2e0ea2f4cee620f10ecdf0e2b375be74c5aaacaa2a30aa",
-      "workspaceHash": "sha256:7919f17c7a3165621e7f70703e07bec3a0f1b9e19a7b5b3a137cc5f9588ebb98"
+      "sourceHash": "sha256:b3f8554a56be363925bed17c1829f4d08a5918d6474263a7ce140687909e592f",
+      "workspaceHash": "sha256:beecd7f7db3d9b3e550ea6dbb3b87f0f3b4660f98e220f70bf4dfafcfb58830a"
     },
-    source: sample19Source,
+    source: sample20Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample19Source },
+      { path: "main.ssrg", source: sample20Source },
     ],
-    guide: sample19Guide,
-    stdin: sample19Stdin,
-    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
+    guide: sample20Guide,
+    stdin: sample20Stdin,
+    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1253,14 +1419,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:e1bf42638d6c27a338a0bc286fbf6cb84269413e18a2b07a94f3495e46699c92",
       "workspaceHash": "sha256:f8ee134cc1c0cbf02037e4c0e76087720bb29a486068b37aa9eac1163eabee69"
     },
-    source: sample20Source,
+    source: sample21Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample20Source },
+      { path: "main.ssrg", source: sample21Source },
     ],
-    guide: sample20Guide,
+    guide: sample21Guide,
     stdin: "",
-    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1334,14 +1500,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:92df23a3c4e8fc2f360fac4e2f3fdef89fb68e3da0a445dd9047f28705db1d30",
       "workspaceHash": "sha256:7082ef9b1b250c4be47092048f4579d5559d8e06010e9c6dbd57f53df1e6d7c9"
     },
-    source: sample21Source,
+    source: sample22Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample21Source },
+      { path: "main.ssrg", source: sample22Source },
     ],
-    guide: sample21Guide,
+    guide: sample22Guide,
     stdin: "",
-    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1397,13 +1563,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample22Source,
-    manifest: sample22Manifest,
+    source: sample23Source,
+    manifest: sample23Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample22Source },
-      { path: "app.ssrg", source: sample22Source2 },
+      { path: "main.ssrg", source: sample23Source },
+      { path: "app.ssrg", source: sample23Source2 },
     ],
-    guide: sample22Guide,
+    guide: sample23Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   }
@@ -1428,25 +1594,18 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
     },
     {
       "id": "domain-recipes",
-      "title": "データの形を設計する（型・不変更新・演算子）",
-      "summary": "レコード更新、取り違えを防ぐID型、型エイリアス、独自演算子を設計します。",
+      "title": "データの形と失敗",
+      "summary": "型で値を守り、失敗や外部入力を安全に扱い、複数ファイルとテストへ分けます。",
       "kind": "recipe",
       "samples": [
-        "records",
         "newtypes",
+        "either-and-monad",
+        "json-decode",
+        "stdin-greeting",
+        "project-greeting",
+        "records",
         "type-aliases",
         "impl-and-operators"
-      ]
-    },
-    {
-      "id": "effects-and-abstraction",
-      "title": "入力・エラー・複数ファイルを扱う",
-      "summary": "標準入力、Eitherによる段階的な入力検証、複数モジュールの分割を試します。",
-      "kind": "recipe",
-      "samples": [
-        "stdin-greeting",
-        "either-and-monad",
-        "project-greeting"
       ]
     },
     {

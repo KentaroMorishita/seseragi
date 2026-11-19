@@ -1,22 +1,100 @@
-fn validateQuantity count: Int -> Either<String, Int> =
-  if count > 0 then Right count else Left "quantity must be positive"
+// 同じ会員登録の入力を、Either（最初の誤りで停止）と Validation（全部の誤りを収集）で比べます。
+import * as arrays from "std/array"
+import { Invalid, Valid, Validation } from "std/validation"
+import * as validation from "std/validation"
+import * as text from "std/text"
 
-fn validateUnitPrice price: Int -> Either<String, Int> =
-  if price >= 100 then Right price else Left "unit price is too low"
+type SignupError deriving Eq, Show =
+  | BlankName
+  | InvalidEmail String
+  | ShortPassword Int
+  | Underage Int
 
-fn orderTotal count: Int -> price: Int -> Either<String, Int> = do {
-  validCount <- validateQuantity count
-  validPrice <- validateUnitPrice price
-  pure (validCount * validPrice)
+struct SignupForm { name: String, email: String, password: String, age: Int, }
+
+struct Member deriving Eq, Show { name: String, email: String, age: Int, }
+
+// パスワードは検証のみに使い、会員情報には保持しません。
+fn makeMember name: String -> email: String -> _password: String -> age: Int -> Member =
+  Member {
+    name,
+    email,
+    age
+  }
+
+fn checkName name: String -> Either<SignupError, String> =
+  if name |> text.trim |> text.isEmpty then Left BlankName else Right (text.trim name)
+
+fn checkEmail email: String -> Either<SignupError, String> =
+  if text.contains "@" email
+    && text.contains "." email then
+    Right email
+  else
+    Left (InvalidEmail email)
+
+fn checkPassword password: String -> Either<SignupError, String> = {
+  let length = text.lengthScalars password
+  if length >= 8 then Right password else Left (ShortPassword length)
 }
 
-fn renderOrder label: String -> result: Either<String, Int> -> String = match result {
-  Left reason -> `${label}: rejected (${reason})`
-  Right total -> `${label}: ${total} yen`
+fn checkAge age: Int -> Either<SignupError, Int> =
+  if age >= 18 then Right age else Left (Underage age)
+
+// 1 つでも Left になると、do の残りの検査には進みません。
+fn registerFailFast form: SignupForm -> Either<SignupError, Member> = do {
+  name <- checkName form.name
+  email <- checkEmail form.email
+  password <- checkPassword form.password
+  age <- checkAge form.age
+  pure (makeMember name email password age)
 }
 
-// 途中でLeftになると後続の計算はスキップされ、最初の失敗理由がそのまま返ります。
-pub effect fn main -> Unit with Console fails ConsoleError = do {
-  println (renderOrder "valid" (orderTotal 3 1200))
-  println (renderOrder "invalid" (orderTotal 0 1200))
+// Applicative (<*>) で独立した 4 つの検査を並べると、見つかった誤りをすべて集めます。
+fn registerCollectAll form: SignupForm -> Validation<SignupError, Member> =
+  pure makeMember
+  <*> validation.fromEither (checkName form.name)
+  <*> validation.fromEither (checkEmail form.email)
+  <*> validation.fromEither (checkPassword form.password)
+  <*> validation.fromEither (checkAge form.age)
+
+fn describeError error: SignupError -> String = match error {
+  BlankName -> "名前が空です"
+  InvalidEmail raw -> `メールアドレスの形が正しくありません ("${raw}")`
+  ShortPassword length -> `パスワードが短すぎます (${length} 文字 / 8 文字以上)`
+  Underage age -> `年齢が対象外です (${age} 歳 / 18 歳以上)`
 }
+
+fn renderComparison title: String -> form: SignupForm -> Array<String> = {
+  let eitherLine = match registerFailFast form {
+    Right member -> `  Either:     登録できます (${member.name})`
+    Left error -> `  Either:     1件目で停止 -> ${describeError error}`
+  }
+  let validationLines = match registerCollectAll form {
+    Valid member -> [`  Validation: 登録できます (${member.name})`]
+    Invalid errors -> errors
+      |> map (\error: SignupError -> `  Validation: - ${describeError error}`)
+      |> arrays.fromIterable
+  }
+  arrays.concat [[title, eitherLine], validationLines]
+}
+
+let brokenForm = SignupForm {
+  name: "",
+  email: "mio-at-example",
+  password: "1234",
+  age: 16,
+}
+
+let validForm = SignupForm {
+  name: "Aki",
+  email: "aki@example.com",
+  password: "seseragi-pass",
+  age: 24,
+}
+
+pub effect fn main = arrays.concat [
+  renderComparison "入力1 (複数エラー):" brokenForm,
+  renderComparison "入力2 (正しい入力):" validForm,
+]
+  |> join "\n"
+  |> println

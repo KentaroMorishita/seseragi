@@ -1,1 +1,0 @@
-pub fn greeting name: String -> String = `Hello, ${name} from a Seseragi project!`

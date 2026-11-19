@@ -1,0 +1,34 @@
+// 送料計算の型と公開関数だけを pub で外へ出し、細かな計算規則はモジュール内に閉じます。
+
+pub type Zone deriving Eq, Show, Debug =
+  | Domestic
+  | Island
+
+pub struct Parcel deriving Eq, Show, Debug { label: String, subtotalYen: Int, weightGrams: Int, zone: Zone, }
+
+pub struct ShippingQuote deriving Eq, Show, Debug { shippingYen: Int, totalYen: Int, freeShipping: Bool, }
+
+let freeShippingThreshold = 5000
+
+fn baseShipping zone: Zone -> Int = match zone {
+  Domestic -> 550
+  Island -> 1100
+}
+
+fn weightSurcharge grams: Int -> Int = if grams > 2000 then 350 else 0
+
+pub fn quoteShipping parcel: Parcel -> ShippingQuote = {
+  let qualifiesFree =
+    parcel.zone == Domestic
+    && parcel.subtotalYen >= freeShippingThreshold
+  let shippingYen =
+    if qualifiesFree then
+      0
+    else
+      baseShipping parcel.zone + weightSurcharge parcel.weightGrams
+  ShippingQuote {
+    shippingYen,
+    totalYen: parcel.subtotalYen + shippingYen,
+    freeShipping: qualifiesFree,
+  }
+}

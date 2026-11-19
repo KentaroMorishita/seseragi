@@ -1,0 +1,7 @@
+// 計算結果を表示用の文字列に整えるモジュールです。計算ロジックとは分けて保ちます。
+import { Parcel, ShippingQuote } from "self/pricing/shipping"
+
+pub fn formatQuote parcel: Parcel -> quote: ShippingQuote -> String = {
+  let shippingText = if quote.freeShipping then "送料無料" else `送料 ${quote.shippingYen}円`
+  `${parcel.label}: 商品 ${parcel.subtotalYen}円 + ${shippingText} = 合計 ${quote.totalYen}円`
+}

@@ -1,1 +1,7 @@
-Seseragi
+Aki,92
+Ren,78
+Mio,abc
+Sora,85
+Yui,105
+Hana,64
+Kaito

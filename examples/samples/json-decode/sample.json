@@ -1,0 +1,51 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "json-decode",
+  "title": "JSON を型に読み込む",
+  "summary": "deriving JsonDecode で JSON 文字列を型へ変換し、不足フィールドや型違いを場所と理由付きの失敗として取り出します。",
+  "kind": "recipe",
+  "difficulty": "intermediate",
+  "topics": [
+    "JSON",
+    "deriving",
+    "JsonDecode",
+    "Either"
+  ],
+  "capabilities": [
+    "console"
+  ],
+  "outputMode": "text",
+  "prerequisites": [
+    "either-and-monad"
+  ],
+  "featured": false,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "足りない tls 項目を足す",
+        "edits": [
+          {
+            "find": "\"port\":8443},\"regions\":[\"tokyo\"]}",
+            "replace": "\"port\":8443},\"tls\":false,\"regions\":[\"tokyo\"]}"
+          }
+        ]
+      },
+      {
+        "label": "配列に数値を混ぜて型エラーを見る",
+        "edits": [
+          {
+            "find": "\"regions\":[\"tokyo\",\"osaka\"]}",
+            "replace": "\"regions\":[\"tokyo\",123]}"
+          }
+        ]
+      }
+    ]
+  }
+}
