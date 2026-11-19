@@ -35,6 +35,7 @@ export const USER_VISIBLE_SURFACES = [
 ] as const
 
 const INTERNAL_ONLY_PATHS = [
+  /^examples\/spec\/fixtures\/production\/budgets\.json$/u,
   /(^|\/)(?:tests?|[^/]*_tests?|e2e)\//u,
   /(^|\/)__snapshots__\//u,
   /(?:^|\/)[^/]*(?:_test|_tests|\.test|\.spec)\.[^/]+$/u,
