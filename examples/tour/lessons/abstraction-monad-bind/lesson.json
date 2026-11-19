@@ -38,7 +38,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 20 行目にある `Just 84` を `Just 7` に書き換えて `Run` し、`flatMap`・`>>=`・`do` の 3 つがすべて `Nothing` で止まることを確かめてください。",
+      "instruction": "エディターの `Just 84` を `Just 7` に書き換えて `Run` し、`flatMap`・`>>=`・`do` の 3 つがすべて `Nothing` で止まることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

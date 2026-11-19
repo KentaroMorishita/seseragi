@@ -1,0 +1,14 @@
+// A value the renderer checks fails when the page is written, not when the
+// node is built.
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+
+fn sized props: { width: Float } -> svg.Svg<Unit> = svg.rect props
+
+pub effect fn main = do {
+  let late = sized { width: 1.0, title: 4 }
+  let page: html.Html<Unit> = html.div { children: [svg.toHtml late] }
+  println "built"
+  println (html.renderToString page)
+  println "unreachable"
+}

@@ -35,7 +35,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 10〜11 行目にある `\"draft\"` を両方 `\"task\"` に、10 行目の `\"Plan name\"` を `\"Task title\"` に書き換えて `Run` し、`Output` の `for`・`id`・ラベル文字が揃って変わることを確かめてください。",
+      "instruction": "エディターの `htmlFor: \"draft\"` と `id: \"draft\"` の `\"draft\"` を両方 `\"task\"` に、`children: \"Plan name\"` を `children: \"Task title\"` に書き換えて `Run` し、`Output` の `for`・`id`・ラベル文字が揃って変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

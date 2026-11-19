@@ -30,7 +30,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 5 行目の後ろに `type Account`（値 `Guest`）、17 行目の後ろにその `Label` 実装（`\"GUEST\"`）、23 行目の後ろに `present Guest` の出力を追加して `Run` し、`present` を変えずに `GUEST` が出ることを確かめてください。",
+      "instruction": "エディターの `type Device` の後ろに `type Account`（値 `Guest`）、`instance Label<Device>` の後ろにその `Label` 実装（`\"GUEST\"`）、`main` の `present Online |> println` の後ろに `present Guest |> println` を追加して `Run` し、`present` を変えずに `GUEST` が出ることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

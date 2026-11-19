@@ -1,0 +1,11 @@
+// Two custom attributes whose names differ only in case fail when written.
+import * as html from "std/web/html"
+
+pub effect fn main = match (html.attribute "x-mark" "1", html.attribute "X-Mark" "2") {
+  (Right first, Right second) -> do {
+    let page: html.Html<Unit> = html.p { attributes: [first, second], children: "x" }
+    println "built"
+    println (html.renderToString page)
+  }
+  _ -> println "refused"
+}

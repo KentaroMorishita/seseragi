@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 16 行目にある `Just 42` を `Just 7` に、17 行目の `[1, 2, 3]` を `[7, 8]` に書き換えて `Run` し、`Output` がそれぞれの形を保ったまま変わることを確かめてください。",
+      "instruction": "エディターの `inspectShape \"Maybe\" (Just 42)` の `Just 42` を `Just 7` に、`inspectShape \"Array\" [1, 2, 3]` の `[1, 2, 3]` を `[7, 8]` に書き換えて `Run` し、`Output` がそれぞれの形を保ったまま変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

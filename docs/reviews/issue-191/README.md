@@ -1,5 +1,9 @@
 # Issue #191 Web UI visual regression review
 
+> この文書は当時の確認の記録です。基準の画像と比べる仕組み（`test:visual`）は、その後やめました。
+> 今は、動作を `Playground e2e` で確かめ、見た目は PR のプレビューで確かめます。
+> 手順は [`docs/SCOPED_CHECKS.md`](../../SCOPED_CHECKS.md) の「画面の見た目の確認」を見てください。
+
 `apps/playground/tests/fixtures/web-ui-regression.json`を、Web UI sample品質の
 single review matrixとして使います。対象はcatalogの全`outputMode: html` sampleで、
 各sampleに対して次を実ブラウザで確認します。
@@ -23,7 +27,7 @@ bun run test:visual
 networkに左右されないlocal SVGをrouteしてlayoutとstate差分を再現可能にします。failure route
 では画像のnatural widthが0でもaltと2:1 layoutが残ることを確認します。
 
-GitHub Actionsの[Web UI visual regression](../../../.github/workflows/web-ui-visual.yml)は
+GitHub Actionsの`Web UI visual regression`ワークフロー（今は削除済み）は
 Chromium実行後に同directoryをartifactとしてuploadします。artifactを確認するときは、
 initialだけでなくformのinvalid / valid / empty、projectのExplorer / day studio /
 empty-disabled、comparison pairのriverside stateを並べて見ます。
