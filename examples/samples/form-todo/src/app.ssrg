@@ -1,0 +1,100 @@
+// Signal の所有と画面段階（席選択・購入手続き・電子チケット）の切り替えを組み立てます。
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import {
+  BookingAction,
+  BookingState,
+  ReviewingOrder,
+  SelectingSeats,
+  TicketIssued,
+  initialState,
+  update,
+} from "self/booking/model"
+import * as checkout from "self/components/checkout"
+import * as seatMap from "self/components/seat_map"
+import * as ticket from "self/components/ticket"
+import * as styles from "self/ui/styles"
+
+fn dispatch state: MutableSignal<BookingState> -> action: BookingAction -> Task<Unit> =
+  signals.update (update action) state
+
+fn headerView state: BookingState -> html.Html<Task<Unit>> = {
+  let stepIndex = match state.step {
+    SelectingSeats -> 1
+    ReviewingOrder -> 2
+    TicketIssued _ -> 3
+  }
+  html.header {
+    style: styles.headerStyle (),
+    children: [
+      html.div {
+        children: [
+          html.p {
+            style: styles.eyebrowStyle (),
+            children: "TOKYO HIBIKI HALL ・ オンライン座席予約"
+          },
+          html.h1 { style: styles.titleStyle (), children: "秋夜の室内楽特別公演 — 弦楽四重奏の夕べ" },
+          html.p {
+            style: styles.metaStyle (),
+            children: "2026年11月28日（土）18:30 開演 ・ 大ホール全席指定"
+          },
+        ],
+      },
+      html.div {
+        style: styles.stepperStyle (),
+        children: [
+          html.span {
+            style: styles.stepPillStyle (stepIndex == 1) (stepIndex > 1),
+            children: "1. 席を選ぶ"
+          },
+          html.span {
+            style: styles.stepPillStyle (stepIndex == 2) (stepIndex > 2),
+            children: "2. お客様情報"
+          },
+          html.span {
+            style: styles.stepPillStyle (stepIndex == 3) False,
+            children: "3. 電子チケット"
+          },
+        ],
+      },
+    ],
+  }
+}
+
+fn contentView send: (BookingAction -> Task<Unit>)
+  -> state: BookingState
+  -> html.Html<Task<Unit>> =
+  match state.step {
+    SelectingSeats -> html.div {
+      style: styles.workspaceStyle (),
+      children: [
+        html.div {
+          style: styles.mainColumnStyle (),
+          children: seatMap.view send state,
+        },
+        html.div {
+          style: styles.sideColumnStyle (),
+          children: checkout.summarySidebar send state,
+        },
+      ],
+    }
+    ReviewingOrder -> checkout.checkoutView send state
+    TicketIssued code -> ticket.view send state code
+  }
+
+fn pageView state: MutableSignal<BookingState>
+  -> current: BookingState
+  -> html.Html<Task<Unit>> =
+  html.main {
+    style: styles.pageStyle (),
+    children: html.div {
+      style: styles.shellStyle (),
+      children: [headerView current, contentView (dispatch state) current,],
+    },
+  }
+
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String = do {
+  state <- signals.make (initialState ())
+  succeed (signals.map (pageView state) state)
+}

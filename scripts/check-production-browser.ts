@@ -102,38 +102,37 @@ try {
             page.getByText("Count: 2", { exact: true })
           ).toBeVisible()
         } else {
-          await page
-            .getByRole("button", { name: "Use day studio", exact: true })
-            .click()
           await expect(
-            page.getByRole("button", { name: "Use night studio", exact: true })
+            page.getByText("京都・宇治 週末旅行プランナー", { exact: true })
           ).toBeVisible()
-          const focus = page
-            .locator("#focus-add")
-            .locator("xpath=ancestor::section[1]")
-          await page.locator("#focus-add").click()
-          await expect(focus).toContainText("3")
-          await page.locator("#focus-remove").click()
-          await expect(focus).toContainText("2")
           await page
-            .getByRole("button", { name: "Add a story card", exact: true })
+            .getByRole("button", { name: "2日目（伏見・宇治）", exact: true })
             .click()
-          await expect(page.getByRole("alert")).toBeVisible()
-          await page
-            .getByLabel("Story card title", { exact: true })
-            .fill("Production parity story")
-          await page
-            .getByRole("button", { name: "Add a story card", exact: true })
-            .click()
-          const added = page
-            .getByLabel("Editable story card", { exact: true })
-            .last()
-          await expect(added).toHaveValue("Production parity story")
-          await added.fill("Edited production story")
-          await expect(added).toHaveValue("Edited production story")
           await expect(
-            page.getByLabel("Story card title", { exact: true })
-          ).toHaveValue("")
+            page.getByText("2日目のルート地図（3 スポット）", { exact: true })
+          ).toBeVisible()
+          await page
+            .getByRole("button", { name: "1日目（東山・祇園）", exact: true })
+            .click()
+          await page
+            .getByRole("button", {
+              name: "+ 南禅寺・水路閣 (1,600円)",
+              exact: true,
+            })
+            .click()
+          await expect(
+            page.getByText("1日目のルート地図（6 スポット）", { exact: true })
+          ).toBeVisible()
+          await page
+            .getByRole("button", { name: "2. 予算と割り勘", exact: true })
+            .click()
+          await page.getByRole("button", { name: "4名", exact: true }).click()
+          await expect(page.getByText("参加 4 名")).toBeVisible()
+          await page
+            .getByRole("button", { name: "3. しおり共有", exact: true })
+            .click()
+          await page.locator("#save-itinerary-button").click()
+          await expect(page.getByText("https://trip.example/")).toBeVisible()
         }
         expect(errors).toEqual([])
         observations.push(

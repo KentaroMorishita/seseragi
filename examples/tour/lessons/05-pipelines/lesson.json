@@ -7,7 +7,7 @@
     "walkthrough": [
       {
         "heading": "小さな変換関数を用意する",
-        "body": "1〜5 行目では `greeting`・`wrap`・`addLabel` という 1 つずつ小さな役割を持つ関数を定義しています。`wrap` と `addLabel` は最後に対象の `value: String` を受け取る形にしておくと、部分適用でパイプラインに並べやすくなります。",
+        "body": "`greeting`・`wrap`・`addLabel` という 1 つずつ小さな役割を持つ関数を定義しています。`wrap` と `addLabel` は最後に対象の `value: String` を受け取る形にしておくと、部分適用でパイプラインに並べやすくなります。",
         "sourceRange": {
           "startLine": 1,
           "endLine": 5
@@ -15,7 +15,7 @@
       },
       {
         "heading": "パイプライン |> で上から下へ流す",
-        "body": "7〜11 行目の `|>` は左の値を次の関数の最後の引数として渡します。`name` が `greeting` を通り、`wrap \"**\"` を通り、`addLabel \"Welcome\"` を通る流れを、行を分けて上から下へ読めます。",
+        "body": "`buildMessage` の中の `|>` は左の値を次の関数の最後の引数として渡します。初期コードでは `name` が `greeting`、`wrap \"**\"`、`addLabel \"Welcome\"` の順に流れる様子を、行を分けて上から下へ読めます。",
         "sourceRange": {
           "startLine": 7,
           "endLine": 11
@@ -23,7 +23,7 @@
       },
       {
         "heading": "$ で右側の計算結果をまとめて渡す",
-        "body": "13 行目の `$` は右側全体 `buildMessage \"Seseragi\"` を先に計算し、その 1 つの結果を左側の `println` へ渡します。`println (buildMessage \"Seseragi\")` のように括弧で囲むのと同じ意味です。",
+        "body": "`main` の `$` は右側全体 `buildMessage \"Seseragi\"` を先に計算し、その 1 つの結果を左側の `println` へ渡します。`println (buildMessage \"Seseragi\")` のように括弧で囲むのと同じ意味です。",
         "sourceRange": {
           "startLine": 13,
           "endLine": 13
@@ -43,12 +43,12 @@
       }
     ],
     "exercise": {
-      "instruction": "11 行目の次に `|> wrap \"==\"` を 1 段書き足し、13 行目の `\"Seseragi\"` を `\"Tour\"` に書き換えて `Run` し、`Output` が `==Welcome: **Hello, Tour!**==` に変わることを確かめてください。",
+      "instruction": "`buildMessage` の `|> addLabel \"Welcome\"` の次に `|> wrap \"==\"` を 1 段書き足し、`main` の `buildMessage \"Seseragi\"` を `buildMessage \"Tour\"` に書き換えて `Run` し、`Output` が `==Welcome: **Hello, Tour!**==` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
       "heading": "$ や括弧を付けずに別の関数呼び出しを渡す",
-      "body": "失敗例では 13 行目から `$` を外して `println buildMessage \"Seseragi\"` と書いています。この書き方では `println` に `buildMessage` と `\"Seseragi\"` の 2 つの引数を渡そうとしてしまい、引数の数のエラーになります。"
+      "body": "失敗例では `main` の `println $ buildMessage \"Seseragi\"` から `$` を外して `println buildMessage \"Seseragi\"` と書いています。この書き方では `println` に `buildMessage` と `\"Seseragi\"` の 2 つの引数を渡そうとしてしまい、引数の数のエラーになります。"
     },
     "recap": [
       "`|>` は左側の値を右側の関数へ流し、行を分けてデータの変換を上から順に書けます。",

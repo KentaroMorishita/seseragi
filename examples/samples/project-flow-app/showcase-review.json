@@ -8,22 +8,18 @@
     "checked": true
   },
   "designIntent": {
-    "firstView": "release deskのphotoと大きなcopy、二つのfeature数、studio modeをheroへ集約し、multi-module appの全体像を最初に示す。",
-    "layoutRhythm": "indigo heroの後にmintのfocus rhythmとcreamのstory deckを別sectionとして続け、所有moduleの違いをpageの疎密と色で表す。",
-    "visualIdentity": "release roomという題材に合わせ、night studioとday studioを切り替えながらも、focusとstoryの固有色・typography・余白を保つ。",
-    "interaction": "block追加、validation、story追加・編集・削除、empty、studio切替後もsummaryとfeature境界を保ち、disabled stateにも理由を表示する。",
-    "codeStructure": "mainはqueryとdom.run、appはSignal composition、focusとnotesはmodel・view、uiはstyles・componentsを所有し、Explorerとvisual sectionを対応させる。"
+    "firstView": "京都・宇治 1 泊 2 日旅行プランナーの全体予算・参加人数・3 画面タブを最上部に示し、初見で SVG ルート地図とタイムラインの連動が伝わる構成にする。",
+    "layoutRhythm": "デスクトップでは SVG 地図と日程タイムラインを左右 2 列に並べて操作と結果を同時視認でき、モバイル幅では縦 1 列へ自然に積み上がる余白設計にする。",
+    "visualIdentity": "温かみのあるアイボリー地・濃紺の見出し・珊瑚色のルート線とピンというライトな旅のガイドブック調で、他ショーケースと完全に異なる世界観を持たせる。",
+    "interaction": "日程の並べ替え・追加・削除で地図のルート線と移動時間が即座に再計算され、割り勘タブと保存・失敗・再試行を伴う共有タブまで一貫した Signal で連動する。",
+    "codeStructure": "純粋計算（trip/model.ssrg）、SVG 地図・タイムライン・割り勘・共有の各画面部品、名前付きスタイル、app.ssrg、main.ssrg、単体テストを明確に分離する。"
   },
   "approval": {
     "status": "approved",
-    "reviewedAt": "2026-08-11",
-    "evidence": [
-      "docs/reviews/issue-189/README.md",
-      "docs/reviews/issue-190/README.md",
-      "docs/reviews/issue-191/README.md"
-    ],
+    "reviewedAt": "2026-11-19",
+    "evidence": ["docs/reviews/issue-189/README.md"],
     "viewports": ["desktop", "iphone-390", "android-360"],
-    "states": ["initial", "invalid-submit", "day-studio", "empty-disabled"],
+    "states": ["initial", "populated", "empty", "day studio"],
     "surfaces": ["preview", "code"]
   }
 }

@@ -2622,17 +2622,25 @@ describe("Playground sample catalog", () => {
       project: {
         entryFile: "main.ssrg",
         activeFile: "main.ssrg",
-        openFiles: ["main.ssrg", "feature/greeting.ssrg"],
-        expandedFolders: ["feature"],
+        openFiles: [
+          "main.ssrg",
+          "pricing/shipping.ssrg",
+          "pricing/format.ssrg",
+        ],
+        expandedFolders: ["pricing"],
       },
       workspace: {
         entryFile: "main.ssrg",
         activeFile: "main.ssrg",
-        openFiles: ["main.ssrg", "feature/greeting.ssrg"],
-        expandedFolders: ["feature"],
+        openFiles: [
+          "main.ssrg",
+          "pricing/shipping.ssrg",
+          "pricing/format.ssrg",
+        ],
+        expandedFolders: ["pricing"],
         explorer: { visible: true },
       },
-      stdin: "Seseragi\n",
+      stdin: "",
     })
     expect(samples.find(({ id }) => id === "project-flow-app")).toMatchObject({
       interactive: true,
@@ -2643,11 +2651,11 @@ describe("Playground sample catalog", () => {
         openFiles: [
           "main.ssrg",
           "app.ssrg",
-          "ui/components.ssrg",
-          "focus/model.ssrg",
-          "notes/model.ssrg",
+          "trip/model.ssrg",
+          "components/route_map.ssrg",
+          "components/timeline.ssrg",
         ],
-        expandedFolders: ["ui", "focus", "notes"],
+        expandedFolders: ["trip", "components", "ui"],
       },
       workspace: {
         explorer: { visible: true },
@@ -3452,28 +3460,23 @@ pub effect fn main -> Unit with Console fails String = do {
     expect(sample?.source).not.toContain("type RootAction")
   })
 
-  test("integrates the advanced Launch Loop surface in one feature-owned sample", () => {
+  test("integrates the concert hall seat booking showcase as a signal-run package", () => {
     const sample = samples.find((candidate) => candidate.id === "form-todo")
+    const combined = sample?.workspace.files
+      .map(({ source }) => source)
+      .join("\n")
 
     expect(sample?.interactive).toBe(true)
-    expect(sample?.source).toContain("MutableSignal<Model>")
-    expect(sample?.source).toContain("Signal<html.Html<Task<Unit>>>")
-    expect(sample?.source).toContain("onSubmit: dispatch state Submitted")
-    expect(sample?.source).toContain("html.img {")
-    expect(sample?.source).toContain("html.a {")
-    expect(sample?.source).toContain("html.textarea {")
-    expect(sample?.source).toContain("TrackChanged")
-    expect(sample?.source).toContain("ToggleComplete")
-    expect(sample?.source).toContain("TogglePinned")
-    expect(sample?.source).toContain("ClearCompleted")
-    expect(sample?.source).toContain("fn planCard")
-    expect(sample?.source).toContain("fn emptyState")
-    expect(sample?.source).toContain("onKeyDown: filterKeyTask state")
-    expect(sample?.source).toContain("onPointerDown: pointerTask state")
-    expect(sample?.source).toContain("stopClickPropagation: True")
-    expect(sample?.source).toContain('role: "alert"')
-    expect(sample?.source).toContain('role: "status"')
-    expect(sample?.source).not.toContain("dom.app {")
+    expect(combined).toContain("MutableSignal<BookingState>")
+    expect(combined).toContain("Signal<html.Html<Task<Unit>>>")
+    expect(combined).toContain("onSubmit: dispatch SubmitBooking")
+    expect(combined).toContain("svg.svg {")
+    expect(combined).toContain("findAdjacentSeats")
+    expect(combined).toContain("validateBooking")
+    expect(combined).toContain("TicketIssued")
+    expect(combined).toContain('role: "alert"')
+    expect(combined).toContain('role: "status"')
+    expect(combined).not.toContain("dom.app {")
   })
 
   test("keeps transparent aliases and Task in the Recipe catalog", () => {

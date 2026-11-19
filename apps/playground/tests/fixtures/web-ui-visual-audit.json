@@ -49,11 +49,11 @@
     },
     {
       "id": "form-todo",
-      "identity": "indigo and amber Launch Loop form showcase",
-      "photoId": "photo-1484480974693-6ca0a78fb36b",
+      "identity": "obsidian and champagne-gold concert hall seat booking showcase",
+      "photoId": null,
       "photoGroup": "form-todo",
-      "layoutMarkers": ["object-cover", "min-h-screen"],
-      "states": ["initial", "populated", "empty", "validation error"],
+      "layoutMarkers": ["svg.svg {", "minHeight: \"100vh\""],
+      "states": ["initial", "invalid-submit", "valid-submit", "empty"],
       "artifacts": [
         "docs/reviews/issue-188/visual/desktop-initial.png",
         "docs/reviews/issue-188/visual/iphone-390-initial.png",
@@ -64,10 +64,10 @@
     },
     {
       "id": "project-flow-app",
-      "identity": "indigo Release Room multi-module Showcase",
-      "photoId": "photo-1516321318423-f06f85e504b3",
+      "identity": "ivory and deep-indigo editorial Kyoto travel planner with synced SVG route map",
+      "photoId": null,
       "photoGroup": "project-flow-app",
-      "layoutMarkers": ["object-cover", "min-h-screen"],
+      "layoutMarkers": ["svg.svg {", "minHeight: \"100vh\""],
       "states": ["initial", "populated", "empty", "day studio"],
       "artifacts": [
         "docs/reviews/issue-189/visual/explorer-code-preview.png",

@@ -1,62 +1,62 @@
+// Three ways to see it: タブ切り替えとシンタックスハイライト付きコードパネルを描画します。
 import * as html from "std/web/html"
 import { codePanel } from "./code-panel"
 import * as styles from "../../ui/styles"
 
-fn tabStyle selected: Bool -> html.Style = match selected {
-  True -> html.style {
-    background: "linear-gradient(135deg, #bdf6d8, #67dca4)",
-    backgroundColor: "#8de7bf",
-    border: "1px solid transparent",
-    borderRadius: "999px",
-    color: "#06251a",
-    cursor: "pointer",
-    fontSize: "13px",
-    fontWeight: "850",
-    padding: "12px 18px"
-  }
-  False -> html.style {
-    backgroundColor: "transparent",
-    border: "1px solid rgba(255, 255, 255, 0.12)",
-    borderRadius: "999px",
-    color: "#a8beb5",
-    cursor: "pointer",
-    fontSize: "13px",
-    fontWeight: "700",
-    padding: "12px 18px"
-  }
+pub type Chapter deriving Eq =
+  | Readable
+  | Composable
+  | Alive
+
+fn chapterKey chapter: Chapter -> String = match chapter {
+  Readable -> "readable"
+  Composable -> "composable"
+  Alive -> "alive"
 }
 
-fn chapterEyebrow -> html.Html<Task<Unit>> = html.p {
-  style: styles.eyebrowStyle (),
-  children: "Three ways to see it"
+fn chapterTitle chapter: Chapter -> String = match chapter {
+  Readable -> "読めることは、機能である。"
+  Composable -> "別々の力を、ひとつの流れへ。"
+  Alive -> "言語は、動いた瞬間に生き始める。"
 }
 
-fn tab label: String -> selected: Bool -> action: Task<Unit> -> html.Html<Task<Unit>> =
-  html.button {
-    onClick: action,
-    style: tabStyle selected,
-    children: label
-  }
+fn chapterBody chapter: Chapter -> String = match chapter {
+  Readable -> "Seseragi のコードは、短くするために情報を消しません。型とエラーの流れを、上から読める位置へ置き直します。"
+  Composable -> "型、Signal、Effect、UI を別々の世界に閉じ込めず、同じ言語の値と関数として組み合わせていきます。"
+  Alive -> "Playground で書いて、実行して、Web UI まで触れる。仕様の中だけではなく、手元まで届く言語です。"
+}
 
-fn tabs readableSelected: Bool
-  -> composableSelected: Bool
-  -> aliveSelected: Bool
-  -> showReadable: Task<Unit>
-  -> showComposable: Task<Unit>
-  -> showAlive: Task<Unit>
+fn chapterTab dispatch: (Chapter -> Task<Unit>)
+  -> current: Chapter
+  -> target: Chapter
+  -> label: String
   -> html.Html<Task<Unit>> =
+  {
+    let isSelected = current == target
+    html.button {
+      ariaSelected: isSelected,
+      buttonType: "button",
+      onClick: dispatch target,
+      style: styles.tabStyle isSelected,
+      children: label,
+    }
+  }
+
+fn tabs dispatch: (Chapter -> Task<Unit>) -> current: Chapter -> html.Html<Task<Unit>> =
   html.div {
+    role: "tablist",
+    ariaLabel: "Seseragi の特徴を切り替える",
     style: html.style {
       display: "flex",
       flexWrap: "wrap",
       gap: "9px",
-      marginTop: "26px"
+      marginTop: "24px",
     },
     children: [
-      tab "Readable" readableSelected showReadable,
-      tab "Composable" composableSelected showComposable,
-      tab "Alive" aliveSelected showAlive
-    ]
+      chapterTab dispatch current Readable "Readable",
+      chapterTab dispatch current Composable "Composable",
+      chapterTab dispatch current Alive "Alive",
+    ],
   }
 
 fn accentLine accent: String -> html.Html<Task<Unit>> = html.div {
@@ -64,95 +64,59 @@ fn accentLine accent: String -> html.Html<Task<Unit>> = html.div {
     backgroundColor: accent,
     borderRadius: "999px",
     height: "3px",
-    marginTop: "46px",
-    width: "52px"
+    marginTop: "36px",
+    width: "48px",
   },
-  children: ""
+  children: "",
 }
 
-fn chapterTitle title: String -> html.Html<Task<Unit>> = html.h2 {
-  style: html.style {
-    color: "#f4fff9",
-    fontSize: "clamp(30px, 6vw, 54px)",
-    fontWeight: "610",
-    letterSpacing: "-0.05em",
-    lineHeight: "1.04",
-    marginBottom: "0",
-    marginTop: "22px"
-  },
-  children: title
+fn chapterHeading title: String -> html.Html<Task<Unit>> = html.h2 {
+  style: styles.sectionTitleStyle (),
+  children: title,
 }
 
-fn chapterBody body: String -> html.Html<Task<Unit>> = html.p {
-  style: styles.mutedTextStyle (),
-  children: body
-}
-
-fn chapterText title: String
-  -> body: String
-  -> accent: String
-  -> readableSelected: Bool
-  -> composableSelected: Bool
-  -> aliveSelected: Bool
-  -> showReadable: Task<Unit>
-  -> showComposable: Task<Unit>
-  -> showAlive: Task<Unit>
-  -> html.Html<Task<Unit>> =
-  html.div {
-    children: [
-      chapterEyebrow (),
-      tabs readableSelected composableSelected aliveSelected showReadable showComposable
-        showAlive,
-      accentLine accent,
-      chapterTitle title,
-      chapterBody body
-    ]
+fn chapterText dispatch: (Chapter -> Task<Unit>)
+  -> current: Chapter
+  -> html.Html<Task<Unit>> = {
+    let key = chapterKey current
+    let eyebrow: html.Html<Task<Unit>> = html.p {
+      style: styles.eyebrowStyle (),
+      children: "Three ways to see it",
+    }
+    let bodyNode: html.Html<Task<Unit>> = html.p {
+      style: styles.mutedTextStyle (),
+      children: chapterBody current,
+    }
+    html.div {
+      children: [
+        eyebrow,
+        tabs dispatch current,
+        accentLine (styles.chapterAccent key),
+        chapterHeading (chapterTitle current),
+        bodyNode,
+      ],
+    }
   }
 
-fn chapterLayout key: String
-  -> title: String
-  -> body: String
-  -> accent: String
-  -> readableSelected: Bool
-  -> composableSelected: Bool
-  -> aliveSelected: Bool
-  -> showReadable: Task<Unit>
-  -> showComposable: Task<Unit>
-  -> showAlive: Task<Unit>
-  -> html.Html<Task<Unit>> =
-  html.div {
-    style: html.style {
-      display: "grid",
-      gap: "clamp(40px, 7vw, 76px)",
-      gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 400px), 1fr))",
-      marginLeft: "auto",
-      marginRight: "auto",
-      maxWidth: "1180px",
-      width: "calc(100% - 32px)"
-    },
-    children: [
-      chapterText title body accent readableSelected composableSelected aliveSelected
-        showReadable showComposable showAlive,
-      codePanel key
-    ]
-  }
-
-pub fn view key: String
-  -> title: String
-  -> body: String
-  -> accent: String
-  -> readableSelected: Bool
-  -> composableSelected: Bool
-  -> aliveSelected: Bool
-  -> showReadable: Task<Unit>
-  -> showComposable: Task<Unit>
-  -> showAlive: Task<Unit>
+pub fn view dispatch: (Chapter -> Task<Unit>)
+  -> current: Chapter
   -> html.Html<Task<Unit>> =
   html.section {
     style: html.style {
-      paddingBottom: "clamp(70px, 9vw, 110px)",
-      paddingTop: "clamp(70px, 9vw, 110px)"
+      paddingBottom: "clamp(64px, 8vw, 108px)",
+      paddingTop: "clamp(64px, 8vw, 108px)",
     },
-    children: chapterLayout key title body accent readableSelected composableSelected
-      aliveSelected showReadable showComposable showAlive
+    children: html.div {
+      style: html.style {
+        alignItems: "center",
+        display: "grid",
+        gap: "clamp(32px, 6vw, 68px)",
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
+        marginLeft: "auto",
+        marginRight: "auto",
+        maxWidth: "1180px",
+        width: "calc(100% - 32px)",
+      },
+      children: [chapterText dispatch current, codePanel (chapterKey current)],
+    },
   }

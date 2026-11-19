@@ -1,0 +1,485 @@
+// コンサートホールの座席予約モデル、連番検索、Validation 一括検証、状態遷移を集約します。
+import * as arrays from "std/array"
+import * as text from "std/text"
+import { Invalid, Valid, Validation } from "std/validation"
+import * as validation from "std/validation"
+
+pub type SeatTier deriving Eq, Show, Debug =
+  | TierS
+  | TierA
+  | TierB
+  | TierAccessible
+
+pub type SeatAvailability deriving Eq, Show, Debug =
+  | Available
+  | Sold
+
+pub struct Seat deriving Eq, Show, Debug {
+  id: String,
+  row: String,
+  number: Int,
+  tier: SeatTier,
+  availability: SeatAvailability,
+  sightline: String,
+}
+
+pub type DeliveryOption deriving Eq, Show, Debug =
+  | MobileQr
+  | BoxOfficePickup
+
+pub type BookingStep deriving Eq, Show, Debug =
+  | SelectingSeats
+  | ReviewingOrder
+  | TicketIssued String
+
+pub type CheckoutError deriving Eq, Show, Debug =
+  | NoSeatSelected
+  | NameRequired
+  | InvalidEmail
+  | InvalidPhone
+  | TermsNotAccepted
+
+pub struct BuyerDraft deriving Eq, Show, Debug {
+  fullName: String,
+  email: String,
+  phone: String,
+  delivery: DeliveryOption,
+  acceptedTerms: Bool,
+}
+
+pub struct OrderTotals deriving Eq, Show, Debug { subtotal: Int, fee: Int, total: Int, }
+
+pub struct BookingState deriving Eq, Show, Debug {
+  seats: Array<Seat>,
+  selectedIds: Array<String>,
+  focusedSeatId: Maybe<String>,
+  filterTier: Maybe<SeatTier>,
+  partySize: Int,
+  step: BookingStep,
+  buyer: BuyerDraft,
+  errors: Array<CheckoutError>,
+  statusMessage: String,
+}
+
+pub type BookingAction =
+  | ToggleSeat String
+  | FocusSeat String
+  | FilterByTier (Maybe<SeatTier>)
+  | SetPartySize Int
+  | AutoPickAdjacent
+  | ClearSelection
+  | ProceedToCheckout
+  | BackToSeats
+  | NameChanged String
+  | EmailChanged String
+  | PhoneChanged String
+  | DeliveryChanged DeliveryOption
+  | TermsToggled Bool
+  | SubmitBooking
+  | StartNewBooking
+
+pub fn seatPrice tier: SeatTier -> Int = match tier {
+  TierS -> 12000
+  TierA -> 8500
+  TierB -> 5500
+  TierAccessible -> 5500
+}
+
+pub fn tierLabel tier: SeatTier -> String = match tier {
+  TierS -> "S席"
+  TierA -> "A席"
+  TierB -> "B席"
+  TierAccessible -> "車椅子席"
+}
+
+pub fn formatYen amount: Int -> String = {
+  fn group n: Int -> String = {
+    let low = n % 1000
+    if n < 1000 then
+      show n
+    else if low < 10 then
+      `${group (n / 1000)},00${low}`
+    else if low < 100 then
+      `${group (n / 1000)},0${low}`
+    else
+      `${group (n / 1000)},${low}`
+  }
+  `${group amount}円`
+}
+
+pub fn errorText error: CheckoutError -> String = match error {
+  NoSeatSelected -> "座席を 1 席以上選んでください。"
+  NameRequired -> "お名前を入力してください。"
+  InvalidEmail -> "メールアドレスに @ とドメインを含めてください。"
+  InvalidPhone -> "電話番号は 10 桁以上の数字で入力してください。"
+  TermsNotAccepted -> "キャンセル規定への同意にチェックを入れてください。"
+}
+
+fn makeSeat row: String
+  -> number: Int
+  -> tier: SeatTier
+  -> availability: SeatAvailability
+  -> sightline: String
+  -> Seat =
+  Seat {
+    id: `${row}-${number}`,
+    row,
+    number,
+    tier,
+    availability,
+    sightline,
+  }
+
+fn rowSeats row: String
+  -> tier: SeatTier
+  -> soldNumbers: Array<Int>
+  -> sightline: String
+  -> Array<Seat> =
+  [makeSeat row number
+      (if row == "E" && (number == 1 || number == 8) then
+        TierAccessible
+      else
+        tier)
+      (if any (\sold: Int -> sold == number) soldNumbers then
+        Sold
+      else
+        Available)
+      (if row == "E" && (number == 1 || number == 8) then
+        "入口から段差なしでアクセスできる車椅子対応エリア"
+      else
+        sightline) | number <- [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]]
+
+pub fn initialSeats -> Array<Seat> = arrays.concat [
+  rowSeats "A" TierS [1, 2, 7] "舞台最前列。弦の響きと演奏者の表情が間近に届きます",
+  rowSeats "B" TierS [3, 4] "ホール中央の特等エリア。音響バランスに優れています",
+  rowSeats "C" TierA [2, 5, 6] "舞台全体を見渡せる中段中央。視界の抜けが良好です",
+  rowSeats "D" TierA [1, 8] "豊かな残響を楽しめる中段後方。落ち着いた鑑賞向きです",
+  rowSeats "E" TierB [4, 5] "ホール全体の響きを包み込む後方席。気軽に楽しめます",
+]
+
+pub let emptyBuyer: BuyerDraft = BuyerDraft {
+  fullName: "",
+  email: "",
+  phone: "",
+  delivery: MobileQr,
+  acceptedTerms: False,
+}
+
+pub fn initialState -> BookingState = BookingState {
+  seats: initialSeats (),
+  selectedIds: ["B-5", "B-6"],
+  focusedSeatId: Just "B-5",
+  filterTier: Nothing,
+  partySize: 2,
+  step: SelectingSeats,
+  buyer: emptyBuyer,
+  errors: [],
+  statusMessage: "おすすめの S席 2 連番を選択中です。地図上の席をクリックして変更できます。",
+}
+
+pub fn isSelected selectedIds: Array<String> -> seatId: String -> Bool =
+  any (\id: String -> id == seatId) selectedIds
+
+pub fn selectedSeats state: BookingState -> Array<Seat> = [
+  seat | seat <- state.seats,
+  isSelected state.selectedIds seat.id
+]
+
+pub fn findSeat seats: Array<Seat> -> seatId: String -> Maybe<Seat> =
+  arrays.find (\seat: Seat -> seat.id == seatId) seats
+
+pub fn calculateTotals state: BookingState -> OrderTotals = {
+  let chosen = selectedSeats state
+  let subtotal = chosen |> map (\seat: Seat -> seatPrice seat.tier) |> sum
+  let fee = match state.buyer.delivery {
+    MobileQr -> 0
+    BoxOfficePickup -> arrays.length chosen * 330
+  }
+  OrderTotals { subtotal, fee, total: subtotal + fee }
+}
+
+// 中央通路（4番と5番の間）をまたがずに、希望人数の空席連番を探します。
+fn blockMatch seats: Array<Seat>
+  -> row: String
+  -> numbers: Array<Int>
+  -> tierFilter: Maybe<SeatTier>
+  -> Maybe<Array<String>> = {
+    let candidates =
+      [seat | n <- numbers, seat <- seats, seat.row == row, seat.number == n, seat.availability == Available, match tierFilter
+          {
+        Nothing -> True
+        Just target -> seat.tier == target
+      }
+    ]
+    if arrays.length candidates == arrays.length numbers then
+      Just (map (\seat: Seat -> seat.id) candidates)
+    else
+      Nothing
+  }
+
+fn candidateBlocks count: Int -> Array<Array<Int>> =
+  if count <= 1 then
+    [
+      [4],
+      [5],
+      [3],
+      [6],
+      [2],
+      [7],
+      [1],
+      [8]
+    ]
+  else if count == 2 then
+    [
+      [3, 4],
+      [5, 6],
+      [2, 3],
+      [6, 7],
+      [1, 2],
+      [7, 8]
+    ]
+  else if count == 3 then
+    [
+      [2, 3, 4],
+      [5, 6, 7],
+      [1, 2, 3],
+      [6, 7, 8]
+    ]
+  else
+    [
+      [1, 2, 3, 4],
+      [5, 6, 7, 8]
+    ]
+
+pub fn findAdjacentSeats seats: Array<Seat>
+  -> tierFilter: Maybe<SeatTier>
+  -> count: Int
+  -> Maybe<Array<String>> = {
+    let rows = ["B", "A", "C", "D", "E"]
+    let blocks = candidateBlocks count
+    let matches = [
+      found | row <- rows,
+      block <- blocks,
+      Just found <- [blockMatch seats row block tierFilter]
+    ]
+    arrays.head matches
+  }
+
+fn countDigits value: String -> Int = {
+  let digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  text.split "" value
+    |> arrays.filter (\ch: String -> any (\d: String -> d == ch) digits)
+    |> arrays.length
+}
+
+fn checkHasSeats selectedIds: Array<String>
+  -> Validation<CheckoutError, Array<String>> =
+  if arrays.isEmpty selectedIds then
+    validation.invalid NoSeatSelected
+  else
+    validation.valid selectedIds
+
+fn checkName name: String -> Validation<CheckoutError, String> =
+  if name
+    |> text.trim
+    |> text.isEmpty then
+    validation.invalid NameRequired
+  else
+    validation.valid (text.trim name)
+
+fn isValidEmailAddress raw: String -> Bool = {
+  let parts = text.split "@" raw
+  match (arrays.length parts, arrays.get 0 parts, arrays.get 1 parts) {
+    (2, Just local, Just domain) -> {
+      let labels = text.split "." domain
+      ! text.isEmpty local
+        &&
+        !text.contains " " raw
+        && arrays.length labels >= 2
+        && all (\part: String -> !text.isEmpty part) labels
+    }
+    _ -> False
+  }
+}
+
+fn checkEmail email: String -> Validation<CheckoutError, String> = {
+  let cleaned = text.trim email
+  if isValidEmailAddress cleaned then
+    validation.valid cleaned
+  else
+    validation.invalid InvalidEmail
+}
+
+fn checkPhone phone: String -> Validation<CheckoutError, String> =
+  if countDigits phone >= 10 then
+    validation.valid (text.trim phone)
+  else
+    validation.invalid InvalidPhone
+
+fn checkTerms accepted: Bool -> Validation<CheckoutError, Bool> =
+  if accepted then validation.valid True else validation.invalid TermsNotAccepted
+
+fn makeConfirmedBuyer _seats: Array<String>
+  -> delivery: DeliveryOption
+  -> fullName: String
+  -> email: String
+  -> phone: String
+  -> acceptedTerms: Bool
+  -> BuyerDraft =
+  BuyerDraft {
+    fullName,
+    email,
+    phone,
+    delivery,
+    acceptedTerms
+  }
+
+pub fn validateBooking state: BookingState -> Validation<CheckoutError, BuyerDraft> =
+  pure (\ids: Array<String> -> makeConfirmedBuyer ids state.buyer.delivery)
+  <*> checkHasSeats state.selectedIds
+  <*> checkName state.buyer.fullName
+  <*> checkEmail state.buyer.email
+  <*> checkPhone state.buyer.phone
+  <*> checkTerms state.buyer.acceptedTerms
+
+fn toggleSeatSelection seat: Seat -> state: BookingState -> BookingState =
+  if seat.availability == Sold then
+    BookingState {
+      ...state,
+      focusedSeatId: Just seat.id,
+      statusMessage: `${seat.row}列 ${seat.number}番はすでに売切です。`,
+    }
+  else if isSelected state.selectedIds seat.id then
+    {
+  let nextIds = arrays.filter (\id: String -> id != seat.id) state.selectedIds
+  BookingState {
+    ...state,
+    selectedIds: nextIds,
+    focusedSeatId: Just seat.id,
+    statusMessage: `${seat.row}列 ${seat.number}番の選択を解除しました（選択中 ${arrays.length nextIds} 席）。`,
+  }
+}
+else if arrays.length state.selectedIds >= 4 then
+  BookingState {
+    ...state,
+    focusedSeatId: Just seat.id,
+    statusMessage: "一度に予約できるのは最大 4 席までです。",
+  }
+else
+  {
+  let nextIds = arrays.append [seat.id] state.selectedIds
+  BookingState {
+    ...state,
+    selectedIds: nextIds,
+    focusedSeatId: Just seat.id,
+    statusMessage: `${seat.row}列 ${seat.number}番（${tierLabel seat.tier}・${formatYen (seatPrice seat.tier)}）を追加しました。`,
+  }
+}
+
+fn makeReservationCode selectedIds: Array<String> -> String = {
+  let lead = match arrays.head selectedIds {
+    Just id -> text.replace "-" "" id
+    Nothing -> "00"
+  }
+  `SRG-2611-${lead}${arrays.length selectedIds}8`
+}
+
+fn refreshErrors nextState: BookingState -> BookingState =
+  if arrays.isEmpty nextState.errors then
+    nextState
+  else
+    match validateBooking nextState {
+  Valid _ -> BookingState { ...nextState, errors: [] }
+  Invalid problems -> BookingState {
+    ...nextState,
+    errors: arrays.fromIterable problems
+  }
+}
+
+pub fn update action: BookingAction -> state: BookingState -> BookingState =
+  match action {
+    ToggleSeat seatId -> match findSeat state.seats seatId {
+      Nothing -> state
+      Just seat -> toggleSeatSelection seat state
+    }
+    FocusSeat seatId -> BookingState { ...state, focusedSeatId: Just seatId }
+    FilterByTier tier -> BookingState {
+      ...state,
+      filterTier: tier,
+      statusMessage:
+        match tier {
+          Nothing -> "すべての席種を表示しています。"
+          Just selected -> `${tierLabel selected}を強調表示しています。`
+        },
+    }
+    SetPartySize size -> BookingState { ...state, partySize: size }
+    AutoPickAdjacent ->
+      match findAdjacentSeats state.seats state.filterTier state.partySize {
+      Nothing -> BookingState {
+        ...state,
+        statusMessage: `条件に合う ${state.partySize} 連番の空席が見つかりませんでした。`,
+      }
+      Just picked -> BookingState {
+        ...state,
+        selectedIds: picked,
+        focusedSeatId: arrays.head picked,
+        statusMessage: `通路をまたがないおすすめ ${arrays.length picked} 連番（${join "・" picked}）を選びました。`,
+      }
+    }
+    ClearSelection -> BookingState {
+      ...state,
+      selectedIds: [],
+      statusMessage: "選択中の座席をすべて解除しました。",
+    }
+    ProceedToCheckout ->
+      if arrays.isEmpty state.selectedIds then
+        BookingState { ...state, statusMessage: "先に座席を 1 席以上選んでください。" }
+      else
+        BookingState {
+          ...state,
+          step: ReviewingOrder,
+          errors: [],
+          statusMessage: "購入者情報を入力して予約を確定してください。",
+        }
+    BackToSeats -> BookingState {
+      ...state,
+      step: SelectingSeats,
+      errors: [],
+      statusMessage: "座席マップに戻りました。",
+    }
+    NameChanged value -> refreshErrors (BookingState { ...state, buyer: BuyerDraft { ...state.buyer, fullName: value }, })
+    EmailChanged value -> refreshErrors (BookingState { ...state, buyer: BuyerDraft { ...state.buyer, email: value }, })
+    PhoneChanged value -> refreshErrors (BookingState { ...state, buyer: BuyerDraft { ...state.buyer, phone: value }, })
+    DeliveryChanged delivery -> BookingState {
+      ...state,
+      buyer: BuyerDraft { ...state.buyer, delivery },
+    }
+    TermsToggled accepted -> refreshErrors (BookingState {
+      ...state,
+      buyer: BuyerDraft { ...state.buyer, acceptedTerms: accepted },
+    })
+    SubmitBooking -> match validateBooking state {
+      Invalid problems -> BookingState {
+        ...state,
+        errors: arrays.fromIterable problems,
+        statusMessage: `入力内容に ${arrays.length (arrays.fromIterable problems)} 件の確認事項があります。`,
+      }
+      Valid confirmed -> BookingState {
+        ...state,
+        buyer: confirmed,
+        errors: [],
+        step: TicketIssued (makeReservationCode state.selectedIds),
+        statusMessage: "予約が確定し、電子チケットを発券しました。",
+      }
+    }
+    StartNewBooking -> initialState ()
+  }

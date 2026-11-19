@@ -1,49 +1,58 @@
+// ランディングページ全体で使う配色と名前付きスタイルをこのモジュールに集約します。
 import * as html from "std/web/html"
 
 pub fn pageStyle -> html.Style = html.style {
   background: "#040b09",
   color: "#edf7f3",
-  fontFamily: "Inter, Avenir, Helvetica Neue, Helvetica, Arial, sans-serif",
+  fontFamily: "Inter, 'Noto Sans JP', Avenir, Helvetica Neue, Helvetica, Arial, sans-serif",
   margin: "0",
   minHeight: "100vh",
-  overflowX: "hidden"
+  overflowX: "hidden",
 }
 
 pub fn containerStyle -> html.Style = html.style {
   marginLeft: "auto",
   marginRight: "auto",
   maxWidth: "1180px",
-  width: "calc(100% - 32px)"
+  width: "calc(100% - 32px)",
 }
 
 pub fn eyebrowStyle -> html.Style = html.style {
   color: "#8de7bf",
   fontSize: "11px",
   fontWeight: "800",
-  letterSpacing: "0.2em",
+  letterSpacing: "0.18em",
   lineHeight: "1.5",
   margin: "0",
-  textTransform: "uppercase"
+  textTransform: "uppercase",
 }
 
 pub fn sectionTitleStyle -> html.Style = html.style {
   color: "#f6fffb",
-  fontSize: "clamp(30px, 6vw, 54px)",
-  fontWeight: "620",
-  letterSpacing: "-0.05em",
-  lineHeight: "1.04",
+  fontSize: "clamp(28px, 5vw, 48px)",
+  fontWeight: "650",
+  letterSpacing: "-0.02em",
+  lineHeight: "1.12",
   marginBottom: "0",
-  marginTop: "20px",
-  maxWidth: "760px"
+  marginTop: "18px",
+  maxWidth: "760px",
 }
 
 pub fn mutedTextStyle -> html.Style = html.style {
   color: "#9fb5ad",
-  fontSize: "clamp(15px, 2vw, 17px)",
+  fontSize: "clamp(15px, 1.8vw, 17px)",
   lineHeight: "1.8",
   marginBottom: "0",
-  marginTop: "22px",
-  maxWidth: "680px"
+  marginTop: "20px",
+  maxWidth: "660px",
+}
+
+pub fn navLinkStyle -> html.Style = html.style {
+  color: "#d8e9e2",
+  fontSize: "13px",
+  fontWeight: "650",
+  textDecoration: "none",
+  whiteSpace: "nowrap",
 }
 
 pub fn primaryLinkStyle -> html.Style = html.style {
@@ -51,47 +60,155 @@ pub fn primaryLinkStyle -> html.Style = html.style {
   background: "linear-gradient(135deg, #baf7d6 0%, #5cdb9d 100%)",
   backgroundColor: "#8de7bf",
   borderRadius: "999px",
-  boxShadow: "0 18px 50px rgba(67, 218, 148, 0.2)",
+  boxShadow: "0 16px 40px rgba(67, 218, 148, 0.22)",
   color: "#062019",
   display: "inline-flex",
   fontSize: "14px",
   fontWeight: "800",
-  gap: "9px",
+  gap: "8px",
   justifyContent: "center",
-  padding: "15px 22px",
-  textDecoration: "none"
+  padding: "13px 22px",
+  textDecoration: "none",
 }
 
 pub fn secondaryLinkStyle -> html.Style = html.style {
   alignItems: "center",
-  backgroundColor: "#10231c",
-  border: "1px solid rgba(255, 255, 255, 0.13)",
+  backgroundColor: "rgba(16, 35, 28, 0.88)",
+  border: "1px solid rgba(255, 255, 255, 0.16)",
   borderRadius: "999px",
   color: "#e9f8f1",
   display: "inline-flex",
   fontSize: "14px",
   fontWeight: "700",
-  gap: "9px",
+  gap: "8px",
   justifyContent: "center",
-  padding: "14px 21px",
-  textDecoration: "none"
+  padding: "12px 20px",
+  textDecoration: "none",
+}
+
+pub fn tabStyle selected: Bool -> html.Style = match selected {
+  True -> html.style {
+    background: "linear-gradient(135deg, #bdf6d8, #67dca4)",
+    backgroundColor: "#8de7bf",
+    border: "1px solid transparent",
+    borderRadius: "999px",
+    color: "#06251a",
+    cursor: "pointer",
+    fontSize: "13px",
+    fontWeight: "800",
+    padding: "10px 18px",
+  }
+  False -> html.style {
+    backgroundColor: "#0b1612",
+    border: "1px solid rgba(255, 255, 255, 0.18)",
+    borderRadius: "999px",
+    color: "#cfe3da",
+    cursor: "pointer",
+    fontSize: "13px",
+    fontWeight: "700",
+    padding: "10px 18px",
+  }
 }
 
 pub fn codePanelStyle -> html.Style = html.style {
-  background: "linear-gradient(145deg, #0b1714, #06100d)",
-  border: "1px solid rgba(255, 255, 255, 0.11)",
-  borderRadius: "26px",
-  boxShadow: "0 35px 90px rgba(0, 0, 0, 0.3)",
-  overflow: "hidden"
+  background: "linear-gradient(160deg, #0d1714 0%, #07100d 100%)",
+  border: "1px solid rgba(141, 231, 191, 0.18)",
+  borderRadius: "20px",
+  boxShadow: "0 28px 70px rgba(0, 0, 0, 0.42)",
+  overflow: "hidden",
+}
+
+pub fn codePanelHeaderStyle -> html.Style = html.style {
+  alignItems: "center",
+  backgroundColor: "rgba(255, 255, 255, 0.025)",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "12px",
+  justifyContent: "space-between",
+  padding: "13px 18px",
+}
+
+pub fn codePanelFooterStyle -> html.Style = html.style {
+  alignItems: "center",
+  backgroundColor: "rgba(255, 255, 255, 0.02)",
+  borderTop: "1px solid rgba(255, 255, 255, 0.07)",
+  color: "#7f9b90",
+  display: "flex",
+  flexWrap: "wrap",
+  fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+  fontSize: "11px",
+  gap: "10px",
+  justifyContent: "space-between",
+  padding: "10px 18px",
 }
 
 pub fn codeContentStyle -> html.Style = html.style {
-  color: "#d7f7e7",
+  color: "#dce9e4",
   fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-  fontSize: "clamp(11px, 2.8vw, 14px)",
-  lineHeight: "1.72",
+  fontSize: "clamp(11.5px, 2.4vw, 13.5px)",
+  lineHeight: "1.7",
   margin: "0",
   overflowWrap: "anywhere",
-  padding: "clamp(20px, 4vw, 32px)",
-  whiteSpace: "pre-wrap"
+  padding: "clamp(16px, 3vw, 24px) clamp(14px, 3vw, 22px)",
+  whiteSpace: "pre-wrap",
 }
+
+pub fn codeLineRowStyle -> html.Style = html.style {
+  display: "flex",
+  gap: "14px",
+  minHeight: "1.7em",
+}
+
+pub fn lineNumberStyle -> html.Style = html.style {
+  color: "#4a6158",
+  flexShrink: "0",
+  fontVariantNumeric: "tabular-nums",
+  minWidth: "20px",
+  textAlign: "right",
+  userSelect: "none",
+}
+
+pub fn codeLineTextStyle -> html.Style = html.style {
+  flex: "1 1 0%",
+  minWidth: "0",
+  overflowWrap: "anywhere",
+  whiteSpace: "pre-wrap",
+}
+
+// Playground ダークテーマ（syntax-theme.css）と揃えたシンタックスハイライト色
+pub fn synKeywordStyle -> html.Style = html.style {
+  color: "#c7a0f7",
+  fontWeight: "600",
+}
+
+pub fn synTypeStyle -> html.Style = html.style { color: "#f1b37a", }
+
+pub fn synStandardTypeStyle -> html.Style = html.style { color: "#ffd27d", }
+
+pub fn synOperatorStyle -> html.Style = html.style { color: "#82b9f6", }
+
+pub fn synStringStyle -> html.Style = html.style { color: "#a9d989", }
+
+pub fn synCommentStyle -> html.Style = html.style {
+  color: "#687c74",
+  fontStyle: "italic",
+}
+
+pub fn synPunctStyle -> html.Style = html.style { color: "#9fb4ac", }
+
+pub fn synPlainStyle -> html.Style = html.style { color: "#dce9e4", }
+
+pub fn principleAccent index: Int -> String = match index {
+  1 -> "#72e4ad"
+  2 -> "#74c7e9"
+  _ -> "#dab984"
+}
+
+pub fn chapterAccent key: String -> String =
+  if key == "readable" then
+    "#79e0ab"
+  else if key == "composable" then
+    "#7ec8ed"
+  else
+    "#e0bc7c"
