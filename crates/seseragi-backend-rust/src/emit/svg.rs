@@ -73,8 +73,8 @@ fn scene_action(ty: &CoreType) -> Option<&CoreType> {
 
 /// Whether `parameter -> result` is the checked type of an SVG operation.
 /// A field the TS renderer writes must have the type it renders; any other
-/// field is ignored by both renderers, except handlers and element refs, which
-/// only a browser can use.
+/// field, including handlers and element refs that only a browser uses, is
+/// ignored by both renderers.
 pub(super) fn valid(operation: &str, parameter: &CoreType, result: &CoreType) -> bool {
     if operation == "toHtml" {
         return matches!(result, CoreType::Named { name, arguments }
@@ -92,6 +92,7 @@ pub(super) fn valid(operation: &str, parameter: &CoreType, result: &CoreType) ->
         return false;
     };
     let string = named("std/prelude::String", vec![]);
+    let scene = named("std/web/svg::Svg", vec![action.clone()]);
     let mut names = BTreeSet::new();
     let fields_valid = fields.iter().all(|field| {
         if !names.insert(field.name.as_str()) {
@@ -99,29 +100,17 @@ pub(super) fn valid(operation: &str, parameter: &CoreType, result: &CoreType) ->
         }
         let name = field.name.as_str();
         if name == "children" {
-            return !field.optional
-                && match operation {
-                    "svg" | "g" => {
-                        field.type_ref
-                            == named(
-                                "std/prelude::Array",
-                                vec![named("std/web/svg::Svg", vec![action.clone()])],
-                            )
-                    }
-                    "text" => field.type_ref == string,
-                    _ => false,
-                };
+            // The TS scene accepts text, one node or an Array of nodes.
+            return field.type_ref == string
+                || field.type_ref == scene
+                || field.type_ref == named("std/prelude::Array", vec![scene.clone()]);
         }
-        if matches!(
-            name,
-            "elementRef"
-                | "onPointerDown"
-                | "onPointerMove"
-                | "onPointerUp"
-                | "onPointerCancel"
-                | "onWheel"
-        ) {
-            return false;
+        if name == "attributes" {
+            return field.type_ref
+                == named(
+                    "std/prelude::Array",
+                    vec![named("std/web/html::Attribute", vec![])],
+                );
         }
         if let Some((_, ty)) = COMMON.iter().find(|(common, _)| *common == name) {
             return field.type_ref == named(ty, vec![]);

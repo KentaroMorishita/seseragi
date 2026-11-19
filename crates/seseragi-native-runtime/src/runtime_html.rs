@@ -17,34 +17,56 @@ fn native_html_escape(value: &str, attribute: bool) -> String {
 }
 
 fn native_html_value<'a>(value: &'a V, kind: &str) -> &'a str {
+    match native_html_node(value, kind) {
+        Ok(text) => text,
+        // The TS renderer checks an SVG number only when it writes the text.
+        Err(message) => panic!("{message}"),
+    }
+}
+
+/// The rendered text of a node, or the message of the first value it could
+/// not render.
+fn native_html_node<'a>(value: &'a V, kind: &str) -> Result<&'a str, &'a str> {
     let V::Adt(node) = value else {
         panic!("Rust ABI: expected HTML {kind}")
     };
     assert_eq!(node.get().0, kind, "Rust ABI: HTML value owner");
-    native_text(&node.get().1)
+    match &node.get().1 {
+        V::Adt(invalid) if invalid.get().0 == "\0html.invalid" => {
+            Err(native_text(&invalid.get().1))
+        }
+        text => Ok(native_text(text)),
+    }
 }
 
-fn native_html_children(value: &V) -> String {
-    match value {
+fn native_html_invalid(kind: &'static str, message: &str) -> V {
+    V::adt(kind, V::adt("\0html.invalid", V::text(message)))
+}
+
+fn native_html_children(value: &V, kind: &str) -> Result<String, String> {
+    fn node<'a>(value: &'a V, kind: &str) -> Result<&'a str, String> {
+        native_html_node(value, kind).map_err(str::to_owned)
+    }
+    Ok(match value {
         V::Text(text) => native_html_escape(text.get(), false),
-        V::Adt(_) => native_html_value(value, "\0html.node").into(),
+        V::Adt(_) => node(value, kind)?.into(),
         V::Array(values) => values
             .get()
             .iter()
-            .map(|v| native_html_value(v, "\0html.node"))
-            .collect(),
+            .map(|value| node(value, kind))
+            .collect::<Result<String, String>>()?,
         V::ListEmpty | V::List(_) => {
             let mut output = String::new();
             let mut cursor = value;
             while let V::List(cell) = cursor {
-                output.push_str(native_html_value(&cell.get().head, "\0html.node"));
+                output.push_str(node(&cell.get().head, kind)?);
                 cursor = &cell.get().tail;
             }
             assert!(matches!(cursor, V::ListEmpty), "Rust ABI: HTML child List");
             output
         }
         _ => panic!("Rust ABI: unsupported HTML children"),
-    }
+    })
 }
 
 fn native_html_kebab(value: &str) -> String {
@@ -138,6 +160,36 @@ fn native_html_common_attributes(output: &mut String, props: &BTreeMap<String, V
         ("ariaSelected", "aria-selected", "enum"),
     ] {
         native_html_attribute(output, props, property, name, kind, None);
+    }
+}
+
+/// The `attributes` field, written last as on the TS target.
+fn native_html_custom_attributes(output: &mut String, props: &BTreeMap<String, V>) {
+    if let Some(value) = props.get("attributes") {
+        let V::Array(attributes) = value else {
+            panic!("Rust ABI: HTML custom attributes Array")
+        };
+        let mut names = std::collections::BTreeSet::new();
+        for value in attributes.get() {
+            let V::Adt(attribute) = value else {
+                panic!("Rust ABI: HTML custom attribute")
+            };
+            assert_eq!(
+                attribute.get().0,
+                "\0html.attribute",
+                "Rust ABI: HTML attribute owner"
+            );
+            let name = attribute.get().1.field("name");
+            let name = native_text(&name);
+            assert!(
+                names.insert(name.to_ascii_lowercase()),
+                "Rust ABI: duplicate HTML attribute"
+            );
+            output.push_str(&format!(
+                " {name}=\"{}\"",
+                native_html_escape(native_text(&attribute.get().1.field("value")), true)
+            ));
+        }
     }
 }
 
@@ -247,32 +299,7 @@ fn native_html_element(tag: &str, value: V, void: bool) -> V {
     for &(property, name, kind, default) in attributes {
         native_html_attribute(&mut output, props, property, name, kind, default);
     }
-    if let Some(value) = props.get("attributes") {
-        let V::Array(attributes) = value else {
-            panic!("Rust ABI: HTML custom attributes Array")
-        };
-        let mut names = std::collections::BTreeSet::new();
-        for value in attributes.get() {
-            let V::Adt(attribute) = value else {
-                panic!("Rust ABI: HTML custom attribute")
-            };
-            assert_eq!(
-                attribute.get().0,
-                "\0html.attribute",
-                "Rust ABI: HTML attribute owner"
-            );
-            let name = attribute.get().1.field("name");
-            let name = native_text(&name);
-            assert!(
-                names.insert(name.to_ascii_lowercase()),
-                "Rust ABI: duplicate HTML attribute"
-            );
-            output.push_str(&format!(
-                " {name}=\"{}\"",
-                native_html_escape(native_text(&attribute.get().1.field("value")), true)
-            ));
-        }
-    }
+    native_html_custom_attributes(&mut output, props);
     output.push('>');
     if !void {
         if tag == "textarea" {
@@ -280,7 +307,10 @@ fn native_html_element(tag: &str, value: V, void: bool) -> V {
                 output.push_str(&native_html_escape(native_text(value), false));
             }
         } else if let Some(children) = props.get("children") {
-            output.push_str(&native_html_children(children));
+            match native_html_children(children, "\0html.node") {
+                Ok(children) => output.push_str(&children),
+                Err(message) => return native_html_invalid("\0html.node", &message),
+            }
         }
         output.push_str(&format!("</{tag}>"));
     }
@@ -318,20 +348,22 @@ fn native_svg_element(tag: &str, value: V) -> V {
             Some(V::Float(value)) if value.is_finite() => {
                 output.push_str(&format!(" {name}=\"{}\"", native_number_text(*value)));
             }
-            Some(V::Float(_)) => panic!("SVG attribute {name} must be a finite number"),
+            Some(V::Float(_)) => {
+                return native_html_invalid(
+                    "\0svg.node",
+                    &format!("SVG attribute {name} must be a finite number"),
+                )
+            }
             Some(_) => panic!("Rust ABI: SVG number attribute"),
         }
     }
+    native_html_custom_attributes(&mut output, props);
     output.push('>');
-    match props.get("children") {
-        Some(V::Text(text)) => output.push_str(&native_html_escape(text.get(), false)),
-        Some(V::Array(children)) => {
-            for child in children.get() {
-                output.push_str(native_html_value(child, "\0svg.node"));
-            }
+    if let Some(children) = props.get("children") {
+        match native_html_children(children, "\0svg.node") {
+            Ok(children) => output.push_str(&children),
+            Err(message) => return native_html_invalid("\0svg.node", &message),
         }
-        None => {}
-        Some(_) => panic!("Rust ABI: SVG children"),
     }
     output.push_str(&format!("</{tag}>"));
     V::adt("\0svg.node", V::text(&output))
@@ -339,10 +371,10 @@ fn native_svg_element(tag: &str, value: V) -> V {
 
 pub fn native_html_operation(name: &str, value: V, void: bool) -> V {
     match name {
-        "std/web/svg::toHtml" => V::adt(
-            "\0html.node",
-            V::text(native_html_value(&value, "\0svg.node")),
-        ),
+        "std/web/svg::toHtml" => match native_html_node(&value, "\0svg.node") {
+            Ok(text) => V::adt("\0html.node", V::text(text)),
+            Err(message) => native_html_invalid("\0html.node", message),
+        },
         name if name.starts_with("std/web/svg::") => {
             native_svg_element(&name["std/web/svg::".len()..], value)
         }
@@ -352,7 +384,10 @@ pub fn native_html_operation(name: &str, value: V, void: bool) -> V {
             "\0html.node",
             V::text(&native_html_escape(native_text(&value), false)),
         ),
-        "fragment" => V::adt("\0html.node", V::text(&native_html_children(&value))),
+        "fragment" => match native_html_children(&value, "\0html.node") {
+            Ok(children) => V::adt("\0html.node", V::text(&children)),
+            Err(message) => native_html_invalid("\0html.node", &message),
+        },
         "renderToString" => V::text(native_html_value(&value, "\0html.node")),
         "renderDocument" => V::text(&format!(
             "<!doctype html>{}",

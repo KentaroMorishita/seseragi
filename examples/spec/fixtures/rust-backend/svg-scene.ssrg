@@ -44,10 +44,21 @@ fn scene shift: Float -> svg.Svg<Unit> = svg.svg {
   ]
 }
 
+// A record with more fields than the parameter keeps them when it is passed on.
+fn sized props: { width: Float } -> svg.Svg<Unit> = svg.rect props
+
 pub effect fn main = do {
   let after: html.Html<Unit> = html.text "after"
   let page: html.Html<Unit> = html.div { children: [svg.toHtml (scene 3.25), after] }
   println (html.renderToString page)
   let lone: html.Html<Unit> = svg.toHtml (label "alone")
   println (html.renderToString lone)
+  // A constructor kept in a variable, with only the fields given here.
+  let constructor = svg.rect
+  println (html.renderToString (svg.toHtml (constructor { width: 1.0 })))
+  // One node as the children, kept by the record passed on.
+  println (html.renderToString (svg.toHtml (sized { width: 2.0, children: label "extra" })))
+  // A number that cannot be written fails only when its text is written.
+  let unused = svg.rect { width: 1.0 / 0.0 }
+  println "built without rendering"
 }

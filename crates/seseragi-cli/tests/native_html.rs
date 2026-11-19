@@ -78,6 +78,35 @@ fn static_svg_scenes_match_ts() {
 }
 
 #[test]
+fn an_svg_number_that_is_not_finite_fails_only_when_rendered_like_ts() {
+    let scratch = tempfile::tempdir().unwrap();
+    let fixture = root().join("examples/spec/fixtures/rust-backend/svg-scene-defect.ssrg");
+    let input = process::copy_input(&fixture, scratch.path());
+    let cli = env!("CARGO_BIN_EXE_seseragi");
+    let ts = bounded(Command::new(cli).arg("run").arg(&input), scratch.path());
+    let native = scratch.path().join("native");
+    successful(bounded(
+        Command::new(cli)
+            .args(["experimental", "build-native"])
+            .arg(&input)
+            .args(["--entry", "main", "--out-dir"])
+            .arg(&native),
+        scratch.path(),
+    ));
+    let output = bounded(
+        Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+            .env("PATH", ""),
+        scratch.path(),
+    );
+    let expected = fs::read(fixture.with_extension("stdout")).unwrap();
+    for (target, output) in [("TS", &ts), ("native", &output)] {
+        assert_eq!(output.status.code(), Some(70), "{target}: {output:?}");
+        assert_eq!(output.stdout, expected, "{target}");
+    }
+    assert_eq!(output.stderr, ts.stderr);
+}
+
+#[test]
 fn every_standard_html_element_and_its_attributes_match_ts() {
     let scratch = tempfile::tempdir().unwrap();
     let mut source = String::from("import * as html from \"std/web/html\"\npub effect fn main = match html.parseWebUrl \"/image?a=1&b=2\" { Left error -> println (show error); Right url -> do {\n");
