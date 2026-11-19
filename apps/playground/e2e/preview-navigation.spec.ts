@@ -56,7 +56,7 @@ for (const action of ["sample", "reset", "clear"] as const) {
       await expect(
         page
           .frameLocator("#html-preview")
-          .getByRole("heading", { name: "Plan a calmer launch." })
+          .getByRole("heading", { name: "秋夜の室内楽特別公演 — 弦楽四重奏の夕べ" })
       ).toBeVisible()
       await expect(page.locator("#status-text")).toHaveText("Interactive")
     }
@@ -85,7 +85,7 @@ test("cancellation during readiness capture cannot bootstrap the old preview", a
   await expect(
     page
       .frameLocator("#html-preview")
-      .getByRole("heading", { name: "Plan a calmer launch." })
+      .getByRole("heading", { name: "秋夜の室内楽特別公演 — 弦楽四重奏の夕べ" })
   ).toBeVisible()
 })
 
@@ -113,7 +113,7 @@ test("a cancelled Run finally cannot unlock the next pending Run", async ({
   await expect(
     page
       .frameLocator("#html-preview")
-      .getByRole("heading", { name: "Plan a calmer launch." })
+      .getByRole("heading", { name: "秋夜の室内楽特別公演 — 弦楽四重奏の夕べ" })
   ).toBeVisible()
   await expect(page.locator("#run-button")).toBeEnabled()
   expect(await listenerCount(page)).toBe(0)
