@@ -509,7 +509,7 @@ test.describe("canonical Web UI browser regression", () => {
     ).toBeVisible()
     // Reorder & add preset spot
     await projectPreview
-      .getByRole("button", { name: "+ 南禅寺・水路閣 (1600円)" })
+      .getByRole("button", { name: "+ 南禅寺・水路閣 (1,600円)" })
       .click()
     await expect(
       projectPreview.getByText("1日目のルート地図（6 スポット）")

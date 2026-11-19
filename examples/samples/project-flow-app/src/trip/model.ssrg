@@ -74,7 +74,16 @@ pub fn categoryLabel category: SpotCategory -> String = match category {
   Transit -> "移動"
 }
 
-pub fn formatYen amount: Int -> String = `${amount}円`
+fn pad3 n: Int -> String =
+  if n < 10 then `00${n}` else if n < 100 then `0${n}` else `${n}`
+
+fn formatCommas amount: Int -> String =
+  if amount < 1000 then
+    `${amount}`
+  else
+    `${formatCommas (amount / 1000)},${pad3 (amount % 1000)}`
+
+pub fn formatYen amount: Int -> String = `${formatCommas amount}円`
 
 pub fn initialSpots -> Array<Spot> = [
   Spot {
