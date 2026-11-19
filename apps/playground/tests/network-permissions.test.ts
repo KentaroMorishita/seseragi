@@ -96,7 +96,9 @@ describe("network gate (#1371)", () => {
       },
     }
     const notice: NetworkNotice = {
-      show: () => void (shown += 1),
+      show: () => {
+        shown += 1
+      },
       hide: () => undefined,
     }
     const gate = createNetworkGate({
@@ -104,7 +106,9 @@ describe("network gate (#1371)", () => {
       consent,
       notice,
       current: () => ({ scope: "example:a", label: "A" }),
-      rerun: () => void (reruns += 1),
+      rerun: () => {
+        reruns += 1
+      },
     })
     return {
       gate,
