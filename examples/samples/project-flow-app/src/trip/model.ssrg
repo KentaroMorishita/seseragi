@@ -373,7 +373,7 @@ pub fn update action: TripAction -> state: TripState -> TripState = match action
   }
   ChangeTravelers count -> {
     let clamped = if count < 1 then 1 else if count > 6 then 6 else count
-    TripState { ...state, travelers: clamped }
+    TripState { ...state, travelers: clamped, saveState: SaveIdle }
   }
   ToggleSimulateFailure flag -> TripState { ...state, simulateFailure: flag }
   StartSave -> TripState { ...state, saveState: Saving }

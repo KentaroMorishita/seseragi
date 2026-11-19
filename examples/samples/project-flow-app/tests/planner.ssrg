@@ -3,9 +3,12 @@ import * as arrays from "std/array"
 import * as test from "std/test"
 import {
   AddPresetSpot,
+  ChangeTravelers,
   Dining,
   Day1,
+  FinishSave,
   MoveSpotDown,
+  SaveIdle,
   SplitSummary,
   Spot,
   calculateSplit,
@@ -52,4 +55,11 @@ pub let tests: test.Test = test.suite "旅行プランナー" [test.test "割り
       test.equal True (firstLeg >= 8 && transit >= firstLeg)
     }
   ), test.test "食事カテゴリの合計金額を正しく集計する" (test.equal 12800 (categoryTotal Dining (initialState ()).spots)),
+  test.test "参加人数を変更すると発行済みの共有状態がリセットされる" (
+    {
+      let saved = update (FinishSave (Right "https://trip.example/kyoto-8s-3p")) (initialState ())
+      let changed = update (ChangeTravelers 4) saved
+      test.equal True (changed.saveState == SaveIdle)
+    }
+  ),
 ]
