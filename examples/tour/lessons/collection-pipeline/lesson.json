@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "`let numbers = [1, 2, 3, 4, 5, 6]` を `[1, 2, 3, 4]` に、`|> reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
+      "instruction": "`let numbers = [1, 2, 3, 4, 5, 6]` を `let numbers = [1, 2, 3, 4]` に、`|> reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

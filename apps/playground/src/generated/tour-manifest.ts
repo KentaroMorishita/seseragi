@@ -1174,7 +1174,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "`let scores: Array<Int> = [10, 20, 30]` を `[10, 20, 30, 40]` に書き換えて `Run` し、`Output` の `length 3` が `length 4` に変わり、`arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
+        "instruction": "`let scores: Array<Int> = [10, 20, 30]` を `let scores: Array<Int> = [10, 20, 30, 40]` に書き換えて `Run` し、`Output` の `length 3` が `length 4` に変わり、`arrays.get 3 scores` の結果が `Nothing` から `Just 40` に変わることを確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
@@ -1250,7 +1250,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         }
       ],
       "exercise": {
-        "instruction": "`let numbers = [1, 2, 3, 4, 5, 6]` を `[1, 2, 3, 4]` に、`|> reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
+        "instruction": "`let numbers = [1, 2, 3, 4, 5, 6]` を `let numbers = [1, 2, 3, 4]` に、`|> reduce 0 (+)` の初期値 `0` を `10` に書き換えて `Run` し、`Output` の変化を確かめてください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
