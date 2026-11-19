@@ -289,18 +289,24 @@ For example, FizzBuzz looks like this:
 
 <!-- canonical-example: path=examples/samples/fizzbuzz/main.ssrg -->
 ```seseragi
-fn fizzBuzz number: Int -> String =
-  // タプルを使うと、3と5の割り切れ方を1つのmatchで判定できます。
-  match (number % 3, number % 5) {
-    (0, 0) -> "FizzBuzz"
-    (0, _) -> "Fizz"
-    (_, 0) -> "Buzz"
-    _ -> `${number}`
-  }
+// 規則を配列のデータにした FizzBuzz です。
+// 規則を一行足すだけで、7 の倍数に Whizz を出すような変更ができます。
+import * as arrays from "std/array"
 
-pub effect fn main = for number <- 1 ..= 30 {
-  println (fizzBuzz number)
+struct Rule { divisor: Int, word: String }
+
+let rules: Array<Rule> = [
+  Rule { divisor: 3, word: "Fizz" },
+  Rule { divisor: 5, word: "Buzz" },
+]
+
+// 割り切れる規則の言葉を、規則の順につなぐ。どれにも当たらなければ数そのもの
+fn say number: Int -> String = {
+  let words = [rule.word | rule <- rules, number % rule.divisor == 0]
+  if arrays.isEmpty words then show number else join "" words
 }
+
+pub effect fn main = [say number | number <- 1 ..= 15] |> join "\n" |> println
 ```
 <!-- /canonical-example -->
 

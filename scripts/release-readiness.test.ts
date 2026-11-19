@@ -82,6 +82,26 @@ describe("release readiness", () => {
     expect(result.userVisibleFiles).toEqual([])
   })
 
+  test("allows production artifact budget updates without a version bump", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    const production = path.join(
+      root,
+      "examples",
+      "spec",
+      "fixtures",
+      "production"
+    )
+    await mkdir(production, { recursive: true })
+    await writeFile(path.join(production, "budgets.json"), "[]\n")
+    git(root, "add", ".")
+    git(root, "commit", "-m", "update production artifact expectations")
+
+    const result = pullRequestReleaseBoundary(base, "HEAD", root)
+    expect(result.headVersion).toBe(result.baseVersion)
+    expect(result.userVisibleFiles).toEqual([])
+  })
+
   test("requires a release for Rust backend production changes", async () => {
     const root = await repository()
     const base = git(root, "rev-parse", "HEAD")

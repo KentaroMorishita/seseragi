@@ -944,6 +944,8 @@ fn watches_host_effect_programs_and_drains_the_old_application_before_reload() {
     fs::remove_dir_all(directory).unwrap();
 }
 
+const FLOW_APP_TITLE: &str = r#"children: "京都・宇治 週末旅行プランナー""#;
+
 #[test]
 fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
     let _server = DEV_SERVER_TEST_LOCK
@@ -1009,9 +1011,12 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
 
     let source_path = project.join("src/app.ssrg");
     let original = fs::read_to_string(&source_path).unwrap();
-    let changed = original.replace(
-        "Make room for the next release.",
-        "Make room for the next live release.",
+    assert_eq!(original.matches(FLOW_APP_TITLE).count(), 1);
+    let updated_title = "Updated trip planner title";
+    let changed = original.replacen(
+        FLOW_APP_TITLE,
+        &format!(r#"children: "{updated_title}""#),
+        1,
     );
     fs::write(&source_path, &changed).unwrap();
     wait_for(
@@ -1020,9 +1025,8 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
             let Some((_, version)) = request(port, "/__seseragi_dev/version") else {
                 return false;
             };
-            let bundle_updated = request(port, "/assets/app.js").is_some_and(|response| {
-                response.1.contains("Make room for the next live release.")
-            });
+            let bundle_updated = request(port, "/assets/app.js")
+                .is_some_and(|response| response.1.contains(updated_title));
             if version == initial_version || !bundle_updated {
                 return false;
             }
@@ -1065,7 +1069,7 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
             let previous_bundle_available =
                 request(port, "/assets/app.js").is_some_and(|response| {
                     response.0 == 200
-                        && response.1.contains("Make room for the next live release.")
+                        && response.1.contains(updated_title)
                         && !response.1.contains("missingDevName")
                 });
             if version_unchanged && previous_build_available && previous_bundle_available {
@@ -1164,20 +1168,11 @@ fn watches_a_new_path_dependency_even_when_its_first_build_fails() {
 
     let app_path = project.join("src/app.ssrg");
     let app = fs::read_to_string(&app_path).unwrap();
+    assert_eq!(app.matches(FLOW_APP_TITLE).count(), 1);
+    let app = app.replacen(FLOW_APP_TITLE, "children: releaseCopy ()", 1);
     fs::write(
         &app_path,
-        app.replacen(
-            "import * as signals from \"std/signal\"\n",
-            concat!(
-                "import * as signals from \"std/signal\"\n",
-                "import { releaseCopy } from \"release-copy\"\n",
-            ),
-            1,
-        )
-        .replace(
-            "children: \"Make room for the next release.\"",
-            "children: releaseCopy ()",
-        ),
+        format!("import {{ releaseCopy }} from \"release-copy\"\n{app}"),
     )
     .unwrap();
     let manifest_path = project.join("seseragi.toml");

@@ -439,7 +439,7 @@ fn builds_the_canonical_playground_web_package_directly() {
     let marker = fs::read_to_string(output_directory.join(".seseragi-build.json")).unwrap();
     assert!(marker.contains("\"target\": \"web\""));
     let bundle = fs::read_to_string(output_directory.join("assets/app.js")).unwrap();
-    assert!(bundle.contains("Make room for the next release."));
+    assert!(bundle.contains("京都・宇治 週末旅行プランナー"));
     fs::remove_dir_all(directory).unwrap();
 }
 
