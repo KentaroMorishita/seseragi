@@ -48,7 +48,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 12 行目にある `Just 41` を `Just 0` に書き換えて `Run` し、`Output` の 3 行目が `flatMap: Nothing` と `>>=: Nothing` に変わることを確かめてください。",
+      "instruction": "エディターの `Just 41` を `Just 0` に書き換えて `Run` し、`Output` の 3 行目が `flatMap: Nothing` と `>>=: Nothing` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

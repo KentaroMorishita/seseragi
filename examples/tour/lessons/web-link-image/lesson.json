@@ -35,7 +35,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 20 行目にある `\"Repository\"` を `\"Open Seseragi\"` に書き換えて `Run` し、`Output` のリンク文字が変わることを確かめてください。",
+      "instruction": "エディターの `\"Repository\"` を `\"Open Seseragi\"` に書き換えて `Run` し、`Output` のリンク文字が変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

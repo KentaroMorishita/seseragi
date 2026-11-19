@@ -43,7 +43,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの7行目にある `Shipped \"Osaka\"` を `Shipped \"Kobe\"` に書き換えて `Run` し、`Output` の2行目が `Shipped Kobe` に変わることを確かめてください。",
+      "instruction": "`Shipped \"Osaka\"` を `Shipped \"Kobe\"` に書き換えて `Run` し、`Output` の 2 行目が `Shipped Kobe` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {

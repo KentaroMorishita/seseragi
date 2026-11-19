@@ -4,6 +4,7 @@ import {
   validateTourInlineRichText,
   validateTourLessonFormat,
 } from "../../../scripts/tour-lessons"
+import { tourLessons } from "../src/tour/curriculum"
 
 const tourRoot = new URL("../../../examples/tour/lessons/", import.meta.url)
 
@@ -97,6 +98,27 @@ describe("Tour lesson format", () => {
     expect(() => validateTourInlineRichText("unclosed `code")).toThrow(
       "delimiter is not closed"
     )
+  })
+
+  test("identifies exercise edit targets by code snippet instead of editor line numbers", () => {
+    const editorLineRef = /[0-9０-９]+([〜～~-][0-9０-９]+)?\s*行目/
+    for (const lesson of tourLessons) {
+      const instruction = lesson.format?.exercise.instruction ?? ""
+      const withoutOutputClause = instruction.replace(/`Output`[^。]*/g, "")
+      expect(editorLineRef.test(withoutOutputClause)).toBe(false)
+    }
+
+    const ifLesson = tourLessons.find((lesson) => lesson.id === "if-expression")
+    expect(ifLesson?.format?.exercise.instruction).toContain("else 0")
+    expect(ifLesson?.format?.exercise.instruction).toContain("Problems")
+
+    const exhaustiveLesson = tourLessons.find(
+      (lesson) => lesson.id === "exhaustive-match"
+    )
+    expect(exhaustiveLesson?.format?.exercise.instruction).toContain(
+      "Three -> 3"
+    )
+    expect(exhaustiveLesson?.format?.exercise.instruction).toContain("Problems")
   })
 })
 

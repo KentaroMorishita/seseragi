@@ -38,7 +38,7 @@
       }
     ],
     "exercise": {
-      "instruction": "エディターの 14〜15 行目にある `Just 20` を `Just 10` に書き換えて `Run` し、`Functor composition` の両辺が引き続き一致して `Just 22` に変わることを確かめてください。",
+      "instruction": "エディターの `compLeft` と `compRight` にある `Just 20` を両方 `Just 10` に書き換えて `Run` し、`Functor composition` の両辺が引き続き一致して `Just 22` に変わることを確かめてください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
