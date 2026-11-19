@@ -10,7 +10,13 @@ fn operation(name: &str) -> Option<&str> {
     (seseragi_project::standard_html_tag(name).is_some()
         || matches!(
             name,
-            "style" | "text" | "fragment" | "renderToString" | "renderDocument" | "parseWebUrl"
+            "style"
+                | "text"
+                | "fragment"
+                | "renderToString"
+                | "renderDocument"
+                | "parseWebUrl"
+                | "attribute"
         ))
     .then_some(name)
 }
@@ -106,6 +112,20 @@ impl Backend<'_> {
         let valid = match name {
             "style" => {
                 style_record(parameter, false) && **result == named("std/web/html::Style", vec![])
+            }
+            "attribute" => {
+                **parameter == string
+                    && **result
+                        == CoreType::Function {
+                            parameter: Box::new(string.clone()),
+                            result: Box::new(named(
+                                "std/prelude::Either",
+                                vec![
+                                    named("std/web/html::HtmlBuildError", vec![]),
+                                    named("std/web/html::Attribute", vec![]),
+                                ],
+                            )),
+                        }
             }
             "parseWebUrl" => {
                 **parameter == string
@@ -255,6 +275,11 @@ impl Backend<'_> {
 
         self.validate_html_function(operation, ty, evidence, scope)?;
         self.capabilities.insert("html".into());
+        if operation == "attribute" {
+            return Ok(Some(
+                "V::fun(vec![], |_, name| V::fun([name], |c, value| native_html_custom_attribute(c[0].clone(), value)))".into(),
+            ));
+        }
         let void = seseragi_project::is_standard_void_html_tag(operation);
         Ok(Some(format!(
             "V::fun(vec![], |_, value| native_html_operation({}, value, {void}))",
@@ -282,6 +307,11 @@ impl Backend<'_> {
         };
         if scope.contains(callee) {
             return Ok(None);
+        }
+        if name == "attribute" && !arguments.is_empty() {
+            return self
+                .attribute_call(arguments, type_ref, evidence, scope)
+                .map(Some);
         }
         if arguments.len() > 1
             || trait_dispatch.is_some()
@@ -356,5 +386,41 @@ impl Backend<'_> {
             self.expr(&arguments[0], scope)?,
             seseragi_project::is_standard_void_html_tag(name)
         )))
+    }
+
+    /// `html.attribute name value`, applied to one or both arguments in order.
+    fn attribute_call(
+        &mut self,
+        arguments: &[CoreExpr],
+        result: &CoreType,
+        evidence: &[CoreCallEvidence],
+        scope: &Scope,
+    ) -> Result<String> {
+        if arguments.len() > 2 {
+            return Err("Rust backend: unproven HTML source application".into());
+        }
+        let mut ty = result.clone();
+        for argument in arguments.iter().rev() {
+            ty = CoreType::Function {
+                parameter: Box::new(
+                    local::method_argument_type(argument)
+                        .ok_or("Rust backend: missing HTML argument type")?,
+                ),
+                result: Box::new(ty),
+            };
+        }
+        self.validate_html_function("attribute", &ty, evidence, scope)?;
+        self.capabilities.insert("html".into());
+        self.direct_calls += 1;
+        let name = self.expr(&arguments[0], scope)?;
+        Ok(match arguments.get(1) {
+            Some(value) => format!(
+                "{{ let name = {name}; native_html_custom_attribute(name, {}) }}",
+                self.expr(value, scope)?
+            ),
+            None => format!(
+                "V::fun([{name}], |c, value| native_html_custom_attribute(c[0].clone(), value))"
+            ),
+        })
     }
 }

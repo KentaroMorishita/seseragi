@@ -71,6 +71,13 @@ fn style_image_and_document_match_ts() {
 }
 
 #[test]
+fn html_trees_share_subtrees_and_build_custom_attributes_like_ts() {
+    let scratch = tempfile::tempdir().unwrap();
+    let fixture = root().join("examples/spec/fixtures/rust-backend/html-tree.ssrg");
+    compare(&fixture, &fixture.with_extension("stdout"), scratch.path());
+}
+
+#[test]
 fn static_svg_scenes_match_ts() {
     let scratch = tempfile::tempdir().unwrap();
     let fixture = root().join("examples/spec/fixtures/rust-backend/svg-scene.ssrg");
@@ -78,10 +85,15 @@ fn static_svg_scenes_match_ts() {
 }
 
 #[test]
-fn svg_defects_happen_at_the_same_point_as_on_ts() {
-    // A number that is not finite fails when the text is written; a List of
-    // children fails when the node is built.
-    for name in ["svg-scene-defect", "svg-scene-list-children"] {
+fn html_and_svg_defects_happen_at_the_same_point_as_on_ts() {
+    // A value the renderer checks fails when the page is written; a List of
+    // SVG children fails when the node is built.
+    for name in [
+        "svg-scene-defect",
+        "svg-scene-list-children",
+        "html-tree-late-error",
+        "html-tree-duplicate-attribute",
+    ] {
         let scratch = tempfile::tempdir().unwrap();
         let fixture = root().join(format!("examples/spec/fixtures/rust-backend/{name}.ssrg"));
         let input = process::copy_input(&fixture, scratch.path());

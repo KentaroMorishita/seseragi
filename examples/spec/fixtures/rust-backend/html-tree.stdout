@@ -1,0 +1,16 @@
+data-note: ok
+data-Note: InvalidAttributeName data-Note
+data-: InvalidAttributeName data-
+1bad: InvalidAttributeName 1bad
+onclick: ReservedAttributeName onclick
+href: ReservedAttributeName href
+srcdoc: ReservedAttributeName srcdoc
+data-ssrg-x: ReservedAttributeName data-ssrg-x
+xlink:href: UnsafeWebUrlScheme javascript:alert(1)
+xlink:href: ok
+<p data-a="&lt;&amp;&quot;&#39;&gt;" aria-label2="b">text</p>
+<g data-a="&lt;&amp;&quot;&#39;&gt;" aria-label2="b"><circle r="1"></circle></g>
+built a wide page
+<div><div><div><span>x</span><span>x</span></div><div><span>x</span><span>x</span></div></div><div><div><span>x</span><span>x</span></div><div><span>x</span><span>x</span></div></div></div>
+built with a late error
+<rect tabindex="2" width="1"></rect>
