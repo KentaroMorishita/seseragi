@@ -1,11 +1,19 @@
-fn renderName value: Maybe<String> -> String = match value {
-  Nothing -> "name: none"
-  Just name -> `name: ${name}`
+fn formatNote note: Maybe<String> -> String = match note {
+  Nothing -> "note: none"
+  Just text -> `note: ${text}`
 }
 
-fn renderResult value: Either<String, Int> -> String = match value {
-  Left error -> `result error: ${error}`
-  Right number -> `result: ${number}`
+fn formatOrder result: Either<String, Int> -> String = match result {
+  Left reason -> `error: ${reason}`
+  Right count -> `order: ${count} items`
 }
 
-pub effect fn main = println $ `${renderName (Just "Mio")} / ${renderResult (Right 42)}`
+let note: Maybe<String> = Nothing
+let validOrder: Either<String, Int> = Left "out of stock"
+let failedOrder: Either<String, Int> = Left "count must be positive"
+
+pub effect fn main = do {
+  println (formatNote note)
+  println (formatOrder validOrder)
+  println (formatOrder failedOrder)
+}

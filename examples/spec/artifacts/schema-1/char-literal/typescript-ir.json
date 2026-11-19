@@ -26,6 +26,38 @@
   ],
   "closedDisplayDictionaries": [
     {
+      "name": "$ssrg$closedDisplay$1",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_arrayShow",
+        "typeArguments": [
+          {
+            "kind": "maybe",
+            "element": {
+              "kind": "string"
+            }
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "type-application-call",
+            "callee": "_ssrg_show_maybeShow",
+            "typeArguments": [
+              {
+                "kind": "string"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_charShow"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "name": "$ssrg$closedDisplay$0",
       "factory": {
         "kind": "type-application-call",
@@ -339,33 +371,9 @@
             "right": {
               "kind": "dictionary-call",
               "dictionary": {
-                "kind": "type-application-call",
-                "callee": "_ssrg_show_arrayShow",
-                "typeArguments": [
-                  {
-                    "kind": "maybe",
-                    "element": {
-                      "kind": "string"
-                    }
-                  }
-                ],
-                "arguments": [
-                  {
-                    "kind": "type-application-call",
-                    "callee": "_ssrg_show_maybeShow",
-                    "typeArguments": [
-                      {
-                        "kind": "string"
-                      }
-                    ],
-                    "arguments": [
-                      {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_show_charShow"
-                      }
-                    ]
-                  }
-                ]
+                "kind": "call",
+                "callee": "$ssrg$closedDisplay$1",
+                "arguments": []
               },
               "method": "show",
               "arguments": [

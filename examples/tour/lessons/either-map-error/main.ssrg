@@ -1,11 +1,9 @@
-fn increment value: Int -> Int = value + 1
+import * as either from "std/either"
 
 struct ErrorInfo { message: String }
 
-fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> = match value {
-  Left message -> Left (ErrorInfo { message })
-  Right number -> Right number
-}
+fn increment value: Int -> Int = value + 1
+fn toErrorInfo text: String -> ErrorInfo = ErrorInfo { message: text }
 
 fn render value: Either<ErrorInfo, Int> -> String = match value {
   Left info -> `error: ${info.message}`
@@ -14,14 +12,17 @@ fn render value: Either<ErrorInfo, Int> -> String = match value {
 
 let success: Either<String, Int> = Right 41
 let failure: Either<String, Int> = Left "invalid"
+
 let named = map increment success
 let viaOperator = increment <$> success
 let preserved = increment <$> failure
-let tagged = tagError failure
+let alignedSuccess = either.mapLeft toErrorInfo success
+let alignedFailure = either.mapLeft toErrorInfo failure
 
 pub effect fn main = do {
-  named |> debug |> println
-  viaOperator |> debug |> println
-  preserved |> debug |> println
-  tagged |> render |> println
+  println `map: ${named}`
+  println `<$>: ${viaOperator}`
+  println `left kept: ${preserved}`
+  println (render alignedSuccess)
+  println (render alignedFailure)
 }

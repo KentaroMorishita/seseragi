@@ -3,15 +3,27 @@ import * as signals from "std/signal"
 import { MutableSignal } from "std/signal"
 
 type Action =
-  | Updated String
+  | DraftChanged String
+  | Cleared
 
 fn handle state: MutableSignal<String> -> action: Action -> Task<Unit> = match action {
-  Updated value -> signals.set value state
+  DraftChanged value -> signals.set value state
+  Cleared -> signals.set "" state
+}
+
+fn view draft: String -> html.Html<Action> = {
+  let label = if draft == "" then "Empty" else draft
+  html.div {
+    children: [
+      html.p { children: label },
+      html.button { onClick: Cleared, children: "Clear" },
+    ]
+  }
 }
 
 pub effect fn main = do {
   state <- signals.make "before"
-  handle state (Updated "after")
+  handle state Cleared
   current <- signals.read state
-  html.p { children: current } |> html.renderToString |> println
+  view current |> html.renderToString |> println
 }

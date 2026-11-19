@@ -1,3 +1,0 @@
-let nothing: Unit = 42
-
-pub effect fn main = println `Unit: ${nothing}`

@@ -2,7 +2,7 @@
   "$schema": "../sample.schema.json",
   "id": "project-greeting",
   "title": "ファイルを分けたパッケージとテスト",
-  "summary": "送料計算のモジュール、検証一覧、main をファイルごとに分け、pub で公開する範囲を保ったまま動作を確認します。",
+  "summary": "送料計算のモジュール、表示整形、main、単体テストをファイルごとに分け、pub で公開する範囲を保ちます。",
   "kind": "recipe",
   "difficulty": "intermediate",
   "topics": [
@@ -31,7 +31,7 @@
     "open": [
       "main.ssrg",
       "pricing/shipping.ssrg",
-      "pricing/checks.ssrg"
+      "pricing/format.ssrg"
     ],
     "expanded": [
       "pricing"

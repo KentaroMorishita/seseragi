@@ -1,3 +1,0 @@
-import * as html from "std/web/html"
-
-let invalid = html.img { children: "Void elements have no children" }

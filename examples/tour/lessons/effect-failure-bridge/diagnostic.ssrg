@@ -1,4 +1,0 @@
-let result: Either<String, Int> = Left "invalid value"
-let message: String = result
-
-pub effect fn main = println message

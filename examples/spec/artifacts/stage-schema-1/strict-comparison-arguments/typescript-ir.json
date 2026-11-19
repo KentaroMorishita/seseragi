@@ -154,6 +154,26 @@
       "end": 1084
     }
   ],
+  "closedDisplayDictionaries": [
+    {
+      "name": "$ssrg$closedDisplay$0",
+      "factory": {
+        "kind": "type-application-call",
+        "callee": "_ssrg_show_arrayShow",
+        "typeArguments": [
+          {
+            "kind": "boolean"
+          }
+        ],
+        "arguments": [
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_boolShow"
+          }
+        ]
+      }
+    }
+  ],
   "runtimeRequirements": [
     "core.list",
     "core.adt",
@@ -2067,19 +2087,9 @@
                         "value": {
                           "kind": "dictionary-call",
                           "dictionary": {
-                            "kind": "type-application-call",
-                            "callee": "_ssrg_show_arrayShow",
-                            "typeArguments": [
-                              {
-                                "kind": "boolean"
-                              }
-                            ],
-                            "arguments": [
-                              {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_show_boolShow"
-                              }
-                            ]
+                            "kind": "call",
+                            "callee": "$ssrg$closedDisplay$0",
+                            "arguments": []
                           },
                           "method": "show",
                           "arguments": [

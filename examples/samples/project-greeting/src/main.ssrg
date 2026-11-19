@@ -1,13 +1,7 @@
-// エントリポイントは入力データを用意し、別モジュールの計算と検証を呼び出すだけに保ちます。
+// エントリポイントは入力データを用意し、計算モジュールと整形モジュールを呼び出すだけに保ちます。
 import * as arrays from "std/array"
-import { formatChecks, runChecks } from "self/pricing/checks"
-import {
-  Domestic,
-  Island,
-  Parcel,
-  formatQuote,
-  quoteShipping,
-} from "self/pricing/shipping"
+import { formatQuote } from "self/pricing/format"
+import { Domestic, Island, Parcel, quoteShipping, } from "self/pricing/shipping"
 
 let sampleParcels: Array<Parcel> = [
   Parcel { label: "マグカップ", subtotalYen: 2400, weightGrams: 400, zone: Domestic },
@@ -20,6 +14,5 @@ fn renderQuoteLine parcel: Parcel -> String =
 
 pub effect fn main = {
   let quoteLines = map renderQuoteLine sampleParcels
-  let checkLines = formatChecks (runChecks ())
-  arrays.concat [["配送見積もり:"], quoteLines, checkLines] |> join "\n" |> println
+  arrays.concat [["配送見積もり:"], quoteLines] |> join "\n" |> println
 }

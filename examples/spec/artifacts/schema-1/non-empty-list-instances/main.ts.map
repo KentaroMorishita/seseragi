@@ -9,6 +9,8 @@
     "import * as nonEmpty from \"std/non-empty-list\"\n\ntype Rank =\n  | Low\n  | High\n\ninstance Eq<Rank> {\n  fn eq left: Rank -> right: Rank -> Bool =\n    match (left, right) {\n      (Low, Low) -> True\n      (High, High) -> True\n      _ -> False\n    }\n}\n\ninstance Ord<Rank> {\n  fn compare left: Rank -> right: Rank -> Ordering =\n    match (left, right) {\n      (Low, Low) -> Equal\n      (High, High) -> Equal\n      (Low, High) -> Less\n      (High, Low) -> Greater\n    }\n}\n\nfn numbers unit: Unit -> nonEmpty.NonEmptyList<Int> =\n  nonEmpty.cons 1 `[2, 3]\n\nfn expand value: Int -> nonEmpty.NonEmptyList<Int> =\n  nonEmpty.cons value `[value + 10]\n\nfn functions unit: Unit -> nonEmpty.NonEmptyList<(Int -> Int)> =\n  nonEmpty.cons (\\value: Int -> value + 10) `[(\\value: Int -> value * 2)]\n\nfn inputs unit: Unit -> nonEmpty.NonEmptyList<Int> =\n  nonEmpty.cons 1 `[2]\n\nfn applied unit: Unit -> nonEmpty.NonEmptyList<Int> =\n  apply (functions ()) (inputs ())\n\nfn ranks head: Rank -> tail: List<Rank> -> nonEmpty.NonEmptyList<Rank> =\n  nonEmpty.cons head tail\n\nfn orderCheck unit: Unit -> String =\n  match compare\n    (ranks Low `[High])\n    (ranks High `[]) {\n    Less -> \"Less\"\n    _ -> \"unexpected\"\n  }\n\nfn fromListCheck values: List<Int> -> String =\n  match nonEmpty.fromList values {\n    Just present -> show present\n    Nothing -> \"Nothing\"\n  }\n\npub effect fn main =\n  do {\n    println $ show (numbers ())\n    println $ debug (numbers ())\n    println $ show (hash (numbers ()) == hash (numbers ()))\n    println $ show (numbers () == nonEmpty.cons 1 `[2, 3])\n    println $ orderCheck ()\n    println $ fromListCheck `[4, 5]\n    println $ fromListCheck `[]\n    println $ show (nonEmpty.toList (numbers ()))\n    println $ show (nonEmpty.head (numbers ()))\n    println $ show (nonEmpty.tail (numbers ()))\n    println $ show (nonEmpty.reduce1 (\\left: Int right: Int -> left + right) (numbers ()))\n\n    append (numbers ()) (nonEmpty.singleton 4)\n    |> show\n    |> println\n\n    map (\\value: Int -> value * 2) (numbers ())\n    |> show\n    |> println\n\n    applied ()\n    |> show\n    |> println\n\n    flatMap expand (nonEmpty.cons 1 `[2])\n    |> show\n    |> println\n\n    reduce 0 (\\total: Int value: Int -> total * 10 + value) (numbers ())\n    |> show\n    |> println\n\n    for value <- numbers () {\n      println $ `iter:${value}`\n    }\n  }\n"
   ],
   "names": [
+    "listShow",
+    "intShow",
     "Rank",
     "Low",
     "High",
@@ -120,8 +122,7 @@
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "listShow",
-    "intShow",
+    "$ssrg$closedDisplay$0",
     "$ssrg$atSource",
     "toListNonEmpty",
     "$ssrg$atSource",
@@ -137,8 +138,7 @@
     "$ssrg$atSource",
     "println",
     "$ssrg$atSource",
-    "listShow",
-    "intShow",
+    "$ssrg$closedDisplay$0",
     "$ssrg$atSource",
     "tailNonEmpty",
     "$ssrg$atSource",
@@ -210,5 +210,5 @@
     "$ssrg$atSource",
     "numbers"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAEAA;;;AACIC;AACAC;AAEJC;AASAC;AAUAC;AAGAI;AAGAK;AAGAM;AAGAI;AAGAO;AAGAG;AAQAU;AAMAO"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAEAE;;;AACIC;AACAC;AAEJC;AASAC;AAUAC;AAGAI;AAGAK;AAGAM;AAGAI;AAGAO;AAGAG;AAQAU;AAMAO"
 }

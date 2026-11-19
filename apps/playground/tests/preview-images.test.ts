@@ -5,37 +5,27 @@ import {
 } from "../src/preview-document"
 import { samples } from "../src/samples"
 
-const workspaceImage =
-  "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80"
-
 describe("Playground remote sample images", () => {
-  test("uses fixed HTTPS photo ids with stable accessible layout", () => {
-    const component = samples.find((sample) => sample.id === "html-components")
+  test("draws the ticket booking showcase without an external image (#1371)", () => {
+    const booking = samples.find((sample) => sample.id === "form-todo")
+    const allSources =
+      booking?.workspace.files.map(({ source }) => source).join("\n") ?? ""
 
-    expect(component?.source).toContain(`parseSampleUrl "${workspaceImage}"`)
-    for (const source of [component?.source]) {
-      for (const utility of [
-        "aspect-2-1",
-        "h-auto",
-        "w-full",
-        "rounded-xl",
-        "object-cover",
-      ]) {
-        expect(source).toContain(`"${utility}"`)
-      }
-      expect(source).toContain('loading: "eager"')
-      expect(source).not.toContain("/seseragi-mark.png")
-      expect(source).not.toContain("source.unsplash.com")
-      expect(source).not.toContain("/random")
-    }
-    expect(component?.source).toContain(
-      'alt: "大きな窓とテーブルのある明るい共同作業スペース"'
-    )
-    expect(component?.source).toContain("class: heroImageClass")
-    expect(component?.source).toMatch(/width: 960,\n\s+height: 480/u)
+    expect(allSources).not.toContain("images.unsplash.com")
+    expect(allSources).not.toContain("html.img {")
+    expect(allSources).toContain("svg.toHtml")
     expect(previewUtilityCss).toContain(".aspect-2-1")
     expect(previewUtilityCss).toContain(".h-auto")
     expect(previewUtilityCss).toContain(".object-cover")
+  })
+
+  test("draws the component sample without an external image (#1371)", () => {
+    const component = samples.find((sample) => sample.id === "html-components")
+
+    expect(component?.source).not.toContain("images.unsplash.com")
+    expect(component?.source).not.toContain("html.img {")
+    expect(component?.source).toContain("svg.toHtml")
+    expect(component?.source).toContain("ariaLabel: `${book.title}の表紙`")
   })
 
   test("keeps meaningful fallback text inside the HTTPS image policy", () => {

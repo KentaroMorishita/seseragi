@@ -1,1 +1,76 @@
-{"$schema":"../../lesson.schema.json","id":"web-form-submit","formatVersion":2,"sections":{"prerequisite":"Inputとcheckboxからtyped Actionを作りました。","walkthrough":[{"heading":"Form全体のsubmit Actionを決める","body":"formのonSubmitへSubmittedを置き、buttonTypeがsubmitのbuttonから同じ経路を起動します。","sourceRange":{"startLine":1,"endLine":12}}],"introduced":[{"kind":"api","name":"form onSubmit","body":"DOM adapterはonSubmitをActionへdispatchする前にbrowserのdefault navigationを同期的に抑止します。"}],"exercise":{"instruction":"Submit button textを変え、formとの接続を確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Submit ActionへStringを渡す","body":"失敗例はHtml<Action>のonSubmitへ異なるString型を渡します。"},"recap":["onSubmitはform全体のtyped Actionを送る。","DOM adapterがdefault navigationを抑止し、SPAのstate更新へ渡す。"],"next":{"lessonId":"web-signal-preview","body":"次はform viewをSignal<Html>へ持ち上げます。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.html","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "web-form-submit",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "ボタンのクリックを `Action` 型として受け取り、ハンドラーで処理できるようになりました。ここでは入力欄・チェックボックス・フォーム送信を `Action` へ変換します。",
+    "walkthrough": [
+      {
+        "heading": "onInput で入力文字列を Action へ包む",
+        "body": "9 行目の `draftAction` は `InputEvent` の `event.value` を読み取り、`DraftChanged` に包みます。DOM 要素そのものではなく、その時点の文字列だけを受け取れます。",
+        "sourceRange": {
+          "startLine": 3,
+          "endLine": 9
+        }
+      },
+      {
+        "heading": "onChange でチェック状態を安全に取り出す",
+        "body": "11〜14 行目の `pinnedAction` では `ChangeEvent` の `event.checked` を `match` で調べます。`Maybe<Bool>` 型なので、`Nothing` を `IgnoredChange` として安全に分岐できます。",
+        "sourceRange": {
+          "startLine": 11,
+          "endLine": 14
+        }
+      },
+      {
+        "heading": "onSubmit でフォーム送信を受け取る",
+        "body": "16〜28 行目では `html.form` に `onSubmit: Submitted` を指定し、`buttonType: \"submit\"` のボタンを配置します。送信時の既定の画面遷移を抑止して `Submitted` を送ります。",
+        "sourceRange": {
+          "startLine": 16,
+          "endLine": 30
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "onInput と InputEvent",
+        "body": "文字入力のたびに `InputEvent` を受け取る関数を指定します。`event.value` から変更後の文字列を取り出して `Action` を作れます。"
+      },
+      {
+        "kind": "api",
+        "name": "onChange と ChangeEvent",
+        "body": "チェック状態などの変更を受け取ります。`event.checked` は `Maybe<Bool>` 型なので、`match` で有無を確認して `Action` へ変換します。"
+      },
+      {
+        "kind": "api",
+        "name": "onSubmit",
+        "body": "フォーム送信時に発生させる `Action` を指定します。DOM 実行環境は処理の前にブラウザーの既定の画面遷移を抑止します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 26 行目にある送信ボタンの `\"Add\"` を `\"Save\"` に書き換えて `Run` し、`Output` と `Preview` のボタン表示が変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "onInput に別のイベント用ハンドラーを渡す",
+      "body": "失敗例では `InputEvent` を受け取るべき `onInput` に、`ChangeEvent` 用のハンドラー関数を渡しています。イベントの型が合わないため、実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "`onInput` は `InputEvent` の `event.value`、`onChange` は `ChangeEvent` の `event.checked` を受け取って `Action` に変換する。",
+      "`event.checked` は `Maybe<Bool>` 型のため、チェックボックス以外の変更も `match` で安全に扱える。",
+      "`onSubmit` は既定の画面遷移を抑止し、フォーム全体の送信を型付きの `Action` として扱う。"
+    ],
+    "next": {
+      "lessonId": "web-dom-run",
+      "body": "次は状態から `Signal<Html<Action>>` を導出し、`dom.query` と `dom.run` でブラウザーへマウントして動かします。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.html",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

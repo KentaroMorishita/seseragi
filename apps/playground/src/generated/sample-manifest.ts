@@ -79,7 +79,7 @@ import sample15Guide from "../../../../examples/samples/project-flow-app/guide.m
 
 import sample16Manifest from "../../../../examples/samples/project-greeting/seseragi.toml?raw"
 import sample16Source from "../../../../examples/samples/project-greeting/src/main.ssrg?raw"
-import sample16Source2 from "../../../../examples/samples/project-greeting/src/pricing/checks.ssrg?raw"
+import sample16Source2 from "../../../../examples/samples/project-greeting/src/pricing/format.ssrg?raw"
 import sample16Source3 from "../../../../examples/samples/project-greeting/src/pricing/shipping.ssrg?raw"
 import sample16Guide from "../../../../examples/samples/project-greeting/guide.md?raw"
 import sample16Output from "../../../../examples/samples/project-greeting/stdout.txt?raw"
@@ -290,8 +290,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/either-and-monad/main.ssrg",
       "guidePath": "examples/samples/either-and-monad/guide.md",
       "expectedOutputPath": "examples/samples/either-and-monad/stdout.txt",
-      "sourceHash": "sha256:eb0839dff173d93151fc41d433c18ed908d356ebf8bd63d4bcaa13cde4c046cd",
-      "workspaceHash": "sha256:25f97992d05e01b97badeb3bfdd3adb03b44b0f6c287a26cfcd83d3c9c564747"
+      "sourceHash": "sha256:885d45b3664775ece94bb6b8f0f8aebd95089be91026831f5259ccc38ef0b100",
+      "workspaceHash": "sha256:3065c68dda31aa478ac8fa1df3721559309d491424863a06879bdcc88b1cc827"
     },
     source: sample2Source,
     manifest: "",
@@ -681,17 +681,15 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "html-components",
-      "title": "HTML componentとSSRの最小例",
-      "summary": "stateを持たず、tag、props、children、link、image、関数componentを順に組み立てます。",
+      "title": "読書メモのカードを HTML の部品で組み立てる",
+      "summary": "本のデータの配列から、同じ関数の部品で三枚のカードを並べ、HTML の文字列として書き出します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
         "Html",
-        "document tags",
-        "link",
-        "image",
         "function component",
         "Style",
+        "SVG",
         "SSR"
       ],
       "capabilities": [
@@ -710,8 +708,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:0be939f6ed3e6e71798fdfa15155ec3ab50cbfdabf01c62e3f8d0bba1f999022",
-      "workspaceHash": "sha256:5dc380d0cdf1ba6adc1c17486ab5441f7287c2e851967ad89641202af087c2ec"
+      "sourceHash": "sha256:b1e1840f1931f275607b6ee6e325dad6b6dd3584cd0834eb84c1c2104b20a93c",
+      "workspaceHash": "sha256:8cf8a3bcc569a134a54faab8b628b16c3a78f44f61cf16d0d95a07e9b1a08b01"
     },
     source: sample9Source,
     manifest: "",
@@ -764,22 +762,22 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "interactive-app",
-      "title": "Trail plannerをdom.appで動かす",
-      "summary": "三つのrouteを選ぶState、Action、pure update、viewをdom.appへ渡す最小appです。",
+      "title": "散歩コースを Signal で切り替える",
+      "summary": "選んだコースを Signal に持ち、見出し、標高の断面、時間と距離を一緒に描き直す小さな画面です。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
-        "typed Action",
-        "pure reducer",
         "Signal",
-        "dom.app"
+        "dom.run",
+        "deriving Eq",
+        "SVG"
       ],
       "capabilities": [
         "dom"
       ],
       "outputMode": "html",
       "experience": "minimal",
-      "architecture": "dom-app",
+      "architecture": "signal-run",
       "focus": "state",
       "prerequisites": [
         "signal-state",
@@ -790,8 +788,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/interactive-app/main.ssrg",
       "guidePath": "examples/samples/interactive-app/guide.md",
-      "sourceHash": "sha256:bd260247692d5452ce94d10ea7f3eb0b8dccefa1131bf2695d716bc0b280fd16",
-      "workspaceHash": "sha256:fba79375b63eed9bde223ac21e1994a97967f8a986c349b7a6b9d4732f931b3f"
+      "sourceHash": "sha256:5db20af60f4f8e9a28432c64848a6037368f990daa960737fdb76c0bbfbec274",
+      "workspaceHash": "sha256:f69d24a817adae688bd6c530b27613289c13fd1ffdd70a26a033304b342e5087"
     },
     source: sample11Source,
     manifest: "",
@@ -851,8 +849,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/json-decode/main.ssrg",
       "guidePath": "examples/samples/json-decode/guide.md",
       "expectedOutputPath": "examples/samples/json-decode/stdout.txt",
-      "sourceHash": "sha256:79b24fab2117dc3f6ff0786004baf127a4b1b3eafadecb460074d69bc4244e2f",
-      "workspaceHash": "sha256:df9d72190dc05c674c1d0eb31622df3dcacc0b7bdd5ef4d63bceb65cf2a6cc52"
+      "sourceHash": "sha256:319504d9bd6c2fc93c3e5b246e4ebafcb3f237bf788a359ae18e56a53df9d577",
+      "workspaceHash": "sha256:782e8b2bd2c9a44cd22fbedc7e4b0493099390cfda33b898b4637749a0d2ce44"
     },
     source: sample12Source,
     manifest: "",
@@ -952,8 +950,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/newtypes/main.ssrg",
       "guidePath": "examples/samples/newtypes/guide.md",
       "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
-      "sourceHash": "sha256:64dd6f0809acfa993e53f941e64a09f077a8f2ed0c6d7a10419048205fbcf072",
-      "workspaceHash": "sha256:e80d236a2c09cd60bc4b0a2b7a402b3d4003991bd8861172679d6d0ad2849aa0"
+      "sourceHash": "sha256:ab134b97170243ff425fe63be338de66b64072d70ffa80630f94dc104862cdaa",
+      "workspaceHash": "sha256:5e8ec7d7ec77b10f60205096d699eb3d2eb005bfdd79f0f2a57ce3b8c6b05d40"
     },
     source: sample14Source,
     manifest: "",
@@ -1086,7 +1084,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     definition: {
       "id": "project-greeting",
       "title": "ファイルを分けたパッケージとテスト",
-      "summary": "送料計算のモジュール、検証一覧、main をファイルごとに分け、pub で公開する範囲を保ったまま動作を確認します。",
+      "summary": "送料計算のモジュール、表示整形、main、単体テストをファイルごとに分け、pub で公開する範囲を保ちます。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -1134,15 +1132,15 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:1cc99f98d8ff8db12f37887a8042eb69d5ebb976c6d026708d5a549617b6f9e8",
       "guidePath": "examples/samples/project-greeting/guide.md",
       "expectedOutputPath": "examples/samples/project-greeting/stdout.txt",
-      "sourceHash": "sha256:5137ea460ac5a0fe248dba1f69a627d600af46e67d85e4cec5c3f3e76b6d8c67",
-      "workspaceHash": "sha256:e2b92b5ea3f8df9fe76a03ff8f8fe339c935743c83fe229d0bcfdfaef7698e45",
+      "sourceHash": "sha256:1a7dca28095f2f9df7aff0ec04b7f9e3c3f22e8888a213c0c65af916b137ad17",
+      "workspaceHash": "sha256:47acacd8a7ebabe5433ddb81780aed16613e4d02297d66feb9c886c8ea322d59",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "main.ssrg",
         "openFiles": [
           "main.ssrg",
           "pricing/shipping.ssrg",
-          "pricing/checks.ssrg"
+          "pricing/format.ssrg"
         ],
         "expandedFolders": [
           "pricing"
@@ -1151,17 +1149,17 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/project-greeting/src/main.ssrg",
-            "sourceHash": "sha256:5137ea460ac5a0fe248dba1f69a627d600af46e67d85e4cec5c3f3e76b6d8c67"
+            "sourceHash": "sha256:1a7dca28095f2f9df7aff0ec04b7f9e3c3f22e8888a213c0c65af916b137ad17"
           },
           {
-            "path": "pricing/checks.ssrg",
-            "sourcePath": "examples/samples/project-greeting/src/pricing/checks.ssrg",
-            "sourceHash": "sha256:55c8ebf51e0cd407816e89800fb4fe9c3bdaffe40b1c86b2a7f536e6c9f7721b"
+            "path": "pricing/format.ssrg",
+            "sourcePath": "examples/samples/project-greeting/src/pricing/format.ssrg",
+            "sourceHash": "sha256:ca224bb2b857ee95c45bf183933a1b240a3911a5199487272fc9bc407150b911"
           },
           {
             "path": "pricing/shipping.ssrg",
             "sourcePath": "examples/samples/project-greeting/src/pricing/shipping.ssrg",
-            "sourceHash": "sha256:8964319e655a0bd11048a37af455834770bd04ec66dab942b2fd02f3c5a1eb43"
+            "sourceHash": "sha256:207a2ebdfe52b5dc1d96d333c1155e07b20e3a41043d3b44ff1e07236426b2e5"
           }
         ]
       }
@@ -1170,7 +1168,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
     manifest: sample16Manifest,
     projectFiles: [
       { path: "main.ssrg", source: sample16Source },
-      { path: "pricing/checks.ssrg", source: sample16Source2 },
+      { path: "pricing/format.ssrg", source: sample16Source2 },
       { path: "pricing/shipping.ssrg", source: sample16Source3 },
     ],
     guide: sample16Guide,
@@ -1250,7 +1248,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:fc0ae07afa43259aceef4b81e4385cc8b2340973075035d8d47bf35a9a2c1950",
       "guidePath": "examples/samples/seseragi-landing-page/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:d0aea8339e877057d6572be96791f183d92dedddf1bea917d30abe6695ddf781",
+      "workspaceHash": "sha256:0a94af1d2d58a1e0139e955f9faf492f63bddd581f6d7bed0300ef98f5381dcf",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1275,27 +1273,27 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/app.ssrg",
-            "sourceHash": "sha256:29b061f65297e048fc58ba84a18238fdb5c5dbacc438353b476d2786771516dd"
+            "sourceHash": "sha256:4adbb5f7ba980868db2d49725bf8a0fb60d23ce4605297e52a78a059c65f5e72"
           },
           {
             "path": "components/chapter/code-panel.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg",
-            "sourceHash": "sha256:1cddd8788e13a035cfae1f0b60248ef060f4c447a303beffa47e99f84715722e"
+            "sourceHash": "sha256:7bc6e0bc1d4b078fa6eb0be0aac657a216e4eace28ae230aa6f3d9f592532481"
           },
           {
             "path": "components/chapter/model.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg",
-            "sourceHash": "sha256:394242206494de84f70a7cda9ff62cabb03c888986d5c51ee583c91213f1e89b"
+            "sourceHash": "sha256:a0e2d8d2c78960ef29bda2ea846a624d6bc272da27080f0cd9c3b6ef4052eada"
           },
           {
             "path": "components/chapter/view.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg",
-            "sourceHash": "sha256:6a49b4619facbddca85b519a845c4b9fa25aa36dde96cd3ac8e3adad1f2bf5b8"
+            "sourceHash": "sha256:94a9ee1ff2cfa6d63bcf347728a71a14262e5078d850aba9f383f33a1701b8df"
           },
           {
             "path": "components/closing.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/closing.ssrg",
-            "sourceHash": "sha256:995b7f47f5b6be7b615d5464c658594638370c21e2e8b36b2f08e4e1621bf6c9"
+            "sourceHash": "sha256:e6a87402c1986ded8ede9bee0545cece3d807781396f082a7816f972bbcb6548"
           },
           {
             "path": "components/footer.ssrg",
@@ -1305,27 +1303,27 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "components/header.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/header.ssrg",
-            "sourceHash": "sha256:4b1878c09e805b6ae81cc395cf8e25f7b099a51511bb846f87c557fc7a6783e6"
+            "sourceHash": "sha256:492e5056cf850a6b9b58347ad2e95ddb18e8a7e27c33cd49f1c2fb3de3fde5be"
           },
           {
             "path": "components/hero.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/hero.ssrg",
-            "sourceHash": "sha256:82316c814d01cf3ab92c7eba01cc2f6fd3a6be599e8a2262a1e4245430c098af"
+            "sourceHash": "sha256:e18b0219de4c3da654c400fc69cc93d5f7c7adb1759bc8c4337545610b8c5666"
           },
           {
             "path": "components/image-statement.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/image-statement.ssrg",
-            "sourceHash": "sha256:50aab4926a38328fa1e1ca2b756358acd3016928bae2c15dbeac97d0d46ecc50"
+            "sourceHash": "sha256:336e410038dfa1281e7a7832253dec7acb94b556cd9bd0a5ac682f5bfa831394"
           },
           {
             "path": "components/principles.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/principles.ssrg",
-            "sourceHash": "sha256:703e564d1d897baf680c7fef25f7e9e14e2bb9b8b8e9a6488f280848de2924ee"
+            "sourceHash": "sha256:44c1afa534b060750a46567cdb36ef0157d537bf03586f889a159104f49ca2aa"
           },
           {
             "path": "ui/styles.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/ui/styles.ssrg",
-            "sourceHash": "sha256:4d142421877f72b28807185db366445baa295dca77116f4c819ff62f7886e50e"
+            "sourceHash": "sha256:9ed95f3c66be248f65f616588578a1038c7e699044198636587d1aaab234530e"
           },
           {
             "path": "url.ssrg",
@@ -1445,8 +1443,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "guidePath": "examples/samples/stdin-greeting/guide.md",
       "stdinPath": "examples/samples/stdin-greeting/stdin.txt",
       "expectedOutputPath": "examples/samples/stdin-greeting/stdout.txt",
-      "sourceHash": "sha256:250615a5b9c07e220b606b775071e7225c7e302211d4a228a70ceb8fbf3af884",
-      "workspaceHash": "sha256:36815808e5e3c28abf3e01011481b9e6b38aaec63960f1bf48cee75c45faa561"
+      "sourceHash": "sha256:b3f8554a56be363925bed17c1829f4d08a5918d6474263a7ce140687909e592f",
+      "workspaceHash": "sha256:beecd7f7db3d9b3e550ea6dbb3b87f0f3b4660f98e220f70bf4dfafcfb58830a"
     },
     source: sample20Source,
     manifest: "",
@@ -1580,8 +1578,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "web-starter",
-      "title": "Web starter — 最初のlocal package",
-      "summary": "seseragi new webが生成するものと同じsourceで、Signal counterをlocal Web packageとして動かします。",
+      "title": "最初の Web プロジェクト（seseragi new web）",
+      "summary": "seseragi new web が作るものと同じソースで、Signal のカウンターを手元の Web プロジェクトとして動かします。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -1608,7 +1606,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:819372a6322dc873a827e4e3199da2da28f11f0af9a8083f38e4f285d00a3c75",
       "guidePath": "examples/samples/web-starter/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:c43b7129981a0e5a23193d54834d7b82c7e31bf5bc3193f79620595e6b1dd279",
+      "workspaceHash": "sha256:58ae694d8c5eb0dee52ab4604ded09e096bbf293beb3d09b82796a92d49745ee",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1626,7 +1624,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/web-starter/src/app.ssrg",
-            "sourceHash": "sha256:43fe910b9cc3f1c6c509011cea97b784257d693592bd50277e2212e7a35ac6ac"
+            "sourceHash": "sha256:d229e9d3cbdf1343e842b72affde1db6fd65def03a18f7944deba854e16704dc"
           }
         ]
       }

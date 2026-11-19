@@ -58,9 +58,8 @@ fn parseScoreLine lineNumber: Int
   {
     let trimmed = text.trim raw
     if text.isEmpty trimmed then Nothing else {
-      let columns = text.split "," trimmed
-      match (arrays.length columns == 2, arrays.get 0 columns, arrays.get 1 columns) {
-        (True, Just rawStudent, Just rawScore) -> {
+      match text.split "," trimmed {
+        [rawStudent, rawScore] -> {
           let student = text.trim rawStudent
           if text.isEmpty student then
             Just (Left (LineIssue { lineNumber, raw: trimmed, reason: "名前が空です" }))
@@ -72,19 +71,11 @@ fn parseScoreLine lineNumber: Int
     }
   }
 
-fn collectLines lines: Array<String>
-  -> index: Int
-  -> entries: Array<ScoreEntry>
-  -> issues: Array<LineIssue>
-  -> (Array<ScoreEntry>, Array<LineIssue>) =
-  match arrays.get index lines {
-    Nothing -> (entries, issues)
-    Just line -> match parseScoreLine (index + 1) line {
-      Nothing -> collectLines lines (index + 1) entries issues
-      Just (Right entry) -> collectLines lines (index + 1) (arrays.append [entry] entries) issues
-      Just (Left issue) -> collectLines lines (index + 1) entries (arrays.append [issue] issues)
-    }
-  }
+fn parseAllLines lines: Array<String> -> Array<Maybe<Either<LineIssue, ScoreEntry>>> = {
+  let lineNumbers = arrays.fromIterable (1 ..= arrays.length lines)
+  let numbered = arrays.zip lines lineNumbers
+  [parseScoreLine lineNumber line | (lineNumber, line) <- numbered]
+}
 
 fn formatEntry entry: ScoreEntry -> String =
   `  ${entry.student}: ${entry.score} 点 (${gradeLabel entry.grade})`
@@ -114,9 +105,9 @@ fn summarizeEntries entries: Array<ScoreEntry> -> Array<String> =
 
 // 純粋な計算だけでレポート文字列を組み立て、I/O と分離します。
 fn buildReport lines: Array<String> -> String = {
-  let emptyEntries: Array<ScoreEntry> = []
-  let emptyIssues: Array<LineIssue> = []
-  let (entries, issues) = collectLines lines 0 emptyEntries emptyIssues
+  let results = parseAllLines lines
+  let entries = [entry | Just (Right entry) <- results]
+  let issues = [issue | Just (Left issue) <- results]
   let summary = summarizeEntries entries
   let reportLines = if arrays.isEmpty issues then summary else {
     let header = `読み込めなかった行 (${arrays.length issues} 件):`

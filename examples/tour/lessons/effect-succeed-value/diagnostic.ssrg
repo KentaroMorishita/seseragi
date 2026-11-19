@@ -1,3 +1,0 @@
-effect fn answer -> Int = succeed "forty-two"
-
-pub effect fn main = println "succeed"

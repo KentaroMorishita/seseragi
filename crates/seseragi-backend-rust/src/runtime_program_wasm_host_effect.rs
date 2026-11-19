@@ -641,7 +641,10 @@ pub extern "C" fn ssrg_poll(quantum: u32) -> u32 {
                 }
                 NativeTurn::Operation(_, _)
                 | NativeTurn::FileSystem(_, _)
-                | NativeTurn::Stdin(_, _) => {
+                | NativeTurn::Stdin(_, _)
+                | NativeTurn::Http(_)
+                | NativeTurn::HttpNext(_)
+                | NativeTurn::HttpWrite(_) => {
                     // Full target admission prevents these turns. Preserve the
                     // scope stack even for a violated internal contract.
                     run.machine.resume(Err(NativeExit::defects(vec![

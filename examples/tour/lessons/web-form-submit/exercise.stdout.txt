@@ -1,1 +1,1 @@
-<form><button type="submit">Save</button></form>
+<form><input name="draft" type="text"><input name="pinned" type="checkbox"><button type="submit">Save</button></form>

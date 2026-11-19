@@ -5,7 +5,7 @@
   "summary": "where制約、canonical type identity、instance overlapを一つの選択問題として整理します。",
   "relatedTourLessons": [
     "design-trait-evidence",
-    "abstraction-instance-selection"
+    "abstraction-trait-operation"
   ],
   "relatedLinks": [
     {

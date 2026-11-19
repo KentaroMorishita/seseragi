@@ -7,4 +7,6 @@ fn card title: String -> detail: String -> html.Html<Action> = html.article {
   children: [html.h2 { children: title }, html.p { children: detail }]
 }
 
-pub effect fn main = card "Welcome" "Seseragi" |> html.renderToString |> println
+let page = html.main { children: [card "Welcome" "Seseragi", card "Tour" "Step 29"] }
+
+pub effect fn main = html.renderToString page |> println

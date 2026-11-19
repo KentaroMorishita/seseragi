@@ -4,7 +4,8 @@ import { samples } from "../src/samples"
 type AuditSample = Readonly<{
   readonly id: string
   readonly identity: string
-  readonly photoId: string
+  /** null when the sample draws its visual without an external photo (#1371) */
+  readonly photoId: string | null
   readonly photoGroup: string
   readonly layoutMarkers: readonly string[]
   readonly states: readonly string[]
@@ -96,14 +97,16 @@ describe("canonical Web UI visual direction", () => {
       const source = sourceFor(sample.id)
       expect(sample.identity.length).toBeGreaterThan(16)
       expect(sample.states).not.toHaveLength(0)
-      if (sample.photoId !== "") {
+      if (sample.photoId === null) {
+        // Official samples are moving off external images (#1371).
+        expect(source).not.toContain("images.unsplash.com")
+        expect(source).not.toContain("raw.githubusercontent.com")
+      } else {
         expect(source).toContain(sample.photoId)
         expect(source).toContain("images.unsplash.com")
         expect(source).toContain("alt:")
         expect(source).toContain("width:")
         expect(source).toContain("height:")
-      } else {
-        expect(source).not.toContain("images.unsplash.com")
       }
       expect(sample.layoutMarkers).toHaveLength(2)
       for (const marker of sample.layoutMarkers) {
@@ -142,10 +145,11 @@ describe("canonical Web UI visual direction", () => {
     const trail = sourceFor("interactive-app")
     const composition = sourceFor("feature-composition")
 
-    expect(htmlComponents).toContain("#fff7ed")
-    expect(htmlComponents).toContain('"flex-wrap"')
-    expect(trail).toContain('"grid-cols-1"')
-    expect(trail).toContain('"sm:grid-cols-3"')
+    expect(htmlComponents).toContain("#f5f0e6")
+    expect(htmlComponents).toContain('flexWrap: "wrap"')
+    expect(htmlComponents).toContain("map bookCard books")
+    expect(trail).toContain('flexWrap: "wrap"')
+    expect(trail).toContain('gridTemplateColumns: "repeat(3, minmax(0, 1fr))"')
     expect(composition).toContain('"grid-cols-1"')
     expect(composition).toContain('"sm:grid-cols-2"')
     expect(composition).toContain("Compose the release rhythm.")

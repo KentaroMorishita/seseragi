@@ -1,5 +1,6 @@
 // JSON 文字列を自動導出したデコーダーで型に読み込み、失敗の理由と場所を取り出します。
 import * as arrays from "std/array"
+import * as text from "std/text"
 import {
   DecodeError,
   DecodeErrorKind,
@@ -23,13 +24,13 @@ struct Endpoint deriving Eq, Show, JsonEncode, JsonDecode { host: String, port: 
 
 struct ServiceConfig deriving Eq, Show, JsonEncode, JsonDecode { service: String, endpoint: Endpoint, tls: Bool, regions: Array<String>, }
 
-fn formatSegment segment: JsonPathSegment -> String = match segment {
-  JsonField name -> name
-  JsonIndex index -> append "[" `${index}]`
+fn appendSegment acc: String -> segment: JsonPathSegment -> String = match segment {
+  JsonField name -> if text.isEmpty acc then name else `${acc}.${name}`
+  JsonIndex index -> `${acc}[${index}]`
 }
 
 fn formatPath path: Array<JsonPathSegment> -> String =
-  if arrays.isEmpty path then "<root>" else path |> map formatSegment |> join "."
+  if arrays.isEmpty path then "いちばん外側" else reduce "" appendSegment path
 
 fn formatKind kind: DecodeErrorKind -> String = match kind {
   ExpectedJsonType expected -> `${expected} 型が必要です`
@@ -48,8 +49,8 @@ fn describeError error: JsonReadError -> String = match error {
 fn checkConfig label: String -> raw: String -> String = {
   let decoded: Either<JsonReadError, ServiceConfig> = json.decodeString raw
   match decoded {
-    Right config -> `${label}: OK -> ${config.service} (${config.endpoint.host}:${config.endpoint.port}) / 再出力: ${json.encodeString config}`
-    Left error -> `${label}: NG -> ${describeError error}`
+    Right config -> `${label}: 読めました -> ${config.service} (${config.endpoint.host}:${config.endpoint.port}) / 再出力: ${json.encodeString config}`
+    Left error -> `${label}: 読めません -> ${describeError error}`
   }
 }
 

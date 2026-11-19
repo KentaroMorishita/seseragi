@@ -8,25 +8,35 @@ import {
   quoteShipping,
 } from "self/pricing/shipping"
 
-pub let tests: test.Test = test.suite "shipping" [
-  test.test "domestic parcel below threshold pays base shipping" (
+pub let tests: test.Test = test.suite "送料計算" [
+  test.test "国内配送で 5000 円未満なら基本送料がかかる" (
     test.equal (ShippingQuote { shippingYen: 550, totalYen: 2950, freeShipping: False })
       (
         quoteShipping
-      (Parcel { label: "cup", subtotalYen: 2400, weightGrams: 400, zone: Domestic })
+      (Parcel { label: "マグカップ", subtotalYen: 2400, weightGrams: 400, zone: Domestic })
       )
   ),
-  test.test "domestic parcel at 5000 yen qualifies for free shipping" (
+  test.test "国内配送で 5000 円以上なら送料無料になる" (
     test.equal (ShippingQuote { shippingYen: 0, totalYen: 5000, freeShipping: True }) (
       quoteShipping
-      (Parcel { label: "beans", subtotalYen: 5000, weightGrams: 2500, zone: Domestic })
+      (Parcel {
+        label: "珈琲豆 1kg",
+        subtotalYen: 5000,
+        weightGrams: 2500,
+        zone: Domestic
+      })
     )
   ),
-  test.test "heavy island parcel pays base plus weight surcharge" (
+  test.test "離島で 2kg を超えると基本送料と重量追加料金がかかる" (
     test.equal
       (ShippingQuote { shippingYen: 1450, totalYen: 7450, freeShipping: False }) (
         quoteShipping
-      (Parcel { label: "pot", subtotalYen: 6000, weightGrams: 2600, zone: Island })
+      (Parcel {
+        label: "陶器ポット (離島)",
+        subtotalYen: 6000,
+        weightGrams: 2600,
+        zone: Island
+      })
       )
   ),
 ]

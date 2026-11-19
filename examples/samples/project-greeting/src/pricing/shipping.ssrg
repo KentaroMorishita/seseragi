@@ -32,8 +32,3 @@ pub fn quoteShipping parcel: Parcel -> ShippingQuote = {
     freeShipping: qualifiesFree,
   }
 }
-
-pub fn formatQuote parcel: Parcel -> quote: ShippingQuote -> String = {
-  let shippingText = if quote.freeShipping then "送料無料" else `送料 ${quote.shippingYen}円`
-  `${parcel.label}: 商品 ${parcel.subtotalYen}円 + ${shippingText} = 合計 ${quote.totalYen}円`
-}

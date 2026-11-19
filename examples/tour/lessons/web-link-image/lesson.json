@@ -1,1 +1,65 @@
-{"$schema":"../../lesson.schema.json","id":"web-link-image","formatVersion":2,"sections":{"prerequisite":"Componentへtyped propsを渡しました。","walkthrough":[{"heading":"Stringを検証済みWebUrlへ変換する","body":"parseWebUrlでschemeを検証してから、imageのsrcとlinkのhrefへ渡します。","sourceRange":{"startLine":1,"endLine":8}},{"heading":"Imageとexternal linkを並べる","body":"imgはaltと寸法を持ち、external linkは新しいtabでopenerを共有しないrelを指定します。","sourceRange":{"startLine":10,"endLine":25}}],"introduced":[{"kind":"type","name":"html.WebUrl","body":"hrefとsrcは任意Stringではなく、検証済みWebUrlを要求します。"}],"exercise":{"instruction":"Link textを変更し、WebUrlを保持したPreviewを確認してください。","reset":"restore-lesson-source"},"diagnostic":{"heading":"Srcへ生のStringを渡す","body":"失敗例は検証していないStringをimage srcへ渡します。"},"recap":["External URLはparseWebUrlでWebUrlへ変換する。","Imageは意味のあるaltと固定寸法を持たせる。"],"next":{"lessonId":"web-click-action","body":"次はbuttonからtyped Actionを送ります。"}},"files":{"source":"main.ssrg","expectedOutput":"stdout.html","exercise":"exercise.ssrg","exerciseExpectedOutput":"exercise.stdout.txt","diagnosticExample":"diagnostic.ssrg","diagnosticOutput":"diagnostic.txt"}}
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "web-link-image",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "ここからは Web UI に関する補足レッスンです。`Html` の属性やコンポーネントの組み立て方を踏まえて、安全な URL 検証を伴う画像と外部リンクの扱いを学びます。",
+    "walkthrough": [
+      {
+        "heading": "html.parseWebUrl で安全な WebUrl を作る",
+        "body": "6〜12 行目の `parseUrl` は `html.parseWebUrl` で URL 文字列のスキームを検査し、安全な `WebUrl` 型へ変換します。危険な URL はこの段階で失敗として弾かれます。",
+        "sourceRange": {
+          "startLine": 6,
+          "endLine": 12
+        }
+      },
+      {
+        "heading": "html.img と html.a を並べて出力する",
+        "body": "13〜24 行目では `html.img` に代替テキストの `alt` とサイズ（`width`・`height`）を指定し、`html.a` に新しいタブを安全に開く `target` と `rel` を付けて描画します。",
+        "sourceRange": {
+          "startLine": 13,
+          "endLine": 25
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "WebUrl",
+        "body": "`html.parseWebUrl` で検証された安全な URL を表す型です。`html.img` の `src` や `html.a` の `href` には単なる文字列ではなくこの型が必要です。"
+      },
+      {
+        "kind": "api",
+        "name": "html.img と html.a",
+        "body": "画像要素とリンク要素を作ります。`html.img` は子要素を持たず `alt` が必須で、`html.a` には外部遷移の安全性のため `target` や `rel` を指定できます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの 20 行目にある `\"Repository\"` を `\"Open Seseragi\"` に書き換えて `Run` し、`Output` のリンク文字が変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "html.img の src に生の文字列を渡す",
+      "body": "失敗例では `html.parseWebUrl` を通さずに、生の `String` を `html.img` の `src` に渡しています。`WebUrl` 型が求められるため、実行前にエラー表示が出ます。"
+    },
+    "recap": [
+      "画像やリンクに使う外部 URL は `html.parseWebUrl` で検証して `WebUrl` 型へ変換する。",
+      "`html.img` には意味の分かる `alt` と寸法を指定し、外部リンクの `html.a` には `rel: \"noopener\"` を添える。"
+    ],
+    "next": {
+      "lessonId": "web-accessibility-label",
+      "body": "次はフォームのラベル関連付けや状態表示など、アクセシビリティを保つ属性の付け方を学びます。"
+    },
+    "notes": [
+      "ツールバーの `•••` メニューから外部画像と通信を許可すると、`Preview` 上で実際の画像表示を確認できます。"
+    ]
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.html",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

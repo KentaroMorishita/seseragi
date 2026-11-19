@@ -1,0 +1,71 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "adt-definition",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "タプル、無名レコード、`struct` で複数の値を同時に持つデータを表現できるようになりました。ここからは取りうるケースを列挙する代数的データ型（ADT）を学びます。",
+    "walkthrough": [
+      {
+        "heading": "type で取りうるケースを列挙する",
+        "body": "`type Delivery` は配送の状態を `|` で区切って列挙します。`Preparing` は値を持たないコンストラクター、`Shipped String` は配送先、`Delivered (String, Int)` は配送先と経由数のタプルを中身の値として持つコンストラクターです。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 4
+        }
+      },
+      {
+        "heading": "コンストラクターで値を作る",
+        "body": "定義したコンストラクター名をそのまま書いて `Delivery` 型の値を作ります。`Shipped \"Osaka\"` や `Delivered (\"Kyoto\", 2)` のように、コンストラクターごとに必要な型の値を渡します。",
+        "sourceRange": {
+          "startLine": 6,
+          "endLine": 8
+        }
+      },
+      {
+        "heading": "deriving Show で文字列に変換して確かめる",
+        "body": "型定義に付けた `deriving Show` により `show` 関数が自動生成されます。`println (show ...)` で各コンストラクターがどのような値として作られているかを `Output` で確認できます。",
+        "sourceRange": {
+          "startLine": 10,
+          "endLine": 14
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "type による代数的データ型（ADT）",
+        "body": "`type` と `|` を使って、値がいずれか1つのコンストラクターになる型を定義します。コンストラクターごとに中身の値を持たせることもできます。"
+      },
+      {
+        "kind": "api",
+        "name": "deriving Show と show",
+        "body": "型宣言に `deriving Show` を添えると、値を `show` で表示用文字列に変換できるようになります。"
+      }
+    ],
+    "exercise": {
+      "instruction": "エディターの7行目にある `Shipped \"Osaka\"` を `Shipped \"Kobe\"` に書き換えて `Run` し、`Output` の2行目が `Shipped Kobe` に変わることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "コンストラクターの中身の型を取り違える",
+      "body": "失敗例では `String` を保持するはずの `Shipped` に `Int` の `2` を渡しています。コンストラクター定義で宣言した型と実際に渡す値の型を確認してください。"
+    },
+    "recap": [
+      "`type` と `|` で、値がいずれか1つになるケースをコンストラクターとして列挙できる。",
+      "`Shipped String` のようにコンストラクターごとに異なる型の中身の値を持たせられる。",
+      "`deriving Show` を付けると `show` でコンストラクターの表現を `Output` に出力できる。"
+    ],
+    "next": {
+      "lessonId": "07-adts-and-patterns",
+      "body": "次は定義した代数的データ型を `match` でケースごとに分け、中身の値を取り出す方法を学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

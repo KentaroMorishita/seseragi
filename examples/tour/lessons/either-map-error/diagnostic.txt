@@ -1,8 +1,8 @@
-examples/tour/lessons/either-map-error/diagnostic.ssrg:5:25: error[SES-T0101]: Argument type does not match the parameter type
-  |   Right number -> Right (ErrorInfo { message: "wrong" })
-  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ argument 1 expected Int, received ErrorInfo
-  = expected: Int
-  = actual: ErrorInfo
-  = diff: expected Int, actual ErrorInfo
+examples/tour/lessons/either-map-error/diagnostic.ssrg:10:38: error[SES-T0101]: Argument type does not match the parameter type
+  | pub effect fn main = println (render failure)
+  |                                      ^^^^^^^ argument 1 expected Either<ErrorInfo, Int>, received Either<String, Int>
+  = expected: Either<ErrorInfo, Int>
+  = actual: Either<String, Int>
+  = diff: Either type argument 1: expected ErrorInfo, actual String
   = note: Seseragi does not insert an implicit conversion between these types.
   = help: Change the expression or its annotation so the two types agree.
