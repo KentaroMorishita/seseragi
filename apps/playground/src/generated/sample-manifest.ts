@@ -28,7 +28,14 @@ import sample6Source from "../../../../examples/samples/fizzbuzz/main.ssrg?raw"
 import sample6Guide from "../../../../examples/samples/fizzbuzz/guide.md?raw"
 import sample6Output from "../../../../examples/samples/fizzbuzz/stdout.txt?raw"
 
-import sample7Source from "../../../../examples/samples/form-todo/main.ssrg?raw"
+import sample7Manifest from "../../../../examples/samples/form-todo/seseragi.toml?raw"
+import sample7Source from "../../../../examples/samples/form-todo/src/main.ssrg?raw"
+import sample7Source2 from "../../../../examples/samples/form-todo/src/app.ssrg?raw"
+import sample7Source3 from "../../../../examples/samples/form-todo/src/booking/model.ssrg?raw"
+import sample7Source4 from "../../../../examples/samples/form-todo/src/components/checkout.ssrg?raw"
+import sample7Source5 from "../../../../examples/samples/form-todo/src/components/seat_map.ssrg?raw"
+import sample7Source6 from "../../../../examples/samples/form-todo/src/components/ticket.ssrg?raw"
+import sample7Source7 from "../../../../examples/samples/form-todo/src/ui/styles.ssrg?raw"
 import sample7Guide from "../../../../examples/samples/form-todo/guide.md?raw"
 
 import sample8Source from "../../../../examples/samples/hello-world/main.ssrg?raw"
@@ -530,23 +537,19 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "form-todo",
-      "title": "Signal + dom.runのLaunch Loop Showcase",
-      "summary": "controlled form、validation、カード操作、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
+      "title": "座席指定チケット予約（コンサートホール）",
+      "summary": "劇場の座席マップから席を選び、連番自動選択・購入者情報の一括検証を経て電子チケットを発券する予約アプリです。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
-        "form",
-        "IME",
-        "InputEvent",
-        "ChangeEvent",
-        "Task",
         "Signal",
-        "checkbox",
-        "empty state",
-        "responsive cards",
+        "dom.run",
+        "SVG",
+        "Validation",
+        "ADT",
+        "form",
         "accessibility",
-        "keyboard",
-        "pointer"
+        "multi-module"
       ],
       "capabilities": [
         "dom"
@@ -562,15 +565,78 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": true,
       "isNew": true,
       "interactive": true,
-      "sourcePath": "examples/samples/form-todo/main.ssrg",
+      "sourcePath": "examples/samples/form-todo/src/main.ssrg",
+      "manifestPath": "examples/samples/form-todo/seseragi.toml",
+      "manifestHash": "sha256:81d7e7953ab270ea17bcd53edaabef97f24f03c58fb989d8faaa69626fa8c45c",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:279a6c5fde288ce855cff63b789482e7120609eb0d37eea48430034edca79712",
-      "workspaceHash": "sha256:4768e03902abc8cd8f9601bd6c9c8de9518b6fa0a9b3db68d379aceb9832db61"
+      "sourceHash": "sha256:0a787f56f71344b395ea135efe1ddd1a8a3fba0bb6bc4cf2c9402fd1dc73a971",
+      "workspaceHash": "sha256:2ac60edddbee76c5df4b015d763586139dd3d44c08cc5977f36de095b68707c1",
+      "project": {
+        "entryFile": "main.ssrg",
+        "activeFile": "app.ssrg",
+        "openFiles": [
+          "main.ssrg",
+          "app.ssrg",
+          "booking/model.ssrg",
+          "components/seat_map.ssrg",
+          "components/checkout.ssrg",
+          "components/ticket.ssrg",
+          "ui/styles.ssrg"
+        ],
+        "expandedFolders": [
+          "booking",
+          "components",
+          "ui"
+        ],
+        "files": [
+          {
+            "path": "main.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/main.ssrg",
+            "sourceHash": "sha256:0a787f56f71344b395ea135efe1ddd1a8a3fba0bb6bc4cf2c9402fd1dc73a971"
+          },
+          {
+            "path": "app.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/app.ssrg",
+            "sourceHash": "sha256:4883a3f53df13bb1c395ebda28efef9f4eca7d2224755f72c06a9d8bc0959fd4"
+          },
+          {
+            "path": "booking/model.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/booking/model.ssrg",
+            "sourceHash": "sha256:fb59ccfbb754f48a28a3873b9bfc334350867ed22c98f195296bb17db177b970"
+          },
+          {
+            "path": "components/checkout.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/components/checkout.ssrg",
+            "sourceHash": "sha256:6e49134fcb049986590cacb9264928eb33c670ad88cbee5957b5981676d5828d"
+          },
+          {
+            "path": "components/seat_map.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/components/seat_map.ssrg",
+            "sourceHash": "sha256:5ed54b4c707a4b8f5e69ae850f29085592821633c5e5a8a19b89d5f8e4211cd7"
+          },
+          {
+            "path": "components/ticket.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/components/ticket.ssrg",
+            "sourceHash": "sha256:3ff5f652ac46e78967e977b67a3b48979f51b7d7f6bca7f2c9cbeed7624f9d8e"
+          },
+          {
+            "path": "ui/styles.ssrg",
+            "sourcePath": "examples/samples/form-todo/src/ui/styles.ssrg",
+            "sourceHash": "sha256:42823234002ab9a95ac88f49880e6065a31ff9342bbc1941fbd6864cd7e6b678"
+          }
+        ]
+      }
     },
     source: sample7Source,
-    manifest: "",
+    manifest: sample7Manifest,
     projectFiles: [
       { path: "main.ssrg", source: sample7Source },
+      { path: "app.ssrg", source: sample7Source2 },
+      { path: "booking/model.ssrg", source: sample7Source3 },
+      { path: "components/checkout.ssrg", source: sample7Source4 },
+      { path: "components/seat_map.ssrg", source: sample7Source5 },
+      { path: "components/ticket.ssrg", source: sample7Source6 },
+      { path: "ui/styles.ssrg", source: sample7Source7 },
     ],
     guide: sample7Guide,
     stdin: "",

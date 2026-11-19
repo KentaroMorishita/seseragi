@@ -447,22 +447,14 @@ test.describe("canonical Web UI browser regression", () => {
   test("form-todo / desktop validates, submits and empties the form", async ({
     page,
   }, testInfo) => {
-    await routeImages(page)
     const form = sample("form-todo")
     await open(page, 1440, 1000)
     await select(page, form)
     const formPreview = await run(page, form)
-    const planTitle = formPreview.locator("#plan-title")
-    const planDetails = formPreview.locator("#plan-details")
-    const addToLaunchLoop = formPreview.getByRole("button", {
-      name: "Add to launch loop",
-    })
-    await planTitle.scrollIntoViewIfNeeded()
-    await planTitle.fill("Review the launch loop")
-    await addToLaunchLoop.scrollIntoViewIfNeeded()
-    await addToLaunchLoop.click()
+    await formPreview.locator("#proceed-checkout").click()
+    await formPreview.locator("#submit-booking").click()
     const formAlert = formPreview.getByRole("alert")
-    await expect(formAlert).toContainText("clear purpose")
+    await expect(formAlert).toContainText("4 件の未入力・誤り")
     await formAlert.evaluate((element) =>
       element.scrollIntoView({ block: "center" })
     )
@@ -474,13 +466,14 @@ test.describe("canonical Web UI browser regression", () => {
       "invalid-submit",
       formPreview.locator("body")
     )
-    await planDetails.scrollIntoViewIfNeeded()
-    await planDetails.fill("Walk through every control once.")
-    await addToLaunchLoop.scrollIntoViewIfNeeded()
-    await addToLaunchLoop.click()
-    const addedPlan = formPreview.locator('input[id="4"]')
-    await expect(addedPlan).toHaveValue("Review the launch loop")
-    await addedPlan.evaluate((element) =>
+    await formPreview.locator("#buyer-name").fill("佐藤 葵")
+    await formPreview.locator("#buyer-email").fill("aoi@example.com")
+    await formPreview.locator("#buyer-phone").fill("090-1234-5678")
+    await formPreview.locator("#buyer-terms").check()
+    await formPreview.locator("#submit-booking").click()
+    const reservationCode = formPreview.locator("#reservation-code")
+    await expect(reservationCode).toContainText("SRG-2611-")
+    await reservationCode.evaluate((element) =>
       element.scrollIntoView({ block: "center" })
     )
     await capture(
@@ -491,18 +484,10 @@ test.describe("canonical Web UI browser regression", () => {
       "valid-submit",
       formPreview.locator("body")
     )
-    while (await formPreview.getByRole("button", { name: "Remove" }).count()) {
-      const remove = formPreview.getByRole("button", { name: "Remove" }).first()
-      await remove.scrollIntoViewIfNeeded()
-      await remove.click()
-    }
-    const emptyHeading = formPreview.getByRole("heading", {
-      name: "Your launch loop is clear.",
-    })
-    await expect(emptyHeading).toBeVisible()
-    await emptyHeading.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
+    await formPreview.locator("#start-new-booking").click()
+    await formPreview.locator("#clear-seats").click()
+    const proceedButton = formPreview.locator("#proceed-checkout")
+    await expect(proceedButton).toBeDisabled()
     await capture(
       page,
       testInfo,

@@ -7,17 +7,13 @@ import { samples } from "../src/samples"
 
 const workspaceImage =
   "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80"
-const plannerImage =
-  "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?fit=crop&w=720&h=360&q=80"
 
 describe("Playground remote sample images", () => {
   test("uses fixed HTTPS photo ids with stable accessible layout", () => {
     const component = samples.find((sample) => sample.id === "html-components")
-    const todo = samples.find((sample) => sample.id === "form-todo")
 
     expect(component?.source).toContain(`parseSampleUrl "${workspaceImage}"`)
-    expect(todo?.source).toContain(`parseSampleUrl "${plannerImage}"`)
-    for (const source of [component?.source, todo?.source]) {
+    for (const source of [component?.source]) {
       for (const utility of [
         "aspect-2-1",
         "h-auto",
@@ -36,10 +32,7 @@ describe("Playground remote sample images", () => {
       'alt: "大きな窓とテーブルのある明るい共同作業スペース"'
     )
     expect(component?.source).toContain("class: heroImageClass")
-    expect(todo?.source).toContain('alt: "手帳へ次の一歩を書き込む手元"')
-    expect(todo?.source).toContain("class: heroImageClass")
     expect(component?.source).toMatch(/width: 960,\n\s+height: 480/u)
-    expect(todo?.source).toMatch(/width: 720,\n\s+height: 360/u)
     expect(previewUtilityCss).toContain(".aspect-2-1")
     expect(previewUtilityCss).toContain(".h-auto")
     expect(previewUtilityCss).toContain(".object-cover")

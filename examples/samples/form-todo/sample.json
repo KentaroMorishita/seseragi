@@ -1,23 +1,19 @@
 {
   "$schema": "../sample.schema.json",
   "id": "form-todo",
-  "title": "Signal + dom.runのLaunch Loop Showcase",
-  "summary": "controlled form、validation、カード操作、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
+  "title": "座席指定チケット予約（コンサートホール）",
+  "summary": "劇場の座席マップから席を選び、連番自動選択・購入者情報の一括検証を経て電子チケットを発券する予約アプリです。",
   "kind": "showcase",
   "difficulty": "advanced",
   "topics": [
-    "form",
-    "IME",
-    "InputEvent",
-    "ChangeEvent",
-    "Task",
     "Signal",
-    "checkbox",
-    "empty state",
-    "responsive cards",
+    "dom.run",
+    "SVG",
+    "Validation",
+    "ADT",
+    "form",
     "accessibility",
-    "keyboard",
-    "pointer"
+    "multi-module"
   ],
   "capabilities": ["dom"],
   "outputMode": "html",
@@ -29,7 +25,20 @@
   "isNew": true,
   "interactive": true,
   "files": {
-    "source": "main.ssrg",
+    "manifest": "seseragi.toml",
     "guide": "guide.md"
+  },
+  "workspace": {
+    "active": "app.ssrg",
+    "open": [
+      "main.ssrg",
+      "app.ssrg",
+      "booking/model.ssrg",
+      "components/seat_map.ssrg",
+      "components/checkout.ssrg",
+      "components/ticket.ssrg",
+      "ui/styles.ssrg"
+    ],
+    "expanded": ["booking", "components", "ui"]
   }
 }

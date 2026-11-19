@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "samples/form-todo@0.0.0#workspace:."
+
+[[packages]]
+id = "samples/form-todo@0.0.0#workspace:."
+name = "samples/form-todo"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:81d7e7953ab270ea17bcd53edaabef97f24f03c58fb989d8faaa69626fa8c45c"
+content_digest = "sha256:447f610fc0653780bd1e1c6024cfdd5bdb75cbfb01cdbf49b1bb4b124012bc83"
+dependencies = []

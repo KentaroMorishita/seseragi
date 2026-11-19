@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "sampleId": "form-todo",
-  "sourcePath": "examples/samples/form-todo/main.ssrg",
+  "sourcePath": "examples/samples/form-todo/src/main.ssrg",
   "manifest": {
-    "sourceHash": "sha256:279a6c5fde288ce855cff63b789482e7120609eb0d37eea48430034edca79712",
-    "workspaceHash": "sha256:4768e03902abc8cd8f9601bd6c9c8de9518b6fa0a9b3db68d379aceb9832db61"
+    "sourceHash": "sha256:0a787f56f71344b395ea135efe1ddd1a8a3fba0bb6bc4cf2c9402fd1dc73a971",
+    "workspaceHash": "sha256:2ac60edddbee76c5df4b015d763586139dd3d44c08cc5977f36de095b68707c1"
   },
   "runner": {
     "kind": "browser-use",

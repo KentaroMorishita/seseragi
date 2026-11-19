@@ -77,23 +77,25 @@ describe("form-todo browser interaction fixture", () => {
     expect(fixture.runner.kind).toBe("browser-use")
     expect(fixture.runner.previewSelector).toBe("#html-preview")
 
+    const combinedSource = sample.workspace.files
+      .map(({ source }) => source)
+      .join("\n")
     for (const marker of [
-      "signals.make initialModel",
+      "signals.make (initialState ())",
       "dom.run (dom.defaultOptions ())",
-      "onSubmit: dispatch state Submitted",
-      "onPointerDown: pointerTask state",
-      "onKeyDown: filterKeyTask state",
+      "onSubmit: dispatch SubmitBooking",
+      "svg.svg {",
+      "findAdjacentSeats",
+      "validateBooking",
       'role: "alert"',
       'role: "status"',
-      "ToggleComplete",
-      "TogglePinned",
-      "ClearCompleted",
-      "fn emptyState",
-      "fn planCard",
+      "AutoPickAdjacent",
+      "ClearSelection",
+      "TicketIssued",
     ]) {
-      expect(sample.source).toContain(marker)
+      expect(combinedSource).toContain(marker)
     }
-    expect(sample.source).not.toContain("html.table")
+    expect(combinedSource).not.toContain("html.table")
   })
 
   test("covers every #188 interaction state and action family", () => {

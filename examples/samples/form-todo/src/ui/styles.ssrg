@@ -1,0 +1,456 @@
+// 夜のコンサートホールをイメージしたダーク＆シャンパンゴールドのスタイル定義です。
+import * as html from "std/web/html"
+import {
+  SeatAvailability,
+  SeatTier,
+  Sold,
+  TierA,
+  TierAccessible,
+  TierB,
+  TierS
+} from "self/booking/model"
+
+pub fn pageStyle -> html.Style = html.style {
+  background: "radial-gradient(circle at 50% 0%, #1c1b22 0%, #0d0e13 58%)",
+  color: "#f4f1ea",
+  fontFamily: "Inter, Hiragino Sans, Noto Sans JP, sans-serif",
+  margin: "0",
+  minHeight: "100vh",
+  overflowX: "hidden",
+  padding: "24px 16px 48px",
+  boxSizing: "border-box"
+}
+
+pub fn shellStyle -> html.Style = html.style {
+  margin: "0 auto",
+  maxWidth: "1120px",
+  width: "100%"
+}
+
+pub fn headerStyle -> html.Style = html.style {
+  borderBottom: "1px solid rgba(216, 179, 106, 0.22)",
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  alignItems: "flex-end",
+  gap: "16px",
+  paddingBottom: "20px",
+  marginBottom: "24px"
+}
+
+pub fn eyebrowStyle -> html.Style = html.style {
+  color: "#d8b36a",
+  fontSize: "11px",
+  fontWeight: "700",
+  letterSpacing: "0.18em",
+  margin: "0 0 8px 0",
+  textTransform: "uppercase"
+}
+
+pub fn titleStyle -> html.Style = html.style {
+  color: "#fbf9f4",
+  fontSize: "clamp(22px, 3.6vw, 32px)",
+  fontWeight: "600",
+  lineHeight: "1.25",
+  margin: "0 0 6px 0"
+}
+
+pub fn metaStyle -> html.Style = html.style {
+  color: "#aca79d",
+  fontSize: "13px",
+  lineHeight: "1.6",
+  margin: "0"
+}
+
+pub fn stepperStyle -> html.Style = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "8px",
+  alignItems: "center"
+}
+
+pub fn stepPillStyle active: Bool -> completed: Bool -> html.Style =
+  if active then
+    html.style {
+      backgroundColor: "#d8b36a",
+      color: "#121318",
+      borderRadius: "999px",
+      fontSize: "12px",
+      fontWeight: "700",
+      padding: "6px 12px"
+    }
+  else if completed then
+    html.style {
+      backgroundColor: "rgba(216, 179, 106, 0.16)",
+      color: "#ebd29d",
+      border: "1px solid rgba(216, 179, 106, 0.35)",
+      borderRadius: "999px",
+      fontSize: "12px",
+      fontWeight: "600",
+      padding: "5px 12px"
+    }
+  else
+    html.style {
+      backgroundColor: "rgba(255, 255, 255, 0.04)",
+      color: "#8e8a82",
+      border: "1px solid rgba(255, 255, 255, 0.09)",
+      borderRadius: "999px",
+      fontSize: "12px",
+      fontWeight: "500",
+      padding: "5px 12px"
+    }
+
+pub fn workspaceStyle -> html.Style = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "24px",
+  alignItems: "flex-start"
+}
+
+pub fn mainColumnStyle -> html.Style = html.style { flex: "1 1 560px", minWidth: "0" }
+
+pub fn sideColumnStyle -> html.Style = html.style { flex: "1 1 310px", minWidth: "0" }
+
+pub fn surfaceStyle -> html.Style = html.style {
+  backgroundColor: "#151821",
+  border: "1px solid rgba(255, 255, 255, 0.09)",
+  borderRadius: "18px",
+  padding: "20px",
+  boxSizing: "border-box"
+}
+
+pub fn toolbarStyle -> html.Style = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "12px",
+  marginBottom: "16px"
+}
+
+pub fn chipRowStyle -> html.Style = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "8px",
+  alignItems: "center"
+}
+
+pub fn filterChipStyle active: Bool -> html.Style =
+  if active then
+    html.style {
+      backgroundColor: "rgba(216, 179, 106, 0.2)",
+      color: "#f5dfb1",
+      border: "1px solid #d8b36a",
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontSize: "12px",
+      fontWeight: "600",
+      padding: "6px 12px"
+    }
+  else
+    html.style {
+      backgroundColor: "rgba(255, 255, 255, 0.03)",
+      color: "#c0bbb1",
+      border: "1px solid rgba(255, 255, 255, 0.12)",
+      borderRadius: "999px",
+      cursor: "pointer",
+      fontSize: "12px",
+      fontWeight: "500",
+      padding: "6px 12px"
+    }
+
+pub fn autoPickBarStyle -> html.Style = html.style {
+  backgroundColor: "rgba(255, 255, 255, 0.03)",
+  border: "1px solid rgba(255, 255, 255, 0.08)",
+  borderRadius: "12px",
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "10px",
+  padding: "10px 14px",
+  marginBottom: "18px"
+}
+
+pub fn hallStageWrapStyle -> html.Style = html.style {
+  marginBottom: "14px",
+  width: "100%"
+}
+
+pub fn seatGridStyle -> html.Style = html.style {
+  display: "flex",
+  flexDirection: "column",
+  gap: "10px",
+  marginBottom: "16px"
+}
+
+pub fn seatRowStyle -> html.Style = html.style {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "6px"
+}
+
+pub fn rowLabelStyle -> html.Style = html.style {
+  color: "#9a958b",
+  fontSize: "12px",
+  fontWeight: "700",
+  width: "20px",
+  textAlign: "center",
+  flexShrink: "0"
+}
+
+pub fn aisleGapStyle -> html.Style = html.style {
+  color: "#5f6472",
+  fontSize: "10px",
+  letterSpacing: "0.08em",
+  textAlign: "center",
+  width: "24px",
+  flexShrink: "0"
+}
+
+pub fn seatButtonStyle tier: SeatTier
+  -> availability: SeatAvailability
+  -> selected: Bool
+  -> dimmed: Bool
+  -> html.Style =
+  if availability == Sold then
+    html.style {
+      backgroundColor: "#222531",
+      border: "1px solid #2e3240",
+      borderRadius: "8px 8px 4px 4px",
+      color: "#5b6070",
+      cursor: "not-allowed",
+      fontSize: "12px",
+      fontWeight: "600",
+      height: "36px",
+      minWidth: "32px",
+      flex: "1 1 32px",
+      maxWidth: "46px",
+      padding: "0",
+      opacity:
+        if dimmed then
+          "0.3"
+        else
+          "0.7"
+    }
+  else if selected then
+    html.style {
+      backgroundColor: "#d8b36a",
+      border: "2px solid #fff3d6",
+      borderRadius: "8px 8px 4px 4px",
+      boxShadow: "0 0 0 2px rgba(216, 179, 106, 0.35)",
+      color: "#111217",
+      cursor: "pointer",
+      fontSize: "12px",
+      fontWeight: "800",
+      height: "36px",
+      minWidth: "32px",
+      flex: "1 1 32px",
+      maxWidth: "46px",
+      padding: "0"
+    }
+  else
+    {
+  let accentBorder = match tier {
+    TierS -> "1px solid rgba(216, 179, 106, 0.72)"
+    TierA -> "1px solid rgba(104, 159, 204, 0.72)"
+    TierB -> "1px solid rgba(114, 171, 130, 0.72)"
+    TierAccessible -> "1px solid rgba(169, 143, 214, 0.8)"
+  }
+  let tint = match tier {
+    TierS -> "rgba(216, 179, 106, 0.12)"
+    TierA -> "rgba(104, 159, 204, 0.12)"
+    TierB -> "rgba(114, 171, 130, 0.12)"
+    TierAccessible -> "rgba(169, 143, 214, 0.16)"
+  }
+  html.style {
+    backgroundColor: tint,
+    border: accentBorder,
+    borderRadius: "8px 8px 4px 4px",
+    color: "#f2efe8",
+    cursor: "pointer",
+    fontSize: "12px",
+    fontWeight: "600",
+    height: "36px",
+    minWidth: "32px",
+    flex: "1 1 32px",
+    maxWidth: "46px",
+    padding: "0",
+    opacity:
+      if dimmed then
+        "0.28"
+      else
+        "1"
+  }
+}
+
+pub fn sightlineBoxStyle -> html.Style = html.style {
+  backgroundColor: "rgba(255, 255, 255, 0.03)",
+  borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+  borderRadius: "10px",
+  padding: "12px 14px",
+  fontSize: "13px",
+  lineHeight: "1.6",
+  color: "#d4d0c7"
+}
+
+pub fn sectionHeadingStyle -> html.Style = html.style {
+  color: "#fbf9f4",
+  fontSize: "16px",
+  fontWeight: "600",
+  margin: "0 0 14px 0"
+}
+
+pub fn selectedSeatItemStyle -> html.Style = html.style {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "10px",
+  padding: "10px 0",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+  fontSize: "13px"
+}
+
+pub fn totalRowStyle -> html.Style = html.style {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "baseline",
+  paddingTop: "14px",
+  marginTop: "6px",
+  borderTop: "1px solid rgba(216, 179, 106, 0.28)",
+  fontSize: "15px",
+  fontWeight: "700",
+  color: "#fbf9f4"
+}
+
+pub fn primaryButtonStyle disabled: Bool -> html.Style =
+  if disabled then
+    html.style {
+      backgroundColor: "#2d303c",
+      border: "none",
+      borderRadius: "10px",
+      color: "#777b88",
+      cursor: "not-allowed",
+      fontSize: "14px",
+      fontWeight: "700",
+      padding: "13px 18px",
+      width: "100%"
+    }
+  else
+    html.style {
+      backgroundColor: "#d8b36a",
+      border: "none",
+      borderRadius: "10px",
+      color: "#111217",
+      cursor: "pointer",
+      fontSize: "14px",
+      fontWeight: "700",
+      padding: "13px 18px",
+      width: "100%"
+    }
+
+pub fn secondaryButtonStyle -> html.Style = html.style {
+  backgroundColor: "transparent",
+  border: "1px solid rgba(255, 255, 255, 0.16)",
+  borderRadius: "10px",
+  color: "#e6e2d9",
+  cursor: "pointer",
+  fontSize: "13px",
+  fontWeight: "600",
+  padding: "10px 14px"
+}
+
+pub fn smallGhostButtonStyle -> html.Style = html.style {
+  backgroundColor: "transparent",
+  border: "1px solid rgba(255, 255, 255, 0.14)",
+  borderRadius: "8px",
+  color: "#c8c3b8",
+  cursor: "pointer",
+  fontSize: "12px",
+  padding: "5px 10px"
+}
+
+pub fn statusBannerStyle -> html.Style = html.style {
+  color: "#c8c3b8",
+  fontSize: "12px",
+  lineHeight: "1.6",
+  margin: "12px 0 0 0"
+}
+
+pub fn alertBoxStyle -> html.Style = html.style {
+  backgroundColor: "#2c1418",
+  border: "1px solid rgba(248, 113, 113, 0.45)",
+  borderRadius: "12px",
+  color: "#fecaca",
+  fontSize: "13px",
+  lineHeight: "1.6",
+  marginBottom: "16px",
+  padding: "12px 14px"
+}
+
+pub fn fieldGroupStyle -> html.Style = html.style {
+  display: "flex",
+  flexDirection: "column",
+  gap: "6px",
+  marginBottom: "14px"
+}
+
+pub fn labelStyle -> html.Style = html.style {
+  color: "#dcd8cf",
+  fontSize: "13px",
+  fontWeight: "600"
+}
+
+pub fn inputStyle -> html.Style = html.style {
+  backgroundColor: "#0e1017",
+  border: "1px solid rgba(255, 255, 255, 0.18)",
+  borderRadius: "10px",
+  boxSizing: "border-box",
+  color: "#fbf9f4",
+  fontSize: "14px",
+  padding: "11px 12px",
+  width: "100%"
+}
+
+pub fn ticketCardStyle -> html.Style = html.style {
+  background: "linear-gradient(160deg, #1b1e29 0%, #12141c 100%)",
+  border: "1px solid rgba(216, 179, 106, 0.55)",
+  borderRadius: "20px",
+  boxShadow: "0 24px 60px rgba(0, 0, 0, 0.45)",
+  margin: "0 auto",
+  maxWidth: "680px",
+  overflow: "hidden"
+}
+
+pub fn ticketTopBandStyle -> html.Style = html.style {
+  background: "linear-gradient(90deg, #d8b36a 0%, #f0d79c 55%, #c49a4c 100%)",
+  color: "#111217",
+  display: "flex",
+  flexWrap: "wrap",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "8px",
+  padding: "12px 22px",
+  fontSize: "12px",
+  fontWeight: "800",
+  letterSpacing: "0.1em"
+}
+
+pub fn ticketBodyStyle -> html.Style = html.style { padding: "24px 22px" }
+
+pub fn ticketTearLineStyle -> html.Style = html.style {
+  borderTop: "2px dashed rgba(216, 179, 106, 0.32)",
+  margin: "20px 0"
+}
+
+pub fn seatBadgeStyle -> html.Style = html.style {
+  backgroundColor: "rgba(216, 179, 106, 0.16)",
+  border: "1px solid rgba(216, 179, 106, 0.45)",
+  borderRadius: "8px",
+  color: "#f5dfb1",
+  display: "inline-block",
+  fontSize: "13px",
+  fontWeight: "700",
+  padding: "6px 10px"
+}

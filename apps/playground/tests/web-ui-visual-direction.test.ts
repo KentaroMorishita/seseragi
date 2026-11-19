@@ -96,11 +96,15 @@ describe("canonical Web UI visual direction", () => {
       const source = sourceFor(sample.id)
       expect(sample.identity.length).toBeGreaterThan(16)
       expect(sample.states).not.toHaveLength(0)
-      expect(source).toContain(sample.photoId)
-      expect(source).toContain("images.unsplash.com")
-      expect(source).toContain("alt:")
-      expect(source).toContain("width:")
-      expect(source).toContain("height:")
+      if (sample.photoId !== "") {
+        expect(source).toContain(sample.photoId)
+        expect(source).toContain("images.unsplash.com")
+        expect(source).toContain("alt:")
+        expect(source).toContain("width:")
+        expect(source).toContain("height:")
+      } else {
+        expect(source).not.toContain("images.unsplash.com")
+      }
       expect(sample.layoutMarkers).toHaveLength(2)
       for (const marker of sample.layoutMarkers) {
         expect(source).toContain(marker)
