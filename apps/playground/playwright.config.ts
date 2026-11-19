@@ -11,15 +11,13 @@ export default defineConfig({
   workers: 1,
   timeout: 90_000,
   expect: { timeout: 15_000 },
-  snapshotPathTemplate:
-    "{testDir}/web-ui-regression.spec.ts-snapshots/{arg}-{platform}{ext}",
-  outputDir: "test-results/web-ui-review/results",
+  outputDir: "test-results/e2e/results",
   preserveOutput: "always",
   reporter: [
     ["line"],
     [
       "html",
-      { outputFolder: "test-results/web-ui-review/report", open: "never" },
+      { outputFolder: "test-results/e2e/report", open: "never" },
     ],
   ],
   use: {
