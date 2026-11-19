@@ -89,6 +89,7 @@ describe("network gate (#1371)", () => {
     let asked = 0
     let shown = 0
     let reruns = 0
+    let revokes = 0
     const consent: NetworkConsent = {
       ask: async () => {
         asked += 1
@@ -109,11 +110,14 @@ describe("network gate (#1371)", () => {
       rerun: () => {
         reruns += 1
       },
+      onRevoke: () => {
+        revokes += 1
+      },
     })
     return {
       gate,
       store,
-      counts: () => ({ asked, shown, reruns }),
+      counts: () => ({ asked, shown, reruns, revokes }),
     }
   }
 
@@ -123,7 +127,7 @@ describe("network gate (#1371)", () => {
     expect(counts().asked).toBe(0)
     expect(await gate.resolve(true)).toBe(true)
     expect(await gate.resolve(true)).toBe(true)
-    expect(counts()).toEqual({ asked: 1, shown: 0, reruns: 0 })
+    expect(counts()).toEqual({ asked: 1, shown: 0, reruns: 0, revokes: 0 })
     expect(store.get("example:a")?.decision).toBe("allowed")
   })
 
@@ -131,15 +135,28 @@ describe("network gate (#1371)", () => {
     const { gate, counts } = setup(false)
     expect(await gate.resolve(true)).toBe(false)
     expect(await gate.resolve(true)).toBe(false)
-    expect(counts()).toEqual({ asked: 1, shown: 2, reruns: 0 })
+    expect(counts()).toEqual({ asked: 1, shown: 2, reruns: 0, revokes: 0 })
   })
 
   test("asks after a block inside the Preview and reruns when allowed", async () => {
     const { gate, counts } = setup(true)
     gate.blocked()
     await new Promise((resolve) => setTimeout(resolve, 0))
-    expect(counts()).toEqual({ asked: 1, shown: 0, reruns: 1 })
+    expect(counts()).toEqual({ asked: 1, shown: 0, reruns: 1, revokes: 0 })
     gate.blocked()
     expect(counts().asked).toBe(1)
+  })
+
+  test("revokes the active preview only when the current scope loses Allow", async () => {
+    const { gate, store, counts } = setup(true)
+    store.set("example:other", "Other", "allowed")
+    expect(await gate.resolve(true)).toBe(true)
+    store.remove("example:other")
+    expect(counts().revokes).toBe(0)
+    store.remove("example:a")
+    expect(counts().revokes).toBe(1)
+    store.set("example:a", "A", "denied")
+    store.remove("example:a")
+    expect(counts().revokes).toBe(1)
   })
 })

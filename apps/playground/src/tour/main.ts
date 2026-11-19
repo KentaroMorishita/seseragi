@@ -256,6 +256,10 @@ const networkGate = createNetworkGate({
   notice: networkNotice,
   current: currentNetworkScope,
   rerun: () => void run(),
+  onRevoke: () => {
+    cancelActiveExecution()
+    clearHtmlPreview()
+  },
 })
 const networkSettings = createNetworkSettings(document, networkPermissions)
 let runNetworkAllowed = false
