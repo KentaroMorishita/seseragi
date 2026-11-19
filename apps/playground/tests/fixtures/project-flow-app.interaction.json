@@ -4,7 +4,7 @@
   "sourcePath": "examples/samples/project-flow-app/src/main.ssrg",
   "manifest": {
     "sourceHash": "sha256:f8617e4c87101381ff5e092b2e9bb11d4ff952134dfa2dfb0735073f6d915c0a",
-    "workspaceHash": "sha256:e589cb646438881a6895fe9608e9dcf5c5b49fd6a5545c07c3c49e2a79bb34f9"
+    "workspaceHash": "sha256:1a4be9210ba7d177ada9bc85bfa117dd66982c944b98d9c8d5c50817bfddb257"
   },
   "runner": {
     "kind": "browser-use",

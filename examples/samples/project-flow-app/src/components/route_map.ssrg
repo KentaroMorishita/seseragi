@@ -544,7 +544,7 @@ fn cartographicLabels viewport: MapViewport -> Array<svg.Svg<Task<Unit>>> =
           children: "宇治",
         },
       ],
-      mapChrome 92.0 "5 km",
+      mapChrome 115.0 "5 km",
     ]
   }
 
