@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "reason": "The v2 stack takes main's rebuilt Web samples and adds Search, the v2 Tour, network consent and the first example (#1358, #1359, #1371)",
+  "reason": "Refresh seseragi-landing-page with Playground syntax highlighting and visual polish (#1377)",
   "showcaseReviews": {
     "feature-composition": "2e5cd252f0cbfa5c791ef27268a6dae0523efa38abbf2c751d88b3d68f5d11ac",
     "form-todo": "5bcd1cdc1dca643937118b5356859cb3a38cab4f8cfcf1f542865777735dfa7a",
@@ -32,13 +32,13 @@
     "project-flow-app-desktop-initial-linux.png": "8cbd278341c0f35ffa8ddaf6e7933b718b8cf843999324da541577b11331b19e",
     "project-flow-app-desktop-invalid-submit-darwin.png": "f3908075e0295b0234c2b876a5c35a0f8ca252c7441c91acce9339376c2cdc8a",
     "project-flow-app-desktop-invalid-submit-linux.png": "cfd2678bc9c5c0537d1baf62154cd0bc6d4993b3710a0f0f2f09bbfae749f18e",
-    "seseragi-landing-page-android-360-alive-darwin.png": "4a54aa8b5f8d265f6c0d97404d59cce1dfbebb2c125f25551b803a6cbdef45c9",
+    "seseragi-landing-page-android-360-alive-darwin.png": "f41625bc570d3fbee8681cb66bc6796490a218f49e6d4ff07fcec7f733ba70c2",
     "seseragi-landing-page-android-360-alive-linux.png": "96ee55fdf39c692fbecf3ae31af00d1c4c136238a1635ea6db40a8feeb517204",
-    "seseragi-landing-page-desktop-composable-darwin.png": "82f4f68dc09e3d62de394e13f94af11b9242593434ab3493570da6a17221ef99",
+    "seseragi-landing-page-desktop-composable-darwin.png": "c046ceda64b4277078053815c823714412c10bcec681956aaf2b3c278e8965ff",
     "seseragi-landing-page-desktop-composable-linux.png": "2b4fee5182e5ab9a6b80205bf1f203058d08c28084a53454a907da2b53a70d2d",
-    "seseragi-landing-page-desktop-initial-darwin.png": "dc75fa0bc15e3b101cfb1228d389f03b4248824708f90fadbb493b28debdf720",
+    "seseragi-landing-page-desktop-initial-darwin.png": "0f0d0f0ee27340bddc8becc3a8cbde3a0cc933783b55a52fca7d5cd3a26c7a35",
     "seseragi-landing-page-desktop-initial-linux.png": "2997e562285a8462b830f7ddf557d60957aa82de08fb5db9dcf550b4b24ab7fa",
-    "seseragi-landing-page-iphone-390-initial-darwin.png": "295ef4de2e551823039e00c7d1194b9a06c9f6148e90cf2878b7da22377d8ad6",
+    "seseragi-landing-page-iphone-390-initial-darwin.png": "a962e62aa6969ca37f377111218798daeb37887d22747c82050aeb382d343302",
     "seseragi-landing-page-iphone-390-initial-linux.png": "040552cc380bae31dd79f06f1211ccc1014032ac6ae32022062a5ea86401edae",
     "seseragi-landing-page-minimum-320-code-darwin.png": "22682d13ee16b02b43dc6c108ad6030467f01300f5916827bf3b9686c560cd73",
     "seseragi-landing-page-minimum-320-code-linux.png": "99dadd3bc4c31f8378c74db45f5d105327cc4619dd2a4c0fa67cd7d7178e7653"
