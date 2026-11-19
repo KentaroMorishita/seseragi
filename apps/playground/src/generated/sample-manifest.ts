@@ -997,7 +997,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:f2a154ae83ab1c88dc489b538a98965e7a5671ceea0b6f2b25b296134bea0d34",
       "guidePath": "examples/samples/project-flow-app/guide.md",
       "sourceHash": "sha256:f8617e4c87101381ff5e092b2e9bb11d4ff952134dfa2dfb0735073f6d915c0a",
-      "workspaceHash": "sha256:642469f245e3e1658f8fb55643dc16c0b57388ab4da6e632c06094bf92edbec7",
+      "workspaceHash": "sha256:c8eddbb51d78b34895794926ec0845263c7a3b9a41bba84c55f0c7966bf91eef",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1032,7 +1032,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "components/route_map.ssrg",
             "sourcePath": "examples/samples/project-flow-app/src/components/route_map.ssrg",
-            "sourceHash": "sha256:7a58cb505b17103e40e3c9d159462541e3bfae7f507216c46952a0d06ee05ac4"
+            "sourceHash": "sha256:e661601f068c6276bda584e795d85d4e42215647943385e0cfd4328ebf372611"
           },
           {
             "path": "components/share_view.ssrg",

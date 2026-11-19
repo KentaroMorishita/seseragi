@@ -6,6 +6,8 @@ type AuditSample = Readonly<{
   readonly identity: string
   /** null when the sample draws its visual without an external photo (#1371) */
   readonly photoId: string | null
+  /** repository-owned image assets loaded via raw.githubusercontent.com */
+  readonly repoAssets?: readonly string[]
   readonly photoGroup: string
   readonly layoutMarkers: readonly string[]
   readonly states: readonly string[]
@@ -80,7 +82,7 @@ async function showcaseReviewFor(id: string): Promise<ShowcaseReview> {
 }
 
 describe("canonical Web UI visual direction", () => {
-  test("covers every HTML sample with a distinct visual identity and fixed image", () => {
+  test("covers every HTML sample with a distinct visual identity and fixed image", async () => {
     const htmlSamples = samples
       .filter(({ outputMode }) => outputMode === "html")
       .map(({ id }) => id)
@@ -98,9 +100,28 @@ describe("canonical Web UI visual direction", () => {
       expect(sample.identity.length).toBeGreaterThan(16)
       expect(sample.states).not.toHaveLength(0)
       if (sample.photoId === null) {
-        // Official samples are moving off external images (#1371).
+        // Official samples avoid third-party photos (#1371); repository-owned
+        // assets under assets/ may be referenced when listed in repoAssets.
         expect(source).not.toContain("images.unsplash.com")
-        expect(source).not.toContain("raw.githubusercontent.com")
+        const rawUrls: string[] = [
+          ...(source.match(
+            /https:\/\/raw\.githubusercontent\.com\/[^\s"']+/g
+          ) ?? []),
+        ]
+        const repoAssets = sample.repoAssets ?? []
+        if (repoAssets.length === 0) {
+          expect(rawUrls).toEqual([])
+        } else {
+          const expectedUrls = repoAssets.map(
+            (asset) =>
+              `https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/${asset}`
+          )
+          for (const asset of repoAssets) {
+            expect(asset.startsWith("assets/")).toBe(true)
+            expect(await Bun.file(new URL(asset, repoRoot)).exists()).toBe(true)
+          }
+          expect(rawUrls.sort()).toEqual(expectedUrls.sort())
+        }
       } else {
         expect(source).toContain(sample.photoId)
         expect(source).toContain("images.unsplash.com")
