@@ -45,7 +45,7 @@ Scoped lanes:
   release      Version source, generated package metadata, and release contract tests
   release-gate Repository-wide source gate; release artifact packaging stays in matrix jobs
   release-gate-after-wasm
-               Release source gate after the same job verified committed WASM freshness
+               Repository-wide source checks using the committed WASM
   full         Repository-wide integration gate
 EOF
 }
@@ -346,7 +346,7 @@ run_full_checks() {
     echo "invalid full gate artifact mode: $artifact_mode" >&2
     exit 2
   fi
-  if [[ "$wasm_mode" != "check" && "$wasm_mode" != "verified" ]]; then
+  if [[ "$wasm_mode" != "check" && "$wasm_mode" != "skip" ]]; then
     echo "invalid full gate WASM mode: $wasm_mode" >&2
     exit 2
   fi
@@ -458,7 +458,7 @@ run_full_checks() {
   if [[ "$wasm_mode" == "check" ]]; then
     run_wasm_checks
   else
-    echo "Skipping committed WASM freshness in this release gate."
+    echo "Using committed WASM without rebuilding it."
   fi
   if [[ "$artifact_mode" == "delegate" ]]; then
     run_release_contract_metadata_check
@@ -566,7 +566,7 @@ case "$lane" in
       echo "release-gate-after-wasm lane does not accept arguments" >&2
       exit 2
     }
-    run_full_checks delegate verified
+    run_full_checks delegate skip
     ;;
   full)
     (($# == 0)) || {

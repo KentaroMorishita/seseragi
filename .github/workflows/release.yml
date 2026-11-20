@@ -65,7 +65,7 @@ jobs:
   gate:
     needs: [plan, wasm-freshness]
     if: needs.plan.outputs.should_release == 'true'
-    runs-on: macos-15
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     env:
@@ -78,42 +78,15 @@ jobs:
         with:
           ref: ${{ needs.plan.outputs.release_sha }}
           fetch-depth: 0
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: 1.97.1
-          targets: wasm32-unknown-unknown
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24.22.1"
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: .bun-version
-      - uses: jetli/wasm-pack-action@v0.4.0
-        with:
-          version: v0.15.0
-      - name: Install the locked wasm-bindgen CLI
-        run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
-      - uses: ./.github/actions/setup-wasi-sdk
       - name: Verify canonical metadata before promotion
         run: |
           bun scripts/release-contract.ts check
           bun scripts/release-contract.ts check-tag "$RELEASE_TAG"
           bun scripts/release-readiness.ts check
-      - name: Install Chromium for browser lifecycle tests
-        run: |
-          cd apps/playground
-          bun install --frozen-lockfile
-          bunx playwright install chromium
-      - name: Run repository-wide release source gate
-        # The gate builds the native runtime once per test project. Without
-        # debug info and incremental caches those builds fit on the runner
-        # disk, as in the rust-backend workflow.
-        env:
-          CARGO_INCREMENTAL: "0"
-          CARGO_PROFILE_DEV_DEBUG: "0"
-          CARGO_PROFILE_TEST_DEBUG: "0"
-        run: ./scripts/check-scoped.sh release-gate-after-wasm
-      - name: Create the canonical tag after the source gate
+      - name: Create the canonical tag
         if: needs.plan.outputs.create_tag == 'true'
         env:
           RELEASE_SHA: ${{ needs.plan.outputs.release_sha }}

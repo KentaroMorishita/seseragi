@@ -75,23 +75,24 @@ describe("release publish gate", () => {
     ].join("")
     const matrixTargetExpression = ["$", "{{ matrix.target }}"].join("")
 
-    expect(workflow).toContain(
-      "run: ./scripts/check-scoped.sh release-gate-after-wasm"
-    )
-    expect(workflow).toContain("bunx playwright install chromium")
-    expect(workflow.indexOf("bunx playwright install chromium")).toBeLessThan(
-      workflow.indexOf("release-gate-after-wasm")
-    )
+    expect(workflow).not.toContain("release-gate-after-wasm")
+    expect(workflow).not.toContain("main-source-checks.yml")
     expect(workflow).toContain("branches: [main]")
     expect(workflow).toContain("workflow_dispatch:")
     expect(workflow).toContain("cancel-in-progress: false")
     expect(workflow).toContain("bun scripts/release-promotion.ts plan")
-    expect(workflow).toContain('git push origin "refs/tags/$RELEASE_TAG"')
-    expect(workflow.indexOf("release-gate-after-wasm")).toBeLessThan(
-      workflow.indexOf('git push origin "refs/tags/$RELEASE_TAG"')
-    )
-    expect(workflow).toContain(
-      "gate:\n    needs: [plan, wasm-freshness]\n    if: needs.plan.outputs.should_release == 'true'\n    runs-on: macos-15"
+    const tagJob =
+      workflow.split("  gate:")[1]?.split("  linux-native:")[0] ?? ""
+    expect(tagJob).toContain("needs: [plan, wasm-freshness]")
+    expect(tagJob).toContain("if: needs.plan.outputs.should_release == 'true'")
+    expect(tagJob).toContain("runs-on: ubuntu-24.04")
+    expect(tagJob).toContain("bun scripts/release-contract.ts check")
+    expect(tagJob).toContain("bun scripts/release-contract.ts check-tag")
+    const createTag = 'git push origin "refs/tags/$RELEASE_TAG"'
+    expect(tagJob).toContain(createTag)
+    expect(tagJob).toContain("bun scripts/release-gate.ts check-main")
+    expect(tagJob.indexOf(createTag)).toBeLessThan(
+      tagJob.indexOf("bun scripts/release-gate.ts check-main")
     )
     expect(workflow).toContain(
       "wasm-freshness:\n    needs: plan\n    if: needs.plan.outputs.should_release == 'true'\n    runs-on: ubuntu-24.04"
@@ -122,7 +123,7 @@ describe("release publish gate", () => {
     expect(workflow.match(/release-gate\.ts check-main/gu)?.length).toBe(2)
     expect(workflow).toContain("bun scripts/release-readiness.ts check")
     expect(workflow).toContain("version: v0.15.0")
-    expect(workflow.match(/toolchain: 1\.97\.1/gu)?.length).toBe(4)
+    expect(workflow.match(/toolchain: 1\.97\.1/gu)?.length).toBe(3)
     expect(workflow).not.toContain("VSCE_PAT")
     expect(workflow).not.toContain("vsce publish")
     expect(workflow).not.toContain("marketplace:")
@@ -143,6 +144,25 @@ describe("release publish gate", () => {
     )
     expect(wasmBuild).toContain("--remap-path-prefix=$RUST_CARGO_HOME=/cargo")
     expect(wasmBuild).toContain("--no-opt")
+  })
+
+  test("runs the full source checks on main outside release promotion", async () => {
+    const workflow = await readFile(
+      path.join(repositoryRoot, ".github/workflows/main-source-checks.yml"),
+      "utf8"
+    )
+
+    expect(workflow).toContain("on:\n  push:\n    branches: [main]\n\n")
+    expect(workflow).toContain("runs-on: ubuntu-24.04")
+    expect(workflow).toContain(["ref: $", "{{ github.sha }}"].join(""))
+    const installChromium = "bunx playwright install --with-deps chromium"
+    const runSourceChecks =
+      "run: ./scripts/check-scoped.sh release-gate-after-wasm"
+    expect(workflow).toContain(installChromium)
+    expect(workflow).toContain(runSourceChecks)
+    expect(workflow.indexOf(installChromium)).toBeLessThan(
+      workflow.indexOf(runSourceChecks)
+    )
   })
 
   test("runs shared extension tests once alongside platform packaging", async () => {
