@@ -61,8 +61,8 @@ WASM / Playground、VS Code extension、言語仕様へ変更があれば
 `version-bump-required`としてcheckが失敗します。mainへの該当変更と毎月1日のscheduled
 workflowが同じ軽量checkを実行します。
 
-`pending-release`はmain更新時のrelease workflowが検出し、repository-wide source gate後に
-canonical tagを作成して、その同じrunでartifact buildとGitHub Releaseまで進めます。
+`pending-release` は `main` 更新時にリリース用ワークフローが検出します。WASM の鮮度と
+版の情報を確認してタグを作り、同じ実行で成果物のビルドと GitHub Release の公開を行います。
 `GITHUB_TOKEN`によるtag pushの再帰triggerには依存しません。同じversionはconcurrency keyと
 既存GitHub Releaseの照合で一度だけ公開し、tag作成後の失敗は同じtag commitから再開します。
 通常の内部変更だけではversionを上げません。ただしtag確定後にrelease infrastructureの
@@ -79,12 +79,13 @@ local buildと公開artifactを区別するための情報であり、version so
 release tagは`v0.4.0`のようにtoolchain versionと同じ名前を使います。旧
 `vscode-v0.3.0` tagは履歴であり、新しいreleaseに使用しません。
 
-tagは必ず`main`へ統合済みのrelease commitへ付けます。main workflowはRust workspace、
-canonical conformance、native sample / Tour、Playground test / typecheck / production
-build、extension contractをrelease source gateで検証してからtagを作ります。その後もtagが
-指すcommitとgated commitが同じこと、そのcommitが実行時点の`origin/main`履歴へ含まれる
-ことを検証します。いずれかが失敗した場合、artifact buildとGitHub Release publishは
-開始されません。
+タグは `main` に取り込まれたリリース用コミットに付けます。`gate` は版の情報を照合し、
+必要なら注釈付きタグを作ります。タグが予定のコミットを指し、そのコミットが
+`origin/main` に含まれることを確認してから、成果物のビルドへ進みます。
+
+`main` への push では、別の [Main source checks](../.github/workflows/main-source-checks.yml)
+が Ubuntu 24.04 で実行されます。Rust ワークスペース、適合検査、サンプルと Tour、
+Playground、拡張の全体テストはこのワークフローで確認します。リリースはこの結果を待たずに進みます。
 
 release workflowは次を同じversionで生成します。
 

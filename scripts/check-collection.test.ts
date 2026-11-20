@@ -9,9 +9,14 @@ import {
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-test.each([true, false])(
-  "full gate completes all checks with injected failures=%s",
-  (failures) => {
+test.each([
+  ["full", true],
+  ["full", false],
+  ["release-gate-after-wasm", true],
+  ["release-gate-after-wasm", false],
+] as const)(
+  "%s completes all checks with injected failures=%s",
+  (lane, failures) => {
     const root = mkdtempSync(join(tmpdir(), "gate-collection-"))
     try {
       for (const dir of [
@@ -47,17 +52,14 @@ exit 0
       ]) {
         writeFileSync(join(root, executable), stub, { mode: 0o755 })
       }
-      const result = Bun.spawnSync(
-        ["bash", "scripts/check-scoped.sh", "full"],
-        {
-          cwd: root,
-          env: {
-            ...process.env,
-            PATH: `${root}/bin:${process.env.PATH}`,
-            GATE_TRACE: join(root, "trace"),
-          },
-        }
-      )
+      const result = Bun.spawnSync(["bash", "scripts/check-scoped.sh", lane], {
+        cwd: root,
+        env: {
+          ...process.env,
+          PATH: `${root}/bin:${process.env.PATH}`,
+          GATE_TRACE: join(root, "trace"),
+        },
+      })
       expect(result.exitCode).toBe(failures ? 1 : 0)
       const output = result.stderr.toString()
       if (failures) {
@@ -69,7 +71,14 @@ exit 0
         expect(result.stdout.toString()).toContain("All checks passed")
       }
       const trace = require("node:fs").readFileSync(join(root, "trace"), "utf8")
-      expect(trace).toContain("bun run build:extension")
+      if (lane === "full") {
+        expect(trace).toContain("bun run build:extension")
+        expect(trace).toContain("build-playground-wasm.sh")
+      } else {
+        expect(trace).toContain("bun test tests")
+        expect(trace).not.toContain("bun run build:extension")
+        expect(trace).not.toContain("build-playground-wasm.sh")
+      }
       expect(trace).toContain("cargo test --no-fail-fast --workspace")
       expect(trace).toContain("tsc --noEmit")
     } finally {
