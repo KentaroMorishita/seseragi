@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.61.191] - 2026-11-22
+
+### Fixed
+
+- A template string that starts with `[` and closes on the same line is an error at that `[`. The message explains that this spelling is a List literal, and shows how to embed the opening bracket, as in `${"["}${tag}]`. List literals and list patterns keep their existing spelling, including `[1, 2]`, `[]`, and `[head, ...tail]`.
+
 ## [0.61.190] - 2026-11-19
 
 ### Changed
