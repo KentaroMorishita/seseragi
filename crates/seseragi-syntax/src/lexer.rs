@@ -72,7 +72,14 @@ impl Lexer<'_> {
                 '\'' => self.scan_quoted(TokenKind::LiteralChar, '\''),
                 '"' => self.scan_quoted(TokenKind::LiteralString, '"'),
                 '`' if self.starts_with("`[") => {
-                    self.bump_fixed_raw(TokenKind::PunctuationListLeft, start, "`[")
+                    if let Some(end) =
+                        crate::template::single_line_bracket_template_end(self.source, start)
+                    {
+                        self.cursor = end;
+                        self.push(TokenKind::Unknown, start, end);
+                    } else {
+                        self.bump_fixed_raw(TokenKind::PunctuationListLeft, start, "`[");
+                    }
                 }
                 '`' => self.scan_template(),
                 '\\' => self.bump_fixed(TokenKind::OperatorLambda, start, char),

@@ -179,6 +179,10 @@ impl Diagnostic {
                 "Match coverage exceeded its source-complexity limit".to_owned()
             }
             "parser.expected-expression" => "Expected an expression here".to_owned(),
+            "parser.template-list-open" => {
+                "A template string cannot start with `[`, which is read as a List literal."
+                    .to_owned()
+            }
             "parser.expected-pattern" => "Expected a pattern here".to_owned(),
             "parser.match-guard-if" => "A match guard is written with `when`".to_owned(),
             "parser.match-or-pattern" => "A match arm takes one pattern".to_owned(),
@@ -418,6 +422,9 @@ impl Diagnostic {
             "parser.expected-expression" | "parser.error" => {
                 "Complete the expression at the highlighted location."
             }
+            "parser.template-list-open" => {
+                "Embed the opening bracket, as in `${\"[\"}${tag}]`."
+            }
             "parser.module-expression-statement" => {
                 "Bind a pure value with let, or put the expression in a function body."
             }
@@ -607,6 +614,7 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
         return resource_diagnostics(source_name, span);
     }
     let mut artifact = diagnostics_from_cst(&cst, &source_tokens);
+    append_diagnostics(&mut artifact, bracket_template_diagnostics(&source_tokens));
     let surface_declaration_diagnostics = missing_surface_declaration_diagnostics(
         &cst.root,
         &surface.declarations,
@@ -688,6 +696,26 @@ fn resource_diagnostics(source: String, span: crate::ByteSpan) -> DiagnosticArti
             type_difference: None,
         }],
     }
+}
+
+fn bracket_template_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
+    tokens
+        .iter()
+        .filter(|token| token.kind == TokenKind::Unknown && token.raw.starts_with("`["))
+        .map(|token| Diagnostic {
+            type_difference: None,
+            id: String::new(),
+            code: "SES-P0001".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "parser.template-list-open".to_owned(),
+            primary: ByteRange {
+                start: token.start,
+                end: token.start + 2,
+            },
+            related: Vec::new(),
+            fixes: Vec::new(),
+        })
+        .collect()
 }
 
 fn template_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
@@ -1350,6 +1378,78 @@ mod tests {
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 30, end: 32 }
         );
+    }
+
+    #[test]
+    fn reports_a_template_that_starts_with_a_list_open_at_that_backtick() {
+        let sources = [
+            "fn label flag: Bool -> String = match flag {\n  True -> `[ok] yes`\n  False -> `[ng] no`\n}\n\nfn shout s: String -> String = (\\err -> err) s\n",
+            "fn a -> String = `[a]`\nfn f s: String -> String = (\\err -> err) s\nfn c -> String = `c`\n",
+            "pub effect fn main -> Unit with Console fails ConsoleError =\n  println `[ok]`\n",
+        ];
+        for source in sources {
+            let diagnostics = parse_diagnostics("repro.ssrg", source);
+            assert!(
+                diagnostics
+                    .diagnostics
+                    .iter()
+                    .all(|diagnostic| diagnostic.code != "SES-P0201"),
+                "{source}\n{diagnostics:#?}"
+            );
+            assert!(
+                diagnostics
+                    .diagnostics
+                    .iter()
+                    .all(|diagnostic| diagnostic.message_key != "parser.expected-expression"),
+                "{source}\n{diagnostics:#?}"
+            );
+            let opens = diagnostics
+                .diagnostics
+                .iter()
+                .filter(|diagnostic| diagnostic.message_key == "parser.template-list-open")
+                .collect::<Vec<_>>();
+            assert_eq!(
+                opens.len(),
+                source.matches("`[").count(),
+                "{source}\n{diagnostics:#?}"
+            );
+            for diagnostic in opens {
+                assert_eq!(diagnostic.code, "SES-P0001");
+                assert_eq!(
+                    &source[diagnostic.primary.start..diagnostic.primary.end],
+                    "`["
+                );
+                assert_eq!(
+                    diagnostic.message(),
+                    "A template string cannot start with `[`, which is read as a List literal."
+                );
+                assert_eq!(
+                    diagnostic.helps(),
+                    vec!["Embed the opening bracket, as in `${\"[\"}${tag}]`.".to_owned()]
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn keeps_list_literals_and_patterns_when_no_template_closes_on_that_line() {
+        let source = "pub fn values -> List<Int> = `[1, 2, 3]\npub fn empty -> List<Int> = `[]\nfn head values: List<Int> -> Int = match values { `[] -> 0; `[head, ...tail] -> head }\nfn both -> String = `[1, 2] `ok`\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", source);
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.message_key != "parser.template-list-open"),
+            "{diagnostics:#?}"
+        );
+        let tokens = crate::lex("lists.ssrg", source);
+        assert!(tokens.tokens.iter().any(|token| {
+            token.kind == crate::TokenKind::PunctuationListLeft && token.raw == "`["
+        }));
+        assert!(tokens
+            .tokens
+            .iter()
+            .any(|token| token.kind == crate::TokenKind::LiteralTemplate && token.raw == "`ok`"));
     }
 
     #[test]

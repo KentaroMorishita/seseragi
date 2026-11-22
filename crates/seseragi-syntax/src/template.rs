@@ -20,6 +20,30 @@ pub(crate) fn template_end(source: &str, start: usize) -> usize {
     scan_nested(source, start + 1, ScanContext::Template).map_or(source.len(), |(_, after)| after)
 }
 
+/// A template that starts with `` `[ `` and closes on the same line.
+///
+/// `` `[ `` is otherwise a List literal. A later backtick on that line is the
+/// template closer, unless another backtick after it starts a real template.
+pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Option<usize> {
+    if !source[start..].starts_with("`[") {
+        return None;
+    }
+    let (_, end) = scan_nested(source, start + 1, ScanContext::Template)?;
+    // `` `[ `` on the same line is the next List literal, not this template's closer.
+    if source[end..].starts_with('[') {
+        return None;
+    }
+    let span = &source[start..end];
+    if span.contains('\n') || span.contains('\r') {
+        return None;
+    }
+    let rest_of_line = source[end..].split(['\n', '\r']).next().unwrap_or("");
+    if rest_of_line.contains('`') {
+        return None;
+    }
+    Some(end)
+}
+
 pub(crate) fn scan_template(raw: &str) -> TemplateScan {
     if !raw.starts_with('`') {
         return TemplateScan {
@@ -183,6 +207,18 @@ fn advance_char(source: &str, cursor: &mut usize) {
 mod tests {
     use super::*;
     use crate::literal::{decode_template_text, LiteralDecodeError};
+
+    #[test]
+    fn finds_a_same_line_template_that_starts_with_a_list_open() {
+        let source = "fn a -> String = `[a]`\nfn b -> List<Int> = `[1, 2]\n";
+        let open = source.find("`[").unwrap();
+        assert_eq!(
+            single_line_bracket_template_end(source, open),
+            Some(source.find('\n').unwrap())
+        );
+        let list = source.rfind("`[").unwrap();
+        assert_eq!(single_line_bracket_template_end(source, list), None);
+    }
 
     #[test]
     fn scans_nested_expressions_without_splitting_the_outer_template() {
