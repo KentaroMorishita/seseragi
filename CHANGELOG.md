@@ -1,6 +1,10 @@
 # Change Log
 
-## [0.61.191] - 2026-11-22
+## [0.62.0] - 2026-11-22
+
+### Changed
+
+- Minor version bump to mark the Playground v2 generational change introduced in `0.61.190` (redesigned Playground, Tour, Deep Dive, Search `⌘K`, Run timing, and network permission prompt). Existing Seseragi programs require no migration.
 
 ### Fixed
 
