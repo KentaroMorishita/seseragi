@@ -1484,6 +1484,38 @@ mod tests {
     }
 
     #[test]
+    fn keeps_a_list_whose_element_is_a_multiline_template() {
+        let source = "fn values -> List<String> = `[`hello\nworld`]\nfn second -> List<String> = `[1, `hello\nworld`]\nfn nested -> List<List<Int>> = `[`[1], `[2]]\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", source);
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.message_key != "parser.template-list-open"),
+            "{diagnostics:#?}"
+        );
+        let tokens = crate::lex("lists.ssrg", source);
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| {
+                    token.kind == crate::TokenKind::PunctuationListLeft && token.raw == "`["
+                })
+                .count(),
+            5
+        );
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| token.kind == crate::TokenKind::LiteralTemplate)
+                .count(),
+            2
+        );
+    }
+
+    #[test]
     fn reports_an_invalid_string_escape_with_human_guidance() {
         let diagnostics = parse_diagnostics(
             "main.ssrg",

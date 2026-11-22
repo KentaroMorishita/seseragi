@@ -23,9 +23,11 @@ pub(crate) fn template_end(source: &str, start: usize) -> usize {
 /// A template that starts with `` `[ `` and closes on the same line.
 ///
 /// `` `[ `` is otherwise a List literal. The closer is a later backtick on
-/// that same line, outside a string, a character literal, and a `//` comment.
-/// A backtick followed by `[` is the next List literal. Another backtick
-/// later on the line means a real template follows the list.
+/// that same line, outside a string, a character literal, a `//` comment,
+/// and a template element. A backtick in element position opens that element
+/// when the next byte is not `[`. A backtick followed by `[` is a List
+/// literal, including a nested one. Another backtick later on the line means
+/// a real template follows the list.
 pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Option<usize> {
     if !source[start..].starts_with("`[") {
         return None;
@@ -34,31 +36,58 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
         .find(['\n', '\r'])
         .map(|offset| start + offset)
         .unwrap_or(source.len());
-    let mut cursor = start + 1;
+    let mut cursor = start + 2;
+    let mut element_position = true;
     while cursor < line_end {
         let rest = &source[cursor..line_end];
+        if rest.starts_with([' ', '\t']) {
+            cursor += 1;
+            continue;
+        }
         if rest.starts_with("//") {
             return None;
         }
         if rest.starts_with('"') || rest.starts_with('\'') {
             let delimiter = rest.chars().next()?;
             cursor = quoted_end_on_line(source, cursor, delimiter, line_end)?;
+            element_position = false;
             continue;
         }
         if rest.starts_with('`') {
             let after = cursor + 1;
-            // `` `[ `` on the same line is the next List literal, not this template's closer.
+            // `` `[ `` is a List literal, nested or following, not a template closer.
             if source[after..].starts_with('[') {
                 return None;
+            }
+            if element_position {
+                cursor = template_element_end_on_line(source, cursor, line_end)?;
+                element_position = false;
+                continue;
             }
             if source[after..line_end].contains('`') {
                 return None;
             }
             return Some(after);
         }
+        if rest.starts_with(',') {
+            cursor += 1;
+            element_position = true;
+            continue;
+        }
+        element_position = false;
         advance_char(source, &mut cursor);
     }
     None
+}
+
+/// End of a template element that opens at `open` and closes before `line_end`.
+fn template_element_end_on_line(source: &str, open: usize, line_end: usize) -> Option<usize> {
+    let line = source.get(open..line_end)?;
+    if !line.starts_with('`') {
+        return None;
+    }
+    let (_, end) = scan_nested(line, 1, ScanContext::Template)?;
+    Some(open + end)
 }
 
 /// End of a quote that opens at `start` and closes before `line_end`.
@@ -274,6 +303,25 @@ mod tests {
         let later = "fn values -> List<String> = `[\"${\"]\nfn later -> String = `later`\n";
         let open = later.find("`[").unwrap();
         assert_eq!(single_line_bracket_template_end(later, open), None);
+    }
+
+    #[test]
+    fn keeps_a_list_whose_element_is_a_multiline_template() {
+        let source = "fn values -> List<String> = `[`hello\nworld`]\n";
+        let open = source.find("`[").unwrap();
+        assert_eq!(single_line_bracket_template_end(source, open), None);
+
+        let second = "fn values -> List<String> = `[1, `hello\nworld`]\n";
+        let open = second.find("`[").unwrap();
+        assert_eq!(single_line_bracket_template_end(second, open), None);
+
+        let same_line = "fn values -> List<String> = `[`hello`]\n";
+        let open = same_line.find("`[").unwrap();
+        assert_eq!(single_line_bracket_template_end(same_line, open), None);
+
+        let nested = "let list = `[`[1], `ok`, `[2]]\n";
+        let open = nested.find("`[").unwrap();
+        assert_eq!(single_line_bracket_template_end(nested, open), None);
     }
 
     #[test]
