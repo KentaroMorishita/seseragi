@@ -1453,6 +1453,37 @@ mod tests {
     }
 
     #[test]
+    fn keeps_list_literals_when_a_backtick_is_quoted_or_commented() {
+        let source = "fn quoted -> List<String> = `[\"`\"]\nfn noted -> List<Int> = `[1, 2] // note `\nfn braced -> List<String> = `[\"${\"]\nfn later -> String = `later`\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", source);
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.message_key != "parser.template-list-open"),
+            "{diagnostics:#?}"
+        );
+        let tokens = crate::lex("lists.ssrg", source);
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| {
+                    token.kind == crate::TokenKind::PunctuationListLeft && token.raw == "`["
+                })
+                .count(),
+            3
+        );
+        assert!(
+            tokens
+                .tokens
+                .iter()
+                .any(|token| token.kind == crate::TokenKind::LiteralTemplate
+                    && token.raw == "`later`")
+        );
+    }
+
+    #[test]
     fn reports_an_invalid_string_escape_with_human_guidance() {
         let diagnostics = parse_diagnostics(
             "main.ssrg",

@@ -22,26 +22,67 @@ pub(crate) fn template_end(source: &str, start: usize) -> usize {
 
 /// A template that starts with `` `[ `` and closes on the same line.
 ///
-/// `` `[ `` is otherwise a List literal. A later backtick on that line is the
-/// template closer, unless another backtick after it starts a real template.
+/// `` `[ `` is otherwise a List literal. The closer is a later backtick on
+/// that same line, outside a string, a character literal, and a `//` comment.
+/// A backtick followed by `[` is the next List literal. Another backtick
+/// later on the line means a real template follows the list.
 pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Option<usize> {
     if !source[start..].starts_with("`[") {
         return None;
     }
-    let (_, end) = scan_nested(source, start + 1, ScanContext::Template)?;
-    // `` `[ `` on the same line is the next List literal, not this template's closer.
-    if source[end..].starts_with('[') {
-        return None;
+    let line_end = source[start..]
+        .find(['\n', '\r'])
+        .map(|offset| start + offset)
+        .unwrap_or(source.len());
+    let mut cursor = start + 1;
+    while cursor < line_end {
+        let rest = &source[cursor..line_end];
+        if rest.starts_with("//") {
+            return None;
+        }
+        if rest.starts_with('"') || rest.starts_with('\'') {
+            let delimiter = rest.chars().next()?;
+            cursor = quoted_end_on_line(source, cursor, delimiter, line_end)?;
+            continue;
+        }
+        if rest.starts_with('`') {
+            let after = cursor + 1;
+            // `` `[ `` on the same line is the next List literal, not this template's closer.
+            if source[after..].starts_with('[') {
+                return None;
+            }
+            if source[after..line_end].contains('`') {
+                return None;
+            }
+            return Some(after);
+        }
+        advance_char(source, &mut cursor);
     }
-    let span = &source[start..end];
-    if span.contains('\n') || span.contains('\r') {
-        return None;
+    None
+}
+
+/// End of a quote that opens at `start` and closes before `line_end`.
+fn quoted_end_on_line(
+    source: &str,
+    start: usize,
+    delimiter: char,
+    line_end: usize,
+) -> Option<usize> {
+    let mut cursor = start + delimiter.len_utf8();
+    while cursor < line_end {
+        let character = source[cursor..].chars().next()?;
+        cursor += character.len_utf8();
+        if character == '\\' {
+            let escaped = source.get(cursor..)?.chars().next()?;
+            cursor += escaped.len_utf8();
+            if cursor > line_end {
+                return None;
+            }
+        } else if character == delimiter {
+            return Some(cursor);
+        }
     }
-    let rest_of_line = source[end..].split(['\n', '\r']).next().unwrap_or("");
-    if rest_of_line.contains('`') {
-        return None;
-    }
-    Some(end)
+    None
 }
 
 pub(crate) fn scan_template(raw: &str) -> TemplateScan {
@@ -218,6 +259,21 @@ mod tests {
         );
         let list = source.rfind("`[").unwrap();
         assert_eq!(single_line_bracket_template_end(source, list), None);
+    }
+
+    #[test]
+    fn keeps_a_list_when_a_backtick_is_quoted_or_commented() {
+        let quoted = "fn values -> List<String> = `[\"`\"]\n";
+        let open = quoted.find("`[").unwrap();
+        assert_eq!(single_line_bracket_template_end(quoted, open), None);
+
+        let comment = "fn values -> List<Int> = `[1, 2] // note `\n";
+        let open = comment.find("`[").unwrap();
+        assert_eq!(single_line_bracket_template_end(comment, open), None);
+
+        let later = "fn values -> List<String> = `[\"${\"]\nfn later -> String = `later`\n";
+        let open = later.find("`[").unwrap();
+        assert_eq!(single_line_bracket_template_end(later, open), None);
     }
 
     #[test]
