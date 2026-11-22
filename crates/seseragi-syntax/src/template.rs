@@ -24,16 +24,18 @@ pub(crate) fn template_end(source: &str, start: usize) -> usize {
 ///
 /// `` `[ `` is otherwise a List literal. The closer is a later backtick on
 /// that same line, outside a string, a character literal, a `//` comment,
-/// and any template operand inside unclosed brackets. A backtick followed by
-/// `[` is a List literal, including a nested one. Another backtick later on
-/// the line, or template text directly following the backtick, means a real
-/// template follows the list.
+/// and any template operand inside unclosed brackets or in an operand
+/// position after a completed list. A backtick followed by `[` is a List
+/// literal, including a nested one. Another backtick later on the line, or
+/// template text directly following the backtick, means a real template
+/// follows the list.
 pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Option<usize> {
     if !source[start..].starts_with("`[") {
         return None;
     }
     let mut cursor = start + 2;
     let mut bracket_depth: usize = 1;
+    let mut operand_position = true;
     while cursor < source.len() {
         let rest = &source[cursor..];
         if rest.starts_with(['\n', '\r']) {
@@ -41,6 +43,7 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
         }
         if rest.starts_with([' ', '\t']) {
             cursor += 1;
+            operand_position = true;
             continue;
         }
         if rest.starts_with("//") {
@@ -49,6 +52,7 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
         if rest.starts_with('"') || rest.starts_with('\'') {
             let delimiter = rest.chars().next()?;
             cursor = quoted_end_on_line(source, cursor, delimiter)?;
+            operand_position = false;
             continue;
         }
         if rest.starts_with('`') {
@@ -59,9 +63,12 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
             }
             if bracket_depth > 0 {
                 cursor = template_element_end_on_line(source, cursor)?;
+                operand_position = false;
                 continue;
             }
-            if !can_follow_template_closer(&source[after..]) || has_backtick_on_line(source, after)
+            if operand_position
+                || !can_follow_template_closer(&source[after..])
+                || has_backtick_on_line(source, after)
             {
                 return None;
             }
@@ -70,11 +77,13 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
         if rest.starts_with('[') {
             bracket_depth += 1;
             cursor += 1;
+            operand_position = true;
             continue;
         }
         if rest.starts_with(']') {
             bracket_depth = bracket_depth.saturating_sub(1);
             cursor += 1;
+            operand_position = false;
             continue;
         }
         let character = rest.chars().next()?;
@@ -87,11 +96,37 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
             {
                 advance_char(source, &mut cursor);
             }
+            operand_position = false;
             continue;
         }
+        operand_position = opens_template_operand(character);
         cursor += character.len_utf8();
     }
     None
+}
+
+fn opens_template_operand(character: char) -> bool {
+    matches!(
+        character,
+        '(' | '{'
+            | ','
+            | ';'
+            | ':'
+            | '='
+            | '<'
+            | '>'
+            | '+'
+            | '-'
+            | '*'
+            | '/'
+            | '%'
+            | '&'
+            | '|'
+            | '^'
+            | '~'
+            | '$'
+            | '@'
+    )
 }
 
 fn can_follow_template_closer(rest: &str) -> bool {
@@ -418,7 +453,12 @@ mod tests {
             "fn values -> List<String> = `[']', `hello\nworld`]\n",
             "fn values -> List<String> = `[x', `hello\nworld`]\n",
             "fn pair -> (List<Int>, String) = (`[1, 2], `hello\nworld`)\n",
+            "fn pair -> (List<Int>, String) = (`[1, 2], `\nworld`)\n",
+            "fn pair -> (List<Int>, String) = (`[1, 2], ` world\nnext`)\n",
+            "fn pair -> (List<Int>, String) = (`[1, 2],`\nworld`)\n",
             "fn pair -> String = combine `[1, 2] `hello\nworld`\n",
+            "fn pair -> String = combine `[1, 2] `\nworld`\n",
+            "fn record -> { items: List<Int>, body: String } = { items: `[1, 2], body: `\nworld` }\n",
         ];
         for source in cases {
             let open = source.find("`[").unwrap();
@@ -433,6 +473,9 @@ mod tests {
             "fn a -> String = `[a [b]] c`\n",
             "fn a -> String = `[ok] (yes)`\n",
             "fn a -> String = `[don't] ok`\n",
+            "fn a -> String = `[ok] done!`\n",
+            "fn a -> String = `[ok] done.`\n",
+            "fn a -> String = `[ok] ready?`\n",
         ];
         for source in malformed_cases {
             let open = source.find("`[").unwrap();

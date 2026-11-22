@@ -1522,7 +1522,10 @@ fn parens -> List<String> = `[(`hello\nworld`)]\n\
 fn applied f: String -> String -> List<String> = `[f `hello\nworld`]\n\
 fn record -> List<{ text: String }> = `[{ text: `hello\nworld` }]\n\
 fn nested_array -> List<Array<String>> = `[[`hello\nworld`]]\n\
-fn pair -> (List<Int>, String) = (`[1, 2], `hello\nworld`)\n";
+fn pair -> (List<Int>, String) = (`[1, 2], `hello\nworld`)\n\
+fn pair_newline -> (List<Int>, String) = (`[1, 2], `\nworld`)\n\
+fn pair_space -> (List<Int>, String) = (`[1, 2], ` world\nnext`)\n\
+fn record_after -> { items: List<Int>, body: String } = { items: `[1, 2], body: `\nworld` }\n";
         let diagnostics = parse_diagnostics("lists.ssrg", source);
         assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
         let tokens = crate::lex("lists.ssrg", source);
@@ -1534,7 +1537,7 @@ fn pair -> (List<Int>, String) = (`[1, 2], `hello\nworld`)\n";
                     token.kind == crate::TokenKind::PunctuationListLeft && token.raw == "`["
                 })
                 .count(),
-            5
+            8
         );
         assert_eq!(
             tokens
@@ -1542,7 +1545,7 @@ fn pair -> (List<Int>, String) = (`[1, 2], `hello\nworld`)\n";
                 .iter()
                 .filter(|token| token.kind == crate::TokenKind::LiteralTemplate)
                 .count(),
-            5
+            8
         );
     }
 
