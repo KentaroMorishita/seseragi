@@ -39,6 +39,11 @@ pub(crate) use validation::declaration_diagnostics;
 pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> SurfaceModule {
     let _scope = crate::resource::ParseScope::new();
     let stream = lex(source_name, source);
+    parse_surface_ast_from_tokens(&stream)
+}
+
+pub(crate) fn parse_surface_ast_from_tokens(stream: &crate::token::TokenStream) -> SurfaceModule {
+    let _scope = crate::resource::ParseScope::new();
     let non_eof_token_count = stream
         .tokens
         .iter()
@@ -129,7 +134,7 @@ pub fn parse_surface_ast(source_name: impl Into<String>, source: &str) -> Surfac
 
     SurfaceModule {
         schema: 1,
-        source: stream.source,
+        source: stream.source.clone(),
         imports: parser.parse_imports(),
         foreign_modules,
         declarations,

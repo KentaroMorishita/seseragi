@@ -2,7 +2,7 @@ use crate::cst::parse_cst_from_tokens;
 use crate::decode_string_literal;
 use crate::lexer::lex;
 use crate::literal::decode_template_text;
-use crate::surface::parse_surface_ast;
+use crate::surface::parse_surface_ast_from_tokens;
 use crate::surface_model::SurfaceDecl;
 use crate::template::{scan_template, TemplateChunk};
 use crate::{CstArtifact, CstError, CstMissing, CstNode, Token, TokenKind};
@@ -179,6 +179,10 @@ impl Diagnostic {
                 "Match coverage exceeded its source-complexity limit".to_owned()
             }
             "parser.expected-expression" => "Expected an expression here".to_owned(),
+            "parser.template-list-open" => {
+                "A template string cannot start with `[`, which is read as a List literal."
+                    .to_owned()
+            }
             "parser.expected-pattern" => "Expected a pattern here".to_owned(),
             "parser.match-guard-if" => "A match guard is written with `when`".to_owned(),
             "parser.match-or-pattern" => "A match arm takes one pattern".to_owned(),
@@ -418,6 +422,9 @@ impl Diagnostic {
             "parser.expected-expression" | "parser.error" => {
                 "Complete the expression at the highlighted location."
             }
+            "parser.template-list-open" => {
+                "Embed the opening bracket, as in `${\"[\"}${tag}]`."
+            }
             "parser.module-expression-statement" => {
                 "Bind a pure value with let, or put the expression in a function body."
             }
@@ -592,7 +599,49 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
     let source_name = source_name.into();
     let _scope = crate::resource::ParseScope::new();
     let tokens = lex(source_name.clone(), source);
-    let surface = parse_surface_ast(&source_name, source);
+    let pass1_unclosed = unclosed_template_count(&tokens.tokens);
+    let has_list_open = tokens
+        .tokens
+        .iter()
+        .any(|token| token.kind == TokenKind::PunctuationListLeft);
+    let artifact = parse_diagnostics_from_tokens(source_name.clone(), tokens);
+    if crate::resource::exceeded().is_some()
+        || artifact.diagnostics.is_empty()
+        || !has_list_open
+        || !has_template_spill_symptom(pass1_unclosed, &artifact.diagnostics)
+    {
+        return artifact;
+    }
+    let recovered = crate::lexer::lex_recovering_bracket_templates(source_name.clone(), source);
+    let has_bracket_template = recovered
+        .tokens
+        .iter()
+        .any(|token| token.kind == TokenKind::Unknown && token.raw.starts_with("`["));
+    if !has_bracket_template {
+        return artifact;
+    }
+    let pass2_unclosed = unclosed_template_count(&recovered.tokens);
+    let pass2 = parse_diagnostics_from_tokens(source_name, recovered);
+    if crate::resource::exceeded().is_some() {
+        return artifact;
+    }
+    if recovery_improves_template_spill(
+        pass1_unclosed,
+        &artifact.diagnostics,
+        pass2_unclosed,
+        &pass2.diagnostics,
+    ) {
+        pass2
+    } else {
+        artifact
+    }
+}
+
+fn parse_diagnostics_from_tokens(
+    source_name: String,
+    tokens: crate::TokenStream,
+) -> DiagnosticArtifact {
+    let surface = parse_surface_ast_from_tokens(&tokens);
     if let Some(span) = crate::resource::exceeded() {
         return resource_diagnostics(source_name, span);
     }
@@ -607,6 +656,7 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
         return resource_diagnostics(source_name, span);
     }
     let mut artifact = diagnostics_from_cst(&cst, &source_tokens);
+    append_diagnostics(&mut artifact, bracket_template_diagnostics(&source_tokens));
     let surface_declaration_diagnostics = missing_surface_declaration_diagnostics(
         &cst.root,
         &surface.declarations,
@@ -660,6 +710,41 @@ pub fn parse_diagnostics(source_name: impl Into<String>, source: &str) -> Diagno
     artifact
 }
 
+fn unclosed_template_count(tokens: &[Token]) -> usize {
+    tokens
+        .iter()
+        .filter(|token| {
+            token.kind == TokenKind::LiteralTemplate
+                && !crate::template::scan_template(&token.raw).closed
+        })
+        .count()
+}
+
+fn has_template_spill_symptom(unclosed_templates: usize, diagnostics: &[Diagnostic]) -> bool {
+    unclosed_templates > 0
+        || diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "SES-P0201")
+}
+
+fn recovery_improves_template_spill(
+    before_unclosed: usize,
+    before_diagnostics: &[Diagnostic],
+    after_unclosed: usize,
+    after_diagnostics: &[Diagnostic],
+) -> bool {
+    let before_escapes = before_diagnostics
+        .iter()
+        .filter(|diagnostic| diagnostic.code == "SES-P0201")
+        .count();
+    let after_escapes = after_diagnostics
+        .iter()
+        .filter(|diagnostic| diagnostic.code == "SES-P0201")
+        .count();
+    after_unclosed < before_unclosed
+        || (after_unclosed == before_unclosed && after_escapes < before_escapes)
+}
+
 /// Report diagnostics in source order, whichever check found them first, and
 /// number them in that order.
 pub fn order_by_source_position(diagnostics: &mut [Diagnostic]) {
@@ -688,6 +773,26 @@ fn resource_diagnostics(source: String, span: crate::ByteSpan) -> DiagnosticArti
             type_difference: None,
         }],
     }
+}
+
+fn bracket_template_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
+    tokens
+        .iter()
+        .filter(|token| token.kind == TokenKind::Unknown && token.raw.starts_with("`["))
+        .map(|token| Diagnostic {
+            type_difference: None,
+            id: String::new(),
+            code: "SES-P0001".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "parser.template-list-open".to_owned(),
+            primary: ByteRange {
+                start: token.start,
+                end: token.start + 2,
+            },
+            related: Vec::new(),
+            fixes: Vec::new(),
+        })
+        .collect()
 }
 
 fn template_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
@@ -1205,6 +1310,7 @@ fn message_key_for_code(code: &str) -> &str {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::surface::parse_surface_ast;
 
     #[test]
     fn internal_compiler_error_has_an_explicit_message_and_reporting_note() {
@@ -1350,6 +1456,215 @@ mod tests {
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 30, end: 32 }
         );
+    }
+
+    #[test]
+    fn reports_a_template_that_starts_with_a_list_open_at_that_backtick() {
+        let sources = [
+            "fn label flag: Bool -> String = match flag {\n  True -> `[ok] yes`\n  False -> `[ng] no`\n}\n\nfn shout s: String -> String = (\\err -> err) s\n",
+            "fn a -> String = `[a]`\nfn f s: String -> String = (\\err -> err) s\nfn c -> String = `c`\n",
+            "pub effect fn main -> Unit with Console fails ConsoleError =\n  println `[ok]`\n",
+        ];
+        for source in sources {
+            let diagnostics = parse_diagnostics("repro.ssrg", source);
+            assert!(
+                diagnostics
+                    .diagnostics
+                    .iter()
+                    .all(|diagnostic| diagnostic.code != "SES-P0201"),
+                "{source}\n{diagnostics:#?}"
+            );
+            assert!(
+                diagnostics
+                    .diagnostics
+                    .iter()
+                    .all(|diagnostic| diagnostic.message_key != "parser.expected-expression"),
+                "{source}\n{diagnostics:#?}"
+            );
+            let opens = diagnostics
+                .diagnostics
+                .iter()
+                .filter(|diagnostic| diagnostic.message_key == "parser.template-list-open")
+                .collect::<Vec<_>>();
+            assert_eq!(
+                opens.len(),
+                source.matches("`[").count(),
+                "{source}\n{diagnostics:#?}"
+            );
+            for diagnostic in opens {
+                assert_eq!(diagnostic.code, "SES-P0001");
+                assert_eq!(
+                    &source[diagnostic.primary.start..diagnostic.primary.end],
+                    "`["
+                );
+                assert_eq!(
+                    diagnostic.message(),
+                    "A template string cannot start with `[`, which is read as a List literal."
+                );
+                assert_eq!(
+                    diagnostic.helps(),
+                    vec!["Embed the opening bracket, as in `${\"[\"}${tag}]`.".to_owned()]
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn keeps_list_literals_and_patterns_when_no_template_closes_on_that_line() {
+        let source = "pub fn values -> List<Int> = `[1, 2, 3]\npub fn empty -> List<Int> = `[]\nfn head values: List<Int> -> Int = match values { `[] -> 0; `[head, ...tail] -> head }\nfn both -> String = `[1, 2] `ok`\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", source);
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.message_key != "parser.template-list-open"),
+            "{diagnostics:#?}"
+        );
+        let tokens = crate::lex("lists.ssrg", source);
+        assert!(tokens.tokens.iter().any(|token| {
+            token.kind == crate::TokenKind::PunctuationListLeft && token.raw == "`["
+        }));
+        assert!(tokens
+            .tokens
+            .iter()
+            .any(|token| token.kind == crate::TokenKind::LiteralTemplate && token.raw == "`ok`"));
+    }
+
+    #[test]
+    fn keeps_list_literals_when_a_backtick_is_quoted_or_commented() {
+        let source = "fn quoted -> List<String> = `[\"`\"]\nfn noted -> List<Int> = `[1, 2] // note `\nfn braced -> List<String> = `[\"${\"]\nfn later -> String = `later`\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", source);
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.message_key != "parser.template-list-open"),
+            "{diagnostics:#?}"
+        );
+        let tokens = crate::lex("lists.ssrg", source);
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| {
+                    token.kind == crate::TokenKind::PunctuationListLeft && token.raw == "`["
+                })
+                .count(),
+            3
+        );
+        assert!(
+            tokens
+                .tokens
+                .iter()
+                .any(|token| token.kind == crate::TokenKind::LiteralTemplate
+                    && token.raw == "`later`")
+        );
+    }
+
+    #[test]
+    fn keeps_a_list_whose_element_is_a_multiline_template() {
+        let source = "fn values -> List<String> = `[`hello\nworld`]\nfn second -> List<String> = `[1, `hello\nworld`]\nfn nested -> List<List<Int>> = `[`[1], `[2]]\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", source);
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.message_key != "parser.template-list-open"),
+            "{diagnostics:#?}"
+        );
+        let tokens = crate::lex("lists.ssrg", source);
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| {
+                    token.kind == crate::TokenKind::PunctuationListLeft && token.raw == "`["
+                })
+                .count(),
+            5
+        );
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| token.kind == crate::TokenKind::LiteralTemplate)
+                .count(),
+            2
+        );
+    }
+
+    #[test]
+    fn keeps_a_list_with_multiline_template_operands_inside_element_expressions() {
+        let source = "\
+fn parens -> List<String> = `[(`hello\nworld`)]\n\
+fn applied f: String -> String -> List<String> = `[f `hello\nworld`]\n\
+fn record -> List<{ text: String }> = `[{ text: `hello\nworld` }]\n\
+fn nested_array -> List<Array<String>> = `[[`hello\nworld`]]\n\
+fn pair -> (List<Int>, String) = (`[1, 2], `hello\nworld`)\n\
+fn pair_newline -> (List<Int>, String) = (`[1, 2], `\nworld`)\n\
+fn pair_space -> (List<Int>, String) = (`[1, 2], ` world\nnext`)\n\
+fn record_after -> { items: List<Int>, body: String } = { items: `[1, 2], body: `\nworld` }\n\
+fn f xs: List<Int> -> s: String -> String = s\n\
+fn adjacent -> String = f `[1]`\nworld`\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", source);
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+        let tokens = crate::lex("lists.ssrg", source);
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| {
+                    token.kind == crate::TokenKind::PunctuationListLeft && token.raw == "`["
+                })
+                .count(),
+            9
+        );
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| token.kind == crate::TokenKind::LiteralTemplate)
+                .count(),
+            9
+        );
+    }
+
+    #[test]
+    fn preserves_adjacent_template_arguments_even_with_unrelated_errors() {
+        let with_syntax_error = "\
+fn f xs: List<Int> -> s: String -> String = s\n\
+fn adjacent -> String = f `[1]`\nworld`\n\
+pub let broken =\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", with_syntax_error);
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.message_key != "parser.template-list-open"),
+            "{diagnostics:#?}"
+        );
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .any(|diagnostic| diagnostic.message_key == "parser.expected-expression"),
+            "{diagnostics:#?}"
+        );
+
+        let with_escape_error = "\
+fn f xs: List<Int> -> s: String -> String = s\n\
+fn adjacent -> String = f `[1]`\nworld`\n\
+pub let bad: String = \"\\q\"\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", with_escape_error);
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.message_key != "parser.template-list-open"),
+            "{diagnostics:#?}"
+        );
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0201");
     }
 
     #[test]

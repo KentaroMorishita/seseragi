@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.62.0] - 2026-11-22
+
+### Changed
+
+- Minor version bump to mark the Playground v2 generational change introduced in `0.61.190` (redesigned Playground, Tour, Deep Dive, Search `⌘K`, Run timing, and network permission prompt). Existing Seseragi programs require no migration.
+
+### Fixed
+
+- A template string that starts with `[` and closes on the same line is an error at that `[`. The message explains that this spelling is a List literal, and shows how to embed the opening bracket, as in `${"["}${tag}]`. List literals and list patterns keep their existing spelling, including `[1, 2]`, `[]`, and `[head, ...tail]`.
+
 ## [0.61.190] - 2026-11-19
 
 ### Changed
