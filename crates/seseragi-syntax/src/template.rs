@@ -517,7 +517,7 @@ mod tests {
         for index in 0..count {
             assert_eq!(single_line_bracket_template_end(&compact, index * 4), None);
         }
-        let stream = crate::lex("compact.ssrg", &compact);
+        let stream = crate::lexer::lex_recovering_bracket_templates("compact.ssrg", &compact);
         let list_opens = stream
             .tokens
             .iter()

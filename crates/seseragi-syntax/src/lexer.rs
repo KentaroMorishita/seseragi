@@ -2,10 +2,26 @@ use crate::token::{Token, TokenKind, TokenStream};
 use unicode_ident::{is_xid_continue, is_xid_start};
 
 pub fn lex(source_name: impl Into<String>, source: &str) -> TokenStream {
+    lex_with_options(source_name, source, false)
+}
+
+pub(crate) fn lex_recovering_bracket_templates(
+    source_name: impl Into<String>,
+    source: &str,
+) -> TokenStream {
+    lex_with_options(source_name, source, true)
+}
+
+fn lex_with_options(
+    source_name: impl Into<String>,
+    source: &str,
+    recover_bracket_templates: bool,
+) -> TokenStream {
     let mut lexer = Lexer {
         source,
         cursor: 0,
         tokens: Vec::new(),
+        recover_bracket_templates,
     };
     lexer.scan_all();
     TokenStream::new(source_name, lexer.tokens)
@@ -15,6 +31,7 @@ struct Lexer<'source> {
     source: &'source str,
     cursor: usize,
     tokens: Vec<Token>,
+    recover_bracket_templates: bool,
 }
 
 impl Lexer<'_> {
@@ -72,11 +89,15 @@ impl Lexer<'_> {
                 '\'' => self.scan_quoted(TokenKind::LiteralChar, '\''),
                 '"' => self.scan_quoted(TokenKind::LiteralString, '"'),
                 '`' if self.starts_with("`[") => {
-                    if let Some(end) =
-                        crate::template::single_line_bracket_template_end(self.source, start)
-                    {
-                        self.cursor = end;
-                        self.push(TokenKind::Unknown, start, end);
+                    if self.recover_bracket_templates {
+                        if let Some(end) =
+                            crate::template::single_line_bracket_template_end(self.source, start)
+                        {
+                            self.cursor = end;
+                            self.push(TokenKind::Unknown, start, end);
+                        } else {
+                            self.bump_fixed_raw(TokenKind::PunctuationListLeft, start, "`[");
+                        }
                     } else {
                         self.bump_fixed_raw(TokenKind::PunctuationListLeft, start, "`[");
                     }
