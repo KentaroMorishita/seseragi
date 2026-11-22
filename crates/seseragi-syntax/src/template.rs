@@ -24,16 +24,16 @@ pub(crate) fn template_end(source: &str, start: usize) -> usize {
 ///
 /// `` `[ `` is otherwise a List literal. The closer is a later backtick on
 /// that same line, outside a string, a character literal, a `//` comment,
-/// and a template element. A backtick in element position opens that element
-/// when the next byte is not `[`. A backtick followed by `[` is a List
-/// literal, including a nested one. Another backtick later on the line means
-/// a real template follows the list.
+/// and any template operand inside unclosed brackets. A backtick followed by
+/// `[` is a List literal, including a nested one. Another backtick later on
+/// the line, or template text directly following the backtick, means a real
+/// template follows the list.
 pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Option<usize> {
     if !source[start..].starts_with("`[") {
         return None;
     }
     let mut cursor = start + 2;
-    let mut element_position = true;
+    let mut bracket_depth: usize = 1;
     while cursor < source.len() {
         let rest = &source[cursor..];
         if rest.starts_with(['\n', '\r']) {
@@ -49,7 +49,6 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
         if rest.starts_with('"') || rest.starts_with('\'') {
             let delimiter = rest.chars().next()?;
             cursor = quoted_end_on_line(source, cursor, delimiter)?;
-            element_position = false;
             continue;
         }
         if rest.starts_with('`') {
@@ -58,25 +57,79 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
             if source[after..].starts_with('[') {
                 return None;
             }
-            if element_position {
+            if bracket_depth > 0 {
                 cursor = template_element_end_on_line(source, cursor)?;
-                element_position = false;
                 continue;
             }
-            if has_backtick_on_line(source, after) {
+            if !can_follow_template_closer(&source[after..]) || has_backtick_on_line(source, after)
+            {
                 return None;
             }
             return Some(after);
         }
-        if rest.starts_with(',') {
+        if rest.starts_with('[') {
+            bracket_depth += 1;
             cursor += 1;
-            element_position = true;
             continue;
         }
-        element_position = false;
-        advance_char(source, &mut cursor);
+        if rest.starts_with(']') {
+            bracket_depth = bracket_depth.saturating_sub(1);
+            cursor += 1;
+            continue;
+        }
+        let character = rest.chars().next()?;
+        if character == '_' || unicode_ident::is_xid_start(character) {
+            cursor += character.len_utf8();
+            while cursor < source.len()
+                && source[cursor..].chars().next().is_some_and(|character| {
+                    character == '\'' || unicode_ident::is_xid_continue(character)
+                })
+            {
+                advance_char(source, &mut cursor);
+            }
+            continue;
+        }
+        cursor += character.len_utf8();
     }
     None
+}
+
+fn can_follow_template_closer(rest: &str) -> bool {
+    let Some(next) = rest.chars().next() else {
+        return true;
+    };
+    if rest.starts_with("${") {
+        return false;
+    }
+    matches!(
+        next,
+        '\n' | '\r'
+            | ' '
+            | '\t'
+            | ')'
+            | ']'
+            | '}'
+            | ','
+            | ';'
+            | '.'
+            | ':'
+            | '!'
+            | '$'
+            | '%'
+            | '&'
+            | '*'
+            | '+'
+            | '-'
+            | '/'
+            | '<'
+            | '='
+            | '>'
+            | '?'
+            | '@'
+            | '^'
+            | '|'
+            | '~'
+    )
 }
 
 fn has_backtick_on_line(source: &str, start: usize) -> bool {
@@ -353,6 +406,45 @@ mod tests {
     }
 
     #[test]
+    fn keeps_a_list_with_multiline_template_operands_inside_element_expressions() {
+        let cases = [
+            "fn values -> List<String> = `[(`hello\nworld`)]\n",
+            "fn values -> List<(Int, String)> = `[(1, `hello\nworld`)]\n",
+            "fn values -> List<String> = `[f `hello\nworld`]\n",
+            "fn values -> List<{ text: String }> = `[{ text: `hello\nworld` }]\n",
+            "fn values -> List<Array<String>> = `[[`hello\nworld`]]\n",
+            "fn values -> List<String> = `[xs[0], `hello\nworld`]\n",
+            "fn values -> List<String> = `[\"]\", `hello\nworld`]\n",
+            "fn values -> List<String> = `[']', `hello\nworld`]\n",
+            "fn values -> List<String> = `[x', `hello\nworld`]\n",
+            "fn pair -> (List<Int>, String) = (`[1, 2], `hello\nworld`)\n",
+            "fn pair -> String = combine `[1, 2] `hello\nworld`\n",
+        ];
+        for source in cases {
+            let open = source.find("`[").unwrap();
+            assert_eq!(
+                single_line_bracket_template_end(source, open),
+                None,
+                "{source:?}"
+            );
+        }
+
+        let malformed_cases = [
+            "fn a -> String = `[a [b]] c`\n",
+            "fn a -> String = `[ok] (yes)`\n",
+            "fn a -> String = `[don't] ok`\n",
+        ];
+        for source in malformed_cases {
+            let open = source.find("`[").unwrap();
+            assert_eq!(
+                single_line_bracket_template_end(source, open),
+                Some(source.find('\n').unwrap()),
+                "{source:?}"
+            );
+        }
+    }
+
+    #[test]
     fn stops_same_line_scan_at_line_breaks_inside_escapes_quotes_and_interpolations() {
         let cases = [
             "fn values -> List<String> = `[`a\\\n`]\n",
@@ -398,6 +490,14 @@ mod tests {
         for index in 0..count {
             assert_eq!(
                 single_line_bracket_template_end(&with_templates, index * 9),
+                None
+            );
+        }
+
+        let parenthesized = "`[(`a`)];".repeat(count);
+        for index in 0..count {
+            assert_eq!(
+                single_line_bracket_template_end(&parenthesized, index * 9),
                 None
             );
         }

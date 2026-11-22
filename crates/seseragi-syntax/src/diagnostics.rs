@@ -1516,6 +1516,37 @@ mod tests {
     }
 
     #[test]
+    fn keeps_a_list_with_multiline_template_operands_inside_element_expressions() {
+        let source = "\
+fn parens -> List<String> = `[(`hello\nworld`)]\n\
+fn applied f: String -> String -> List<String> = `[f `hello\nworld`]\n\
+fn record -> List<{ text: String }> = `[{ text: `hello\nworld` }]\n\
+fn nested_array -> List<Array<String>> = `[[`hello\nworld`]]\n\
+fn pair -> (List<Int>, String) = (`[1, 2], `hello\nworld`)\n";
+        let diagnostics = parse_diagnostics("lists.ssrg", source);
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+        let tokens = crate::lex("lists.ssrg", source);
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| {
+                    token.kind == crate::TokenKind::PunctuationListLeft && token.raw == "`["
+                })
+                .count(),
+            5
+        );
+        assert_eq!(
+            tokens
+                .tokens
+                .iter()
+                .filter(|token| token.kind == crate::TokenKind::LiteralTemplate)
+                .count(),
+            5
+        );
+    }
+
+    #[test]
     fn reports_an_invalid_string_escape_with_human_guidance() {
         let diagnostics = parse_diagnostics(
             "main.ssrg",
