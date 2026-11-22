@@ -32,14 +32,13 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
     if !source[start..].starts_with("`[") {
         return None;
     }
-    let line_end = source[start..]
-        .find(['\n', '\r'])
-        .map(|offset| start + offset)
-        .unwrap_or(source.len());
     let mut cursor = start + 2;
     let mut element_position = true;
-    while cursor < line_end {
-        let rest = &source[cursor..line_end];
+    while cursor < source.len() {
+        let rest = &source[cursor..];
+        if rest.starts_with(['\n', '\r']) {
+            return None;
+        }
         if rest.starts_with([' ', '\t']) {
             cursor += 1;
             continue;
@@ -49,7 +48,7 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
         }
         if rest.starts_with('"') || rest.starts_with('\'') {
             let delimiter = rest.chars().next()?;
-            cursor = quoted_end_on_line(source, cursor, delimiter, line_end)?;
+            cursor = quoted_end_on_line(source, cursor, delimiter)?;
             element_position = false;
             continue;
         }
@@ -60,11 +59,11 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
                 return None;
             }
             if element_position {
-                cursor = template_element_end_on_line(source, cursor, line_end)?;
+                cursor = template_element_end_on_line(source, cursor)?;
                 element_position = false;
                 continue;
             }
-            if source[after..line_end].contains('`') {
+            if has_backtick_on_line(source, after) {
                 return None;
             }
             return Some(after);
@@ -80,33 +79,38 @@ pub(crate) fn single_line_bracket_template_end(source: &str, start: usize) -> Op
     None
 }
 
-/// End of a template element that opens at `open` and closes before `line_end`.
-fn template_element_end_on_line(source: &str, open: usize, line_end: usize) -> Option<usize> {
-    let line = source.get(open..line_end)?;
-    if !line.starts_with('`') {
-        return None;
-    }
-    let (_, end) = scan_nested(line, 1, ScanContext::Template)?;
-    Some(open + end)
+fn has_backtick_on_line(source: &str, start: usize) -> bool {
+    source.as_bytes()[start..]
+        .iter()
+        .copied()
+        .find(|byte| matches!(byte, b'`' | b'\n' | b'\r'))
+        == Some(b'`')
 }
 
-/// End of a quote that opens at `start` and closes before `line_end`.
-fn quoted_end_on_line(
-    source: &str,
-    start: usize,
-    delimiter: char,
-    line_end: usize,
-) -> Option<usize> {
+/// End of a template element that opens at `open` and closes before a line break.
+fn template_element_end_on_line(source: &str, open: usize) -> Option<usize> {
+    if !source.get(open..)?.starts_with('`') {
+        return None;
+    }
+    let (_, end) = scan_nested_bounded(source, open + 1, ScanContext::Template, true)?;
+    Some(end)
+}
+
+/// End of a quote that opens at `start` and closes before a line break.
+fn quoted_end_on_line(source: &str, start: usize, delimiter: char) -> Option<usize> {
     let mut cursor = start + delimiter.len_utf8();
-    while cursor < line_end {
+    while cursor < source.len() {
         let character = source[cursor..].chars().next()?;
+        if matches!(character, '\n' | '\r') {
+            return None;
+        }
         cursor += character.len_utf8();
         if character == '\\' {
             let escaped = source.get(cursor..)?.chars().next()?;
-            cursor += escaped.len_utf8();
-            if cursor > line_end {
+            if matches!(escaped, '\n' | '\r') {
                 return None;
             }
+            cursor += escaped.len_utf8();
         } else if character == delimiter {
             return Some(cursor);
         }
@@ -181,13 +185,28 @@ enum ScanContext {
 /// Template lexing precedes the syntax budget. Keep nested templates and
 /// interpolation braces on an explicit heap stack, rather than the host stack.
 fn scan_nested(source: &str, start: usize, initial: ScanContext) -> Option<(usize, usize)> {
+    scan_nested_bounded(source, start, initial, false)
+}
+
+fn scan_nested_bounded(
+    source: &str,
+    start: usize,
+    initial: ScanContext,
+    stop_at_line_break: bool,
+) -> Option<(usize, usize)> {
     let mut cursor = start;
     let mut contexts = vec![initial];
     while cursor < source.len() {
+        if stop_at_line_break && source[cursor..].starts_with(['\n', '\r']) {
+            return None;
+        }
         match contexts.last_mut()? {
             ScanContext::Template => {
                 if source[cursor..].starts_with('\\') {
                     cursor += 1;
+                    if stop_at_line_break && source[cursor..].starts_with(['\n', '\r']) {
+                        return None;
+                    }
                     advance_char(source, &mut cursor);
                 } else if source[cursor..].starts_with("${") {
                     cursor += 2;
@@ -205,6 +224,9 @@ fn scan_nested(source: &str, start: usize, initial: ScanContext) -> Option<(usiz
             }
             ScanContext::Interpolation { depth } => {
                 if source[cursor..].starts_with("//") {
+                    if stop_at_line_break {
+                        return None;
+                    }
                     cursor += 2;
                     while cursor < source.len() && !source[cursor..].starts_with('\n') {
                         advance_char(source, &mut cursor);
@@ -224,7 +246,13 @@ fn scan_nested(source: &str, start: usize, initial: ScanContext) -> Option<(usiz
                     continue;
                 }
                 match character {
-                    '"' | '\'' => skip_quoted(source, &mut cursor, character),
+                    '"' | '\'' => {
+                        if stop_at_line_break {
+                            cursor = quoted_end_on_line(source, cursor, character)?;
+                        } else {
+                            skip_quoted(source, &mut cursor, character);
+                        }
+                    }
                     '`' => {
                         cursor += 1;
                         contexts.push(ScanContext::Template);
@@ -322,6 +350,57 @@ mod tests {
         let nested = "let list = `[`[1], `ok`, `[2]]\n";
         let open = nested.find("`[").unwrap();
         assert_eq!(single_line_bracket_template_end(nested, open), None);
+    }
+
+    #[test]
+    fn stops_same_line_scan_at_line_breaks_inside_escapes_quotes_and_interpolations() {
+        let cases = [
+            "fn values -> List<String> = `[`a\\\n`]\n",
+            "fn values -> List<String> = `[\"a\\\n\"]\n",
+            "fn values -> List<String> = `[`a ${ // `\n } `]\n",
+            "fn values -> List<String> = `[`a ${ \"unclosed\n\" } `]\n",
+            "`[1, 2]\r`later`\r",
+            "`[a]` `b`\n",
+        ];
+        for source in cases {
+            let open = source.find("`[").unwrap();
+            assert_eq!(
+                single_line_bracket_template_end(source, open),
+                None,
+                "{source:?}"
+            );
+        }
+
+        let crlf = "`[a]`\r\n`b`\r\n";
+        assert_eq!(single_line_bracket_template_end(crlf, 0), Some(5));
+    }
+
+    #[test]
+    fn scans_many_list_openers_on_one_line_without_rescanning_the_suffix() {
+        let count = 20_000;
+        let compact = "`[];".repeat(count);
+        for index in 0..count {
+            assert_eq!(single_line_bracket_template_end(&compact, index * 4), None);
+        }
+        let stream = crate::lex("compact.ssrg", &compact);
+        let list_opens = stream
+            .tokens
+            .iter()
+            .filter(|token| token.kind == crate::TokenKind::PunctuationListLeft)
+            .count();
+        assert_eq!(list_opens, count);
+        assert!(stream
+            .tokens
+            .iter()
+            .all(|token| token.kind != crate::TokenKind::Unknown));
+
+        let with_templates = "`[1] `a`;".repeat(count);
+        for index in 0..count {
+            assert_eq!(
+                single_line_bracket_template_end(&with_templates, index * 9),
+                None
+            );
+        }
     }
 
     #[test]
