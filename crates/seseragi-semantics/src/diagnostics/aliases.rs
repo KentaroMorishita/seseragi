@@ -26,12 +26,21 @@ fn collect_requirement_merge_diagnostics(
     let mut allowed = BTreeSet::new();
     walk_module_types(&resolved.declarations, &mut |type_ref: &TypeRef| {
         let TypeRef::Named {
-            name, arguments, ..
+            name,
+            arguments,
+            span,
         } = type_ref
         else {
             return;
         };
-        if matches!(name.as_str(), "Effect" | "Stream") {
+        let is_effect_or_stream = matches!(name.as_str(), "Effect" | "Stream")
+            || type_target(resolved, *span)
+                .and_then(|target| resolved.symbols.iter().find(|symbol| symbol.id == target))
+                .and_then(|symbol| symbol.canonical.as_deref())
+                .is_some_and(|canonical| {
+                    matches!(canonical, "std/prelude::Effect" | "std/stream::Stream")
+                });
+        if is_effect_or_stream {
             if let Some(environment) = arguments.first() {
                 mark_allowed_requirement_merges(environment, &mut allowed);
             }

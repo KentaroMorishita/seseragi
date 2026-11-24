@@ -297,13 +297,23 @@ pub(super) fn method_contract_matches(
         );
     }
 
+    let expected_arities = expected
+        .type_parameters
+        .iter()
+        .map(|parameter| parameter.arity)
+        .collect::<Vec<_>>();
+    let actual_arities = actual
+        .type_parameters
+        .iter()
+        .map(|parameter| parameter.arity)
+        .collect::<Vec<_>>();
     let expected = contract_method(resolved, expected, &expected_binders, &substitutions)?;
     let actual = contract_method(resolved, actual, &actual_binders, &BTreeMap::new())?;
     // An unproved alias contract is not permission to skip signature checking.
     Some(
         match (
-            aliases::normalize(resolved, expected),
-            aliases::normalize(resolved, actual),
+            aliases::normalize(resolved, expected, &expected_arities),
+            aliases::normalize(resolved, actual, &actual_arities),
         ) {
             (Some(expected), Some(actual)) => expected == actual,
             _ => false,
@@ -336,6 +346,17 @@ pub(super) fn imported_method_contract_matches(
             ))
         })
         .collect::<Option<BTreeMap<_, _>>>()?;
+    let expected_arities = expected
+        .scheme
+        .type_parameters
+        .iter()
+        .map(|parameter| parameter.arity)
+        .collect::<Vec<_>>();
+    let actual_arities = actual
+        .type_parameters
+        .iter()
+        .map(|parameter| parameter.arity)
+        .collect::<Vec<_>>();
     let expected = interface::contract_method_from_interface(
         expected,
         &substitutions,
@@ -348,8 +369,8 @@ pub(super) fn imported_method_contract_matches(
     // An unproved alias contract is not permission to skip signature checking.
     Some(
         match (
-            aliases::normalize(resolved, expected),
-            aliases::normalize(resolved, actual),
+            aliases::normalize(resolved, expected, &expected_arities),
+            aliases::normalize(resolved, actual, &actual_arities),
         ) {
             (Some(expected), Some(actual)) => expected == actual,
             _ => false,

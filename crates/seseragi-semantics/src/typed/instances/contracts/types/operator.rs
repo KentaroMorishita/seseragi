@@ -54,7 +54,7 @@ pub(in crate::typed::instances::contracts) fn local_operator_method_matches(
     };
     let substitutions = BTreeMap::from([(symbols[0], ContractType::Binder(2))]);
     contract_method(resolved, method, &binders, &substitutions)
-        .and_then(|contract| aliases::normalize(resolved, contract))
+        .and_then(|contract| aliases::normalize(resolved, contract, &[0, 0, 1]))
         .is_some_and(|contract| {
             contract.constraints.is_empty() && matches_operator_type(&contract.type_ref, operator)
         })
@@ -80,7 +80,7 @@ pub(in crate::typed::instances::contracts) fn imported_operator_method_matches(
         context.trait_name,
         context.trait_canonical,
     )
-    .and_then(|contract| aliases::normalize(resolved, contract))
+    .and_then(|contract| aliases::normalize(resolved, contract, &[0, 0, 1]))
     .is_some_and(|contract| {
         contract.constraints.is_empty() && matches_operator_type(&contract.type_ref, operator)
     })

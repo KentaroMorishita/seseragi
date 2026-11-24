@@ -237,18 +237,11 @@ impl seseragi_syntax::type_functions::TypeFunctionTerm
                     result: Box::new(result.type_ref.clone()),
                 }
             }
-            (TypedType::RequirementMerge { operands }, Key::Other) => {
-                let operands = operands
-                    .iter()
-                    .map(|operand| {
-                        map(&Value {
-                            type_ref: operand.clone(),
-                            key: Key::Other,
-                        })
-                        .map(|value| value.type_ref)
-                    })
-                    .collect::<Option<Vec<_>>>()?;
-                crate::typed::type_ref::normalize_requirement_merge(operands)
+            (TypedType::RequirementMerge { .. }, Key::RequirementMerge(operand_values)) => {
+                let mapped = operand_values.iter().map(map).collect::<Option<Vec<_>>>()?;
+                let normalized = normalize_semantic_requirement_merge(mapped);
+                key = normalized.key;
+                normalized.type_ref
             }
             // These carry no children. Unknown composite keys cannot supply a
             // proof for a constructor application and are not guessed here.
@@ -262,6 +255,87 @@ impl seseragi_syntax::type_functions::TypeFunctionTerm
             _ => return None,
         };
         Some(Value { type_ref, key })
+    }
+}
+
+pub(crate) fn normalize_semantic_requirement_merge(
+    operands: Vec<super::semantic_types::SemanticValueType>,
+) -> super::semantic_types::SemanticValueType {
+    use super::semantic_types::{SemanticTypeKey as Key, SemanticValueType as Value};
+    use std::collections::BTreeMap;
+
+    let mut pending = operands;
+    let mut flattened = Vec::new();
+    while let Some(operand) = pending.pop() {
+        match (operand.type_ref, operand.key) {
+            (TypedType::RequirementMerge { .. }, Key::RequirementMerge(inner)) => {
+                pending.extend(inner);
+            }
+            (type_ref, key) => flattened.push(Value { type_ref, key }),
+        }
+    }
+    flattened.reverse();
+
+    let mut fields: Vec<TypedRecordField> = Vec::new();
+    let mut field_keys: BTreeMap<String, Value> = BTreeMap::new();
+    let mut unresolved: Vec<Value> = Vec::new();
+    for operand in flattened {
+        match (operand.type_ref, operand.key) {
+            (
+                TypedType::Record {
+                    closed: true,
+                    fields: operand_fields,
+                },
+                Key::Record(mut operand_keys),
+            ) => {
+                for field in operand_fields {
+                    let existing = fields.iter().any(|existing| {
+                        existing.name == field.name && existing.type_ref == field.type_ref
+                    });
+                    if existing {
+                        continue;
+                    }
+                    if let Some(value) = operand_keys.remove(&field.name) {
+                        field_keys.entry(field.name.clone()).or_insert(value);
+                    }
+                    fields.push(field);
+                }
+            }
+            (type_ref, key) => unresolved.push(Value { type_ref, key }),
+        }
+    }
+    fields.sort_by(|left, right| left.name.cmp(&right.name));
+    unresolved.sort_by_key(|operand| {
+        crate::TypeDocument::from_typed_type(&operand.type_ref)
+            .render(crate::TypeRenderOptions::default())
+    });
+    if !fields.is_empty() {
+        unresolved.push(Value {
+            type_ref: TypedType::Record {
+                closed: true,
+                fields,
+            },
+            key: Key::Record(field_keys),
+        });
+    }
+    match unresolved.len() {
+        0 => Value {
+            type_ref: TypedType::Record {
+                closed: true,
+                fields: Vec::new(),
+            },
+            key: Key::Record(BTreeMap::new()),
+        },
+        1 => unresolved.pop().expect("single requirement operand"),
+        _ => Value {
+            type_ref: TypedType::RequirementMerge {
+                operands: unresolved
+                    .iter()
+                    .map(|operand| operand.type_ref.clone())
+                    .collect(),
+            },
+            key: Key::RequirementMerge(unresolved),
+        },
     }
 }
 

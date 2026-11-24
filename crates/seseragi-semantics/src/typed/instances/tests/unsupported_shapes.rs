@@ -133,8 +133,15 @@ fn a_collapsed_requirement_row_matches_the_alias_method_and_detects_duplicates()
         "instance Tag<Effect<{ console: Console }, Never, Int>>",
     );
 
-    let hkt = "struct Console { token: Int }\nalias Logged<R> = Effect<R & { console: Console }, Never, Int>\ntrait Tag<F<_>> { fn tag<R> value: F<R> -> String }\ninstance Tag<Logged> { fn tag<R> value: Effect<R & { console: Console }, Never, Int> -> String = \"hkt\" }\n";
+    let hkt = "struct Console { token: Int }\nalias Logged<R> = Effect<R & { console: Console }, Never, Int>\ntrait Tag<F<_>> { fn tag<R> value: F<R> -> String }\ninstance Tag<Logged> { fn tag<R> value: Effect<R & { console: Console }, Never, Int> -> String = \"hkt\" }\npub fn probe value: Effect<{ console: Console }, Never, Int> -> String = tag<Logged, {}> value\n";
     let artifact = diagnostics("effect-merge-hkt", hkt);
+    assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+}
+
+#[test]
+fn generic_method_signatures_with_partially_applied_aliases_check_method_binders() {
+    let source = "type Pair<A, B> = | Pair (A, B)\ntype Holder<F<_>> = | Holder (F<Int>)\nalias Partial<A, B> = Pair<A, B>\ntrait Tag<T> { fn tag<A> value: Holder<Partial<A, _>> -> String }\ninstance Tag<Int> { fn tag<A> value: Holder<Partial<A, _>> -> String = \"ok\" }\n";
+    let artifact = diagnostics("method-binder-partial-alias", source);
     assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
 }
 

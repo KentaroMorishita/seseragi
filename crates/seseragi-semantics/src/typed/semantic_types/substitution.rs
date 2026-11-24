@@ -365,6 +365,14 @@ fn substitute_semantic_type_parameters(
                 ),
             }
         }
+        (TypedType::RequirementMerge { .. }, SemanticTypeKey::RequirementMerge(operands)) => {
+            crate::typed::type_functions::normalize_semantic_requirement_merge(
+                operands
+                    .iter()
+                    .map(|operand| substitute_semantic_type_parameters(operand, substitutions))
+                    .collect(),
+            )
+        }
         _ => value.clone(),
     }
 }
@@ -574,6 +582,11 @@ fn collect_parameter_bindings(
                 }
             }
         }
+        SemanticTypeKey::RequirementMerge(operands) => {
+            for operand in operands {
+                collect_parameter_bindings(operand, substitutions, source_bindings, bindings);
+            }
+        }
         _ => {}
     }
 }
@@ -596,7 +609,8 @@ fn contains_scheme_parameter(key: &SemanticTypeKey) -> bool {
         SemanticTypeKey::Adt { arguments, .. }
         | SemanticTypeKey::Struct { arguments, .. }
         | SemanticTypeKey::ExternalNominal { arguments, .. }
-        | SemanticTypeKey::NamedGeneric { arguments, .. } => arguments
+        | SemanticTypeKey::NamedGeneric { arguments, .. }
+        | SemanticTypeKey::RequirementMerge(arguments) => arguments
             .iter()
             .any(|argument| contains_scheme_parameter(&argument.key)),
         SemanticTypeKey::Tuple(keys) => keys.iter().any(contains_scheme_parameter),

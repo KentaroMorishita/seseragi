@@ -17,13 +17,20 @@ mod constructors;
 pub(super) fn normalize(
     resolved: &ResolvedModule,
     mut method: ContractMethod,
+    binder_arities: &[u32],
 ) -> Option<ContractMethod> {
     let mut active = BTreeSet::new();
-    method.type_ref = normalize_impl(resolved, method.type_ref, &mut active, false, &[])?;
+    method.type_ref = normalize_impl(
+        resolved,
+        method.type_ref,
+        &mut active,
+        false,
+        binder_arities,
+    )?;
     for constraint in &mut method.constraints {
         constraint.arguments = std::mem::take(&mut constraint.arguments)
             .into_iter()
-            .map(|argument| normalize_impl(resolved, argument, &mut active, false, &[]))
+            .map(|argument| normalize_impl(resolved, argument, &mut active, false, binder_arities))
             .collect::<Option<_>>()?;
     }
     method.constraints.sort();

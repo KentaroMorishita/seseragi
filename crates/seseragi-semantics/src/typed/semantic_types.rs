@@ -64,6 +64,7 @@ pub(crate) enum SemanticTypeKey {
         parameter: Box<SemanticValueType>,
         result: Box<SemanticValueType>,
     },
+    RequirementMerge(Vec<SemanticValueType>),
     Other,
     Invalid,
 }
@@ -588,7 +589,12 @@ pub(crate) fn semantic_values_have_same_identity(
         | (SemanticTypeKey::Other, SemanticTypeKey::Application { .. }) => {
             expected.type_ref == actual.type_ref
         }
-        (SemanticTypeKey::Other, SemanticTypeKey::Other) => {
+        (SemanticTypeKey::RequirementMerge(left), SemanticTypeKey::RequirementMerge(right)) => {
+            semantic_arguments_have_same_identity(left, right)
+        }
+        (SemanticTypeKey::RequirementMerge(_), SemanticTypeKey::Other)
+        | (SemanticTypeKey::Other, SemanticTypeKey::RequirementMerge(_))
+        | (SemanticTypeKey::Other, SemanticTypeKey::Other) => {
             structural_types_have_same_identity(&expected.type_ref, &actual.type_ref)
         }
         (SemanticTypeKey::TypeParameter(expected), SemanticTypeKey::TypeParameter(actual)) => {
@@ -1287,8 +1293,11 @@ impl SemanticTypeCatalog {
                         key: self.key_from_typed_type(resolved, argument),
                     })
                     .collect::<Vec<_>>();
-                if canonical == "std/prelude::Array" && arguments.len() == 1 {
-                    return named_generic_key("Array", arguments);
+                match (canonical.as_str(), arguments.len()) {
+                    ("std/prelude::Array", 1) => return named_generic_key("Array", arguments),
+                    ("std/prelude::Effect", 3) => return named_generic_key("Effect", arguments),
+                    ("std/prelude::Never", 0) => return SemanticTypeKey::Other,
+                    _ => {}
                 }
                 let mut owners = resolved
                     .symbols
@@ -1354,7 +1363,15 @@ impl SemanticTypeCatalog {
                     key: self.key_from_typed_type(resolved, result),
                 }),
             },
-            TypedType::RequirementMerge { .. } => SemanticTypeKey::Other,
+            TypedType::RequirementMerge { operands } => SemanticTypeKey::RequirementMerge(
+                operands
+                    .iter()
+                    .map(|operand| SemanticValueType {
+                        type_ref: operand.clone(),
+                        key: self.key_from_typed_type(resolved, operand),
+                    })
+                    .collect(),
+            ),
         }
     }
 
@@ -1368,6 +1385,12 @@ impl SemanticTypeCatalog {
                 parameter: Box::new(self.type_function_body_value(resolved, parameter)),
                 result: Box::new(self.type_function_body_value(resolved, result)),
             },
+            TypedType::RequirementMerge { operands } => SemanticTypeKey::RequirementMerge(
+                operands
+                    .iter()
+                    .map(|operand| self.type_function_body_value(resolved, operand))
+                    .collect(),
+            ),
             _ => self.key_from_typed_type(resolved, type_ref),
         };
         match (&mut key, type_ref) {

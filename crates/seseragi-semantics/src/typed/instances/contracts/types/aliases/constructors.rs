@@ -129,7 +129,7 @@ fn template_kinds(
             let is_effect_or_stream = matches!(
                 constructor.as_ref(),
                 ContractType::Named(TypeIdentity::Canonical(canonical))
-                    if matches!(canonical.as_str(), "std/prelude::Effect" | "std/prelude::Stream")
+                    if matches!(canonical.as_str(), "std/prelude::Effect" | "std/stream::Stream")
             );
             for (index, (argument, kind)) in arguments.iter().zip(&kinds).enumerate() {
                 let allow_merge = is_effect_or_stream && index == 0;
