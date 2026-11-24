@@ -1,0 +1,42 @@
+type Box<A> = | Box A
+type Outer<A> = | Outer A
+pub opaque type Token<A> = | Token A
+
+alias Apply<F<_>, A> = F<A>
+alias Wrap<F<_>, A> = Outer<F<A>>
+alias Logged<R> = Effect<R & { console: Console }, ConsoleError, Unit>
+
+trait Tag<F<_>> {
+  fn tag<A> value: F<A> -> String
+}
+
+trait EffectTag<A> {
+  fn effectTag value: A -> String
+}
+
+instance Tag<Apply<Box>> {
+  fn tag<A> value: Box<A> -> String = "apply-box"
+}
+
+instance Tag<Apply<Token>> {
+  fn tag<A> value: Token<A> -> String = "apply-token"
+}
+
+instance Tag<Wrap<Maybe>> {
+  fn tag<A> value: Outer<Maybe<A>> -> String = "wrap-maybe"
+}
+
+instance EffectTag<Logged<{}>> {
+  fn effectTag value: Effect<{ console: Console }, ConsoleError, Unit> -> String = "logged-empty"
+}
+
+pub effect fn main = do {
+  println (tag<Apply<Box>, Int> (Box 1))
+  println (tag (Box 2))
+  println (tag<Apply<Token>, Int> (Token 3))
+  println (tag<Wrap<Maybe>, Int> (Outer (Just 4)))
+  let saved = tag<Apply<Box>, Int>
+  println (saved (Box 5))
+  let cold: Effect<{ console: Console }, ConsoleError, Unit> = println "unused"
+  println (effectTag cold)
+}

@@ -31,6 +31,10 @@ pub(crate) fn local_head(
     } = declaration
     {
         let symbols = resolution::declaration_type_parameters(resolved, *span, type_parameters)?;
+        let binder_arities = type_parameters
+            .iter()
+            .map(|parameter| parameter.arity)
+            .collect::<Vec<_>>();
         let binders = symbols
             .into_iter()
             .enumerate()
@@ -41,7 +45,7 @@ pub(crate) fn local_head(
             .map(|argument| {
                 let argument =
                     resolution::contract_type(resolved, argument, &binders, &BTreeMap::new())?;
-                aliases::normalize_coherence_type(resolved, argument)
+                aliases::normalize_coherence_type(resolved, argument, &binder_arities)
             })
             .collect::<Option<Vec<_>>>()?
     } else {
@@ -345,10 +349,24 @@ fn applied_variable(value: &Term) -> bool {
     }
 }
 
+fn contains_any_slot(value: &Term) -> bool {
+    match value {
+        Term::Slot(_) => true,
+        Term::Apply(left, right) | Term::Function(left, right) => {
+            contains_any_slot(left) || contains_any_slot(right)
+        }
+        Term::Tuple(elements) | Term::RequirementMerge(elements) => {
+            elements.iter().any(contains_any_slot)
+        }
+        Term::Record { fields, .. } => fields.iter().any(|(_, _, value)| contains_any_slot(value)),
+        Term::Section { .. } | Term::Variable { .. } | Term::Named(_) | Term::Unknown => false,
+    }
+}
+
 fn relax(value: Term) -> Term {
     match value {
         Term::Apply(ref constructor, _) if applied_variable(constructor) => Term::Unknown,
-        Term::Section { .. } | Term::Slot(_) => Term::Unknown,
+        Term::Section { .. } | Term::Slot(_) | Term::RequirementMerge(_) => Term::Unknown,
         Term::Apply(constructor, argument) => {
             Term::Apply(Box::new(relax(*constructor)), Box::new(relax(*argument)))
         }
@@ -356,9 +374,6 @@ fn relax(value: Term) -> Term {
             Term::Function(Box::new(relax(*parameter)), Box::new(relax(*result)))
         }
         Term::Tuple(elements) => Term::Tuple(elements.into_iter().map(relax).collect()),
-        Term::RequirementMerge(elements) => {
-            Term::RequirementMerge(elements.into_iter().map(relax).collect())
-        }
         Term::Record { closed, fields } => Term::Record {
             closed,
             fields: fields
@@ -419,6 +434,7 @@ fn unify(left: Term, right: Term, substitutions: &mut Substitutions) -> bool {
     }
     if let Term::Variable { side, index, arity } = &left {
         if known_arity(&right, substitutions).is_some_and(|actual| actual != *arity)
+            || contains_any_slot(&right)
             || occurs((*side, *index), &right, substitutions)
         {
             return false;
@@ -431,6 +447,16 @@ fn unify(left: Term, right: Term, substitutions: &mut Substitutions) -> bool {
     }
     match (left, right) {
         (Term::Named(left), Term::Named(right)) => left == right,
+        (
+            Term::Section {
+                arity: left_arity,
+                body: left_body,
+            },
+            Term::Section {
+                arity: right_arity,
+                body: right_body,
+            },
+        ) if left_arity == right_arity => unify(*left_body, *right_body, substitutions),
         (Term::Apply(lc, la), Term::Apply(rc, ra))
         | (Term::Function(lc, la), Term::Function(rc, ra)) => {
             unify(*lc, *rc, substitutions) && unify(*la, *ra, substitutions)

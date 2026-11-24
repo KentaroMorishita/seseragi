@@ -712,14 +712,18 @@ pub(super) fn canonical_inline_type_name(type_ref: &CoreType) -> Option<&str> {
     else {
         return None;
     };
-    if canonical == "std/prelude::Array" && arguments.len() == 1 {
-        return Some("Array");
+    match (canonical.as_str(), arguments.len()) {
+        ("std/prelude::Array", 1) => return Some("Array"),
+        ("std/prelude::List", 1) => return Some("List"),
+        ("std/prelude::Maybe", 1) => return Some("Maybe"),
+        ("std/prelude::Either", 2) => return Some("Either"),
+        _ => {}
     }
     if canonical.strip_prefix("std/prelude::") != Some(name.as_str()) {
         return None;
     }
     match (name.as_str(), arguments.len()) {
-        ("Bool" | "Int" | "Float" | "Char" | "String" | "Unit", 0) => Some(name),
+        ("Bool" | "Int" | "Float" | "Char" | "String" | "Unit" | "Never", 0) => Some(name),
         _ => None,
     }
 }
@@ -1078,6 +1082,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 "Int" | "Float" => TypeScriptType::Number,
                 "Char" | "String" => TypeScriptType::String,
                 "Unit" => TypeScriptType::Undefined,
+                "Never" => TypeScriptType::Never,
                 _ => {
                     return Err(type_error(
                         "canonical inline scalar must have a TypeScript representation",
@@ -1091,6 +1096,44 @@ pub(super) fn type_ref_from_core_type_with_erasure(
             TypeScriptType::Array {
                 element: Box::new(type_ref_from_core_type_with_erasure(
                     &arguments[0],
+                    imported_types,
+                    type_constructor_parameters,
+                )?),
+            }
+        }
+        CoreType::ExternalNamed { arguments, .. }
+            if canonical_inline_type_name(type_ref) == Some("List") =>
+        {
+            TypeScriptType::List {
+                element: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[0],
+                    imported_types,
+                    type_constructor_parameters,
+                )?),
+            }
+        }
+        CoreType::ExternalNamed { arguments, .. }
+            if canonical_inline_type_name(type_ref) == Some("Maybe") =>
+        {
+            TypeScriptType::Maybe {
+                element: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[0],
+                    imported_types,
+                    type_constructor_parameters,
+                )?),
+            }
+        }
+        CoreType::ExternalNamed { arguments, .. }
+            if canonical_inline_type_name(type_ref) == Some("Either") =>
+        {
+            TypeScriptType::Either {
+                error: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[0],
+                    imported_types,
+                    type_constructor_parameters,
+                )?),
+                value: Box::new(type_ref_from_core_type_with_erasure(
+                    &arguments[1],
                     imported_types,
                     type_constructor_parameters,
                 )?),

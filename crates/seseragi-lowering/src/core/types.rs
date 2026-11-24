@@ -131,9 +131,15 @@ impl CoreType {
                 CoreType::Function { parameter, result } => {
                     format!("F({})({})", encode(parameter)?, encode(result)?)
                 }
-                CoreType::Named { .. } | CoreType::Hole | CoreType::RequirementMerge { .. } => {
-                    return None
-                }
+                CoreType::RequirementMerge { operands } => format!(
+                    "M[{}]",
+                    operands
+                        .iter()
+                        .map(encode)
+                        .collect::<Option<Vec<_>>>()?
+                        .join(",")
+                ),
+                CoreType::Named { .. } | CoreType::Hole => return None,
             })
         }
         encode(&self.normalized_type_function()?)
@@ -208,11 +214,15 @@ impl CoreType {
                     parameter: Box::new(normalized(parameter, scopes)?),
                     result: Box::new(normalized(result, scopes)?),
                 },
+                CoreType::RequirementMerge { operands } => CoreType::RequirementMerge {
+                    operands: operands
+                        .iter()
+                        .map(|operand| normalized(operand, scopes))
+                        .collect::<Option<_>>()?,
+                },
                 // Runtime/inference holes and unqualified/free names provide
                 // no proof for this closed type-function representation.
-                CoreType::Named { .. } | CoreType::Hole | CoreType::RequirementMerge { .. } => {
-                    return None
-                }
+                CoreType::Named { .. } | CoreType::Hole => return None,
             })
         }
         normalized(self, &[])

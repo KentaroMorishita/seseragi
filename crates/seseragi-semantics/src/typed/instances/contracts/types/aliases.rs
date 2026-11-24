@@ -1,6 +1,8 @@
 use super::{
     interface,
-    model::{apply_arguments, ContractMethod, ContractType, TypeIdentity},
+    model::{
+        apply_arguments, normalize_requirement_merge, ContractMethod, ContractType, TypeIdentity,
+    },
     resolution,
 };
 use crate::{ResolvedModule, SymbolNamespace};
@@ -15,13 +17,20 @@ mod constructors;
 pub(super) fn normalize(
     resolved: &ResolvedModule,
     mut method: ContractMethod,
+    binder_arities: &[u32],
 ) -> Option<ContractMethod> {
     let mut active = BTreeSet::new();
-    method.type_ref = normalize_impl(resolved, method.type_ref, &mut active, false)?;
+    method.type_ref = normalize_impl(
+        resolved,
+        method.type_ref,
+        &mut active,
+        false,
+        binder_arities,
+    )?;
     for constraint in &mut method.constraints {
         constraint.arguments = std::mem::take(&mut constraint.arguments)
             .into_iter()
-            .map(|argument| normalize_impl(resolved, argument, &mut active, false))
+            .map(|argument| normalize_impl(resolved, argument, &mut active, false, binder_arities))
             .collect::<Option<_>>()?;
     }
     method.constraints.sort();
@@ -33,14 +42,21 @@ pub(super) fn normalize_type(
     type_ref: ContractType,
     active: &mut BTreeSet<TypeIdentity>,
 ) -> Option<ContractType> {
-    normalize_impl(resolved, type_ref, active, true)
+    normalize_impl(resolved, type_ref, active, true, &[])
 }
 
 pub(super) fn normalize_coherence_type(
     resolved: &ResolvedModule,
     type_ref: ContractType,
+    binder_arities: &[u32],
 ) -> Option<ContractType> {
-    normalize_impl(resolved, type_ref, &mut BTreeSet::new(), true)
+    normalize_impl(
+        resolved,
+        type_ref,
+        &mut BTreeSet::new(),
+        true,
+        binder_arities,
+    )
 }
 
 pub(super) fn omitted_constructor_suffix(
@@ -55,6 +71,7 @@ fn normalize_impl(
     type_ref: ContractType,
     active: &mut BTreeSet<TypeIdentity>,
     for_head: bool,
+    binder_arities: &[u32],
 ) -> Option<ContractType> {
     Some(match type_ref {
         ContractType::TypeFunction {
@@ -62,30 +79,62 @@ fn normalize_impl(
             body,
         } => ContractType::TypeFunction {
             parameter_kinds,
-            body: Box::new(normalize_impl(resolved, *body, active, for_head)?),
+            body: Box::new(normalize_impl(
+                resolved,
+                *body,
+                active,
+                for_head,
+                binder_arities,
+            )?),
         },
-        ContractType::Named(identity) => named(resolved, identity, Vec::new(), active, for_head)?,
+        ContractType::Named(identity) => named(
+            resolved,
+            identity,
+            Vec::new(),
+            active,
+            for_head,
+            binder_arities,
+        )?,
         ContractType::Apply {
             constructor,
             arguments,
         } => {
             let arguments = arguments
                 .into_iter()
-                .map(|argument| normalize_impl(resolved, argument, active, for_head))
+                .map(|argument| {
+                    normalize_impl(resolved, argument, active, for_head, binder_arities)
+                })
                 .collect::<Option<Vec<_>>>()?;
             match *constructor {
-                ContractType::Named(identity) => {
-                    named(resolved, identity, arguments, active, for_head)?
-                }
+                ContractType::Named(identity) => named(
+                    resolved,
+                    identity,
+                    arguments,
+                    active,
+                    for_head,
+                    binder_arities,
+                )?,
                 constructor => apply_arguments(
-                    normalize_impl(resolved, constructor, active, for_head)?,
+                    normalize_impl(resolved, constructor, active, for_head, binder_arities)?,
                     arguments,
                 )?,
             }
         }
         ContractType::Function { parameter, result } => ContractType::Function {
-            parameter: Box::new(normalize_impl(resolved, *parameter, active, for_head)?),
-            result: Box::new(normalize_impl(resolved, *result, active, for_head)?),
+            parameter: Box::new(normalize_impl(
+                resolved,
+                *parameter,
+                active,
+                for_head,
+                binder_arities,
+            )?),
+            result: Box::new(normalize_impl(
+                resolved,
+                *result,
+                active,
+                for_head,
+                binder_arities,
+            )?),
         },
         ContractType::Record { closed, fields } => ContractType::Record {
             closed,
@@ -95,7 +144,7 @@ fn normalize_impl(
                     Some((
                         name,
                         optional,
-                        normalize_impl(resolved, type_ref, active, for_head)?,
+                        normalize_impl(resolved, type_ref, active, for_head, binder_arities)?,
                     ))
                 })
                 .collect::<Option<_>>()?,
@@ -103,14 +152,14 @@ fn normalize_impl(
         ContractType::Tuple(elements) => ContractType::Tuple(
             elements
                 .into_iter()
-                .map(|element| normalize_impl(resolved, element, active, for_head))
+                .map(|element| normalize_impl(resolved, element, active, for_head, binder_arities))
                 .collect::<Option<_>>()?,
         ),
-        ContractType::RequirementMerge(operands) => ContractType::RequirementMerge(
+        ContractType::RequirementMerge(operands) => normalize_requirement_merge(
             operands
                 .into_iter()
-                .map(|operand| normalize_impl(resolved, operand, active, for_head))
-                .collect::<Option<_>>()?,
+                .map(|operand| normalize_impl(resolved, operand, active, for_head, binder_arities))
+                .collect::<Option<Vec<_>>>()?,
         ),
         leaf => leaf,
     })
@@ -122,6 +171,7 @@ fn named(
     arguments: Vec<ContractType>,
     active: &mut BTreeSet<TypeIdentity>,
     for_head: bool,
+    binder_arities: &[u32],
 ) -> Option<ContractType> {
     let owner = resolved.symbols.iter().find(|symbol| {
         symbol.namespace == SymbolNamespace::Type
@@ -177,13 +227,29 @@ fn named(
     {
         return None;
     }
+    let mut remaining = Vec::new();
     let supplied = if partial {
-        (0..arity)
-            .map(|index| ContractType::AliasSlot {
-                owner: identity.clone(),
-                index: index as u32,
-            })
-            .collect()
+        let mut supplied = Vec::with_capacity(arity);
+        for (index, parameter) in parameters.iter().enumerate() {
+            match arguments.get(index) {
+                Some(argument) if *argument != ContractType::Hole => {
+                    if constructors::remaining_kinds(resolved, argument, binder_arities)?
+                        != vec![0; parameter.arity as usize]
+                    {
+                        return None;
+                    }
+                    supplied.push(argument.clone());
+                }
+                _ => {
+                    remaining.push(index);
+                    supplied.push(ContractType::AliasSlot {
+                        owner: identity.clone(),
+                        index: index as u32,
+                    });
+                }
+            }
+        }
+        supplied
     } else {
         arguments.clone()
     };
@@ -208,9 +274,17 @@ fn named(
             import.scheme_type_bindings.as_deref().unwrap_or(&[]),
         )?
     };
-    let normalized = normalize_impl(resolved, expanded, active, for_head)?;
+    let normalized = normalize_impl(resolved, expanded, active, for_head, binder_arities)?;
     let normalized = if partial {
-        constructors::reduce(resolved, normalized, &identity, parameters, arguments)?
+        constructors::reduce(
+            resolved,
+            normalized,
+            &identity,
+            parameters,
+            &remaining,
+            arguments.len() == arity,
+            binder_arities,
+        )?
     } else {
         normalized
     };

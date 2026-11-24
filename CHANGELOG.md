@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.1] - 2026-11-24
+
+### Added
+
+- Type aliases in `instance` heads now normalize requirement merges (`R & { ... }`) in `Effect` and `Stream` environment positions, reduce partially applied higher-kinded aliases (including opaque and higher-kinded nominal constructors) with kind-checked supplied arguments, and compare registered partial type-function heads for duplicates and coherence (#854).
+
 ## [0.62.0] - 2026-11-22
 
 ### Changed

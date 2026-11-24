@@ -160,6 +160,49 @@ fn renamed_facades_transport_a_structural_body_without_creating_an_alias_owner()
 }
 
 #[test]
+fn remaining_alias_instance_shapes_compile_cleanly_in_both_profiles() {
+    let source =
+        include_str!("../../../examples/spec/fixtures/rust-backend/alias-remaining-shapes.ssrg");
+    for profile in profiles() {
+        let compiled = compile_module(
+            CompileInput::new("remaining-雫.ssrg", "fixture/remaining-aliases", source)
+                .with_profile(profile),
+        )
+        .unwrap_or_else(|error| panic!("{error:#?}"));
+        assert_eq!(compiled.typed_hir.instances.len(), 4);
+        assert_eq!(
+            compiled.typed_hir.instances[0].argument_identities,
+            ["fixture/remaining-aliases::Box"]
+        );
+        assert_eq!(
+            compiled.typed_hir.instances[1].argument_identities,
+            ["fixture/remaining-aliases::Token"]
+        );
+        assert!(compiled.typed_hir.instances[2].argument_identities[0].starts_with("lambda[0]"));
+        assert_eq!(
+            compiled.typed_hir.instances[3].argument_identities,
+            ["std/prelude::Effect<{console:std/prelude::Console},std/prelude::ConsoleError,std/prelude::Unit>"]
+        );
+        assert!(!compiled.generated.typescript.contains("unknown as"));
+    }
+}
+
+#[test]
+fn stream_requirement_merge_alias_registers_and_selects_as_a_constructor_head() {
+    let source = "import * as streams from \"std/stream\"\nstruct Audit { token: Int }\nalias Logged<R> = streams.Stream<R & { audit: Audit }, Never, Int>\ntrait Tag<F<_>> { fn tag<R> value: F<R> -> String }\ninstance Tag<Logged> { fn tag<R> value: streams.Stream<R & { audit: Audit }, Never, Int> -> String = \"stream\" }\npub fn probe value: streams.Stream<{ audit: Audit }, Never, Int> -> String = tag<Logged, {}> value\n";
+    for profile in profiles() {
+        let compiled = compile_module(
+            CompileInput::new("stream-merge-雫.ssrg", "fixture/stream-merge", source)
+                .with_profile(profile),
+        )
+        .unwrap_or_else(|error| panic!("{error:#?}"));
+        assert_eq!(compiled.typed_hir.instances.len(), 1);
+        assert!(compiled.typed_hir.instances[0].argument_identities[0].starts_with("lambda[0]"));
+        assert!(!compiled.generated.typescript.contains("unknown as"));
+    }
+}
+
+#[test]
 fn returned_alias_application_keeps_the_canonical_nominal_and_intrinsic_arguments() {
     let source = include_str!(
         "../../../examples/spec/fixtures/rust-backend/alias-type-function-evaluation.ssrg"

@@ -54,6 +54,100 @@ pub(super) struct ContractMethod {
     pub(super) constraints: Vec<ContractConstraint>,
 }
 
+pub(super) fn normalize_requirement_merge(operands: Vec<ContractType>) -> ContractType {
+    let mut pending = operands;
+    let mut flattened = Vec::new();
+    while let Some(operand) = pending.pop() {
+        match operand {
+            ContractType::RequirementMerge(inner) => pending.extend(inner),
+            operand => flattened.push(operand),
+        }
+    }
+    flattened.reverse();
+
+    let mut fields: Vec<(String, bool, ContractType)> = Vec::new();
+    let mut unresolved = Vec::new();
+    for operand in flattened {
+        match operand {
+            ContractType::Record {
+                closed: true,
+                fields: operand_fields,
+            } => {
+                for field in operand_fields {
+                    if !fields.iter().any(|existing| existing == &field) {
+                        fields.push(field);
+                    }
+                }
+            }
+            operand => unresolved.push(operand),
+        }
+    }
+    fields.sort();
+    unresolved.sort();
+    if !fields.is_empty() {
+        unresolved.push(ContractType::Record {
+            closed: true,
+            fields,
+        });
+    }
+    match unresolved.len() {
+        0 => ContractType::Record {
+            closed: true,
+            fields: Vec::new(),
+        },
+        1 => unresolved.pop().expect("single requirement operand"),
+        _ => ContractType::RequirementMerge(unresolved),
+    }
+}
+
+pub(super) fn normalize_requirement_merges(type_ref: ContractType) -> ContractType {
+    match type_ref {
+        ContractType::TypeFunction {
+            parameter_kinds,
+            body,
+        } => ContractType::TypeFunction {
+            parameter_kinds,
+            body: Box::new(normalize_requirement_merges(*body)),
+        },
+        ContractType::Apply {
+            constructor,
+            arguments,
+        } => ContractType::Apply {
+            constructor: Box::new(normalize_requirement_merges(*constructor)),
+            arguments: arguments
+                .into_iter()
+                .map(normalize_requirement_merges)
+                .collect(),
+        },
+        ContractType::Function { parameter, result } => ContractType::Function {
+            parameter: Box::new(normalize_requirement_merges(*parameter)),
+            result: Box::new(normalize_requirement_merges(*result)),
+        },
+        ContractType::Record { closed, fields } => ContractType::Record {
+            closed,
+            fields: fields
+                .into_iter()
+                .map(|(name, optional, field)| {
+                    (name, optional, normalize_requirement_merges(field))
+                })
+                .collect(),
+        },
+        ContractType::Tuple(elements) => ContractType::Tuple(
+            elements
+                .into_iter()
+                .map(normalize_requirement_merges)
+                .collect(),
+        ),
+        ContractType::RequirementMerge(operands) => normalize_requirement_merge(
+            operands
+                .into_iter()
+                .map(normalize_requirement_merges)
+                .collect(),
+        ),
+        leaf => leaf,
+    }
+}
+
 pub(super) fn apply_arguments(
     constructor: ContractType,
     arguments: Vec<ContractType>,
@@ -62,7 +156,8 @@ pub(super) fn apply_arguments(
         return Some(constructor);
     }
     if matches!(constructor, ContractType::TypeFunction { .. }) {
-        return seseragi_syntax::type_functions::apply_type_function(&constructor, &arguments);
+        return seseragi_syntax::type_functions::apply_type_function(&constructor, &arguments)
+            .map(normalize_requirement_merges);
     }
     let (constructor, existing) = match constructor {
         ContractType::Apply {
