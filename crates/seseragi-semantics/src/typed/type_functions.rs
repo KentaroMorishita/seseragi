@@ -68,9 +68,11 @@ fn map_children(
             parameter: Box::new(map(parameter)?),
             result: Box::new(map(result)?),
         },
-        TypedType::RequirementMerge { operands } => TypedType::RequirementMerge {
-            operands: operands.iter().map(&mut map).collect::<Option<_>>()?,
-        },
+        TypedType::RequirementMerge { operands } => {
+            crate::typed::type_ref::normalize_requirement_merge(
+                operands.iter().map(&mut map).collect::<Option<_>>()?,
+            )
+        }
         leaf => leaf.clone(),
     })
 }
@@ -234,6 +236,19 @@ impl seseragi_syntax::type_functions::TypeFunctionTerm
                     parameter: Box::new(parameter.type_ref.clone()),
                     result: Box::new(result.type_ref.clone()),
                 }
+            }
+            (TypedType::RequirementMerge { operands }, Key::Other) => {
+                let operands = operands
+                    .iter()
+                    .map(|operand| {
+                        map(&Value {
+                            type_ref: operand.clone(),
+                            key: Key::Other,
+                        })
+                        .map(|value| value.type_ref)
+                    })
+                    .collect::<Option<Vec<_>>>()?;
+                crate::typed::type_ref::normalize_requirement_merge(operands)
             }
             // These carry no children. Unknown composite keys cannot supply a
             // proof for a constructor application and are not guessed here.

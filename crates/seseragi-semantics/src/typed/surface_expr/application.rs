@@ -623,7 +623,10 @@ fn closed_type_function(
                     .iter()
                     .all(|field| closed_type_function(&field.type_ref, context, scopes))
         }
-        TypedType::RequirementMerge { .. } | TypedType::Hole => false,
+        TypedType::RequirementMerge { operands } => operands
+            .iter()
+            .all(|operand| closed_type_function(operand, context, scopes)),
+        TypedType::Hole => false,
     }
 }
 

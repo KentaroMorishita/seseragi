@@ -66,6 +66,15 @@ fn unapplied_alias_type_functions_keep_raw_strict_saved_method_and_native_result
 }
 
 #[test]
+fn remaining_alias_instance_shapes_keep_raw_strict_saved_method_and_native_results() {
+    check_program(
+        include_str!("../../../examples/spec/fixtures/rust-backend/alias-remaining-shapes.ssrg"),
+        include_str!("../../../examples/spec/fixtures/rust-backend/alias-remaining-shapes.stdout"),
+        0,
+    );
+}
+
+#[test]
 fn structural_aliases_keep_raw_strict_returned_method_and_native_results() {
     check_program(
         include_str!(

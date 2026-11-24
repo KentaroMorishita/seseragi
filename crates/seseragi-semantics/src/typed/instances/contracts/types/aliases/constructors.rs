@@ -1,7 +1,7 @@
 //! Checked eta/section projection, not general type-level lambda unification.
 use super::{ContractType, TypeIdentity};
-use crate::{ResolvedModule, SymbolKind};
-use seseragi_syntax::{InterfaceType, SurfaceDecl, TypeParameter};
+use crate::{ResolvedModule, ScopeKind, SymbolId, SymbolKind};
+use seseragi_syntax::{InterfaceType, SurfaceDecl, SurfaceImplMember, TypeParameter};
 use std::collections::BTreeSet;
 
 pub(super) fn reduce(
@@ -9,88 +9,77 @@ pub(super) fn reduce(
     template: ContractType,
     owner: &TypeIdentity,
     parameters: &[TypeParameter],
-    supplied: Vec<ContractType>,
+    remaining: &[usize],
+    explicit_holes: bool,
+    binder_arities: &[u32],
 ) -> Option<ContractType> {
+    if remaining.is_empty() {
+        return None;
+    }
     // Preserve the existing eta proof, including checked facade bindings that
-    // describe an ordinary nominal constructor only by its explicit arity.
-    if parameters.iter().all(|parameter| parameter.arity == 0) {
-        if let Some(constructor) = eta_reduce(resolved, template.clone(), owner, parameters.len()) {
-            return super::apply_arguments(constructor, supplied);
-        }
+    // describe an ordinary nominal constructor only by its explicit arity,
+    // and higher-kinded aliases whose constructor parameter is already supplied.
+    if let Some(constructor) = eta_reduce(
+        resolved,
+        template.clone(),
+        owner,
+        remaining,
+        explicit_holes,
+        binder_arities,
+    ) {
+        return Some(constructor);
     }
     section_reduce(
         resolved,
         template.clone(),
         owner,
         parameters,
-        supplied.clone(),
+        remaining,
+        explicit_holes,
+        binder_arities,
     )
-    .or_else(|| type_function(resolved, template, owner, parameters, supplied))
+    .or_else(|| type_function(resolved, template, owner, parameters, remaining))
 }
 
 /// A transparent alias may use a remaining parameter more than once, in a
 /// different position, or not at all. Keep that mapping instead of flattening
 /// its variables into nominal holes. The finite producer proves value-kinded
-/// domains and a closed value-kinded body; higher-order inverse inference is
-/// deliberately not introduced here.
+/// remaining domains and a closed value-kinded body; higher-order inverse
+/// inference is deliberately not introduced here.
 fn type_function(
     resolved: &ResolvedModule,
     template: ContractType,
     owner: &TypeIdentity,
     parameters: &[TypeParameter],
-    supplied: Vec<ContractType>,
+    remaining: &[usize],
 ) -> Option<ContractType> {
-    if parameters.iter().any(|parameter| parameter.arity != 0)
-        || template_kinds(resolved, &template, owner, parameters)? != Vec::<u32>::new()
+    if remaining.iter().any(|index| {
+        parameters
+            .get(*index)
+            .is_none_or(|parameter| parameter.arity != 0)
+    }) || template_kinds(resolved, &template, owner, parameters, false)? != Vec::<u32>::new()
     {
         return None;
-    }
-    let remaining = (0..parameters.len())
-        .filter(|index| {
-            supplied
-                .get(*index)
-                .is_none_or(|argument| *argument == ContractType::Hole)
-        })
-        .collect::<Vec<_>>();
-    if remaining.is_empty() {
-        return None;
-    }
-    for argument in supplied
-        .iter()
-        .filter(|argument| **argument != ContractType::Hole)
-    {
-        if !remaining_kinds(resolved, argument)?.is_empty() {
-            return None;
-        }
     }
     fn replace(
         value: &ContractType,
         owner: &TypeIdentity,
-        supplied: &[ContractType],
         remaining: &[usize],
         depth: u32,
     ) -> Option<ContractType> {
-        use seseragi_syntax::type_functions::{shift_type_function_parameters, TypeFunctionTerm};
+        use seseragi_syntax::type_functions::TypeFunctionTerm;
         match value {
             ContractType::AliasSlot {
                 owner: actual,
                 index,
             } if actual == owner => {
-                if let Some(index) = remaining
+                let index = remaining
                     .iter()
-                    .position(|remaining| *remaining == *index as usize)
-                {
-                    Some(ContractType::TypeFunctionParameter {
-                        depth,
-                        index: index as u32,
-                    })
-                } else {
-                    shift_type_function_parameters(
-                        supplied.get(*index as usize)?,
-                        depth.checked_add(1)?,
-                        0,
-                    )
-                }
+                    .position(|remaining| *remaining == *index as usize)?;
+                Some(ContractType::TypeFunctionParameter {
+                    depth,
+                    index: index as u32,
+                })
             }
             ContractType::AliasSlot { .. } | ContractType::Hole => None,
             ContractType::TypeFunction {
@@ -98,21 +87,14 @@ fn type_function(
                 body,
             } => Some(ContractType::TypeFunction {
                 parameter_kinds: parameter_kinds.clone(),
-                body: Box::new(replace(
-                    body,
-                    owner,
-                    supplied,
-                    remaining,
-                    depth.checked_add(1)?,
-                )?),
+                body: Box::new(replace(body, owner, remaining, depth.checked_add(1)?)?),
             }),
-            _ => value
-                .map_type_children(&mut |child| replace(child, owner, supplied, remaining, depth)),
+            _ => value.map_type_children(&mut |child| replace(child, owner, remaining, depth)),
         }
     }
     Some(ContractType::TypeFunction {
         parameter_kinds: vec![0; remaining.len()],
-        body: Box::new(replace(&template, owner, &supplied, &remaining, 0)?),
+        body: Box::new(replace(&template, owner, remaining, 0)?),
     })
 }
 
@@ -121,6 +103,7 @@ fn template_kinds(
     value: &ContractType,
     owner: &TypeIdentity,
     parameters: &[TypeParameter],
+    allow_requirement_merge: bool,
 ) -> Option<Vec<u32>> {
     Some(match value {
         ContractType::AliasSlot {
@@ -129,6 +112,9 @@ fn template_kinds(
         } if actual == owner => {
             vec![0; parameters.get(*index as usize)?.arity as usize]
         }
+        ContractType::TypeFunction {
+            parameter_kinds, ..
+        } => parameter_kinds.clone(),
         ContractType::Named(TypeIdentity::Canonical(canonical)) => {
             rigid_parameter_kinds(resolved, canonical)?
         }
@@ -136,12 +122,19 @@ fn template_kinds(
             constructor,
             arguments,
         } => {
-            let kinds = template_kinds(resolved, constructor, owner, parameters)?;
+            let kinds = template_kinds(resolved, constructor, owner, parameters, false)?;
             if arguments.len() > kinds.len() {
                 return None;
             }
-            for (argument, kind) in arguments.iter().zip(&kinds) {
-                if template_kinds(resolved, argument, owner, parameters)? != vec![0; *kind as usize]
+            let is_effect_or_stream = matches!(
+                constructor.as_ref(),
+                ContractType::Named(TypeIdentity::Canonical(canonical))
+                    if matches!(canonical.as_str(), "std/prelude::Effect" | "std/prelude::Stream")
+            );
+            for (index, (argument, kind)) in arguments.iter().zip(&kinds).enumerate() {
+                let allow_merge = is_effect_or_stream && index == 0;
+                if template_kinds(resolved, argument, owner, parameters, allow_merge)?
+                    != vec![0; *kind as usize]
                 {
                     return None;
                 }
@@ -149,8 +142,8 @@ fn template_kinds(
             kinds[arguments.len()..].to_vec()
         }
         ContractType::Function { parameter, result } => {
-            if !template_kinds(resolved, parameter, owner, parameters)?.is_empty()
-                || !template_kinds(resolved, result, owner, parameters)?.is_empty()
+            if !template_kinds(resolved, parameter, owner, parameters, false)?.is_empty()
+                || !template_kinds(resolved, result, owner, parameters, false)?.is_empty()
             {
                 return None;
             }
@@ -158,7 +151,7 @@ fn template_kinds(
         }
         ContractType::Tuple(elements) => {
             for element in elements {
-                if !template_kinds(resolved, element, owner, parameters)?.is_empty() {
+                if !template_kinds(resolved, element, owner, parameters, false)?.is_empty() {
                     return None;
                 }
             }
@@ -169,17 +162,25 @@ fn template_kinds(
             fields,
         } => {
             for (_, _, field) in fields {
-                if !template_kinds(resolved, field, owner, parameters)?.is_empty() {
+                if !template_kinds(resolved, field, owner, parameters, false)?.is_empty() {
+                    return None;
+                }
+            }
+            vec![]
+        }
+        ContractType::RequirementMerge(operands) if allow_requirement_merge => {
+            for operand in operands {
+                if !template_kinds(resolved, operand, owner, parameters, true)?.is_empty() {
                     return None;
                 }
             }
             vec![]
         }
         // Structural bodies have a value kind only when every component
-        // proves that kind in the same alias-slot scope. An open row, merge,
-        // private slot or higher-order domain still has no closed-body proof.
-        // No wildcard, unresolved free binder or nested unproved function is
-        // evidence of the required closed constructor kind.
+        // proves that kind in the same alias-slot scope. An open row, merge
+        // outside Effect/Stream, private slot or higher-order domain still has
+        // no closed-body proof. No wildcard, unresolved free binder or nested
+        // unproved function is evidence of the required closed constructor kind.
         _ => return None,
     })
 }
@@ -189,7 +190,9 @@ fn section_reduce(
     template: ContractType,
     owner: &TypeIdentity,
     parameters: &[TypeParameter],
-    supplied: Vec<ContractType>,
+    remaining: &[usize],
+    explicit_holes: bool,
+    binder_arities: &[u32],
 ) -> Option<ContractType> {
     let ContractType::Apply {
         constructor,
@@ -207,15 +210,9 @@ fn section_reduce(
     if arguments.len() != kinds.len() {
         return None;
     }
-    let remaining = parameters
+    let remaining = remaining
         .iter()
-        .enumerate()
-        .filter(|(index, _)| {
-            supplied
-                .get(*index)
-                .is_none_or(|argument| *argument == ContractType::Hole)
-        })
-        .map(|(index, parameter)| (parameter.arity == 0).then_some(index as u32))
+        .map(|&index| (parameters.get(index)?.arity == 0).then_some(index as u32))
         .collect::<Option<Vec<_>>>()?;
     let mut seen = Vec::new();
     let mut projected = Vec::new();
@@ -229,27 +226,14 @@ fn section_reduce(
                 if parameter.arity != kind {
                     return None;
                 }
-                match supplied.get(index as usize) {
-                    Some(argument) if *argument != ContractType::Hole => {
-                        // Closed fixed arguments have their own checked kinds.
-                        // General higher-order unification is deliberately not
-                        // inferred from an unresolved binder or display name.
-                        if remaining_kinds(resolved, argument)? != vec![0; kind as usize] {
-                            return None;
-                        }
-                        projected.push(argument.clone());
-                    }
-                    _ => {
-                        seen.push(index);
-                        projected.push(ContractType::Hole);
-                    }
-                }
+                seen.push(index);
+                projected.push(ContractType::Hole);
             }
             fixed => {
                 // A private AliasSlot cannot pass this recursive kind proof.
                 // Explicit holes are admitted only as slots of a checked
                 // canonical constructor application, never as unknown leaves.
-                if remaining_kinds(resolved, &fixed)? != vec![0; kind as usize] {
+                if remaining_kinds(resolved, &fixed, binder_arities)? != vec![0; kind as usize] {
                     return None;
                 }
                 projected.push(fixed);
@@ -264,7 +248,7 @@ fn section_reduce(
     }
     // Only implicit suffix slots are eta-reduced. Preserve explicit source
     // sections, as well as every fixed/non-trailing argument.
-    if supplied.len() < parameters.len() {
+    if !explicit_holes {
         while projected.last() == Some(&ContractType::Hole) {
             projected.pop();
         }
@@ -276,7 +260,9 @@ fn eta_reduce(
     resolved: &ResolvedModule,
     template: ContractType,
     owner: &TypeIdentity,
-    arity: usize,
+    remaining: &[usize],
+    explicit_holes: bool,
+    binder_arities: &[u32],
 ) -> Option<ContractType> {
     let ContractType::Apply {
         constructor,
@@ -285,7 +271,7 @@ fn eta_reduce(
     else {
         return None;
     };
-    for index in (0..arity).rev() {
+    for &index in remaining.iter().rev() {
         if arguments.pop()?
             != (ContractType::AliasSlot {
                 owner: owner.clone(),
@@ -295,16 +281,37 @@ fn eta_reduce(
             return None;
         }
     }
-    if arguments.iter().any(contains_unrepresented_slot) {
+    if contains_unrepresented_slot(&constructor)
+        || arguments.iter().any(contains_unrepresented_slot)
+    {
         return None;
     }
-    let ContractType::Named(TypeIdentity::Canonical(canonical)) = constructor.as_ref() else {
-        return None;
-    };
-    if rigid_arity(resolved, canonical)? != arguments.len() + arity {
+    let reduced = super::apply_arguments(*constructor, arguments)?;
+    let expected = vec![0; remaining.len()];
+    let proved = remaining_kinds(resolved, &reduced, binder_arities)
+        .is_some_and(|kinds| kinds == expected)
+        || match &reduced {
+            ContractType::Named(TypeIdentity::Canonical(canonical)) => {
+                rigid_arity(resolved, canonical) == Some(remaining.len())
+            }
+            ContractType::Apply {
+                constructor,
+                arguments,
+            } => matches!(
+                constructor.as_ref(),
+                ContractType::Named(TypeIdentity::Canonical(canonical))
+                    if rigid_arity(resolved, canonical) == Some(arguments.len() + remaining.len())
+            ),
+            _ => false,
+        };
+    if !proved {
         return None;
     }
-    super::apply_arguments(*constructor, arguments)
+    if explicit_holes {
+        super::apply_arguments(reduced, vec![ContractType::Hole; remaining.len()])
+    } else {
+        Some(reduced)
+    }
 }
 
 pub(super) fn omitted_suffix(resolved: &ResolvedModule, type_ref: &ContractType) -> Option<usize> {
@@ -315,28 +322,42 @@ pub(super) fn omitted_suffix(resolved: &ResolvedModule, type_ref: &ContractType)
         } => (constructor.as_ref(), arguments.as_slice()),
         constructor => (constructor, &[][..]),
     };
-    let ContractType::Named(TypeIdentity::Canonical(canonical)) = constructor else {
-        return None;
+    let arity = match constructor {
+        ContractType::Named(TypeIdentity::Canonical(canonical)) => {
+            rigid_parameter_kinds(resolved, canonical)
+                .map(|kinds| kinds.len())
+                .or_else(|| rigid_arity(resolved, canonical))?
+        }
+        ContractType::Parameter(symbol_id) => type_parameter_arity(resolved, *symbol_id)? as usize,
+        _ => return None,
     };
-    rigid_parameter_kinds(resolved, canonical)
-        .map(|kinds| kinds.len())
-        .or_else(|| rigid_arity(resolved, canonical))?
-        .checked_sub(arguments.len())
+    arity.checked_sub(arguments.len())
 }
 
-fn remaining_kinds(resolved: &ResolvedModule, type_ref: &ContractType) -> Option<Vec<u32>> {
+pub(super) fn remaining_kinds(
+    resolved: &ResolvedModule,
+    type_ref: &ContractType,
+    binder_arities: &[u32],
+) -> Option<Vec<u32>> {
     match type_ref {
         ContractType::TypeFunction {
             parameter_kinds, ..
         } => Some(parameter_kinds.clone()),
+        ContractType::Binder(index) => binder_arities
+            .get(*index as usize)
+            .map(|arity| vec![0; *arity as usize]),
+        ContractType::Parameter(symbol_id) => {
+            type_parameter_arity(resolved, *symbol_id).map(|arity| vec![0; arity as usize])
+        }
         ContractType::Named(TypeIdentity::Canonical(canonical)) => {
             rigid_parameter_kinds(resolved, canonical)
+                .or_else(|| rigid_arity(resolved, canonical).map(|arity| vec![0; arity]))
         }
         ContractType::Apply {
             constructor,
             arguments,
         } => {
-            let kinds = remaining_kinds(resolved, constructor)?;
+            let kinds = remaining_kinds(resolved, constructor, binder_arities)?;
             if arguments.len() > kinds.len() {
                 return None;
             }
@@ -344,7 +365,9 @@ fn remaining_kinds(resolved: &ResolvedModule, type_ref: &ContractType) -> Option
             for (argument, kind) in arguments.iter().zip(&kinds) {
                 if *argument == ContractType::Hole {
                     remaining.push(*kind);
-                } else if remaining_kinds(resolved, argument)? != vec![0; *kind as usize] {
+                } else if remaining_kinds(resolved, argument, binder_arities)?
+                    != vec![0; *kind as usize]
+                {
                     return None;
                 }
             }
@@ -361,6 +384,90 @@ fn remaining_kinds(resolved: &ResolvedModule, type_ref: &ContractType) -> Option
         }
         _ => None,
     }
+}
+
+fn type_parameter_arity(resolved: &ResolvedModule, id: SymbolId) -> Option<u32> {
+    let symbol = resolved
+        .symbols
+        .iter()
+        .find(|symbol| symbol.id == id && symbol.kind == SymbolKind::TypeParameter)?;
+    let scope = resolved
+        .scopes
+        .iter()
+        .find(|scope| scope.id == symbol.scope)?;
+    let find_in = |parameters: &[TypeParameter]| {
+        parameters
+            .iter()
+            .find(|parameter| parameter.name == symbol.spelling)
+            .map(|parameter| parameter.arity)
+    };
+    for declaration in &resolved.declarations {
+        match scope.kind {
+            ScopeKind::Declaration if declaration.span() == scope.origin => {
+                let parameters = match declaration {
+                    SurfaceDecl::Type {
+                        type_parameters, ..
+                    }
+                    | SurfaceDecl::Newtype {
+                        type_parameters, ..
+                    }
+                    | SurfaceDecl::Struct {
+                        type_parameters, ..
+                    }
+                    | SurfaceDecl::Alias {
+                        type_parameters, ..
+                    }
+                    | SurfaceDecl::Trait {
+                        type_parameters, ..
+                    }
+                    | SurfaceDecl::Instance {
+                        type_parameters, ..
+                    }
+                    | SurfaceDecl::Impl {
+                        type_parameters, ..
+                    } => type_parameters.as_slice(),
+                    _ => continue,
+                };
+                if let Some(arity) = find_in(parameters) {
+                    return Some(arity);
+                }
+            }
+            ScopeKind::Function => match declaration {
+                SurfaceDecl::Fn {
+                    type_parameters,
+                    span,
+                    ..
+                } if *span == scope.origin => {
+                    if let Some(arity) = find_in(type_parameters) {
+                        return Some(arity);
+                    }
+                }
+                SurfaceDecl::Trait { methods, .. } | SurfaceDecl::Instance { methods, .. } => {
+                    for method in methods {
+                        if method.span == scope.origin {
+                            if let Some(arity) = find_in(&method.type_parameters) {
+                                return Some(arity);
+                            }
+                        }
+                    }
+                }
+                SurfaceDecl::Impl { members, .. } => {
+                    for member in members {
+                        if let SurfaceImplMember::Method { method, .. } = member {
+                            if method.span == scope.origin {
+                                if let Some(arity) = find_in(&method.type_parameters) {
+                                    return Some(arity);
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            },
+            _ => {}
+        }
+    }
+    None
 }
 
 fn rigid_parameter_kinds(resolved: &ResolvedModule, canonical: &str) -> Option<Vec<u32>> {

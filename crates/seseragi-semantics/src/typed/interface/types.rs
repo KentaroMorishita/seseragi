@@ -247,39 +247,45 @@ impl<'a> InterfaceTypes<'a> {
                             .collect(),
                     };
                 }
-                if canonical == &format!("std/prelude::{name}")
-                    && matches!(
-                        name.as_str(),
-                        "Bool" | "Int" | "Float" | "Char" | "String" | "Never"
-                    )
+                if let Some(provider) = self
+                    .bindings
+                    .iter()
+                    .filter(|binding| binding.canonical == *canonical)
+                    .find_map(|binding| binding.provider.as_ref())
                 {
                     return InterfaceType::ExternalNamed {
                         name: name.clone(),
                         canonical: canonical.clone(),
-                        provider_module: "std/prelude".into(),
-                        provider_export: name.clone(),
+                        provider_module: provider.module.clone(),
+                        provider_export: provider.export.clone(),
                         arguments: arguments
                             .iter()
                             .map(|argument| self.convert(argument))
                             .collect(),
                     };
                 }
-                let provider = self
-                    .bindings
-                    .iter()
-                    .filter(|binding| binding.canonical == *canonical)
-                    .find_map(|binding| binding.provider.as_ref())
-                    .expect("external typed nominal has provider provenance");
-                InterfaceType::ExternalNamed {
-                    name: name.clone(),
-                    canonical: canonical.clone(),
-                    provider_module: provider.module.clone(),
-                    provider_export: provider.export.clone(),
-                    arguments: arguments
-                        .iter()
-                        .map(|argument| self.convert(argument))
-                        .collect(),
+                if let Some(prelude_export) =
+                    canonical.strip_prefix("std/prelude::").filter(|export| {
+                        crate::prelude::is_standalone_symbol(crate::SymbolNamespace::Type, export)
+                            || crate::prelude::sum_type_for_symbol(
+                                crate::SymbolNamespace::Type,
+                                export,
+                            )
+                            .is_some()
+                    })
+                {
+                    return InterfaceType::ExternalNamed {
+                        name: name.clone(),
+                        canonical: canonical.clone(),
+                        provider_module: "std/prelude".into(),
+                        provider_export: prelude_export.to_owned(),
+                        arguments: arguments
+                            .iter()
+                            .map(|argument| self.convert(argument))
+                            .collect(),
+                    };
                 }
+                panic!("external typed nominal has provider provenance: {canonical}");
             }
             TypedType::Hole => InterfaceType::Hole,
             TypedType::Record { closed, fields } => InterfaceType::Record {
