@@ -560,3 +560,97 @@ fn returned_evidence_calls_keep_first_stage_defect_before_later_argument() {
     let source = "fn render<A> value:A -> (Unit -> String) where Show<A> = { let first:Int = 1 / 0; \\_:Unit -> show value }\nfn later -> Unit = { let second:Int = 9007199254740991 + 1; () }\npub effect fn main = println (render<Int> 42 (later ()))\n";
     check_case(source, "", 70, None, Some("Int division by zero"));
 }
+
+#[test]
+fn disjoint_type_function_instances_keep_raw_strict_and_native_parity() {
+    let source = r#"
+type Pair<A, B> = | Pair (A, B)
+alias Flip<A, B> = Pair<B, A>
+alias FromInt<A> = Int -> A
+alias ToInt<A> = A -> Int
+
+trait Tag2<F<_, _>> { fn tag2<A, B> value: F<A, B> -> String }
+trait Tag1<F<_>> { fn tag1<A> value: F<A> -> String }
+
+instance Tag2<Pair> { fn tag2<A, B> value: Pair<A, B> -> String = "pair" }
+instance Tag2<Flip> { fn tag2<A, B> value: Pair<B, A> -> String = "flip" }
+instance Tag1<FromInt> { fn tag1<A> value: (Int -> A) -> String = "from-int" }
+instance Tag1<ToInt> { fn tag1<A> value: (A -> Int) -> String = "to-int" }
+
+fn inc n: Int -> Int = n + 1
+fn len s: String -> Int = 1
+
+pub effect fn main = do {
+  println (tag2<Pair, Int, Bool> (Pair (1, True)))
+  println (tag2<Flip, Int, Bool> (Pair (True, 1)))
+  println (tag1<FromInt, Int> inc)
+  println (tag1<ToInt, String> len)
+}
+"#;
+    check_program(source, "pair\nflip\nfrom-int\nto-int\n", 0);
+}
+
+#[test]
+fn reexported_higher_kinded_aliases_pass_raw_strict_ts_and_native_parity() {
+    let scratch = tempfile::Builder::new()
+        .prefix("seseragi-reexport-hkt-alias-")
+        .tempdir()
+        .unwrap();
+    let project = scratch.path();
+    fs::create_dir_all(project.join("src")).unwrap();
+    fs::write(
+        project.join("seseragi.toml"),
+        "[package]\nname = \"fixture/reexport-hkt\"\nversion = \"0.0.0\"\nlanguage = \">=0.1.0 <0.2.0\"\n\n[run]\nentry = \"main\"\ntarget = \"process\"\n",
+    )
+    .unwrap();
+    fs::write(
+        project.join("src/model.ssrg"),
+        r#"pub type Box<A> = | Box A
+pub type Pair<A, B> = | Pair (A, B)
+pub alias Apply<F<_>, A> = F<A>
+pub alias Flip<A, B> = Pair<B, A>
+pub trait Tag2<F<_, _>> { fn tag2<A, B> value: F<A, B> -> String }
+instance Tag2<Flip> { fn tag2<A, B> value: Pair<B, A> -> String = "flip" }
+pub fn label2<F<_, _>, A, B> value: F<A, B> -> String where Tag2<F> = tag2<F, A, B> value
+"#,
+    )
+    .unwrap();
+    fs::write(
+        project.join("src/facade.ssrg"),
+        "pub import { Apply, Flip as Reversed, Box, Pair, Tag2, label2 } from \"./model\"\n",
+    )
+    .unwrap();
+    fs::write(
+        project.join("src/main.ssrg"),
+        r#"import { Apply, Reversed, Box, Pair, Tag2, label2 } from "./facade"
+pub fn keep value: Apply<Box, Int> -> Box<Int> = value
+pub fn swapped value: Reversed<Bool, Int> -> Pair<Int, Bool> = value
+pub effect fn main = do {
+  let kept = keep (Box 42)
+  let pair = swapped (Pair (7, True))
+  let out = match kept { Box n -> show n }
+  let tag = label2<Reversed, Bool, Int> pair
+  println (out + ":" + tag)
+}
+"#,
+    )
+    .unwrap();
+    fs::write(
+        project.join("type-consumer.ts"),
+        r#"import type { Apply, Box, Pair, Reversed } from "./facade"
+import { keep, swapped } from "./main"
+
+type BoxKind = { readonly args: readonly [unknown]; readonly type: Box<unknown> }
+const boxed: Box<number> = keep({ tag: "Box", value: 42 })
+const pair: Reversed<boolean, number> = swapped({ tag: "Pair", value: [7, true] })
+const asPair: Pair<number, boolean> = pair
+type Applied = Apply<BoxKind, number>
+// @ts-expect-error Reversed<boolean, number> is Pair<number, boolean>, not Pair<boolean, number>.
+const wrongOrder: Reversed<boolean, number> = { tag: "Pair", value: [true, 7] }
+void [boxed, asPair, wrongOrder]
+type _CheckApplied = Applied
+"#,
+    )
+    .unwrap();
+    check_case("", "42:flip\n", 0, Some(project), None);
+}

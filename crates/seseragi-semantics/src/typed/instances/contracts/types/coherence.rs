@@ -349,24 +349,21 @@ fn applied_variable(value: &Term) -> bool {
     }
 }
 
-fn contains_any_slot(value: &Term) -> bool {
-    match value {
-        Term::Slot(_) => true,
-        Term::Apply(left, right) | Term::Function(left, right) => {
-            contains_any_slot(left) || contains_any_slot(right)
-        }
-        Term::Tuple(elements) | Term::RequirementMerge(elements) => {
-            elements.iter().any(contains_any_slot)
-        }
-        Term::Record { fields, .. } => fields.iter().any(|(_, _, value)| contains_any_slot(value)),
-        Term::Section { .. } | Term::Variable { .. } | Term::Named(_) | Term::Unknown => false,
-    }
-}
-
 fn relax(value: Term) -> Term {
     match value {
         Term::Apply(ref constructor, _) if applied_variable(constructor) => Term::Unknown,
-        Term::Section { .. } | Term::Slot(_) | Term::RequirementMerge(_) => Term::Unknown,
+        Term::RequirementMerge(_) => Term::Unknown,
+        Term::Section { arity, body } => {
+            let body = relax(*body);
+            if matches!(body, Term::Unknown) {
+                Term::Unknown
+            } else {
+                Term::Section {
+                    arity,
+                    body: Box::new(body),
+                }
+            }
+        }
         Term::Apply(constructor, argument) => {
             Term::Apply(Box::new(relax(*constructor)), Box::new(relax(*argument)))
         }
@@ -382,6 +379,39 @@ fn relax(value: Term) -> Term {
                 .collect(),
         },
         leaf => leaf,
+    }
+}
+
+fn contains_any_slot(value: &Term, substitutions: &Substitutions) -> bool {
+    match dereference(value.clone(), substitutions) {
+        Term::Slot(_) => true,
+        Term::Apply(left, right) | Term::Function(left, right) => {
+            contains_any_slot(&left, substitutions) || contains_any_slot(&right, substitutions)
+        }
+        Term::Record { fields, .. } => fields
+            .iter()
+            .any(|(_, _, field)| contains_any_slot(field, substitutions)),
+        Term::Tuple(elements) | Term::RequirementMerge(elements) => elements
+            .iter()
+            .any(|element| contains_any_slot(element, substitutions)),
+        // Nested sections bind their own slots; outer instance variables never
+        // share a slot scope with them.
+        Term::Section { .. } | Term::Variable { .. } | Term::Named(_) | Term::Unknown => false,
+    }
+}
+
+fn contains_unknown(value: &Term) -> bool {
+    match value {
+        Term::Unknown => true,
+        Term::Apply(left, right) | Term::Function(left, right) => {
+            contains_unknown(left) || contains_unknown(right)
+        }
+        Term::Record { fields, .. } => fields.iter().any(|(_, _, field)| contains_unknown(field)),
+        Term::Tuple(elements) | Term::RequirementMerge(elements) => {
+            elements.iter().any(contains_unknown)
+        }
+        Term::Section { body, .. } => contains_unknown(body),
+        Term::Variable { .. } | Term::Named(_) | Term::Slot(_) => false,
     }
 }
 
@@ -416,7 +446,9 @@ fn known_arity(value: &Term, substitutions: &Substitutions) -> Option<u32> {
     match dereference(value.clone(), substitutions) {
         Term::Variable { arity, .. } => Some(arity),
         Term::Apply(constructor, _) => known_arity(&constructor, substitutions)?.checked_sub(1),
-        Term::Section { arity, .. } => Some(arity),
+        // An eta-reduced section keeps only its remaining slots; add the body's
+        // residual arity when known, or stay unknown for rigid nominal heads.
+        Term::Section { arity, body } => known_arity(&body, substitutions)?.checked_add(arity),
         Term::Unknown => None,
         Term::Named(_) => None, // rigid constructors are kind-checked by the source contract
         _ => Some(0),
@@ -434,8 +466,8 @@ fn unify(left: Term, right: Term, substitutions: &mut Substitutions) -> bool {
     }
     if let Term::Variable { side, index, arity } = &left {
         if known_arity(&right, substitutions).is_some_and(|actual| actual != *arity)
-            || contains_any_slot(&right)
             || occurs((*side, *index), &right, substitutions)
+            || contains_any_slot(&right, substitutions)
         {
             return false;
         }
@@ -449,14 +481,27 @@ fn unify(left: Term, right: Term, substitutions: &mut Substitutions) -> bool {
         (Term::Named(left), Term::Named(right)) => left == right,
         (
             Term::Section {
-                arity: left_arity,
-                body: left_body,
+                arity: la,
+                body: lb,
             },
             Term::Section {
-                arity: right_arity,
-                body: right_body,
+                arity: ra,
+                body: rb,
             },
-        ) if left_arity == right_arity => unify(*left_body, *right_body, substitutions),
+        ) => {
+            if la == ra {
+                unify(*lb, *rb, substitutions)
+            } else {
+                // Relaxed sections with an applied HKT variable can change
+                // their eta-reduced arity under instantiation (e.g. SwapLast).
+                contains_unknown(&lb) || contains_unknown(&rb)
+            }
+        }
+        // A surviving concrete section is non-eta and cannot equal a rigid
+        // nominal head; only a relaxed body with an applied HKT variable may
+        // still reduce to one.
+        (Term::Section { body, .. }, Term::Named(_) | Term::Apply(..))
+        | (Term::Named(_) | Term::Apply(..), Term::Section { body, .. }) => contains_unknown(&body),
         (Term::Apply(lc, la), Term::Apply(rc, ra))
         | (Term::Function(lc, la), Term::Function(rc, ra)) => {
             unify(*lc, *rc, substitutions) && unify(*la, *ra, substitutions)
@@ -541,6 +586,104 @@ mod tests {
         });
         assert_eq!(
             function.relation(&inverse, "fixture/types::Tag"),
+            HeadRelation::Disjoint
+        );
+        assert_eq!(
+            inverse.relation(&function, "fixture/types::Tag"),
+            HeadRelation::Disjoint
+        );
+    }
+
+    #[test]
+    fn type_function_equivalence_distinguishes_disjoint_overlapping_and_unproved_sections() {
+        let slot0 = ContractType::TypeFunctionParameter { depth: 0, index: 0 };
+        let slot1 = ContractType::TypeFunctionParameter { depth: 0, index: 1 };
+        let int = nominal("std/prelude::Int");
+        let boolean = nominal("std/prelude::Bool");
+        let pair = |left, right| ContractType::Apply {
+            constructor: Box::new(nominal("fixture/types::Pair")),
+            arguments: vec![left, right],
+        };
+        let lambda = |arity, body, parameters| {
+            head(
+                ContractType::TypeFunction {
+                    parameter_kinds: vec![0; arity],
+                    body: Box::new(body),
+                },
+                parameters,
+            )
+        };
+        let flip = lambda(2, pair(slot1.clone(), slot0.clone()), vec![]);
+        let flip_copy = lambda(2, pair(slot1.clone(), slot0.clone()), vec![]);
+        let pair_head = head(nominal("fixture/types::Pair"), vec![]);
+        assert_eq!(
+            flip.relation(&flip_copy, "fixture/types::Tag"),
+            HeadRelation::Overlap
+        );
+        assert_eq!(
+            flip.relation(&pair_head, "fixture/types::Tag"),
+            HeadRelation::Disjoint
+        );
+        assert_eq!(
+            pair_head.relation(&flip, "fixture/types::Tag"),
+            HeadRelation::Disjoint
+        );
+
+        let left_int = lambda(1, pair(slot0.clone(), int.clone()), vec![]);
+        let left_bool = lambda(1, pair(slot0.clone(), boolean.clone()), vec![]);
+        let right_int = lambda(1, pair(int.clone(), slot0.clone()), vec![]);
+        let repeated = lambda(1, pair(slot0.clone(), slot0.clone()), vec![]);
+        let generic_right = lambda(
+            1,
+            pair(slot0.clone(), ContractType::Binder(0)),
+            vec![TypeParameter::value("X")],
+        );
+        assert_eq!(
+            left_int.relation(&left_bool, "fixture/types::Tag"),
+            HeadRelation::Disjoint
+        );
+        assert_eq!(
+            left_int.relation(&right_int, "fixture/types::Tag"),
+            HeadRelation::Disjoint
+        );
+        assert_eq!(
+            left_int.relation(&repeated, "fixture/types::Tag"),
+            HeadRelation::Disjoint
+        );
+        assert_eq!(
+            generic_right.relation(&left_int, "fixture/types::Tag"),
+            HeadRelation::Overlap
+        );
+        assert_eq!(
+            left_int.relation(&generic_right, "fixture/types::Tag"),
+            HeadRelation::Overlap
+        );
+        // Outer variable X cannot capture the section-bound slot A.
+        assert_eq!(
+            generic_right.relation(&repeated, "fixture/types::Tag"),
+            HeadRelation::Disjoint
+        );
+        assert_eq!(
+            repeated.relation(&generic_right, "fixture/types::Tag"),
+            HeadRelation::Disjoint
+        );
+
+        // An applied HKT variable inside a section still stays conservative.
+        let applied_hkt = lambda(
+            1,
+            boxed(ContractType::Apply {
+                constructor: Box::new(ContractType::Binder(0)),
+                arguments: vec![slot0],
+            }),
+            vec![TypeParameter::constructor("F", 1)],
+        );
+        let box_head = head(nominal("fixture/types::Box"), vec![]);
+        assert_eq!(
+            applied_hkt.relation(&box_head, "fixture/types::Tag"),
+            HeadRelation::Unproved
+        );
+        assert_eq!(
+            box_head.relation(&applied_hkt, "fixture/types::Tag"),
             HeadRelation::Unproved
         );
     }
@@ -639,8 +782,7 @@ mod tests {
             Term::Slot(0),
             &mut BTreeMap::new()
         ));
-        // Relaxed matching is not a proof of equality.
-        assert!(unify(
+        assert!(!unify(
             relax(repeated),
             relax(reversed),
             &mut BTreeMap::new()

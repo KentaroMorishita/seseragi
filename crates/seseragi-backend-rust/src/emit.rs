@@ -518,18 +518,6 @@ impl<'a> Backend<'a> {
     fn instance(&mut self, instance: &seseragi_lowering::CoreInstance) -> Result<String> {
         let mut output = String::new();
         self.owner = &self.owners[&instance.identity];
-        if self.program_wasm_library
-            && instance
-                .arguments
-                .iter()
-                .any(CoreType::contains_type_function)
-        {
-            return Err(crate::project::at(
-                "program WASM: checked type-function dictionaries are unsupported",
-                &instance.origin,
-                self.owner,
-            ));
-        }
         let mut scope = Scope::new();
         scope.type_parameters(
             instance
