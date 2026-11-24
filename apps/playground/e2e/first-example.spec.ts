@@ -112,3 +112,41 @@ test("Hints off hides the chips", async ({ page }) => {
   await expect(page.locator("#try-next")).toBeHidden()
   await expect(page.locator(".pg-coach")).toHaveCount(0)
 })
+
+test("the auto-run note leaves with the run it describes", async ({ page }) => {
+  await page.goto("/")
+  await expect(page.locator("#status-text")).toHaveText("Completed", {
+    timeout: 60_000,
+  })
+  const note = page.locator("#auto-run-note")
+  await expect(note).toBeVisible()
+
+  // 自動では動かさない例に切り替えると消える
+  await page.locator("#sample-browser-button").click()
+  await page.locator('[data-sample-id="records"]').click()
+  await expect(page.locator("#current-sample-title")).toHaveText("Recordと更新")
+  await expect(note).toBeHidden()
+
+  // 自動で動く例に戻すと出て、出力を Clear すると消える
+  await page.locator("#sample-browser-button").click()
+  await page.locator('[data-sample-id="weather-advice"]').click()
+  await expect(page.locator("#status-text")).toHaveText("Completed", {
+    timeout: 60_000,
+  })
+  await expect(note).toBeVisible()
+  await page.locator("#clear-output-button").click()
+  await expect(note).toBeHidden()
+})
+
+test("?example= opens that example without running the first one", async ({
+  page,
+}) => {
+  await page.goto("/?example=records")
+  await expect(page.locator("#current-sample-title")).toHaveText("Recordと更新")
+  await expect(page.locator("#status-text")).toHaveText("Analysis ready", {
+    timeout: 60_000,
+  })
+  await expect(page.locator("#auto-run-note")).toBeHidden()
+  await expect(page.locator("#output")).not.toContainText("傘")
+  await expect(page.locator(".pg-coach")).toHaveCount(0)
+})
