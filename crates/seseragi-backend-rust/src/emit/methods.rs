@@ -338,10 +338,7 @@ impl Backend<'_> {
                 parameter_kinds,
                 body,
             } => {
-                if self.program_wasm_library
-                    || parameter_kinds.is_empty()
-                    || parameter_kinds.iter().any(|kind| *kind != 0)
-                {
+                if parameter_kinds.is_empty() || parameter_kinds.iter().any(|kind| *kind != 0) {
                     return None;
                 }
                 let mut nested = functions.to_vec();

@@ -206,14 +206,21 @@ fn partial_type_function_heads_are_compared_for_duplicates_and_coherence() {
         "instance Tag<Also<Box>>",
     );
 
-    let unproved = "type Pair<A, B> = | Pair (A, B)\nalias Left<F<_, _>, A> = F<A, Int>\nalias Right<F<_, _>, A> = F<Int, A>\ntrait Tag<G<_>> { fn tag<A> value: G<A> -> String }\ninstance Tag<Left<Pair>> { fn tag<A> value: Pair<A, Int> -> String = \"left\" }\ninstance Tag<Right<Pair>> { fn tag<A> value: Pair<Int, A> -> String = \"right\" }\n";
+    let provably_disjoint_same_root = "type Pair<A, B> = | Pair (A, B)\nalias Left<F<_, _>, A> = F<A, Int>\nalias Right<F<_, _>, A> = F<Int, A>\ntrait Tag<G<_>> { fn tag<A> value: G<A> -> String }\ninstance Tag<Left<Pair>> { fn tag<A> value: Pair<A, Int> -> String = \"left\" }\ninstance Tag<Right<Pair>> { fn tag<A> value: Pair<Int, A> -> String = \"right\" }\n";
+    let artifact = diagnostics(
+        "partial-type-functions-disjoint-same-root",
+        provably_disjoint_same_root,
+    );
+    assert!(artifact.diagnostics.is_empty(), "{artifact:#?}");
+
+    let unproved = "type Triple<A, B, C> = | Triple (A, B, C)\ntrait Tag2<G<_, _>> { fn tag2<A, B> value: G<A, B> -> String }\ninstance<F<_, _, _>> Tag2<F<_, Int, _>> { fn tag2<A, B> value: F<A, Int, B> -> String = \"generic\" }\ninstance Tag2<Triple<_, _, Int>> { fn tag2<A, B> value: Triple<A, B, Int> -> String = \"triple\" }\n";
     let artifact = diagnostics("partial-type-functions-unproved", unproved);
     assert_at(
         &artifact,
         unproved,
         "SES-T0101",
         "trait.instance-coherence-unproved",
-        "instance Tag<Right<Pair>>",
+        "instance Tag2<Triple<_, _, Int>>",
     );
 
     let disjoint = "type Pair<A, B> = | Pair (A, B)\ntype Other<A, B> = | Other (A, B)\nalias Left<F<_, _>, A> = F<A, Int>\ntrait Tag<G<_>> { fn tag<A> value: G<A> -> String }\ninstance Tag<Left<Pair>> { fn tag<A> value: Pair<A, Int> -> String = \"pair\" }\ninstance Tag<Left<Other>> { fn tag<A> value: Other<A, Int> -> String = \"other\" }\n";

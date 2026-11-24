@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.62.2] - 2026-11-24
+
+### Fixed
+
+- Checked type-function dictionaries from public and structural type aliases are now accepted in program WASM builds, while unapplied type functions in public export signatures remain rejected with a positioned diagnostic (#863).
+- Instance coherence now compares type-function sections structurally with slot-scope checks and full constructor arity, allowing provably disjoint type-function heads (such as `Int -> A` vs `A -> Int` or `Flip` vs `Pair`) while staying conservative when an applied higher-kinded variable could change an eta-reduced arity (#863).
+
 ## [0.62.1] - 2026-11-24
 
 ### Added
