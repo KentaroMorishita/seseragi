@@ -1,0 +1,11 @@
+// `seseragi test` で実行するテストです。割り勘の計算だけを、入出力なしで確かめます。
+import * as test from "std/test"
+import { NegativeTotal, NobodyToPay, split } from "self/bill/split"
+
+pub let tests: test.Test =
+  test.suite "split" [
+    test.test "割り切れるときは同じ額" (test.equal (Right [3000, 3000, 3000]) (split 9000 3)),
+    test.test "端数は先頭から 1 円ずつ" (test.equal (Right [3334, 3333, 3333]) (split 10000 3)),
+    test.test "0 人では割れない" (test.equal (Left NobodyToPay) (split 1000 0)),
+    test.test "合計が負なら断る" (test.equal (Left (NegativeTotal (-1))) (split (-1) 2)),
+  ]

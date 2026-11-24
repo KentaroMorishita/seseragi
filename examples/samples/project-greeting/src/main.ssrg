@@ -1,14 +1,30 @@
-import { greeting } from "./feature/greeting"
+// 実行の入口。Input の「合計 人数」を読み、割り勘を計算して出す。
+// 計算は bill/split、文にするのは bill/receipt に分けてある。
+import * as ints from "std/int"
+import * as text from "std/text"
+import { describe, explain } from "./bill/receipt"
+import { split } from "./bill/split"
 
 type AppError deriving Show =
   | InputFailure StdinError
   | OutputFailure ConsoleError
 
-pub effect fn main = do {
-  maybeName <- mapError InputFailure (readLine ())
-  let message = match maybeName {
-    Just name -> greeting name
-    Nothing -> greeting "stranger"
+fn answer line: String -> String = match text.words line {
+  [totalText, peopleText] -> match (ints.parse totalText, ints.parse peopleText) {
+    (Right total, Right people) -> match split total people {
+      Right shares -> describe total shares
+      Left problem -> explain problem
+    }
+    _ -> "「合計 人数」を数で入れてください"
   }
-  mapError OutputFailure (println message)
+  _ -> "「合計 人数」の形で入れてください（例: 10000 3）"
+}
+
+pub effect fn main = do {
+  input <- readLine () |> mapError InputFailure
+  let message = match input {
+    Just line -> answer line
+    Nothing -> "Input に「合計 人数」を入れてください（例: 10000 3）"
+  }
+  println message |> mapError OutputFailure
 }

@@ -1,0 +1,15 @@
+// 割り勘の結果を、読める文にする。
+import { NegativeTotal, NobodyToPay, SplitError } from "./split"
+
+pub fn describe total: Int -> shares: Array<Int> -> String = {
+  let lines = [`${person} 人目: ${yen} 円` | (person, yen) <- numbered shares]
+  join "\n" (lines |> append [`合計: ${total} 円`])
+}
+
+pub fn explain problem: SplitError -> String = match problem {
+  NobodyToPay -> "人数が 0 人なので、割れません"
+  NegativeTotal total -> `合計が ${total} 円になっています`
+}
+
+fn numbered shares: Array<Int> -> Array<(Int, Int)> =
+  [(index + 1, yen) | (index, yen) <- enumerate shares]

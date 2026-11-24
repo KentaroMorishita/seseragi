@@ -1,0 +1,17 @@
+// 割り勘の計算。画面や入出力を持たない、ただの関数だけを置く。
+// 1 円未満は出ないので、割り切れない端数は先頭の人から 1 円ずつ多く払う。
+
+pub type SplitError deriving Eq, Show =
+  | NobodyToPay
+  | NegativeTotal Int
+
+pub fn split total: Int -> people: Int -> Either<SplitError, Array<Int>> =
+  if people <= 0 then
+    Left NobodyToPay
+  else if total < 0 then
+    Left (NegativeTotal total)
+  else {
+    let base = total / people
+    let extra = total % people
+    Right [if person <= extra then base + 1 else base | person <- 1 ..= people]
+  }
