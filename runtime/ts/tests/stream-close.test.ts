@@ -214,3 +214,27 @@ test("a cancelled pull may register a cleanup while acquiring", async () => {
   )
   expect(result.kind).toBe("success")
 })
+
+test("an inner stream still opening is cancelled with the pull", async () => {
+  const inner = streams.fromPull<unknown, never, number>(
+    async (_environment, context) => {
+      await withResourceAcquisition(
+        context,
+        () =>
+          new Promise<void>((resolve) => {
+            context.onCancel(resolve)
+          })
+      )
+      return {
+        pull: async () => ({ done: true, value: undefined }),
+        close: () => undefined,
+      }
+    }
+  )
+  const source = streams.flatMap(() => inner, streams.singleton(0))
+  const result = await run(
+    streams.runCollect(streams.zip(source, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+})

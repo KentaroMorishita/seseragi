@@ -42,11 +42,34 @@ export type EffectExecution = Readonly<{
 
 const effectContext = Symbol("seseragi.effect-context")
 
-type ResourceFinalizerEntry = {
+type Keepable = { kept: boolean }
+
+/**
+ * Tracks what is registered while streams open. Once an open has finished,
+ * what it registered is kept: a partial release leaves it for the cursor's
+ * close. An open still in progress belongs to the pull being cancelled, so
+ * what it registered, such as a wait it may be blocked on, is not kept.
+ */
+class OpeningBatches {
+  private readonly batches = new Set<Keepable[]>()
+
+  add(entry: Keepable): void {
+    for (const batch of this.batches) batch.push(entry)
+  }
+
+  start(): (opened: boolean) => void {
+    const batch: Keepable[] = []
+    this.batches.add(batch)
+    return (opened) => {
+      if (!this.batches.delete(batch)) return
+      if (opened) for (const entry of batch) entry.kept = true
+    }
+  }
+}
+
+type ResourceFinalizerEntry = Keepable & {
   active: boolean
   readonly order: number
-  // Registered while a stream was opening; a partial release skips it.
-  readonly kept: boolean
   readonly finalizer: EffectResourceFinalizer
 }
 
@@ -56,7 +79,8 @@ class ResourceScope {
   private state: "open" | "closing" | "closed" = "open"
   private closing: Promise<void> | undefined
   private registrations = 0
-  private holds = 0
+  private readonly openings = new OpeningBatches()
+  private partial: Promise<void> | undefined
 
   register(finalizer: EffectResourceFinalizer): EffectResourceRegistration {
     if (this.state === "closed") {
@@ -69,9 +93,10 @@ class ResourceScope {
     const entry: ResourceFinalizerEntry = {
       active: true,
       order: this.registrations,
-      kept: this.holds > 0,
+      kept: false,
       finalizer,
     }
+    this.openings.add(entry)
     this.finalizers.push(entry)
     return Object.freeze({
       ready: Promise.resolve(),
@@ -84,19 +109,22 @@ class ResourceScope {
   close(): Promise<void> {
     if (this.closing !== undefined) return this.closing
     this.state = "closing"
-    this.closing = this.drain()
+    // A partial release may be running a finalizer; the rest wait for it,
+    // so nothing older is released first.
+    const partial = this.partial
+    this.closing =
+      partial === undefined
+        ? this.drain()
+        : partial.then(
+            () => this.drain(),
+            () => this.drain()
+          )
     return this.closing
   }
 
-  /** Keeps what is registered until the returned function is called. */
-  hold(): () => void {
-    this.holds += 1
-    let held = true
-    return () => {
-      if (!held) return
-      held = false
-      this.holds -= 1
-    }
+  /** Starts tracking a stream's open; see `OpeningBatches`. */
+  startOpening(): (opened: boolean) => void {
+    return this.openings.start()
   }
 
   /** How many finalizers have been registered so far. */
@@ -112,6 +140,16 @@ class ResourceScope {
    */
   async releaseAfter(mark: number): Promise<void> {
     if (this.state !== "open") return await this.close()
+    const partial = this.releaseNewest(mark)
+    this.partial = partial
+    try {
+      await partial
+    } finally {
+      if (this.partial === partial) this.partial = undefined
+    }
+  }
+
+  private async releaseNewest(mark: number): Promise<void> {
     const defects: unknown[] = []
     while (true) {
       if (this.acquisitions.size > 0) {
@@ -287,7 +325,7 @@ export type EffectExecutionMark = Readonly<{
 }>
 
 type ExecutionControl = Readonly<{
-  hold: () => () => void
+  startOpening: () => (opened: boolean) => void
   interrupt: () => void
   mark: () => EffectExecutionMark
   releaseAfter: (mark: EffectExecutionMark) => Promise<void>
@@ -318,14 +356,14 @@ export function createEffectExecution(
   // tell which cleanups came after a mark, and whether it must keep them.
   const cleanups = new Map<
     EffectCancellationCleanup,
-    Readonly<{ order: number; kept: boolean }>
+    Keepable & { readonly order: number }
   >()
   const started = new Map<EffectCancellationCleanup, Promise<void>>()
   const pending = new Set<Promise<void>>()
   let cancellation: Promise<void> | undefined
   let cleanupEpoch = 0
   let cleanupRegistrations = 0
-  let holds = 0
+  const openings = new OpeningBatches()
   // Cleanups started while a partial release runs; it waits for them too.
   let releasing: Set<Promise<void>> | undefined
   const startCleanup = (cleanup: EffectCancellationCleanup): Promise<void> => {
@@ -386,8 +424,13 @@ export function createEffectExecution(
         releasing.add(startCleanup(cleanup))
         return () => undefined
       }
-      cleanupRegistrations += 1
-      cleanups.set(cleanup, { order: cleanupRegistrations, kept: holds > 0 })
+      // Registering the same cleanup again keeps its first place.
+      if (!cleanups.has(cleanup)) {
+        cleanupRegistrations += 1
+        const entry = { order: cleanupRegistrations, kept: false }
+        openings.add(entry)
+        cleanups.set(cleanup, entry)
+      }
       return () => {
         cleanups.delete(cleanup)
       }
@@ -423,15 +466,7 @@ export function createEffectExecution(
     },
   })
   const control: ExecutionControl = Object.freeze({
-    hold() {
-      holds += 1
-      let held = true
-      return () => {
-        if (!held) return
-        held = false
-        holds -= 1
-      }
-    },
+    startOpening: () => openings.start(),
     interrupt,
     mark: () =>
       Object.freeze({
@@ -507,21 +542,25 @@ export function interruptExecution(execution: EffectExecution): void {
 }
 
 /**
- * Internal: runs a stream's `open`. A partial release keeps what it
- * registers, because the cursor's close may still use it, even when the
- * stream opens during a pull, as the inner stream of `flatMap` does.
+ * Internal: runs a stream's `open`. Once it has opened, a partial release
+ * keeps what it registered, because the cursor's close may still use it,
+ * even when the stream opened during a pull, as the inner stream of
+ * `flatMap` does.
  */
 export async function openingStream<Result>(
   context: EffectContext,
   open: () => Result | Promise<Result>
 ): Promise<Result> {
-  const releaseCleanups = signalControls.get(context.signal)?.hold()
-  const releaseResources = resourceScopes.get(context)?.hold()
+  const finishCleanups = signalControls.get(context.signal)?.startOpening()
+  const finishResources = resourceScopes.get(context)?.startOpening()
+  let opened = false
   try {
-    return await open()
+    const result = await open()
+    opened = true
+    return result
   } finally {
-    releaseResources?.()
-    releaseCleanups?.()
+    finishResources?.(opened)
+    finishCleanups?.(opened)
   }
 }
 

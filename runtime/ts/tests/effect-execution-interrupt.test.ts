@@ -3,6 +3,7 @@ import {
   createEffectExecution,
   interruptExecution,
   markExecution,
+  openingStream,
   registerResourceFinalizer,
   releaseExecutionAfter,
 } from "../src/effect"
@@ -91,4 +92,40 @@ test("a partial release starts a cleanup that another one waits for", async () =
   interruptExecution(execution)
   await releaseExecutionAfter(execution, mark)
   await execution.cancel()
+})
+
+test("a cancellation waits for a partial release to finish", async () => {
+  const log: string[] = []
+  const execution = createEffectExecution()
+  registerResourceFinalizer(execution.context, () => {
+    log.push("old")
+  })
+  const mark = markExecution(execution)
+  registerResourceFinalizer(execution.context, async () => {
+    await new Promise((resolve) => setTimeout(resolve, 5))
+    log.push("new")
+  })
+  interruptExecution(execution)
+  const partial = releaseExecutionAfter(execution, mark)
+  await execution.cancel()
+  await partial
+  expect(log).toEqual(["new", "old"])
+})
+
+test("registering a kept cleanup again keeps it for the close", async () => {
+  const log: string[] = []
+  const execution = createEffectExecution()
+  const cleanup = (): void => {
+    log.push("cleanup")
+  }
+  const mark = markExecution(execution)
+  await openingStream(execution.context, () => {
+    execution.context.onCancel(cleanup)
+  })
+  execution.context.onCancel(cleanup)
+  interruptExecution(execution)
+  await releaseExecutionAfter(execution, mark)
+  expect(log).toEqual([])
+  await execution.cancel()
+  expect(log).toEqual(["cleanup"])
 })
