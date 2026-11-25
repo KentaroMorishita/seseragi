@@ -723,9 +723,11 @@ type Branch<Value> = {
   // What the branch had registered once its source was open. Later
   // registrations come from its pulls.
   readonly opened: EffectExecutionMark
-  // Stops passing the parent's interrupt on to the branch.
+  // Unlinks the branch from its parent.
   readonly detach: () => void
-  // Set by the first close, which every later close waits for.
+  // How the branch is being settled, once it is.
+  settling: "cancel" | "close" | undefined
+  // Set by the first settle, which every later one waits for.
   closing: Promise<void> | undefined
 }
 
@@ -734,23 +736,32 @@ async function openBranch<Environment, Failure, Value>(
   environment: Environment,
   context: EffectContext
 ): Promise<Branch<Value>> {
-  const execution = createEffectExecution(context)
-  // When an outer branch is stopped, a pull it waits on in this branch stops
-  // at once too. Releasing this branch still waits for its own settle.
+  // The branch is linked to its parent here, not by createEffectExecution.
+  // When the parent is stopped, a pull this branch is running stops at once
+  // too. When the parent is cancelled, the branch is settled in the native
+  // order, like a branch its consumer cancels.
+  const execution = createEffectExecution()
   const interrupt = (): void => interruptExecution(execution)
+  let cancel = (): Promise<void> => execution.cancel()
+  const detachCancel = context.onCancel(() => cancel())
   context.signal.addEventListener("abort", interrupt, { once: true })
-  const detach = (): void =>
+  const detach = (): void => {
     context.signal.removeEventListener("abort", interrupt)
+    detachCancel()
+  }
   if (context.signal.aborted) interrupt()
   try {
     const cursor = await source.open(environment, execution.context)
-    return {
+    const branch: Branch<Value> = {
       cursor,
       execution,
       opened: markExecution(execution),
       detach,
+      settling: undefined,
       closing: undefined,
     }
+    cancel = () => settleBranch(branch, "cancel")
+    return branch
   } catch (error) {
     detach()
     return await cleanupThenThrow(error, [() => execution.cancel()])
@@ -772,7 +783,19 @@ function settleBranch(
   branch: Branch<unknown>,
   mode: "cancel" | "close"
 ): Promise<void> {
-  branch.closing ??= runSettleBranch(branch, mode)
+  if (branch.closing === undefined) {
+    branch.settling = mode
+    branch.closing = runSettleBranch(branch, mode)
+  } else if (mode === "cancel" && branch.settling === "close") {
+    // The cursor closes only once, but a cancellation asked for while it
+    // closes still reaches the source through the branch's cleanups.
+    branch.settling = "cancel"
+    interruptExecution(branch.execution)
+    branch.closing = Promise.all([
+      branch.closing,
+      branch.execution.cancel(),
+    ]).then(() => undefined)
+  }
   return branch.closing
 }
 
@@ -822,12 +845,13 @@ async function openMergeBranch<Environment, Failure, Value>(
   environment: Environment,
   context: EffectContext
 ): Promise<MergeBranch<Value>> {
-  return {
-    ...(await openBranch(source, environment, context)),
+  // The same object, not a copy: a parent's cancellation settles the branch
+  // that openBranch returned.
+  return Object.assign(await openBranch(source, environment, context), {
     pending: undefined,
     settled: undefined,
     done: false,
-  }
+  })
 }
 
 function startMergeDemand<Value>(branch: MergeBranch<Value>): void {

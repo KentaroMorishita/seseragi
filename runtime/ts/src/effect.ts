@@ -52,6 +52,8 @@ class ResourceScope {
   readonly finalizers: ResourceFinalizerEntry[] = []
   readonly acquisitions = new Set<Promise<void>>()
   state: "open" | "closing" | "closed" = "open"
+  // Streams still opening collect what is registered meanwhile.
+  readonly openings = new Set<object[]>()
   private closing: Promise<void> | undefined
 
   register(finalizer: EffectResourceFinalizer): EffectResourceRegistration {
@@ -63,6 +65,7 @@ class ResourceScope {
     }
     const entry: ResourceFinalizerEntry = { active: true, finalizer }
     this.finalizers.push(entry)
+    for (const opening of this.openings) opening.push(entry)
     return Object.freeze({
       ready: Promise.resolve(),
       unregister: () => {
@@ -235,6 +238,7 @@ export function createEffectExecution(
   const cleanups = new Set<EffectCancellationCleanup>()
   const started = new Set<EffectCancellationCleanup>()
   const pending = new Set<Promise<void>>()
+  const openings = new Set<object[]>()
   let cancellation: Promise<void> | undefined
   let cleanupEpoch = 0
   const startCleanup = (
@@ -280,6 +284,7 @@ export function createEffectExecution(
         return () => undefined
       }
       cleanups.add(cleanup)
+      for (const opening of openings) opening.push(cleanup)
       return () => {
         cleanups.delete(cleanup)
       }
@@ -289,6 +294,8 @@ export function createEffectExecution(
   executionInternals.set(controller.signal, {
     controller,
     cleanups,
+    pending,
+    openings,
     start: startCleanup,
     scope: rootScope,
   })
@@ -336,6 +343,10 @@ type ExecutionInternals = Readonly<{
   controller: AbortController
   // Unstarted cleanups, oldest first.
   cleanups: Set<EffectCancellationCleanup>
+  // Running cleanups.
+  pending: Set<Promise<void>>
+  // Streams still opening collect the cleanups registered meanwhile.
+  openings: Set<object[]>
   start: (cleanup: EffectCancellationCleanup) => Promise<void> | undefined
   scope: ResourceScope
 }>
@@ -382,29 +393,34 @@ export async function openingStream<Result>(
   context: EffectContext,
   open: () => Result | Promise<Result>
 ): Promise<Result> {
-  const registered = (): object[] => [
-    ...(executionInternals.get(context.signal)?.cleanups ?? []),
-    ...(resourceScopes.get(context)?.finalizers ?? []),
+  const registered: object[] = []
+  const collectors = [
+    executionInternals.get(context.signal)?.openings,
+    resourceScopes.get(context)?.openings,
   ]
-  const before = new Set(registered())
-  const result = await open()
-  for (const entry of registered()) {
-    if (!before.has(entry)) openedRegistrations.add(entry)
+  for (const collector of collectors) collector?.add(registered)
+  try {
+    const result = await open()
+    for (const entry of registered) openedRegistrations.add(entry)
+    return result
+  } finally {
+    for (const collector of collectors) collector?.delete(registered)
   }
-  return result
 }
 
 /**
  * Internal: runs the `onCancel` cleanups and releases the resources that an
  * interrupted execution registered after `mark`, newest first. It stops at
- * the newest one that an opened stream registered, so nothing is released
- * before what was registered after it. The rest wait for `cancel`.
+ * the newest one that an opened stream registered, and at an acquisition
+ * still running, so nothing is released before what was registered after
+ * it. The rest wait for `cancel`. An acquisition may be waiting for the
+ * cursor's close, so the release does not wait for it.
  */
 export async function releaseExecutionAfter(
   execution: EffectExecution,
   mark: EffectExecutionMark
 ): Promise<void> {
-  const { cleanups, start, scope } = internalsOf(execution)
+  const { cleanups, pending, start, scope } = internalsOf(execution)
   const kept = (entry: object): boolean =>
     mark.has(entry) || openedRegistrations.has(entry)
   const newer = [...cleanups]
@@ -414,15 +430,19 @@ export async function releaseExecutionAfter(
       break
     }
   }
-  await Promise.all(newer.map((cleanup) => start(cleanup)))
+  // A cleanup registered now starts at once, because the execution is
+  // interrupted. The resources wait for those too, since they may use them.
+  const earlier = new Set(pending)
+  for (const cleanup of newer) start(cleanup)
+  while (true) {
+    const running = [...pending].filter((task) => !earlier.has(task))
+    if (running.length === 0) break
+    await Promise.all(running)
+    for (const task of running) earlier.add(task)
+  }
   if (scope.state !== "open") return await scope.close()
   const defects: unknown[] = []
-  while (scope.state === "open") {
-    // A late acquisition installs its finalizer before anything is released.
-    if (scope.acquisitions.size > 0) {
-      await Promise.all([...scope.acquisitions])
-      continue
-    }
+  while (scope.state === "open" && scope.acquisitions.size === 0) {
     const entry = scope.finalizers.at(-1)
     if (entry === undefined || (entry.active && kept(entry))) break
     scope.finalizers.pop()
