@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.4] - 2026-11-25
+
+### Fixed
+
+- On narrow and compact landscape screens in the Tour, clicking a Walkthrough line range button, `Show answer`, or `間違いの例をエディターで開く` now switches from the Lesson panel to the Code panel before focusing the editor (#1413).
+
 ## [0.62.3] - 2026-11-25
 
 ### Fixed
