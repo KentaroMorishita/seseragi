@@ -105,8 +105,9 @@ class ResourceScope {
   }
 
   /**
-   * Releases, newest first, only the finalizers registered after `mark`
-   * that were not kept. The scope stays open, so the others wait for
+   * Releases, newest first, the finalizers registered after `mark`. It
+   * stops at the first kept one, so nothing older is released before what
+   * was acquired after it. The scope stays open, so the rest wait for
    * `close`.
    */
   async releaseAfter(mark: number): Promise<void> {
@@ -117,18 +118,14 @@ class ResourceScope {
         await Promise.all([...this.acquisitions])
         continue
       }
-      let index = this.finalizers.length - 1
-      while (index >= 0) {
-        const candidate = this.finalizers[index] as ResourceFinalizerEntry
-        if (candidate.active && !candidate.kept && candidate.order > mark) {
-          break
-        }
-        index -= 1
+      const entry = this.finalizers.at(-1)
+      if (entry === undefined) break
+      if (!entry.active) {
+        this.finalizers.pop()
+        continue
       }
-      if (index < 0) break
-      const [entry] = this.finalizers.splice(index, 1) as [
-        ResourceFinalizerEntry,
-      ]
+      if (entry.kept || entry.order <= mark) break
+      this.finalizers.pop()
       entry.active = false
       try {
         await entry.finalizer()
@@ -447,22 +444,33 @@ export function createEffectExecution(
       const tasks = releasing ?? new Set<Promise<void>>()
       releasing = tasks
       const finished = new Set<Promise<void>>()
-      try {
+      const settle = async (): Promise<void> => {
         while (true) {
-          for (const [cleanup, entry] of [...cleanups]) {
-            if (!entry.kept && entry.order > mark.cleanups) {
-              tasks.add(startCleanup(cleanup))
-            }
-          }
           const running = [...tasks].filter((task) => !finished.has(task))
-          if (running.length === 0) break
+          if (running.length === 0) return
           await Promise.all(running)
           for (const task of running) finished.add(task)
         }
+      }
+      try {
+        // As with resources, nothing at or before the newest kept cleanup
+        // runs early.
+        let floor = mark.cleanups
+        for (const entry of cleanups.values()) {
+          if (entry.kept && entry.order > floor) floor = entry.order
+        }
+        for (const [cleanup, entry] of [...cleanups]) {
+          if (entry.order > floor) tasks.add(startCleanup(cleanup))
+        }
+        await settle()
+        // An acquisition the scope waits for may still register a cleanup
+        // and wait for it, so new cleanups keep starting at once until the
+        // resources are released.
+        await rootScope.releaseAfter(mark.resources)
+        await settle()
       } finally {
         if (owner) releasing = undefined
       }
-      await rootScope.releaseAfter(mark.resources)
     },
   })
   executionControls.set(execution, control)

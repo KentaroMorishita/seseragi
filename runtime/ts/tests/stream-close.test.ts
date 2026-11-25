@@ -1,5 +1,10 @@
 import { expect, test } from "bun:test"
-import { registerResourceFinalizer, run, yieldNow } from "../src/effect"
+import {
+  registerResourceFinalizer,
+  run,
+  withResourceAcquisition,
+  yieldNow,
+} from "../src/effect"
 import * as streams from "../src/stream"
 
 // A source with one value whose close takes a while and may reject.
@@ -169,4 +174,43 @@ test("a stream opened during a pull keeps what its close uses", async () => {
     expect(result.kind).toBe("success")
     expect(log).toEqual(nativeOrder)
   }
+})
+
+test("an inner stream closes before the resource it was opened with", async () => {
+  const log: string[] = []
+  const parent = streams.fromEffect<unknown, never, number>(
+    async (_environment, context) => {
+      if (context === undefined) throw new Error("context")
+      registerResourceFinalizer(context, () => {
+        log.push("parent-released")
+      })
+      return 0
+    }
+  )
+  const source = streams.flatMap(() => waitingSource(log), parent)
+  const result = await run(
+    streams.runCollect(streams.zip(source, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  expect(log).toEqual([...nativeOrder, "parent-released"])
+})
+
+test("a cancelled pull may register a cleanup while acquiring", async () => {
+  const source = streams.fromPull<unknown, never, number>(() => ({
+    pull: (context) =>
+      withResourceAcquisition(context, async () => {
+        await new Promise((resolve) => setTimeout(resolve, 5))
+        await new Promise<void>((resolve) => {
+          context.onCancel(resolve)
+        })
+        return { done: false, value: 1 } as const
+      }),
+    close: () => undefined,
+  }))
+  const result = await run(
+    streams.runCollect(streams.zip(source, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
 })
