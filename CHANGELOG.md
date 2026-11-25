@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.3] - 2026-11-25
+
+### Fixed
+
+- Playground: the note "開いたときに自動で実行しました" now disappears when you switch to another example, open an example that does not run on its own, or clear the output. Opening `/?example=<id>` directly no longer runs the first example (weather-advice) before switching to the requested one (#1414).
+
 ## [0.62.2] - 2026-11-24
 
 ### Fixed
