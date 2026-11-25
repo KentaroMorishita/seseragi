@@ -45,6 +45,8 @@ const effectContext = Symbol("seseragi.effect-context")
 type ResourceFinalizerEntry = {
   active: boolean
   readonly order: number
+  // Registered while a stream was opening; a partial release skips it.
+  readonly kept: boolean
   readonly finalizer: EffectResourceFinalizer
 }
 
@@ -54,6 +56,7 @@ class ResourceScope {
   private state: "open" | "closing" | "closed" = "open"
   private closing: Promise<void> | undefined
   private registrations = 0
+  private holds = 0
 
   register(finalizer: EffectResourceFinalizer): EffectResourceRegistration {
     if (this.state === "closed") {
@@ -66,6 +69,7 @@ class ResourceScope {
     const entry: ResourceFinalizerEntry = {
       active: true,
       order: this.registrations,
+      kept: this.holds > 0,
       finalizer,
     }
     this.finalizers.push(entry)
@@ -84,14 +88,26 @@ class ResourceScope {
     return this.closing
   }
 
+  /** Keeps what is registered until the returned function is called. */
+  hold(): () => void {
+    this.holds += 1
+    let held = true
+    return () => {
+      if (!held) return
+      held = false
+      this.holds -= 1
+    }
+  }
+
   /** How many finalizers have been registered so far. */
   mark(): number {
     return this.registrations
   }
 
   /**
-   * Releases, newest first, only the finalizers registered after `mark`.
-   * The scope stays open, so the older finalizers wait for `close`.
+   * Releases, newest first, only the finalizers registered after `mark`
+   * that were not kept. The scope stays open, so the others wait for
+   * `close`.
    */
   async releaseAfter(mark: number): Promise<void> {
     if (this.state !== "open") return await this.close()
@@ -104,7 +120,9 @@ class ResourceScope {
       let index = this.finalizers.length - 1
       while (index >= 0) {
         const candidate = this.finalizers[index] as ResourceFinalizerEntry
-        if (candidate.active && candidate.order > mark) break
+        if (candidate.active && !candidate.kept && candidate.order > mark) {
+          break
+        }
         index -= 1
       }
       if (index < 0) break
@@ -272,12 +290,16 @@ export type EffectExecutionMark = Readonly<{
 }>
 
 type ExecutionControl = Readonly<{
+  hold: () => () => void
   interrupt: () => void
   mark: () => EffectExecutionMark
   releaseAfter: (mark: EffectExecutionMark) => Promise<void>
 }>
 
 const executionControls = new WeakMap<EffectExecution, ExecutionControl>()
+// Contexts derived from an execution share its signal, so the signal finds
+// the execution that owns a cleanup registered through any of them.
+const signalControls = new WeakMap<AbortSignal, ExecutionControl>()
 
 /**
  * Creates an isolated cancellation scope for exactly one root Effect run.
@@ -296,13 +318,19 @@ export function createEffectExecution(
   const controller = new AbortController()
   const rootScope = new ResourceScope()
   // Each cleanup keeps its registration order, so a partial release can
-  // tell which cleanups came after a mark.
-  const cleanups = new Map<EffectCancellationCleanup, number>()
+  // tell which cleanups came after a mark, and whether it must keep them.
+  const cleanups = new Map<
+    EffectCancellationCleanup,
+    Readonly<{ order: number; kept: boolean }>
+  >()
   const started = new Map<EffectCancellationCleanup, Promise<void>>()
   const pending = new Set<Promise<void>>()
   let cancellation: Promise<void> | undefined
   let cleanupEpoch = 0
   let cleanupRegistrations = 0
+  let holds = 0
+  // Cleanups started while a partial release runs; it waits for them too.
+  let releasing: Set<Promise<void>> | undefined
   const startCleanup = (cleanup: EffectCancellationCleanup): Promise<void> => {
     const running = started.get(cleanup)
     if (running !== undefined) return running
@@ -355,8 +383,14 @@ export function createEffectExecution(
         startCleanup(cleanup)
         return () => undefined
       }
+      // A cleanup registered by a cleanup that a partial release runs may be
+      // awaited by it, so it starts at once.
+      if (releasing !== undefined) {
+        releasing.add(startCleanup(cleanup))
+        return () => undefined
+      }
       cleanupRegistrations += 1
-      cleanups.set(cleanup, cleanupRegistrations)
+      cleanups.set(cleanup, { order: cleanupRegistrations, kept: holds > 0 })
       return () => {
         cleanups.delete(cleanup)
       }
@@ -391,28 +425,48 @@ export function createEffectExecution(
       return rootScope.close()
     },
   })
-  executionControls.set(
-    execution,
-    Object.freeze({
-      interrupt,
-      mark: () =>
-        Object.freeze({
-          cleanups: cleanupRegistrations,
-          resources: rootScope.mark(),
-        }),
-      async releaseAfter(mark: EffectExecutionMark) {
-        if (cancellation !== undefined) return await cancellation
+  const control: ExecutionControl = Object.freeze({
+    hold() {
+      holds += 1
+      let held = true
+      return () => {
+        if (!held) return
+        held = false
+        holds -= 1
+      }
+    },
+    interrupt,
+    mark: () =>
+      Object.freeze({
+        cleanups: cleanupRegistrations,
+        resources: rootScope.mark(),
+      }),
+    async releaseAfter(mark: EffectExecutionMark) {
+      if (cancellation !== undefined) return await cancellation
+      const owner = releasing === undefined
+      const tasks = releasing ?? new Set<Promise<void>>()
+      releasing = tasks
+      const finished = new Set<Promise<void>>()
+      try {
         while (true) {
-          const later = [...cleanups].flatMap(([cleanup, order]) =>
-            order > mark.cleanups ? [cleanup] : []
-          )
-          if (later.length === 0) break
-          await Promise.all(later.map(startCleanup))
+          for (const [cleanup, entry] of [...cleanups]) {
+            if (!entry.kept && entry.order > mark.cleanups) {
+              tasks.add(startCleanup(cleanup))
+            }
+          }
+          const running = [...tasks].filter((task) => !finished.has(task))
+          if (running.length === 0) break
+          await Promise.all(running)
+          for (const task of running) finished.add(task)
         }
-        await rootScope.releaseAfter(mark.resources)
-      },
-    })
-  )
+      } finally {
+        if (owner) releasing = undefined
+      }
+      await rootScope.releaseAfter(mark.resources)
+    },
+  })
+  executionControls.set(execution, control)
+  signalControls.set(controller.signal, control)
   if (parentContext !== undefined) {
     // The parent's abort reaches this execution at once; its release waits
     // until the parent releases.
@@ -442,6 +496,25 @@ function executionControl(execution: EffectExecution): ExecutionControl {
  */
 export function interruptExecution(execution: EffectExecution): void {
   executionControl(execution).interrupt()
+}
+
+/**
+ * Internal: runs a stream's `open`. A partial release keeps what it
+ * registers, because the cursor's close may still use it, even when the
+ * stream opens during a pull, as the inner stream of `flatMap` does.
+ */
+export async function openingStream<Result>(
+  context: EffectContext,
+  open: () => Result | Promise<Result>
+): Promise<Result> {
+  const releaseCleanups = signalControls.get(context.signal)?.hold()
+  const releaseResources = resourceScopes.get(context)?.hold()
+  try {
+    return await open()
+  } finally {
+    releaseResources?.()
+    releaseCleanups?.()
+  }
 }
 
 /** Internal: marks what an execution has registered so far. */

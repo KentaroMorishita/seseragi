@@ -153,3 +153,20 @@ test("a buffer cancelled by its parent closes its source once", async () => {
   ).rejects.toThrow("close failed")
   expect(log).toEqual(nativeOrder)
 })
+
+test("a stream opened during a pull keeps what its close uses", async () => {
+  for (const wrap of [
+    (source: streams.Stream<unknown, never, number>) =>
+      streams.flatMap(() => source, streams.singleton(0)),
+    (source: streams.Stream<unknown, never, number>) =>
+      streams.concat(source, streams.empty),
+  ]) {
+    const log: string[] = []
+    const result = await run(
+      streams.runCollect(streams.zip(wrap(waitingSource(log)), streams.empty)),
+      {}
+    )
+    expect(result.kind).toBe("success")
+    expect(log).toEqual(nativeOrder)
+  }
+})

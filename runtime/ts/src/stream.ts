@@ -11,6 +11,7 @@ import {
   interruptExecution,
   mapError as mapEffectError,
   markExecution,
+  openingStream,
   releaseExecutionAfter,
   throwIfCancelled,
   type Unit,
@@ -644,10 +645,15 @@ export const streamMonad = /* @__PURE__ */ Object.freeze({
       flatMap(mapper, source),
 })
 
+// What a stream registers while it opens stays until its cursor has closed,
+// even when it opens during a pull of another stream.
 function makeStream<Environment, Failure, Value>(
   open: Stream<Environment, Failure, Value>["open"]
 ): Stream<Environment, Failure, Value> {
-  return Object.freeze({ open }) as Stream<Environment, Failure, Value>
+  return Object.freeze({
+    open: (environment: Environment, context: EffectContext) =>
+      openingStream(context, () => open(environment, context)),
+  }) as Stream<Environment, Failure, Value>
 }
 
 function cursor<Value>(
@@ -739,8 +745,9 @@ async function closeBranch(branch: Branch<unknown>): Promise<void> {
 
 // Cancelling follows the native order. It stops the branch first, so a
 // pending pull never resumes, and releases what the pulls acquired. Then it
-// closes the cursor, which may still use what opening the source acquired,
-// and releases that last. A branch is settled once: a cancellation from a
+// closes the cursor, which may still use what opening a stream acquired,
+// and releases that last. A stream opened during a pull, such as the inner
+// stream of flatMap, counts as opening, not as the pull. A branch is settled once: a cancellation from a
 // parent can start it while its consumer is closing it too.
 function settleBranch(
   branch: Branch<unknown>,

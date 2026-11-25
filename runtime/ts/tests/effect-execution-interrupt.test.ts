@@ -78,3 +78,17 @@ test("a cleanup that registers itself again runs once", async () => {
   await execution.cancel()
   expect(runs).toBe(1)
 })
+
+test("a partial release starts a cleanup that another one waits for", async () => {
+  const execution = createEffectExecution()
+  const mark = markExecution(execution)
+  execution.context.onCancel(
+    () =>
+      new Promise<void>((resolve) => {
+        execution.context.onCancel(resolve)
+      })
+  )
+  interruptExecution(execution)
+  await releaseExecutionAfter(execution, mark)
+  await execution.cancel()
+})
