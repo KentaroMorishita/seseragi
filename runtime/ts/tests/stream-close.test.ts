@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { run } from "../src/effect"
+import { registerResourceFinalizer, run, yieldNow } from "../src/effect"
 import * as streams from "../src/stream"
 
 // A source with one value whose close takes a while and may reject.
@@ -41,4 +41,101 @@ test("an outer zip reports the inner close failure", async () => {
     run(nestedZip(slowlyClosed(log, new Error("close failed"))), {})
   ).rejects.toThrow("close failed")
   expect(log).toEqual(["closed"])
+})
+
+// A source whose pull is still waiting when the other side stops. Opening it
+// registers a resource that its close still uses; the pull registers one of
+// its own before it waits.
+function waitingSource(
+  log: string[],
+  options: Readonly<{ closeFailure?: Error }> = {}
+) {
+  return streams.fromPull<unknown, never, number>((_environment, context) => {
+    let opened = true
+    registerResourceFinalizer(context, () => {
+      opened = false
+      log.push("open-released")
+    })
+    let closed = false
+    const close = async (): Promise<void> => {
+      if (closed) return
+      closed = true
+      log.push(opened ? "close-start" : "close-after-release")
+      await new Promise((resolve) => setTimeout(resolve, 5))
+      log.push("close-end")
+      if (options.closeFailure !== undefined) throw options.closeFailure
+    }
+    // Like a host source, a cancellation also closes the source.
+    const releaseCancellation = context.onCancel(close)
+    return {
+      pull: async (pullContext) => {
+        registerResourceFinalizer(pullContext, () => {
+          log.push("pull-released")
+        })
+        await yieldNow()(undefined, pullContext)
+        log.push("resumed")
+        return { done: false, value: 1 }
+      },
+      close: async () => {
+        releaseCancellation()
+        await close()
+      },
+    }
+  })
+}
+
+// The native order: stop the pending pull, release what it acquired, close
+// the cursor, then release what opening the source acquired.
+const nativeOrder = [
+  "pull-released",
+  "close-start",
+  "close-end",
+  "open-released",
+]
+
+const failing = streams.fromPull<unknown, never, number>(() => ({
+  pull: async () => {
+    throw new Error("left failed")
+  },
+  close: () => undefined,
+}))
+
+test("zip cancels a pending pull before closing that source", async () => {
+  const log: string[] = []
+  const result = await run(
+    streams.runCollect(streams.zip(waitingSource(log), streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  expect(log).toEqual(nativeOrder)
+})
+
+test("merge cancels a pending pull when the other side fails", async () => {
+  const log: string[] = []
+  await expect(
+    run(streams.runCollect(streams.merge(waitingSource(log), failing)), {})
+  ).rejects.toThrow("left failed")
+  expect(log).toEqual(nativeOrder)
+})
+
+test("an inner zip stops its pending pull when the outer zip stops", async () => {
+  const log: string[] = []
+  const inner = streams.zip(waitingSource(log), streams.fromArray([1, 2]))
+  const result = await run(
+    streams.runCollect(streams.zip(inner, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  expect(log).toEqual(nativeOrder)
+})
+
+test("zip keeps the close failure of a source it cancels", async () => {
+  const log: string[] = []
+  const source = waitingSource(log, {
+    closeFailure: new Error("close failed"),
+  })
+  await expect(
+    run(streams.runCollect(streams.zip(source, streams.empty)), {})
+  ).rejects.toThrow("close failed")
+  expect(log).toEqual(nativeOrder)
 })

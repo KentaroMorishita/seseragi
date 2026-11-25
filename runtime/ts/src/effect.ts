@@ -44,6 +44,7 @@ const effectContext = Symbol("seseragi.effect-context")
 
 type ResourceFinalizerEntry = {
   active: boolean
+  readonly order: number
   readonly finalizer: EffectResourceFinalizer
 }
 
@@ -52,6 +53,7 @@ class ResourceScope {
   private readonly acquisitions = new Set<Promise<void>>()
   private state: "open" | "closing" | "closed" = "open"
   private closing: Promise<void> | undefined
+  private registrations = 0
 
   register(finalizer: EffectResourceFinalizer): EffectResourceRegistration {
     if (this.state === "closed") {
@@ -60,7 +62,12 @@ class ResourceScope {
         unregister: () => undefined,
       })
     }
-    const entry: ResourceFinalizerEntry = { active: true, finalizer }
+    this.registrations += 1
+    const entry: ResourceFinalizerEntry = {
+      active: true,
+      order: this.registrations,
+      finalizer,
+    }
     this.finalizers.push(entry)
     return Object.freeze({
       ready: Promise.resolve(),
@@ -75,6 +82,43 @@ class ResourceScope {
     this.state = "closing"
     this.closing = this.drain()
     return this.closing
+  }
+
+  /** How many finalizers have been registered so far. */
+  mark(): number {
+    return this.registrations
+  }
+
+  /**
+   * Releases, newest first, only the finalizers registered after `mark`.
+   * The scope stays open, so the older finalizers wait for `close`.
+   */
+  async releaseAfter(mark: number): Promise<void> {
+    if (this.state !== "open") return await this.close()
+    const defects: unknown[] = []
+    while (true) {
+      if (this.acquisitions.size > 0) {
+        await Promise.all([...this.acquisitions])
+        continue
+      }
+      let index = this.finalizers.length - 1
+      while (index >= 0) {
+        const candidate = this.finalizers[index] as ResourceFinalizerEntry
+        if (candidate.active && candidate.order > mark) break
+        index -= 1
+      }
+      if (index < 0) break
+      const [entry] = this.finalizers.splice(index, 1) as [
+        ResourceFinalizerEntry,
+      ]
+      entry.active = false
+      try {
+        await entry.finalizer()
+      } catch (error) {
+        defects.push(normalizeFinalizerDefect(error))
+      }
+    }
+    if (defects.length > 0) throw defectWithSuppressed(defects)
   }
 
   async acquire<Resource>(
@@ -219,10 +263,30 @@ export function throwIfCancelled(context: EffectContext): void {
 }
 
 /**
+ * How far an execution's cleanups and resources had been registered at one
+ * moment; `releaseExecutionAfter` releases what came later.
+ */
+export type EffectExecutionMark = Readonly<{
+  cleanups: number
+  resources: number
+}>
+
+type ExecutionControl = Readonly<{
+  interrupt: () => void
+  mark: () => EffectExecutionMark
+  releaseAfter: (mark: EffectExecutionMark) => Promise<void>
+}>
+
+const executionControls = new WeakMap<EffectExecution, ExecutionControl>()
+
+/**
  * Creates an isolated cancellation scope for exactly one root Effect run.
- * Cleanup registered after abort joins the same drain while cancellation is
- * settling, including cleanup registered by another cleanup. The drain closes
- * only after one quiet event-loop turn with no tracked work.
+ * Cancellation has two steps. Aborting the signal stops the work and reaches
+ * every child execution at once; releasing runs the `onCancel` cleanups and
+ * closes the resource scope. `cancel` does both, and a child is released when
+ * its parent is. Cleanup registered while cancellation is settling joins the
+ * same drain, including cleanup registered by another cleanup. The drain
+ * closes only after one quiet event-loop turn with no tracked work.
  * Cleanup failures are intentionally absorbed: cancellation must not surface
  * as a stale host exception after the owning UI has moved on.
  */
@@ -231,23 +295,28 @@ export function createEffectExecution(
 ): EffectExecution {
   const controller = new AbortController()
   const rootScope = new ResourceScope()
-  const cleanups = new Set<EffectCancellationCleanup>()
-  const started = new Set<EffectCancellationCleanup>()
+  // Each cleanup keeps its registration order, so a partial release can
+  // tell which cleanups came after a mark.
+  const cleanups = new Map<EffectCancellationCleanup, number>()
+  const started = new Map<EffectCancellationCleanup, Promise<void>>()
   const pending = new Set<Promise<void>>()
   let cancellation: Promise<void> | undefined
   let cleanupEpoch = 0
-  const startCleanup = (cleanup: EffectCancellationCleanup): void => {
-    if (started.has(cleanup)) return
-    started.add(cleanup)
+  let cleanupRegistrations = 0
+  const startCleanup = (cleanup: EffectCancellationCleanup): Promise<void> => {
+    const running = started.get(cleanup)
+    if (running !== undefined) return running
     cleanupEpoch += 1
     cleanups.delete(cleanup)
     const task = runCancellationCleanup(cleanup)
+    started.set(cleanup, task)
     pending.add(task)
     void task.then(() => pending.delete(task))
+    return task
   }
   const drainCleanups = async (): Promise<void> => {
     while (true) {
-      for (const cleanup of [...cleanups]) startCleanup(cleanup)
+      for (const cleanup of [...cleanups.keys()]) startCleanup(cleanup)
       const snapshot = [...pending]
       if (snapshot.length > 0) {
         await Promise.all(snapshot)
@@ -264,6 +333,9 @@ export function createEffectExecution(
       }
     }
   }
+  const interrupt = (): void => {
+    if (!controller.signal.aborted) controller.abort()
+  }
   const context: EffectContext = Object.freeze({
     signal: controller.signal,
     get cancelled() {
@@ -271,11 +343,14 @@ export function createEffectExecution(
     },
     onCancel(cleanup) {
       if (started.has(cleanup)) return () => undefined
-      if (controller.signal.aborted) {
+      // An aborted execution that is not releasing yet keeps the cleanup for
+      // its release, so a later explicit close still runs first.
+      if (cancellation !== undefined) {
         startCleanup(cleanup)
         return () => undefined
       }
-      cleanups.add(cleanup)
+      cleanupRegistrations += 1
+      cleanups.set(cleanup, cleanupRegistrations)
       return () => {
         cleanups.delete(cleanup)
       }
@@ -283,7 +358,7 @@ export function createEffectExecution(
   })
   resourceScopes.set(context, rootScope)
   let detachParent = (): void => undefined
-  const execution = Object.freeze({
+  const execution: EffectExecution = Object.freeze({
     context,
     cancel() {
       if (cancellation !== undefined) return cancellation
@@ -294,8 +369,8 @@ export function createEffectExecution(
         resolveCancellation = resolve
         rejectCancellation = reject
       })
-      controller.abort()
-      for (const cleanup of [...cleanups]) startCleanup(cleanup)
+      interrupt()
+      for (const cleanup of [...cleanups.keys()]) startCleanup(cleanup)
       void (async () => {
         await drainCleanups()
         await rootScope.close()
@@ -303,14 +378,81 @@ export function createEffectExecution(
       return cancellation
     },
     close() {
+      // Once aborted, the cleanups registered with `onCancel` still have to
+      // run, so closing releases like a cancellation.
+      if (controller.signal.aborted) return execution.cancel()
       detachParent()
       return rootScope.close()
     },
   })
+  executionControls.set(
+    execution,
+    Object.freeze({
+      interrupt,
+      mark: () =>
+        Object.freeze({
+          cleanups: cleanupRegistrations,
+          resources: rootScope.mark(),
+        }),
+      async releaseAfter(mark: EffectExecutionMark) {
+        if (cancellation !== undefined) return await cancellation
+        while (true) {
+          const later = [...cleanups].flatMap(([cleanup, order]) =>
+            order > mark.cleanups ? [cleanup] : []
+          )
+          if (later.length === 0) break
+          await Promise.all(later.map(startCleanup))
+        }
+        await rootScope.releaseAfter(mark.resources)
+      },
+    })
+  )
   if (parentContext !== undefined) {
-    detachParent = parentContext.onCancel(() => execution.cancel())
+    // The parent's abort reaches this execution at once; its release waits
+    // until the parent releases.
+    const signal = parentContext.signal
+    signal.addEventListener("abort", interrupt, { once: true })
+    const detachCleanup = parentContext.onCancel(() => execution.cancel())
+    detachParent = () => {
+      signal.removeEventListener("abort", interrupt)
+      detachCleanup()
+    }
+    if (signal.aborted) interrupt()
   }
   return execution
+}
+
+function executionControl(execution: EffectExecution): ExecutionControl {
+  const control = executionControls.get(execution)
+  if (control === undefined) {
+    throw new TypeError("unknown Effect execution")
+  }
+  return control
+}
+
+/**
+ * Internal: aborts an execution and its children without releasing anything.
+ * Work waiting on the signal stops; cleanups and resources wait for a release.
+ */
+export function interruptExecution(execution: EffectExecution): void {
+  executionControl(execution).interrupt()
+}
+
+/** Internal: marks what an execution has registered so far. */
+export function markExecution(execution: EffectExecution): EffectExecutionMark {
+  return executionControl(execution).mark()
+}
+
+/**
+ * Internal: runs the `onCancel` cleanups and releases the resources that an
+ * execution registered after `mark`, newest first. The older ones stay for
+ * its `cancel` or `close`.
+ */
+export function releaseExecutionAfter(
+  execution: EffectExecution,
+  mark: EffectExecutionMark
+): Promise<void> {
+  return executionControl(execution).releaseAfter(mark)
 }
 
 export type EffectFailure<Failure> = {

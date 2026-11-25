@@ -7,7 +7,11 @@ import {
   type Effect,
   type EffectContext,
   type EffectExecution,
+  type EffectExecutionMark,
+  interruptExecution,
   mapError as mapEffectError,
+  markExecution,
+  releaseExecutionAfter,
   throwIfCancelled,
   type Unit,
   unit,
@@ -703,6 +707,9 @@ function terminal<Environment, Failure, Value, Result>(
 type Branch<Value> = {
   readonly cursor: StreamCursor<Value>
   readonly execution: EffectExecution
+  // What the branch had registered once its source was open. Later
+  // registrations come from its pulls.
+  readonly opened: EffectExecutionMark
 }
 
 async function openBranch<Environment, Failure, Value>(
@@ -712,10 +719,8 @@ async function openBranch<Environment, Failure, Value>(
 ): Promise<Branch<Value>> {
   const execution = createEffectExecution(context)
   try {
-    return {
-      cursor: await source.open(environment, execution.context),
-      execution,
-    }
+    const cursor = await source.open(environment, execution.context)
+    return { cursor, execution, opened: markExecution(execution) }
   } catch (error) {
     return await cleanupThenThrow(error, [() => execution.cancel()])
   }
@@ -725,14 +730,26 @@ async function closeBranch(branch: Branch<unknown>): Promise<void> {
   await settleBranch(branch, "cancel")
 }
 
+// Cancelling follows the native order. It stops the branch first, so a
+// pending pull never resumes, and releases what the pulls acquired. Then it
+// closes the cursor, which may still use what opening the source acquired,
+// and releases that last.
 async function settleBranch(
   branch: Branch<unknown>,
   mode: "cancel" | "close"
 ): Promise<void> {
+  if (mode === "close") {
+    await runCleanups([
+      () => branch.cursor.close(),
+      () => branch.execution.close(),
+    ])
+    return
+  }
+  interruptExecution(branch.execution)
   await runCleanups([
+    () => releaseExecutionAfter(branch.execution, branch.opened),
     () => branch.cursor.close(),
-    () =>
-      mode === "close" ? branch.execution.close() : branch.execution.cancel(),
+    () => branch.execution.cancel(),
   ])
 }
 
