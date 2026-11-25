@@ -415,6 +415,24 @@ async function cleanupsSinceInterrupt(
   }
 }
 
+/**
+ * Internal: whether `work` settles within one turn of the event loop. A
+ * stream that stops a branch waits that long for a step before it starts
+ * the next one, because the step may be waiting for what comes next, such
+ * as the cursor's close or the cancellation notice.
+ */
+export async function settlesWithinTurn(
+  work: Promise<unknown>
+): Promise<boolean> {
+  return await Promise.race([
+    work.then(
+      () => true,
+      () => true
+    ),
+    new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 0)),
+  ])
+}
+
 /** Internal: marks what an execution has registered so far. */
 export function markExecution(execution: EffectExecution): EffectExecutionMark {
   const { cleanups, scope } = internalsOf(execution)
@@ -425,9 +443,9 @@ export function markExecution(execution: EffectExecution): EffectExecutionMark {
  * Internal: runs a stream's `open`. Once it has opened, what it registered
  * stays for its cursor's close, even when it opened during a pull, as the
  * inner stream of `flatMap` does. So does the newest resource registered
- * before it, and with it every older one: they are released after what the
- * open registered, as on native. An open that fails or is still running
- * belongs to the pull, so what it registered can be released with the pull.
+ * before it, and with it every older one, because the stream may use them.
+ * An open that fails or is still running belongs to the pull, so what it
+ * registered can be released with the pull.
  */
 export async function openingStream<Result>(
   context: EffectContext,
@@ -442,11 +460,11 @@ export async function openingStream<Result>(
   for (const collector of collectors) collector?.add(registered)
   try {
     const result = await open()
-    if (registered.length > 0) {
-      for (const entry of registered) openedRegistrations.add(entry)
-      const newest = internals?.scope.finalizers.at(-1)
-      if (newest !== undefined) openedRegistrations.add(newest)
-    }
+    for (const entry of registered) openedRegistrations.add(entry)
+    // The stream may use what was acquired before it, as the inner stream of
+    // `flatMap` may use what its outer pull acquired.
+    const newest = internals?.scope.finalizers.at(-1)
+    if (newest !== undefined) openedRegistrations.add(newest)
     return result
   } finally {
     for (const collector of collectors) collector?.delete(registered)
@@ -462,8 +480,9 @@ export async function openingStream<Result>(
  * - It stops at the newest one that an opened stream keeps, so nothing is
  *   released before what was registered after it.
  * - It does not wait for work the cursor's close may be what ends: at an
- *   acquisition still running, or at cleanups still running after a turn,
- *   it leaves the resources for `cancel`.
+ *   acquisition still running, or at cleanups or a finalizer still running
+ *   after a turn, it leaves the rest for `cancel`. `cancel` still waits for
+ *   that finalizer and reports its failure.
  */
 export async function releaseExecutionAfter(
   execution: EffectExecution,
@@ -482,14 +501,7 @@ export async function releaseExecutionAfter(
     }
   }
   for (const cleanup of newer) start(cleanup)
-  let finished = false
-  await Promise.race([
-    cleanupsSinceInterrupt(internals).then(() => {
-      finished = true
-    }),
-    new Promise((resolve) => setTimeout(resolve, 0)),
-  ])
-  if (!finished) return
+  if (!(await settlesWithinTurn(cleanupsSinceInterrupt(internals)))) return
   if (scope.state !== "open") return await scope.close()
   const defects: unknown[] = []
   while (scope.state === "open" && scope.acquisitions.size === 0) {
@@ -498,21 +510,31 @@ export async function releaseExecutionAfter(
     scope.finalizers.pop()
     if (!entry.active) continue
     entry.active = false
+    const failures: unknown[] = []
+    const task = (async () => {
+      await entry.finalizer()
+    })().catch((error: unknown) => {
+      failures.push(normalizeFinalizerDefect(error))
+    })
+    let movedOn = false
     // Closing the scope waits for this finalizer as for an acquisition, so
-    // nothing older is released before it has finished.
-    let finish = (): void => undefined
-    const running = new Promise<void>((resolve) => {
-      finish = resolve
+    // nothing older is released before it has finished. A failure after the
+    // release moved on is reported by that close.
+    const running: Promise<void> = task.then(() => {
+      scope.acquisitions.delete(running)
+      if (!movedOn) return
+      for (const failure of failures) {
+        scope.register(() => {
+          throw failure
+        })
+      }
     })
     scope.acquisitions.add(running)
-    try {
-      await entry.finalizer()
-    } catch (error) {
-      defects.push(normalizeFinalizerDefect(error))
-    } finally {
-      scope.acquisitions.delete(running)
-      finish()
+    if (!(await settlesWithinTurn(task))) {
+      movedOn = true
+      break
     }
+    defects.push(...failures)
   }
   if (defects.length > 0) throw defectWithSuppressed(defects)
 }

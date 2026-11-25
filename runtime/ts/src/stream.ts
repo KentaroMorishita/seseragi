@@ -14,6 +14,7 @@ import {
   markExecution,
   openingStream,
   releaseExecutionAfter,
+  settlesWithinTurn,
   throwIfCancelled,
   type Unit,
   unit,
@@ -788,14 +789,18 @@ function settleBranch(
     branch.settling = mode
     branch.closing = runSettleBranch(branch, mode)
   } else if (mode === "cancel" && branch.settling === "close") {
-    // The cursor closes only once, but a cancellation asked for while it
-    // closes still reaches the source through the branch's cleanups. The
-    // resources stay until the close has finished.
+    // The cursor closes only once. A close that finishes within a turn
+    // completes normally. One still running may be waiting for the
+    // cancellation, so it then reaches the source through the branch's
+    // cleanups. The resources stay until the close has finished.
     branch.settling = "cancel"
-    branch.closing = Promise.all([
-      branch.closing,
-      cancelExecutionCleanups(branch.execution),
-    ]).then(() => undefined)
+    const closing = branch.closing
+    branch.closing = (async () => {
+      if (!(await settlesWithinTurn(closing))) {
+        await cancelExecutionCleanups(branch.execution)
+      }
+      await closing
+    })()
   }
   return branch.closing
 }
@@ -817,12 +822,23 @@ async function runSettleBranch(
     }
     await runCleanups([
       () => releaseExecutionAfter(branch.execution, branch.opened),
-      () => branch.cursor.close(),
+      () => closeStoppedCursor(branch),
       () => branch.execution.cancel(),
     ])
   } finally {
     branch.detach()
   }
+}
+
+// A close still running after a turn may be waiting for the cancellation
+// notice its source registered while opening, so the notice starts then.
+// The close is still the one that reports a failure.
+async function closeStoppedCursor(branch: Branch<unknown>): Promise<void> {
+  const closing = branch.cursor.close()
+  if (!(await settlesWithinTurn(closing))) {
+    void cancelExecutionCleanups(branch.execution)
+  }
+  await closing
 }
 
 async function closeBranches(

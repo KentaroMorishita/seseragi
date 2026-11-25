@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test"
 import {
   createEffectExecution,
+  type EffectContext,
   registerResourceFinalizer,
   run,
   withResourceAcquisition,
@@ -490,4 +491,162 @@ test("a pull's resources wait for cleanups its cleanups add", async () => {
   )
   expect(result.kind).toBe("success")
   expect(log).toEqual(["added-cleanup", "pull-released"])
+})
+
+// A pull that waits until it is stopped.
+async function untilStopped(context: EffectContext): Promise<never> {
+  while (true) await yieldNow()(undefined, context)
+}
+
+test("a parent cancellation reaches a close that waits for its notice", async () => {
+  const log: string[] = []
+  const source = streams.fromPull<unknown, never, number>(
+    (_environment, context) => {
+      let opened = true
+      registerResourceFinalizer(context, () => {
+        opened = false
+        log.push("open-released")
+      })
+      let noticed = (): void => undefined
+      const notice = new Promise<void>((resolve) => {
+        noticed = resolve
+      })
+      context.onCancel(() => noticed())
+      return {
+        pull: async (pullContext) => {
+          await untilStopped(pullContext)
+          return { done: true, value: undefined }
+        },
+        close: async () => {
+          await notice
+          log.push(opened ? "closed" : "closed-after-release")
+        },
+      }
+    }
+  )
+  const root = createEffectExecution()
+  const running = run(
+    streams.runCollect(streams.zip(source, streams.fromArray([1, 2]))),
+    {},
+    root.context
+  ).catch(() => undefined)
+  await delay(5)
+  await root.cancel()
+  await running
+  expect(log).toEqual(["closed", "open-released"])
+})
+
+test("a pull finalizer that waits for the close does not block zip", async () => {
+  const source = streams.fromPull<unknown, never, number>(() => {
+    let closed = (): void => undefined
+    const closing = new Promise<void>((resolve) => {
+      closed = resolve
+    })
+    return {
+      pull: async (context) => {
+        registerResourceFinalizer(context, () => closing)
+        await untilStopped(context)
+        return { done: true, value: undefined }
+      },
+      close: () => closed(),
+    }
+  })
+  const result = await run(
+    streams.runCollect(streams.zip(source, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+})
+
+test("an inner stream keeps what it borrows from the outer pull", async () => {
+  const log: string[] = []
+  let borrowed = false
+  const outer = streams.fromEffect<unknown, never, number>(
+    async (_environment, context) => {
+      if (context === undefined) throw new Error("context")
+      borrowed = true
+      registerResourceFinalizer(context, () => {
+        borrowed = false
+        log.push("outer-released")
+      })
+      return 0
+    }
+  )
+  const inner = streams.fromPull<unknown, never, number>(() => ({
+    pull: async (context) => {
+      await untilStopped(context)
+      return { done: true, value: undefined }
+    },
+    close: () => {
+      log.push(borrowed ? "closed" : "closed-after-release")
+    },
+  }))
+  const result = await run(
+    streams.runCollect(
+      streams.zip(
+        streams.flatMap(() => inner, outer),
+        streams.empty
+      )
+    ),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  expect(log).toEqual(["closed", "outer-released"])
+})
+
+test("a buffer that finished normally does not cancel its closing source", async () => {
+  const capacity = streams.bufferCapacity(1)
+  if (capacity.tag !== "Right") throw new Error("capacity")
+  // The consumer is still handling the value when the source finishes, so
+  // it sees the end while the source is closing.
+  const source = streams.fromPull<unknown, never, number>(
+    (_environment, context) => {
+      let sent = false
+      return {
+        pull: async () => {
+          if (sent) return { done: true, value: undefined }
+          sent = true
+          return { done: false, value: 1 }
+        },
+        close: async () => {
+          await delay(0)
+          if (context.cancelled) throw new Error("closed as cancelled")
+        },
+      }
+    }
+  )
+  const result = await run(
+    streams.runForEach(
+      () => async () => {
+        await delay(2)
+      },
+      streams.buffer(capacity.value, source)
+    ),
+    {}
+  )
+  expect(result.kind).toBe("success")
+})
+
+test("a defect is never suppressed by itself", async () => {
+  const capacity = streams.bufferCapacity(1)
+  if (capacity.tag !== "Right") throw new Error("capacity")
+  const source = streams.fromPull<unknown, never, number>(() => ({
+    pull: async () => {
+      throw new Error("pull failed")
+    },
+    close: async () => {
+      throw new Error("close failed")
+    },
+  }))
+  const error = await run(
+    streams.runCollect(streams.buffer(capacity.value, source)),
+    {}
+  ).then(
+    () => undefined,
+    (cause: unknown) => cause
+  )
+  expect(error).toBeInstanceOf(Error)
+  const suppressed = (error as { suppressed?: unknown[] }).suppressed ?? []
+  expect(suppressed).not.toContain(error)
+  expect(new Set(suppressed).size).toBe(suppressed.length)
 })
