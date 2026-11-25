@@ -493,6 +493,40 @@ test("a pull's resources wait for cleanups its cleanups add", async () => {
   expect(log).toEqual(["added-cleanup", "pull-released"])
 })
 
+test("a cleanup kept by one stream's open is not kept in another run", async () => {
+  const log: string[] = []
+  const shared = (): void => {
+    log.push("shared-cleanup")
+  }
+  const keeping = streams.fromPull<unknown, never, number>(
+    (_environment, context) => {
+      context.onCancel(shared)
+      return {
+        pull: async () => ({ done: true, value: undefined }),
+        close: () => undefined,
+      }
+    }
+  )
+  expect((await run(streams.runCollect(keeping), {})).kind).toBe("success")
+  const source = streams.fromPull<unknown, never, number>(() => ({
+    pull: async (context) => {
+      registerResourceFinalizer(context, () => {
+        log.push("pull-released")
+      })
+      context.onCancel(shared)
+      await yieldNow()(undefined, context)
+      return { done: false, value: 1 }
+    },
+    close: () => undefined,
+  }))
+  const result = await run(
+    streams.runCollect(streams.zip(source, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  expect(log).toEqual(["shared-cleanup", "pull-released"])
+})
+
 // A pull that waits until it is stopped.
 async function untilStopped(context: EffectContext): Promise<never> {
   while (true) await yieldNow()(undefined, context)

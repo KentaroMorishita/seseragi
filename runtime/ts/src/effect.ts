@@ -354,8 +354,18 @@ type ExecutionInternals = Readonly<{
 // Keyed by signal, because every context derived from an execution shares it.
 const executionInternals = new WeakMap<AbortSignal, ExecutionInternals>()
 
-// What a stream registered while it opened, once the open has finished.
-const openedRegistrations = new WeakSet<object>()
+// What streams registered while they opened, once the open has finished,
+// per execution: one cleanup function may be registered by several.
+const openedRegistrations = new WeakMap<ExecutionInternals, WeakSet<object>>()
+
+function openedIn(internals: ExecutionInternals): WeakSet<object> {
+  let opened = openedRegistrations.get(internals)
+  if (opened === undefined) {
+    opened = new WeakSet()
+    openedRegistrations.set(internals, opened)
+  }
+  return opened
+}
 
 /** What an execution had registered at one moment; see `markExecution`. */
 export type EffectExecutionMark = ReadonlySet<object>
@@ -460,11 +470,14 @@ export async function openingStream<Result>(
   for (const collector of collectors) collector?.add(registered)
   try {
     const result = await open()
-    for (const entry of registered) openedRegistrations.add(entry)
-    // The stream may use what was acquired before it, as the inner stream of
-    // `flatMap` may use what its outer pull acquired.
-    const newest = internals?.scope.finalizers.at(-1)
-    if (newest !== undefined) openedRegistrations.add(newest)
+    if (internals !== undefined) {
+      const opened = openedIn(internals)
+      for (const entry of registered) opened.add(entry)
+      // The stream may use what was acquired before it, as the inner stream
+      // of `flatMap` may use what its outer pull acquired.
+      const newest = internals.scope.finalizers.at(-1)
+      if (newest !== undefined) opened.add(newest)
+    }
     return result
   } finally {
     for (const collector of collectors) collector?.delete(registered)
@@ -491,8 +504,9 @@ export async function releaseExecutionAfter(
   interruptExecution(execution)
   const internals = internalsOf(execution)
   const { cleanups, start, scope } = internals
+  const opened = openedRegistrations.get(internals)
   const kept = (entry: object): boolean =>
-    mark.has(entry) || openedRegistrations.has(entry)
+    mark.has(entry) || opened?.has(entry) === true
   const newer = [...cleanups]
   for (let index = newer.length - 1; index >= 0; index -= 1) {
     if (kept(newer[index] as object)) {
