@@ -308,10 +308,16 @@ export function createEffectExecution(
     if (running !== undefined) return running
     cleanupEpoch += 1
     cleanups.delete(cleanup)
-    const task = runCancellationCleanup(cleanup)
+    // Record the start before calling the cleanup: it may register itself
+    // again synchronously, and that must not run it twice.
+    let finish = (): void => undefined
+    const task = new Promise<void>((resolve) => {
+      finish = resolve
+    })
     started.set(cleanup, task)
     pending.add(task)
     void task.then(() => pending.delete(task))
+    void runCancellationCleanup(cleanup).then(finish)
     return task
   }
   const drainCleanups = async (): Promise<void> => {

@@ -66,3 +66,15 @@ test("closing an interrupted execution still runs its cleanups", async () => {
   await execution.close()
   expect(log).toEqual(["cleanup"])
 })
+
+test("a cleanup that registers itself again runs once", async () => {
+  let runs = 0
+  const execution = createEffectExecution()
+  const cleanup = (): void => {
+    runs += 1
+    execution.context.onCancel(cleanup)
+  }
+  execution.context.onCancel(cleanup)
+  await execution.cancel()
+  expect(runs).toBe(1)
+})

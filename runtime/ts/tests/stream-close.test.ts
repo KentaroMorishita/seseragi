@@ -139,3 +139,17 @@ test("zip keeps the close failure of a source it cancels", async () => {
   ).rejects.toThrow("close failed")
   expect(log).toEqual(nativeOrder)
 })
+
+test("a buffer cancelled by its parent closes its source once", async () => {
+  const log: string[] = []
+  const capacity = streams.bufferCapacity(1)
+  if (capacity.tag !== "Right") throw new Error("capacity")
+  const source = streams.buffer(
+    capacity.value,
+    waitingSource(log, { closeFailure: new Error("close failed") })
+  )
+  await expect(
+    run(streams.runCollect(streams.zip(source, streams.empty)), {})
+  ).rejects.toThrow("close failed")
+  expect(log).toEqual(nativeOrder)
+})

@@ -710,6 +710,8 @@ type Branch<Value> = {
   // What the branch had registered once its source was open. Later
   // registrations come from its pulls.
   readonly opened: EffectExecutionMark
+  // Set by the first close, which every later close waits for.
+  closing: Promise<void> | undefined
 }
 
 async function openBranch<Environment, Failure, Value>(
@@ -720,7 +722,12 @@ async function openBranch<Environment, Failure, Value>(
   const execution = createEffectExecution(context)
   try {
     const cursor = await source.open(environment, execution.context)
-    return { cursor, execution, opened: markExecution(execution) }
+    return {
+      cursor,
+      execution,
+      opened: markExecution(execution),
+      closing: undefined,
+    }
   } catch (error) {
     return await cleanupThenThrow(error, [() => execution.cancel()])
   }
@@ -733,8 +740,17 @@ async function closeBranch(branch: Branch<unknown>): Promise<void> {
 // Cancelling follows the native order. It stops the branch first, so a
 // pending pull never resumes, and releases what the pulls acquired. Then it
 // closes the cursor, which may still use what opening the source acquired,
-// and releases that last.
-async function settleBranch(
+// and releases that last. A branch is settled once: a cancellation from a
+// parent can start it while its consumer is closing it too.
+function settleBranch(
+  branch: Branch<unknown>,
+  mode: "cancel" | "close"
+): Promise<void> {
+  branch.closing ??= runSettleBranch(branch, mode)
+  return branch.closing
+}
+
+async function runSettleBranch(
   branch: Branch<unknown>,
   mode: "cancel" | "close"
 ): Promise<void> {
