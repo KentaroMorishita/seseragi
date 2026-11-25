@@ -580,11 +580,14 @@ if (initialSample !== undefined) {
   sampleBrowser.setBlank()
   sampleGuide.setBlank()
 }
+// ?example=<ID> で別の例を開くよう頼まれているか。頼まれていれば、最初の例は動かさない
+const requestedExample = findRequestedExample(new URL(window.location.href))
 // 初めて開いたとき（保存したコードも共有リンクもない）だけ、最初の例の案内を出して一度動かす
 if (
   initialSample !== undefined &&
   linkedSource === undefined &&
-  restoredWorkspace.status !== "restored"
+  restoredWorkspace.status !== "restored" &&
+  (requestedExample === undefined || requestedExample.id === initialSample.id)
 ) {
   openGuidance(initialSample, { first: true })
   // 次に開いたときは前回のコードが戻り、自由に書く状態（静か）で開く
@@ -755,6 +758,7 @@ clearSourceButton.addEventListener("click", () => {
 stdinInput.addEventListener("input", () => persistCurrentWorkspace())
 clearOutputButton.addEventListener("click", () => {
   cancelActiveExecution()
+  autoRunNote.hidden = true
   output.textContent = ""
   clearHtmlPreview()
   chooseOutputMode("text")
@@ -823,12 +827,18 @@ window.addEventListener("beforeunload", () => cancelActiveExecution())
 // 書き換えたコードがあれば、今までどおり開く前に確かめる。URL からは消しておく。
 openRequestedExample(new URL(window.location.href))
 
-function openRequestedExample(url: URL): void {
+function findRequestedExample(url: URL): (typeof samples)[number] | undefined {
   const id = url.searchParams.get("example")
-  if (id === null) return
+  return id === null
+    ? undefined
+    : samples.find((candidate) => candidate.id === id)
+}
+
+function openRequestedExample(url: URL): void {
+  if (!url.searchParams.has("example")) return
+  const sample = findRequestedExample(url)
   url.searchParams.delete("example")
   history.replaceState(history.state, "", url)
-  const sample = samples.find((candidate) => candidate.id === id)
   if (sample !== undefined && sample.id !== currentSample?.id) {
     if (loadSample(sample, "Sample loaded"))
       openGuidance(sample, { first: false })
@@ -980,6 +990,7 @@ function loadSample(
     return false
   }
   cancelActiveExecution()
+  autoRunNote.hidden = true
   applicationId = crypto.randomUUID()
   currentSample = sample
   workspaceState = createWorkspace(sample.workspace)
@@ -1763,6 +1774,8 @@ function openGuidance(
       autoRunning = false
     })
     autoRunNote.hidden = false
+  } else {
+    autoRunNote.hidden = true
   }
 }
 
