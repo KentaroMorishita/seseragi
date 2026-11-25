@@ -506,7 +506,9 @@ export async function releaseExecutionAfter(
   const defects: unknown[] = []
   while (scope.state === "open" && scope.acquisitions.size === 0) {
     const entry = scope.finalizers.at(-1)
-    if (entry === undefined || (entry.active && kept(entry))) break
+    // A kept entry is a boundary even once unregistered, as the one `scoped`
+    // leaves behind.
+    if (entry === undefined || kept(entry)) break
     scope.finalizers.pop()
     if (!entry.active) continue
     entry.active = false

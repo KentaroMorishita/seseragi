@@ -594,6 +594,44 @@ test("an inner stream keeps what it borrows from the outer pull", async () => {
   expect(log).toEqual(["closed", "outer-released"])
 })
 
+test("an inner stream keeps what it borrows past a finished scope", async () => {
+  const log: string[] = []
+  let borrowed = false
+  const outer = streams.fromEffect<unknown, never, number>(
+    async (_environment, context) => {
+      if (context === undefined) throw new Error("context")
+      borrowed = true
+      registerResourceFinalizer(context, () => {
+        borrowed = false
+        log.push("outer-released")
+      })
+      // A finished scope leaves an unregistered entry after the resource.
+      registerResourceFinalizer(context, () => undefined).unregister()
+      return 0
+    }
+  )
+  const inner = streams.fromPull<unknown, never, number>(() => ({
+    pull: async (context) => {
+      await untilStopped(context)
+      return { done: true, value: undefined }
+    },
+    close: () => {
+      log.push(borrowed ? "closed" : "closed-after-release")
+    },
+  }))
+  const result = await run(
+    streams.runCollect(
+      streams.zip(
+        streams.flatMap(() => inner, outer),
+        streams.empty
+      )
+    ),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  expect(log).toEqual(["closed", "outer-released"])
+})
+
 test("a buffer that finished normally does not cancel its closing source", async () => {
   const capacity = streams.bufferCapacity(1)
   if (capacity.tag !== "Right") throw new Error("capacity")
