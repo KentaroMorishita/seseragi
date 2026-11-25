@@ -82,8 +82,8 @@ export function fromPull<Environment, Failure, Value>(
   })
 }
 
-export const empty: Stream<unknown, never, never> = makeStream(() =>
-  cursor(async () => done())
+export const empty: Stream<unknown, never, never> = /* @__PURE__ */ makeStream(
+  () => cursor(async () => done())
 )
 
 export function singleton<Value>(value: Value): Stream<unknown, never, Value> {
@@ -617,26 +617,33 @@ export function runForEach<Environment, Failure, Value>(
   })
 }
 
-export const streamFunctor = /* @__PURE__ */ Object.freeze({
-  map:
-    <Value, Result>(mapper: (value: Value) => Result) =>
-    <Environment, Failure>(source: Stream<Environment, Failure, Value>) =>
-      map(mapper, source),
-})
+// The dictionaries share these functions instead of spreading each other:
+// a spread may run getters, so a bundler keeps an unused dictionary, and
+// with it the stream code it refers to.
+const streamMap =
+  <Value, Result>(mapper: (value: Value) => Result) =>
+  <Environment, Failure>(source: Stream<Environment, Failure, Value>) =>
+    map(mapper, source)
+
+const streamApply =
+  <Environment, Failure, Value, Result>(
+    functions: Stream<Environment, Failure, (value: Value) => Result>
+  ) =>
+  (values: Stream<Environment, Failure, Value>) =>
+    flatMap((mapper) => map(mapper, values), functions)
+
+export const streamFunctor = /* @__PURE__ */ Object.freeze({ map: streamMap })
 
 export const streamApplicative = /* @__PURE__ */ Object.freeze({
-  ...streamFunctor,
+  map: streamMap,
   pure: singleton,
-  apply:
-    <Environment, Failure, Value, Result>(
-      functions: Stream<Environment, Failure, (value: Value) => Result>
-    ) =>
-    (values: Stream<Environment, Failure, Value>) =>
-      flatMap((mapper) => map(mapper, values), functions),
+  apply: streamApply,
 })
 
 export const streamMonad = /* @__PURE__ */ Object.freeze({
-  ...streamApplicative,
+  map: streamMap,
+  pure: singleton,
+  apply: streamApply,
   flatMap:
     <Environment, Failure, Value, Result>(
       mapper: (value: Value) => Stream<Environment, Failure, Result>
