@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.5] - 2026-11-26
+
+### Fixed
+
+- On the TypeScript runtime, when `Stream.zip` or `Stream.merge` stops one side, a pull still pending on that side no longer resumes while its source is closing (#1336). The side is now cleaned up in the same order as on native: the pending pull is cancelled, the resources it acquired are released, the source is closed, and the resources acquired while opening a stream are released last, including a stream opened during a pull such as the inner stream of `flatMap`. Nested `zip` and `merge` follow the same order.
+
 ## [0.62.4] - 2026-11-25
 
 ### Fixed
