@@ -71,3 +71,67 @@ test("opens an example in the Playground from the Tour's Search", async ({
   await expect(page).toHaveURL(/\/$/u)
   await expect(page.locator("#current-sample-title")).toContainText("FizzBuzz")
 })
+
+for (const viewport of [
+  { name: "narrow portrait", width: 390, height: 844 },
+  { name: "compact landscape", width: 844, height: 390 },
+]) {
+  test(`switches to the code panel from lesson actions on ${viewport.name} screens`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({
+      width: viewport.width,
+      height: viewport.height,
+    })
+    await page.goto("/tour/?lesson=07-adts-and-patterns")
+
+    const workspace = page.locator(".tour-workspace")
+    const lesson = page.locator("#tour-lesson")
+    const lab = page.locator("#tour-lab")
+    const editorContent = page.locator("#tour-editor .cm-content")
+    const lessonFocusButton = page.locator("#tour-lesson-focus-button")
+    const codeFocusButton = page.locator("#tour-code-focus-button")
+
+    await expect(workspace).toHaveAttribute("data-mobile-panel", "lesson")
+    await expect(lesson).toBeVisible()
+    await expect(lab).toBeHidden()
+
+    // Walkthrough の行ジャンプで code パネルへ切り替わり、エディターにフォーカスする
+    await page.locator(".tour-walkthrough-heading button").last().click()
+    await expect(workspace).toHaveAttribute("data-mobile-panel", "code")
+    await expect(codeFocusButton).toHaveAttribute("aria-pressed", "true")
+    await expect(lessonFocusButton).toHaveAttribute("aria-pressed", "false")
+    await expect(lab).toBeVisible()
+    await expect(lesson).toBeHidden()
+    await expect(editorContent).toBeFocused()
+    const selectedText = await page.evaluate(
+      () => window.getSelection()?.toString() ?? ""
+    )
+    expect(selectedText.trim().length).toBeGreaterThan(0)
+
+    // Show answer で答えのコードを開き、code パネルへ切り替わる
+    await lessonFocusButton.click()
+    await expect(workspace).toHaveAttribute("data-mobile-panel", "lesson")
+    await expect(lab).toBeHidden()
+    const canonicalSource = await editorContent.textContent()
+    await page.locator("#tour-exercise-button").click()
+    await expect(workspace).toHaveAttribute("data-mobile-panel", "code")
+    await expect(codeFocusButton).toHaveAttribute("aria-pressed", "true")
+    await expect(lab).toBeVisible()
+    await expect(editorContent).toBeFocused()
+    expect(await editorContent.textContent()).not.toBe(canonicalSource)
+
+    // 間違いの例をエディターで開くで code パネルへ切り替わる
+    await lessonFocusButton.click()
+    await expect(workspace).toHaveAttribute("data-mobile-panel", "lesson")
+    await expect(lab).toBeHidden()
+    const answerSource = await editorContent.textContent()
+    await page.locator("#tour-further > summary").click()
+    await page.locator("#tour-diagnostic-button").click()
+    await expect(workspace).toHaveAttribute("data-mobile-panel", "code")
+    await expect(codeFocusButton).toHaveAttribute("aria-pressed", "true")
+    await expect(lab).toBeVisible()
+    await expect(editorContent).toBeFocused()
+    expect(await editorContent.textContent()).not.toBe(answerSource)
+  })
+}

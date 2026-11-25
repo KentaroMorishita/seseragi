@@ -267,6 +267,12 @@ describe("Tour curriculum UI", () => {
     )
     expect(styles).toMatch(/\.tour-run \{[\s\S]*?position: fixed;/)
     expect(tourMain).toContain("showMobilePanel(")
+    expect(tourMain).toMatch(
+      /function selectCanonicalSourceRange\([\s\S]*?showMobilePanel\("code"\)[\s\S]*?editor\.focus\(\)/
+    )
+    expect(tourMain).toMatch(
+      /function loadSourceVariant\([\s\S]*?showMobilePanel\("code"\)[\s\S]*?editor\.focus\(\)/
+    )
     expect(tourMain).toContain('event.key === "Escape"')
     expect(tourMain).toContain('event.key !== "Tab"')
     expect(tourMain).toContain('navigation.setAttribute("aria-modal", "true")')

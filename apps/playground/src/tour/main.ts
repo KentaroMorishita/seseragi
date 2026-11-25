@@ -974,6 +974,7 @@ function selectCanonicalSourceRange(range: TourSourceRange): void {
     applyWalkthroughPins()
     liveAnalysis.schedule(source)
   }
+  showMobilePanel("code")
   const start = editor.state.doc.line(range.startLine)
   const end = editor.state.doc.line(range.endLine)
   editor.dispatch({
@@ -981,9 +982,6 @@ function selectCanonicalSourceRange(range: TourSourceRange): void {
     scrollIntoView: true,
   })
   editor.focus()
-  if (mobileNavigationQuery.matches) {
-    lab.scrollIntoView({ block: "start" })
-  }
 }
 
 type NavigationCloseOptions = Readonly<{
@@ -1170,10 +1168,8 @@ function loadSourceVariant(
   showTextOutput(outputMessage)
   liveAnalysis.schedule(source)
   setStatus("ready", statusMessage)
+  showMobilePanel("code")
   editor.focus()
-  if (mobileNavigationQuery.matches) {
-    lab.scrollIntoView({ block: "start" })
-  }
 }
 
 async function formatSource(): Promise<void> {
