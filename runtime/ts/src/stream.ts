@@ -3,6 +3,7 @@ import { type Iterable, NonPositiveSize, type SizeError } from "./collection"
 import {
   awaitEffectValue,
   awaitTurnEnd,
+  cancelExecutionCleanups,
   createEffectExecution,
   type Effect,
   type EffectContext,
@@ -788,12 +789,12 @@ function settleBranch(
     branch.closing = runSettleBranch(branch, mode)
   } else if (mode === "cancel" && branch.settling === "close") {
     // The cursor closes only once, but a cancellation asked for while it
-    // closes still reaches the source through the branch's cleanups.
+    // closes still reaches the source through the branch's cleanups. The
+    // resources stay until the close has finished.
     branch.settling = "cancel"
-    interruptExecution(branch.execution)
     branch.closing = Promise.all([
       branch.closing,
-      branch.execution.cancel(),
+      cancelExecutionCleanups(branch.execution),
     ]).then(() => undefined)
   }
   return branch.closing
@@ -803,21 +804,25 @@ async function runSettleBranch(
   branch: Branch<unknown>,
   mode: "cancel" | "close"
 ): Promise<void> {
-  branch.detach()
-  // A branch stopped with its outer branch cancels, so its cleanups run.
-  if (mode === "close" && !branch.execution.context.cancelled) {
+  // The parent stays linked until the branch has settled, so its
+  // cancellation still reaches a source that is closing.
+  try {
+    // A branch stopped with its outer branch cancels, so its cleanups run.
+    if (mode === "close" && !branch.execution.context.cancelled) {
+      await runCleanups([
+        () => branch.cursor.close(),
+        () => branch.execution.close(),
+      ])
+      return
+    }
     await runCleanups([
+      () => releaseExecutionAfter(branch.execution, branch.opened),
       () => branch.cursor.close(),
-      () => branch.execution.close(),
+      () => branch.execution.cancel(),
     ])
-    return
+  } finally {
+    branch.detach()
   }
-  interruptExecution(branch.execution)
-  await runCleanups([
-    () => releaseExecutionAfter(branch.execution, branch.opened),
-    () => branch.cursor.close(),
-    () => branch.execution.cancel(),
-  ])
 }
 
 async function closeBranches(

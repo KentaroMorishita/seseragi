@@ -368,13 +368,51 @@ function internalsOf(execution: EffectExecution): ExecutionInternals {
   return internals
 }
 
+// The cleanups an execution was already running when it was interrupted.
+// Those started by the interrupt or after it belong to stopping it.
+const runningBeforeInterrupt = new WeakMap<
+  ExecutionInternals,
+  ReadonlySet<Promise<void>>
+>()
+
 /**
  * Internal: aborts an execution's signal without running its cleanups or
  * releasing its resources. Work waiting on the signal stops. A cleanup
- * registered after this starts at once, so a release can wait for it.
+ * registered after this starts at once.
  */
 export function interruptExecution(execution: EffectExecution): void {
-  internalsOf(execution).controller.abort()
+  const internals = internalsOf(execution)
+  if (internals.controller.signal.aborted) return
+  runningBeforeInterrupt.set(internals, new Set(internals.pending))
+  internals.controller.abort()
+}
+
+/**
+ * Internal: interrupts an execution and starts all its `onCancel` cleanups,
+ * but leaves its resources for its `close` or `cancel`. It settles when the
+ * cleanups have finished.
+ */
+export async function cancelExecutionCleanups(
+  execution: EffectExecution
+): Promise<void> {
+  interruptExecution(execution)
+  const internals = internalsOf(execution)
+  for (const cleanup of [...internals.cleanups]) internals.start(cleanup)
+  await cleanupsSinceInterrupt(internals)
+}
+
+// Settles when the cleanups started by or since the interrupt have finished,
+// including those they start.
+async function cleanupsSinceInterrupt(
+  internals: ExecutionInternals
+): Promise<void> {
+  const earlier = new Set(runningBeforeInterrupt.get(internals))
+  while (true) {
+    const running = [...internals.pending].filter((task) => !earlier.has(task))
+    if (running.length === 0) return
+    await Promise.all(running)
+    for (const task of running) earlier.add(task)
+  }
 }
 
 /** Internal: marks what an execution has registered so far. */
@@ -386,22 +424,29 @@ export function markExecution(execution: EffectExecution): EffectExecutionMark {
 /**
  * Internal: runs a stream's `open`. Once it has opened, what it registered
  * stays for its cursor's close, even when it opened during a pull, as the
- * inner stream of `flatMap` does. An open that fails or is still running
+ * inner stream of `flatMap` does. So does the newest resource registered
+ * before it, and with it every older one: they are released after what the
+ * open registered, as on native. An open that fails or is still running
  * belongs to the pull, so what it registered can be released with the pull.
  */
 export async function openingStream<Result>(
   context: EffectContext,
   open: () => Result | Promise<Result>
 ): Promise<Result> {
+  const internals = executionInternals.get(context.signal)
   const registered: object[] = []
   const collectors = [
-    executionInternals.get(context.signal)?.openings,
+    internals?.openings,
     resourceScopes.get(context)?.openings,
   ]
   for (const collector of collectors) collector?.add(registered)
   try {
     const result = await open()
-    for (const entry of registered) openedRegistrations.add(entry)
+    if (registered.length > 0) {
+      for (const entry of registered) openedRegistrations.add(entry)
+      const newest = internals?.scope.finalizers.at(-1)
+      if (newest !== undefined) openedRegistrations.add(newest)
+    }
     return result
   } finally {
     for (const collector of collectors) collector?.delete(registered)
@@ -409,18 +454,24 @@ export async function openingStream<Result>(
 }
 
 /**
- * Internal: runs the `onCancel` cleanups and releases the resources that an
- * interrupted execution registered after `mark`, newest first. It stops at
- * the newest one that an opened stream registered, and at an acquisition
- * still running, so nothing is released before what was registered after
- * it. The rest wait for `cancel`. An acquisition may be waiting for the
- * cursor's close, so the release does not wait for it.
+ * Internal: interrupts an execution, then runs the `onCancel` cleanups and
+ * releases the resources that it registered after `mark`, newest first.
+ * The rest wait for `cancel`, which runs every cleanup before it releases
+ * any resource.
+ *
+ * - It stops at the newest one that an opened stream keeps, so nothing is
+ *   released before what was registered after it.
+ * - It does not wait for work the cursor's close may be what ends: at an
+ *   acquisition still running, or at cleanups still running after a turn,
+ *   it leaves the resources for `cancel`.
  */
 export async function releaseExecutionAfter(
   execution: EffectExecution,
   mark: EffectExecutionMark
 ): Promise<void> {
-  const { cleanups, pending, start, scope } = internalsOf(execution)
+  interruptExecution(execution)
+  const internals = internalsOf(execution)
+  const { cleanups, start, scope } = internals
   const kept = (entry: object): boolean =>
     mark.has(entry) || openedRegistrations.has(entry)
   const newer = [...cleanups]
@@ -430,16 +481,15 @@ export async function releaseExecutionAfter(
       break
     }
   }
-  // A cleanup registered now starts at once, because the execution is
-  // interrupted. The resources wait for those too, since they may use them.
-  const earlier = new Set(pending)
   for (const cleanup of newer) start(cleanup)
-  while (true) {
-    const running = [...pending].filter((task) => !earlier.has(task))
-    if (running.length === 0) break
-    await Promise.all(running)
-    for (const task of running) earlier.add(task)
-  }
+  let finished = false
+  await Promise.race([
+    cleanupsSinceInterrupt(internals).then(() => {
+      finished = true
+    }),
+    new Promise((resolve) => setTimeout(resolve, 0)),
+  ])
+  if (!finished) return
   if (scope.state !== "open") return await scope.close()
   const defects: unknown[] = []
   while (scope.state === "open" && scope.acquisitions.size === 0) {
