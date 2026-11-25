@@ -8,20 +8,21 @@ import {
   releaseExecutionAfter,
 } from "../src/effect"
 
-test("an interrupt reaches child executions but releases nothing", async () => {
+test("an interrupt stops one execution and releases nothing", async () => {
   const log: string[] = []
   const parent = createEffectExecution()
   const child = createEffectExecution(parent.context)
-  const grandchild = createEffectExecution(child.context)
-  grandchild.context.onCancel(() => {
+  child.context.onCancel(() => {
     log.push("cleanup")
   })
-  registerResourceFinalizer(grandchild.context, () => {
+  registerResourceFinalizer(child.context, () => {
     log.push("released")
   })
   interruptExecution(parent)
-  expect(child.context.cancelled).toBe(true)
-  expect(grandchild.context.cancelled).toBe(true)
+  expect(parent.context.cancelled).toBe(true)
+  // Stream branches pass an interrupt on themselves; other children wait
+  // for the parent's release.
+  expect(child.context.cancelled).toBe(false)
   await new Promise((resolve) => setTimeout(resolve, 0))
   expect(log).toEqual([])
   await parent.cancel()
@@ -57,14 +58,16 @@ test("a partial release keeps what came before the mark", async () => {
   expect(log).toEqual(["cleanup-after", "after", "cleanup-before", "before"])
 })
 
-test("closing an interrupted execution still runs its cleanups", async () => {
+test("a cleanup registered after an interrupt starts at once", async () => {
   const log: string[] = []
   const execution = createEffectExecution()
+  interruptExecution(execution)
   execution.context.onCancel(() => {
     log.push("cleanup")
   })
-  interruptExecution(execution)
-  await execution.close()
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  expect(log).toEqual(["cleanup"])
+  await execution.cancel()
   expect(log).toEqual(["cleanup"])
 })
 

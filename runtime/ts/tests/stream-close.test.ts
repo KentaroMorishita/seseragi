@@ -134,6 +134,39 @@ test("an inner zip stops its pending pull when the outer zip stops", async () =>
   expect(log).toEqual(nativeOrder)
 })
 
+test("an inner pull stays stopped while the outer pull is released", async () => {
+  const log: string[] = []
+  const inner = streams.zip(waitingSource(log), streams.fromArray([1, 2]))
+  // The outer pull holds a resource that takes a while to release, so the
+  // inner pull would resume during that release unless it is stopped too.
+  const outer = streams.fromPull<unknown, never, number>(
+    async (environment, context) => {
+      const cursor = await inner.open(environment, context)
+      return {
+        pull: async (pullContext) => {
+          registerResourceFinalizer(pullContext, async () => {
+            await new Promise((resolve) => setTimeout(resolve, 5))
+            log.push("outer-pull-released")
+          })
+          return await cursor.next()
+        },
+        close: () => cursor.close(),
+      }
+    }
+  )
+  const result = await run(
+    streams.runCollect(streams.zip(outer, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  // The inner zip closes its stopped side while the outer resource is being
+  // released; the inner side never resumes and keeps the native order.
+  expect(log).toContain("outer-pull-released")
+  expect(log.filter((entry) => entry !== "outer-pull-released")).toEqual(
+    nativeOrder
+  )
+})
+
 test("zip keeps the close failure of a source it cancels", async () => {
   const log: string[] = []
   const source = waitingSource(log, {

@@ -716,6 +716,8 @@ type Branch<Value> = {
   // What the branch had registered once its source was open. Later
   // registrations come from its pulls.
   readonly opened: EffectExecutionMark
+  // Stops passing the parent's interrupt on to the branch.
+  readonly detach: () => void
   // Set by the first close, which every later close waits for.
   closing: Promise<void> | undefined
 }
@@ -726,15 +728,24 @@ async function openBranch<Environment, Failure, Value>(
   context: EffectContext
 ): Promise<Branch<Value>> {
   const execution = createEffectExecution(context)
+  // When an outer branch is stopped, a pull it waits on in this branch stops
+  // at once too. Releasing this branch still waits for its own settle.
+  const interrupt = (): void => interruptExecution(execution)
+  context.signal.addEventListener("abort", interrupt, { once: true })
+  const detach = (): void =>
+    context.signal.removeEventListener("abort", interrupt)
+  if (context.signal.aborted) interrupt()
   try {
     const cursor = await source.open(environment, execution.context)
     return {
       cursor,
       execution,
       opened: markExecution(execution),
+      detach,
       closing: undefined,
     }
   } catch (error) {
+    detach()
     return await cleanupThenThrow(error, [() => execution.cancel()])
   }
 }
@@ -747,8 +758,9 @@ async function closeBranch(branch: Branch<unknown>): Promise<void> {
 // pending pull never resumes, and releases what the pulls acquired. Then it
 // closes the cursor, which may still use what opening a stream acquired,
 // and releases that last. A stream opened during a pull, such as the inner
-// stream of flatMap, counts as opening, not as the pull. A branch is settled once: a cancellation from a
-// parent can start it while its consumer is closing it too.
+// stream of flatMap, counts as opening, not as the pull. A branch is settled
+// once: a cancellation from a parent can start it while its consumer is
+// closing it too.
 function settleBranch(
   branch: Branch<unknown>,
   mode: "cancel" | "close"
@@ -761,7 +773,9 @@ async function runSettleBranch(
   branch: Branch<unknown>,
   mode: "cancel" | "close"
 ): Promise<void> {
-  if (mode === "close") {
+  branch.detach()
+  // A branch stopped with its outer branch cancels, so its cleanups run.
+  if (mode === "close" && !branch.execution.context.cancelled) {
     await runCleanups([
       () => branch.cursor.close(),
       () => branch.execution.close(),
