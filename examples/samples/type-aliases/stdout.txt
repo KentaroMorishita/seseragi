@@ -1,1 +1,2 @@
-/users/41 -> /users/42
+ページ: 4 -> 5
+URL: /articles?page=4 -> /articles?page=5

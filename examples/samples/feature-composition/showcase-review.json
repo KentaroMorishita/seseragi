@@ -8,11 +8,11 @@
     "checked": true
   },
   "designIntent": {
-    "firstView": "team photoと大きなrelease copyを最初に置き、複数Signalを一つのpageへ合成する題材を操作前から理解できるようにする。",
-    "layoutRhythm": "濃いhero、淡いcontrol section、色の異なるfeature sectionを縦に切り替え、同じcardを反復するだけでない流れを作る。",
-    "visualIdentity": "release planningを題材に、violetを軸にyellowとblueのfeature-owned surfaceを分け、各Signalの所有境界を色でも読めるようにする。",
-    "interaction": "hide、swap、replace、markの操作後もfeatureごとの階層を保ち、対象を消した状態にも説明と次の操作を残す。",
-    "codeStructure": "PulseStateとPulseAction、named class、feature view、root composition、dom.runを同じ順序で分け、画面上の所有境界をsourceから追えるようにする。"
+    "firstView": "深い藍色のヒーロー帯に見出しと Signal 合成の図解 SVG を並べ、操作前から複数 Signal を合成する題材が一目で伝わるようにする。",
+    "layoutRhythm": "濃いヒーロー帯、白い操作パネル、色分けされた機能カード群を縦のリズムで切り替え、単調なカードの繰り返しにならない構成にする。",
+    "visualIdentity": "公開準備ボードを題材に、和紙調の背景の上で琥珀・青緑・深緑のカードテーマを分け、各 Signal の所有境界を色と進捗バーで読めるようにする。",
+    "interaction": "非表示・並べ替え・差し替えの後もカードごとの確認数と進捗バーを保ち、非表示時にも復帰手順を示すプレースホルダーを残す。",
+    "codeStructure": "機能カードの状態と名前付き style、createChecklistCard、親の LayoutState と switchMap、mount と dom.run を上から順に分け、所有境界をコードから追えるようにする。"
   },
   "approval": {
     "status": "approved",

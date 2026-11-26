@@ -1,15 +1,38 @@
-fn displayName profile: {
+// 同じメンバーのレコードから名札と配送先を作り、異動後の情報をスプレッド構文で不変更新します。
+
+// 関数が必要とするフィールドだけを宣言すれば、余分なフィールドを持つレコードも渡せます。
+fn badgeLabel member: {
   first: String,
-  last: String
+  last: String,
+  department: String
 } -> String =
-  `${profile.first} ${profile.last}`
+  `名札: ${member.last} ${member.first}（${member.department}）`
 
-let profile = { first: "Mio", last: "Tanaka", role: "Engineer" }
+fn shippingLabel member: {
+  first: String,
+  last: String,
+  city: String
+} -> String =
+  `配送先: ${member.city} / ${member.last} ${member.first} 様`
 
-// スプレッド構文で新しいレコードを作り、必要なフィールドだけを関数へ渡します。
-pub effect fn main -> Unit with Console fails ConsoleError = {
-  ...profile,
-  first: "Aoi"
+let originalMember = {
+  first: "ミオ",
+  last: "田中",
+  department: "開発",
+  city: "東京",
+  role: "Engineer",
 }
-  |> displayName
+
+// 元のレコードは変えず、異動で変わる部署と拠点だけを上書きした新しいレコードを作ります。
+let transferredMember = { ...originalMember, department: "設計", city: "京都", }
+
+pub effect fn main = [
+  "異動前:",
+  `  ${badgeLabel originalMember}`,
+  `  ${shippingLabel originalMember}`,
+  "異動後:",
+  `  ${badgeLabel transferredMember}`,
+  `  ${shippingLabel transferredMember}`,
+]
+  |> join "\n"
   |> println

@@ -1,16 +1,43 @@
-struct Score { value: Int, }
+// 構造体の impl に演算子を定義し、作業時間の合計と予定との一致を計算します。
 
-impl Score {
-  operator + self -> bonus: Int -> Score = Score { value: self.value + bonus }
+struct Duration { minutes: Int }
 
-  operator == self -> other: Score -> Bool = self.value == other.value
+impl Duration {
+  operator + self -> other: Duration -> Duration = Duration {
+    minutes: self.minutes + other.minutes
+  }
+
+  operator - self -> other: Duration -> Duration = Duration {
+    minutes: self.minutes - other.minutes
+  }
+
+  operator == self -> other: Duration -> Bool = self.minutes == other.minutes
 }
 
-fn render score: Score -> String =
-  if score == Score { value: 42 } then `Score: ${score.value}` else "Unexpected score"
+fn formatDuration duration: Duration -> String = {
+  let hours = duration.minutes / 60
+  let mins = duration.minutes % 60
+  if hours == 0 then `${mins}分` else `${hours}時間${mins}分`
+}
 
-// 演算子定義も通常のAdd / Eqインスタンスと同じ仕組みで解決されます。
-pub effect fn main -> Unit with Console fails ConsoleError =
-  Score { value: 21 } + 21
-  |> render
-  |> println
+let planned = Duration { minutes: 90 }
+
+let design = Duration { minutes: 40 }
+
+let coding = Duration { minutes: 35 }
+
+let review = Duration { minutes: 15 }
+
+fn buildSummary -> String = {
+  let total = design + coding + review
+  let status =
+    if total == planned then "予定どおりです" else `予定との差: ${formatDuration (total - planned)}`
+  [
+    `設計 ${formatDuration design} + 実装 ${formatDuration coding} + レビュー ${formatDuration review}`,
+    `合計: ${formatDuration total}（予定: ${formatDuration planned}）`,
+    `判定: ${status}`,
+  ]
+    |> join "\n"
+}
+
+pub effect fn main = buildSummary () |> println

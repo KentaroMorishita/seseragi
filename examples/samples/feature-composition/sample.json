@@ -1,17 +1,27 @@
 {
   "$schema": "../sample.schema.json",
   "id": "feature-composition",
-  "title": "Signal + dom.runでfeatureを合成",
-  "summary": "複数のfeature-owned Signalとcustom実行境界を明示的なdom.runで合成します。",
+  "title": "独立した Signal で公開準備ボードを合成する",
+  "summary": "各カードが自分専用の非公開 Signal を持ち、表示の切り替え・順番の入れ替え・差し替えをしても状態を保ったまま dom.run で合成します。",
   "kind": "showcase",
   "difficulty": "advanced",
-  "topics": ["feature module", "private state", "Effect Action", "switchMap"],
-  "capabilities": ["dom"],
+  "topics": [
+    "feature module",
+    "private state",
+    "Effect Action",
+    "switchMap"
+  ],
+  "capabilities": [
+    "dom"
+  ],
   "outputMode": "html",
   "experience": "guided",
   "architecture": "signal-run",
   "focus": "composition",
-  "prerequisites": ["signal-state", "interactive-app"],
+  "prerequisites": [
+    "signal-state",
+    "interactive-app"
+  ],
   "featured": false,
   "isNew": true,
   "interactive": true,

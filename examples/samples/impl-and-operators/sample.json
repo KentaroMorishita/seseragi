@@ -1,18 +1,51 @@
 {
   "$schema": "../sample.schema.json",
   "id": "impl-and-operators",
-  "title": "implと演算子",
-  "summary": "Structのimplでmethodと演算子をdomainの型へまとめます。",
+  "title": "作業時間の合計を impl と演算子で計算する",
+  "summary": "構造体の impl ブロックに +・-・== の演算子を定義し、作業時間の加算と予定時間との比較を自然な式で書きます。",
   "kind": "recipe",
   "difficulty": "advanced",
-  "topics": ["impl", "operator", "Add", "Eq"],
-  "capabilities": ["console"],
+  "topics": [
+    "impl",
+    "operator",
+    "Add",
+    "Eq"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["records", "newtypes"],
+  "prerequisites": [
+    "records",
+    "newtypes"
+  ],
   "featured": false,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "レビュー時間を 35 分に延ばす",
+        "edits": [
+          {
+            "find": "let review = Duration { minutes: 15 }",
+            "replace": "let review = Duration { minutes: 35 }"
+          }
+        ]
+      },
+      {
+        "label": "予定時間を 2 時間に広げる",
+        "edits": [
+          {
+            "find": "let planned = Duration { minutes: 90 }",
+            "replace": "let planned = Duration { minutes: 120 }"
+          }
+        ]
+      }
+    ]
   }
 }
