@@ -232,6 +232,13 @@ fn image_urls_keep_ts_validation_and_original_spelling() {
         "https://example.com:00000000000000000080/a",
         "mailto://\\user@example.com/a",
         "mailto:////user@example.com/a",
+        "https://bücher.example/a",
+        "https://xn--bcher-kva.example/a",
+        "https://日本語.jp/path",
+        "https://M%C3%BCnchen.DE/a",
+        "//bücher.example/a",
+        "https://xn--a.example/a",
+        "https://a%D7%90.example/a",
     ];
     let mut source = String::from("import * as html from \"std/web/html\"\nfn allowed value: String -> Bool = match html.parseWebUrl value { Left _ -> False; Right _ -> True }\npub effect fn main = do {\n");
     let mut expected = String::new();
@@ -420,4 +427,146 @@ pub effect fn main = {
     ));
     assert_eq!(String::from_utf8_lossy(&ts.stdout), "<div style=\"z-index: 2; color: red\"></div>\n<div style=\"color: blue; z-index: 3\"></div>\n");
     compare_native(&input, &ts.stdout, scratch.path());
+}
+
+#[test]
+fn internationalized_urls_preserve_original_spelling_on_ts_and_native() {
+    let scratch = tempfile::tempdir().unwrap();
+    let input = scratch.path().join("idn_urls.ssrg");
+    fs::write(
+        &input,
+        r#"import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+
+pub effect fn main = do {
+  match html.parseWebUrl "https://bücher.example/a" {
+    Right url -> println (html.renderToString (html.a { href: url, children: "ok" }))
+    Left error -> println (show error)
+  }
+  match html.parseWebUrl "https://xn--bcher-kva.example/a" {
+    Right url -> println (html.renderToString (html.a { href: url, children: "ok" }))
+    Left error -> println (show error)
+  }
+  match html.attribute "action" "https://bücher.example/submit" {
+    Right attr -> println (html.renderToString (html.form { attributes: [attr], children: "go" }))
+    Left error -> println (show error)
+  }
+  match html.attribute "xlink:href" "https://日本語.jp/icon" {
+    Right attr -> do {
+      let empty: Array<svg.Svg<Unit>> = []
+      let props = { attributes: [attr], children: empty }
+      println (html.renderToString (svg.toHtml (svg.g props)))
+    }
+    Left error -> println (show error)
+  }
+  match html.attribute "action" "https://xn--a.example/bad" {
+    Right _ -> println "unexpected"
+    Left error -> println (show error)
+  }
+}
+"#,
+    )
+    .unwrap();
+    let expected = scratch.path().join("idn_urls.stdout");
+    fs::write(
+        &expected,
+        "<a href=\"https://bücher.example/a\">ok</a>\n<a href=\"https://xn--bcher-kva.example/a\">ok</a>\n<form action=\"https://bücher.example/submit\">go</form>\n<g xlink:href=\"https://日本語.jp/icon\"></g>\nUnsafeWebUrlScheme https://xn--a.example/bad\n",
+    )
+    .unwrap();
+    compare(&input, &expected, scratch.path());
+}
+
+#[test]
+fn custom_attributes_colliding_with_typed_props_fail_on_ts_and_native() {
+    let cli = env!("CARGO_BIN_EXE_seseragi");
+    let cases = [
+        (
+            "aria-label",
+            r#"import * as html from "std/web/html"
+pub effect fn main = match html.attribute "aria-label" "custom" {
+  Right custom -> do {
+    let page: html.Html<Unit> = html.p { ariaLabel: "typed", attributes: [custom], children: "x" }
+    println "built"
+    println (html.renderToString page)
+  }
+  Left error -> println (show error)
+}
+"#,
+        ),
+        (
+            "inert-false",
+            r#"import * as html from "std/web/html"
+pub effect fn main = match html.attribute "INERT" "true" {
+  Right custom -> do {
+    let page: html.Html<Unit> = html.p { inert: False, attributes: [custom], children: "x" }
+    println "built"
+    println (html.renderToString page)
+  }
+  Left error -> println (show error)
+}
+"#,
+        ),
+        (
+            "svg-viewbox-case",
+            r#"import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+pub effect fn main = match html.attribute "VIEWBOX" "0 0 20 20" {
+  Right custom -> do {
+    let empty: Array<svg.Svg<Unit>> = []
+    let props = { viewBox: "0 0 10 10", attributes: [custom], children: empty }
+    let page: html.Html<Unit> = svg.toHtml (svg.svg props)
+    println "built"
+    println (html.renderToString page)
+  }
+  Left error -> println (show error)
+}
+"#,
+        ),
+    ];
+    for (name, source) in cases {
+        let scratch = tempfile::tempdir().unwrap();
+        let input = scratch.path().join(format!("{name}.ssrg"));
+        fs::write(&input, source).unwrap();
+        let ts = bounded(Command::new(cli).arg("run").arg(&input), scratch.path());
+        let native = scratch.path().join("native");
+        successful(bounded(
+            Command::new(cli)
+                .args(["experimental", "build-native"])
+                .arg(&input)
+                .args(["--entry", "main", "--out-dir"])
+                .arg(&native),
+            scratch.path(),
+        ));
+        let output = bounded(
+            Command::new(native.join(format!("program{}", std::env::consts::EXE_SUFFIX)))
+                .env("PATH", ""),
+            scratch.path(),
+        );
+        for (target, output) in [("TS", &ts), ("native", &output)] {
+            assert_eq!(
+                output.status.code(),
+                Some(70),
+                "{name} {target}: {output:?}"
+            );
+            assert_eq!(output.stdout, b"built\n", "{name} {target}");
+        }
+        assert_eq!(output.stderr, ts.stderr, "{name}");
+    }
+
+    // Without the typed prop, the custom attribute is still accepted.
+    let scratch = tempfile::tempdir().unwrap();
+    let input = scratch.path().join("aria_custom_only.ssrg");
+    fs::write(
+        &input,
+        r#"import * as html from "std/web/html"
+pub effect fn main = match html.attribute "aria-label" "custom" {
+  Right custom -> println (html.renderToString (html.p { attributes: [custom], children: "x" }))
+  Left error -> println (show error)
+}
+"#,
+    )
+    .unwrap();
+    let expected = scratch.path().join("aria_custom_only.stdout");
+    fs::write(&expected, "<p aria-label=\"custom\">x</p>\n").unwrap();
+    compare(&input, &expected, scratch.path());
 }

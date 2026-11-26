@@ -178,11 +178,18 @@ fn native_svg_element(tag: &str, value: V) -> V {
 }
 
 /// One attribute, checked and written as the TS renderer does.
-fn native_html_attribute(output: &mut String, name: &str, value: Option<&V>, kind: &str) {
+fn native_html_attribute(
+    output: &mut String,
+    names: &mut std::collections::BTreeSet<String>,
+    name: &str,
+    value: Option<&V>,
+    kind: &str,
+) {
     // Unit is `undefined` on TS, so the attribute is left out.
     let Some(value) = value.filter(|value| !matches!(value, V::Unit)) else {
         return;
     };
+    names.insert(name.to_ascii_lowercase());
     let text = match kind {
         "bool" => {
             if matches!(value, V::Bool(true)) {
@@ -234,8 +241,9 @@ fn native_html_attributes(
     tag: &str,
     props: &BTreeMap<String, V>,
 ) {
+    let mut names = std::collections::BTreeSet::new();
     let mut write = |property: &str, name: &str, kind: &str| {
-        native_html_attribute(output, name, props.get(property), kind);
+        native_html_attribute(output, &mut names, name, props.get(property), kind);
     };
     for (property, name, kind) in [
         ("id", "id", "string"),
@@ -384,22 +392,21 @@ fn native_html_attributes(
             .filter(|value| !matches!(value, V::Unit));
         match (value, fallback) {
             (None, Some(fallback)) => {
-                native_html_attribute(output, name, Some(&V::text(fallback)), kind)
+                native_html_attribute(output, &mut names, name, Some(&V::text(fallback)), kind)
             }
-            (value, _) => native_html_attribute(output, name, value, kind),
+            (value, _) => native_html_attribute(output, &mut names, name, value, kind),
         }
     }
     match props.get("attributes") {
         None | Some(V::Unit) => {}
         Some(V::Array(items)) => {
-            let mut names = std::collections::BTreeSet::new();
             for item in items.get() {
                 let Some(attribute) = native_html_tree(item, "\0html.attribute") else {
                     panic!("HTML custom attributes must be created with html.attribute")
                 };
                 let name = attribute.field("name");
                 let name = native_text(&name);
-                if !names.insert(name.to_lowercase()) {
+                if !names.insert(name.to_ascii_lowercase()) {
                     panic!("duplicate HTML custom attribute {name}");
                 }
                 output.push_str(&format!(
@@ -743,85 +750,5 @@ fn native_html_safe_url(value: &str) -> bool {
 }
 
 fn native_html_url_host(host: &str) -> bool {
-    if host.starts_with('[') {
-        return true;
-    }
-    let mut decoded = Vec::new();
-    let mut bytes = host.bytes();
-    while let Some(byte) = bytes.next() {
-        if byte == b'%' {
-            let Some(high) = bytes.next().and_then(|b| (b as char).to_digit(16)) else {
-                return false;
-            };
-            let Some(low) = bytes.next().and_then(|b| (b as char).to_digit(16)) else {
-                return false;
-            };
-            decoded.push((high * 16 + low) as u8);
-        } else {
-            decoded.push(byte);
-        }
-    }
-    let Ok(host) = String::from_utf8(decoded) else {
-        return false;
-    };
-    if host.chars().any(|ch| {
-        ch.is_whitespace()
-            || ch.is_ascii_control()
-            || matches!(
-                ch,
-                '#' | '%' | '/' | ':' | '<' | '>' | '?' | '@' | '[' | '\\' | ']' | '^' | '|'
-            )
-    }) {
-        return false;
-    }
-    let parts: Vec<_> = host.strip_suffix('.').unwrap_or(&host).split('.').collect();
-    // Internationalized hosts require IDNA validation; do not accept unchecked labels.
-    if !host.is_ascii()
-        || parts
-            .iter()
-            .any(|part| part.to_ascii_lowercase().starts_with("xn--"))
-    {
-        return false;
-    }
-    fn number(part: &str) -> Option<u64> {
-        if part.is_empty() {
-            return None;
-        }
-        let (digits, radix) = if part.starts_with("0x") || part.starts_with("0X") {
-            (&part[2..], 16)
-        } else if part.len() >= 2 && part.starts_with('0') {
-            (&part[1..], 8)
-        } else {
-            (part, 10)
-        };
-        if digits.is_empty() {
-            Some(0)
-        } else {
-            u64::from_str_radix(digits, radix).ok()
-        }
-    }
-    let last = parts.last().unwrap();
-    let hex = last.strip_prefix("0x").or_else(|| last.strip_prefix("0X"));
-    let numeric = number(last).is_some()
-        || hex.is_some_and(|digits| digits.bytes().all(|b| b.is_ascii_hexdigit()))
-        || (!last.is_empty() && last.bytes().all(|b| b.is_ascii_digit()));
-    if numeric {
-        if parts.len() > 4 || parts.iter().any(|part| part.is_empty()) {
-            return false;
-        }
-        for (index, part) in parts.iter().enumerate() {
-            let Some(value) = number(part) else {
-                return false;
-            };
-            let limit = if index + 1 == parts.len() {
-                1u64 << (8 * (5 - parts.len()))
-            } else {
-                256
-            };
-            if value >= limit {
-                return false;
-            }
-        }
-    }
-    true
+    native_url_host(host).is_some()
 }
