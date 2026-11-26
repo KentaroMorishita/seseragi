@@ -71,6 +71,12 @@ import {
   createCoachCard,
   createGuidancePreferences,
 } from "./ui/guidance"
+import {
+  connectLocaleController,
+  tourHref as localizedTourHref,
+  type UiLocale,
+  uiMessages,
+} from "./ui/i18n"
 import { connectMobilePanels } from "./ui/mobile-panels"
 import {
   allowFromNotice,
@@ -277,6 +283,26 @@ const workspaceResizer = requiredElement("#workspace-resizer", HTMLElement)
 const ioPanel = requiredElement("#io-panel", HTMLElement)
 const outputSection = requiredElement("#output-section", HTMLElement)
 const ioResizer = requiredElement("#io-resizer", HTMLElement)
+const localeController = connectLocaleController({
+  window,
+  jaButton: requiredElement("#lang-ja-button", HTMLButtonElement),
+  enButton: requiredElement("#lang-en-button", HTMLButtonElement),
+  banner: document.querySelector<HTMLElement>("#english-available-banner"),
+  bannerSwitchButton: document.querySelector<HTMLButtonElement>(
+    "#english-banner-switch"
+  ),
+  bannerDismissButton: document.querySelector<HTMLButtonElement>(
+    "#english-banner-dismiss"
+  ),
+  playgroundLinks: Array.from(
+    document.querySelectorAll<HTMLAnchorElement>(
+      '.pg-brand, .pg-views a[href="./"]'
+    )
+  ),
+  tourLinks: Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('.pg-views a[href="./tour/"]')
+  ),
+})
 const sampleGuide = connectSampleGuide({
   button: sampleGuideButton,
   panel: sampleGuidePanel,
@@ -284,12 +310,16 @@ const sampleGuide = connectSampleGuide({
   category: sampleGuideCategory,
   title: sampleGuideTitle,
   summary: sampleGuideSummary,
+  untranslatedNotice: document.querySelector<HTMLElement>(
+    "#sample-guide-untranslated"
+  ),
   topics: sampleGuideConcepts,
   body: sampleGuideBody,
   source: sampleGuideSource,
   groupTitle: (sample) =>
     discoverGroups.find((group) => group.samples.includes(sample.id))?.title ??
     "",
+  locale: localeController.current,
 })
 connectPreviewFullscreen(outputSection, fullscreenPreviewButton)
 
@@ -323,11 +353,12 @@ const networkNotice = connectNetworkNotice(
       currentNetworkScope,
       networkNotice,
       () => void run()
-    )
+    ),
+  localeController.current
 )
 const networkGate = createNetworkGate({
   store: networkPermissions,
-  consent: createNetworkConsent(document),
+  consent: createNetworkConsent(document, localeController.current),
   notice: networkNotice,
   current: currentNetworkScope,
   rerun: () => void run(),
@@ -336,17 +367,23 @@ const networkGate = createNetworkGate({
     clearHtmlPreview()
   },
 })
-const networkSettings = createNetworkSettings(document, networkPermissions)
+const networkSettings = createNetworkSettings(
+  document,
+  networkPermissions,
+  localeController.current
+)
 let runNetworkAllowed = false
 let staticPreviewRequest = 0
 
 // 用意した例の案内（ひとこと、Try next、開いたときの自動実行）
 const guidancePreferences = createGuidancePreferences(browserStorage())
-const tourHref = new URL("tour/", document.baseURI).href
+const currentTourHref = (): string =>
+  localizedTourHref(localeController.current())
 const autoRunNote = requiredElement("#auto-run-note", HTMLElement)
 const tryNext = connectTryNext(requiredElement("#try-next", HTMLElement), {
   preferences: guidancePreferences,
-  tourHref,
+  tourHref: currentTourHref,
+  locale: localeController.current,
   onApply: (chip, index) => applyTryNextChip(chip, index),
 })
 let coachVisible = false
@@ -413,22 +450,57 @@ const search = connectSearchPalette({
     ),
   onLesson: (id) =>
     window.location.assign(
-      new URL(`tour/?lesson=${encodeURIComponent(id)}`, document.baseURI)
+      `${currentTourHref()}?lesson=${encodeURIComponent(id)}`
     ),
   commands: searchCommands(),
   renderApiDetail: (item) => createReferenceCard(document, item),
+  locale: localeController.current,
 })
 // コードのカードの見出しに出す例の名前と、Search の中の「今開いている例」の印
 const sampleBrowser = {
   setCurrent: (sample: (typeof samples)[number]): void => {
     currentSampleTitle.textContent = sample.title
+    if (localeController.current() === "en") {
+      currentSampleTitle.setAttribute("lang", "ja")
+    } else {
+      currentSampleTitle.removeAttribute("lang")
+    }
     search.setCurrentExample(sample.id)
   },
   setBlank: (): void => {
     currentSampleTitle.textContent = "Blank workspace"
+    currentSampleTitle.removeAttribute("lang")
     search.setCurrentExample(undefined)
   },
 }
+
+const applyPlaygroundLocale = (nextLocale: UiLocale): void => {
+  const messages = uiMessages(nextLocale)
+  const otherMessages = uiMessages(nextLocale === "en" ? "ja" : "en")
+  autoRunNote.textContent = messages.autoRunNote
+  stdinInput.placeholder = messages.stdinPlaceholder
+  if (
+    output.textContent === otherMessages.outputPlaceholder ||
+    output.textContent === messages.outputPlaceholder
+  ) {
+    output.textContent = messages.outputPlaceholder
+  } else if (
+    output.textContent === otherMessages.noErrorsRunPrompt ||
+    output.textContent === messages.noErrorsRunPrompt
+  ) {
+    output.textContent = messages.noErrorsRunPrompt
+  }
+  if (currentSample !== undefined) {
+    if (nextLocale === "en") currentSampleTitle.setAttribute("lang", "ja")
+    else currentSampleTitle.removeAttribute("lang")
+  }
+  sampleGuide.refreshLocale()
+  networkNotice.refreshLocale?.()
+  tryNext.refresh()
+  search.refresh()
+}
+applyPlaygroundLocale(localeController.current())
+localeController.subscribe(applyPlaygroundLocale)
 
 const editor = createEditor(
   editorHost,
@@ -504,7 +576,7 @@ const liveAnalysis: LiveAnalysisController =
         setStatus("error", problemCount(analysis.diagnostics.length))
       } else {
         if (output.dataset.liveDiagnostics === "true") {
-          showTextOutput("エラーはありません。Run を押すと実行します。")
+          showTextOutput(localeController.messages().noErrorsRunPrompt)
         }
         setStatus("ready", "Analysis ready")
       }
@@ -1012,7 +1084,7 @@ function loadSample(
   latestAnalysis = undefined
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
-  showTextOutput("Run を押すと、結果がここに出ます。")
+  showTextOutput(localeController.messages().outputPlaceholder)
   showRunStatus({ kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
@@ -1761,7 +1833,8 @@ function openGuidance(
         to: from + hint.anchor.length,
         render: () =>
           createCoachCard(document, hint, {
-            tourHref,
+            tourHref: currentTourHref(),
+            locale: localeController.current(),
             onClose: () => dismissCoach(),
           }),
       })

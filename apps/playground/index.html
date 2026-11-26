@@ -56,8 +56,17 @@
             <button id="theme-system-button" type="button" role="menuitem" hidden>Use system theme</button>
             <button id="clear-source-button" type="button" role="menuitem">Clear file</button>
           </div>
+          <div class="ui-segmented pg-lang-switch" role="group" aria-label="Language">
+            <button id="lang-ja-button" type="button" aria-label="日本語" aria-pressed="true">JA</button>
+            <button id="lang-en-button" type="button" aria-label="English" aria-pressed="false">EN</button>
+          </div>
         </div>
       </header>
+      <div id="english-available-banner" class="pg-lang-banner" role="region" aria-label="English version" hidden>
+        <span>English is available.</span>
+        <button id="english-banner-switch" class="ui-button ui-button--ghost ui-button--sm" type="button">Switch to English</button>
+        <button id="english-banner-dismiss" class="ui-button ui-button--ghost ui-button--sm" type="button" aria-label="Dismiss">Dismiss</button>
+      </div>
 
       <dialog
         id="search-dialog"
@@ -239,6 +248,7 @@
             </div>
             <h2 id="sample-guide-title"></h2>
             <p id="sample-guide-summary"></p>
+            <p id="sample-guide-untranslated" class="pg-untranslated-notice" hidden></p>
             <ul id="sample-guide-concepts" aria-label="学べる要素" hidden></ul>
             <div id="sample-guide-body" class="sample-guide-body"></div>
             <code id="sample-guide-source"></code>

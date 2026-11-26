@@ -2,6 +2,7 @@
 // 一覧の作り方と並べ方は search-index.ts に置き、ここではキーボードとマウスの操作だけを扱う。
 // 入力欄は combobox、結果は listbox とし、選んでいる結果は aria-activedescendant で伝える。
 import type { AnalysisReferenceItem } from "../compiler/types"
+import { JAPANESE_ONLY_LABEL, type UiLocale, uiMessages } from "./i18n"
 import {
   apiEntries,
   normalizeSearchText,
@@ -36,6 +37,7 @@ export type SearchPaletteOptions = Readonly<{
   onLesson: (id: string) => void
   commands: readonly SearchCommand[]
   renderApiDetail: (item: AnalysisReferenceItem) => HTMLElement
+  locale?: () => UiLocale
 }>
 
 export type SearchPalette = Readonly<{
@@ -45,6 +47,7 @@ export type SearchPalette = Readonly<{
   close: () => void
   setApiCatalog: (items: readonly AnalysisReferenceItem[]) => void
   setCurrentExample: (id: string | undefined) => void
+  refresh: () => void
 }>
 
 const icons: Readonly<Record<SearchScope, string>> = {
@@ -143,12 +146,13 @@ export function connectSearchPalette(
       return group
     })
     if (groups.length === 0) {
+      const messages = uiMessages(options.locale?.() ?? "ja")
       const empty = ownerDocument.createElement("p")
       empty.className = "pg-search-empty"
       empty.textContent =
         filter === "lessons" && !lessonsLoaded()
-          ? "レッスンを読み込んでいます。"
-          : "見つかりませんでした。言葉を変えるか、範囲を All に戻してください。"
+          ? messages.searchLoadingLessons
+          : messages.searchEmpty
       results.replaceChildren(empty)
     } else {
       results.replaceChildren(...groups)
@@ -159,6 +163,10 @@ export function connectSearchPalette(
   const lessonsLoaded = (): boolean => lessons.length > 0
 
   const createOption = (entry: SearchEntry, index: number): HTMLElement => {
+    const locale = options.locale?.() ?? "ja"
+    const isUntranslatedContent =
+      locale === "en" &&
+      (entry.scope === "examples" || entry.scope === "lessons")
     const option = ownerDocument.createElement("div")
     option.id = optionId(index)
     option.className = "pg-search-result"
@@ -186,8 +194,18 @@ export function connectSearchPalette(
       sub.className = "pg-search-signature"
       sub.textContent = entry.signature
     }
+    if (isUntranslatedContent) {
+      title.setAttribute("lang", "ja")
+      sub.setAttribute("lang", "ja")
+    }
     text.append(title, sub)
     option.append(icon, text)
+    if (isUntranslatedContent) {
+      const badge = ownerDocument.createElement("span")
+      badge.className = "ui-tag"
+      badge.textContent = JAPANESE_ONLY_LABEL
+      option.append(badge)
+    }
     if (entry.tag !== undefined) {
       const tag = ownerDocument.createElement("span")
       tag.className = "ui-tag"
@@ -330,6 +348,9 @@ export function connectSearchPalette(
     },
     setCurrentExample: (id) => {
       currentExample = id
+    },
+    refresh: () => {
+      if (dialog.open) render()
     },
   }
 }
