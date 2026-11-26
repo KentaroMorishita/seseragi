@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.5] - 2026-11-27
+
+### Added
+
+- Playground and Tour: added a `JA` / `EN` language switch in the top bar with URL path routing (`/`, `/tour/`, `/en/`, `/en/tour/`), English UI messages, `Japanese only` badges and untranslated notices with `lang="ja"` for untranslated content, and a one-time `English is available.` banner for non-Japanese browsers without automatic redirects (#1360).
+
 ## [0.62.4] - 2026-11-25
 
 ### Fixed
