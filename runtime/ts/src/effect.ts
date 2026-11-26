@@ -47,13 +47,11 @@ type ResourceFinalizerEntry = {
   readonly finalizer: EffectResourceFinalizer
 }
 
-// `releaseExecutionAfter` reads the finalizers, acquisitions and state too.
+// `handOverExecution` reads the finalizers, acquisitions and state too.
 class ResourceScope {
   readonly finalizers: ResourceFinalizerEntry[] = []
   readonly acquisitions = new Set<Promise<void>>()
   state: "open" | "closing" | "closed" = "open"
-  // Streams still opening collect what is registered meanwhile.
-  readonly openings = new Set<object[]>()
   private closing: Promise<void> | undefined
 
   register(finalizer: EffectResourceFinalizer): EffectResourceRegistration {
@@ -65,7 +63,6 @@ class ResourceScope {
     }
     const entry: ResourceFinalizerEntry = { active: true, finalizer }
     this.finalizers.push(entry)
-    for (const opening of this.openings) opening.push(entry)
     return Object.freeze({
       ready: Promise.resolve(),
       unregister: () => {
@@ -228,30 +225,30 @@ export function throwIfCancelled(context: EffectContext): void {
  * settling, including cleanup registered by another cleanup. The drain closes
  * only after one quiet event-loop turn with no tracked work.
  * Cleanup failures are intentionally absorbed: cancellation must not surface
- * as a stale host exception after the owning UI has moved on.
+ * as a stale host exception after the owning UI has moved on. A stream that
+ * stops one of its pulls passes `reportCleanupFailures`, so `cancel` rejects
+ * with them: its consumer is still waiting for the stream to close.
  */
 export function createEffectExecution(
-  parentContext?: EffectContext
+  parentContext?: EffectContext,
+  reportCleanupFailures = false
 ): EffectExecution {
   const controller = new AbortController()
   const rootScope = new ResourceScope()
   const cleanups = new Set<EffectCancellationCleanup>()
   const started = new Set<EffectCancellationCleanup>()
   const pending = new Set<Promise<void>>()
-  const openings = new Set<object[]>()
+  const failures: unknown[] | undefined = reportCleanupFailures ? [] : undefined
   let cancellation: Promise<void> | undefined
   let cleanupEpoch = 0
-  const startCleanup = (
-    cleanup: EffectCancellationCleanup
-  ): Promise<void> | undefined => {
+  const startCleanup = (cleanup: EffectCancellationCleanup): void => {
     if (started.has(cleanup)) return
     started.add(cleanup)
     cleanupEpoch += 1
     cleanups.delete(cleanup)
-    const task = runCancellationCleanup(cleanup)
+    const task = runCancellationCleanup(cleanup, failures)
     pending.add(task)
     void task.then(() => pending.delete(task))
-    return task
   }
   const drainCleanups = async (): Promise<void> => {
     while (true) {
@@ -284,21 +281,13 @@ export function createEffectExecution(
         return () => undefined
       }
       cleanups.add(cleanup)
-      for (const opening of openings) opening.push(cleanup)
       return () => {
         cleanups.delete(cleanup)
       }
     },
   })
   resourceScopes.set(context, rootScope)
-  executionInternals.set(controller.signal, {
-    controller,
-    cleanups,
-    pending,
-    openings,
-    start: startCleanup,
-    scope: rootScope,
-  })
+  executionCleanups.set(context, cleanups)
   let detachParent = (): void => undefined
   const execution = Object.freeze({
     context,
@@ -315,7 +304,11 @@ export function createEffectExecution(
       for (const cleanup of [...cleanups]) startCleanup(cleanup)
       void (async () => {
         await drainCleanups()
-        await rootScope.close()
+        if (failures === undefined) return await rootScope.close()
+        await rootScope.close().catch((error: unknown) => {
+          failures.push(error)
+        })
+        if (failures.length > 0) throw defectWithSuppressed(failures)
       })().then(resolveCancellation, rejectCancellation)
       return cancellation
     },
@@ -330,229 +323,43 @@ export function createEffectExecution(
   return execution
 }
 
-/*
- * Stopping a stream branch follows the native order. Its pull is stopped
- * first, then what the pull registered is released, newest first. The
- * cursor closes next, and what opening the stream registered goes last. The
- * helpers below do the first two steps; `execution.cancel` does the last.
- * They live outside `createEffectExecution`, so a program without streams
- * does not carry them.
- */
-
-type ExecutionInternals = Readonly<{
-  controller: AbortController
-  // Unstarted cleanups, oldest first.
-  cleanups: Set<EffectCancellationCleanup>
-  // Running cleanups.
-  pending: Set<Promise<void>>
-  // Streams still opening collect the cleanups registered meanwhile.
-  openings: Set<object[]>
-  start: (cleanup: EffectCancellationCleanup) => Promise<void> | undefined
-  scope: ResourceScope
-}>
-
-// Keyed by signal, because every context derived from an execution shares it.
-const executionInternals = new WeakMap<AbortSignal, ExecutionInternals>()
-
-// What streams registered while they opened, once the open has finished,
-// per execution: one cleanup function may be registered by several.
-const openedRegistrations = new WeakMap<ExecutionInternals, WeakSet<object>>()
-
-function openedIn(internals: ExecutionInternals): WeakSet<object> {
-  let opened = openedRegistrations.get(internals)
-  if (opened === undefined) {
-    opened = new WeakSet()
-    openedRegistrations.set(internals, opened)
-  }
-  return opened
-}
-
-/** What an execution had registered at one moment; see `markExecution`. */
-export type EffectExecutionMark = ReadonlySet<object>
-
-function internalsOf(execution: EffectExecution): ExecutionInternals {
-  const internals = executionInternals.get(execution.context.signal)
-  if (internals === undefined) {
-    throw new TypeError("unknown Effect execution")
-  }
-  return internals
-}
-
-// The cleanups an execution was already running when it was interrupted.
-// Those started by the interrupt or after it belong to stopping it.
-const runningBeforeInterrupt = new WeakMap<
-  ExecutionInternals,
-  ReadonlySet<Promise<void>>
+// The unstarted cleanups of each execution, by its context.
+const executionCleanups = new WeakMap<
+  EffectContext,
+  ReadonlySet<EffectCancellationCleanup>
 >()
 
 /**
- * Internal: aborts an execution's signal without running its cleanups or
- * releasing its resources. Work waiting on the signal stops. A cleanup
- * registered after this starts at once.
+ * Internal: hands what an execution that has finished its work holds over
+ * to `owner`, which releases it when it closes. Its resources move to the
+ * owner's scope, and it returns false: the execution is empty and may be
+ * reused or closed. One with a cleanup or an acquisition still registered
+ * is itself kept until the owner closes, and it returns true. It lives
+ * outside `createEffectExecution`, so a program without streams does not
+ * carry it.
  */
-export function interruptExecution(execution: EffectExecution): void {
-  const internals = internalsOf(execution)
-  if (internals.controller.signal.aborted) return
-  runningBeforeInterrupt.set(internals, new Set(internals.pending))
-  internals.controller.abort()
-}
-
-/**
- * Internal: interrupts an execution and starts all its `onCancel` cleanups,
- * but leaves its resources for its `close` or `cancel`. It settles when the
- * cleanups have finished.
- */
-export async function cancelExecutionCleanups(
-  execution: EffectExecution
-): Promise<void> {
-  interruptExecution(execution)
-  const internals = internalsOf(execution)
-  for (const cleanup of [...internals.cleanups]) internals.start(cleanup)
-  await cleanupsSinceInterrupt(internals)
-}
-
-// Settles when the cleanups started by or since the interrupt have finished,
-// including those they start.
-async function cleanupsSinceInterrupt(
-  internals: ExecutionInternals
-): Promise<void> {
-  const earlier = new Set(runningBeforeInterrupt.get(internals))
-  while (true) {
-    const running = [...internals.pending].filter((task) => !earlier.has(task))
-    if (running.length === 0) return
-    await Promise.all(running)
-    for (const task of running) earlier.add(task)
-  }
-}
-
-/**
- * Internal: whether `work` settles within one turn of the event loop. A
- * stream that stops a branch waits that long for a step before it starts
- * the next one, because the step may be waiting for what comes next, such
- * as the cursor's close or the cancellation notice.
- */
-export async function settlesWithinTurn(
-  work: Promise<unknown>
-): Promise<boolean> {
-  return await Promise.race([
-    work.then(
-      () => true,
-      () => true
-    ),
-    new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 0)),
-  ])
-}
-
-/** Internal: marks what an execution has registered so far. */
-export function markExecution(execution: EffectExecution): EffectExecutionMark {
-  const { cleanups, scope } = internalsOf(execution)
-  return new Set<object>([...cleanups, ...scope.finalizers])
-}
-
-/**
- * Internal: runs a stream's `open`. Once it has opened, what it registered
- * stays for its cursor's close, even when it opened during a pull, as the
- * inner stream of `flatMap` does. So does the newest resource registered
- * before it, and with it every older one, because the stream may use them.
- * An open that fails or is still running belongs to the pull, so what it
- * registered can be released with the pull.
- */
-export async function openingStream<Result>(
-  context: EffectContext,
-  open: () => Result | Promise<Result>
-): Promise<Result> {
-  const internals = executionInternals.get(context.signal)
-  const registered: object[] = []
-  const collectors = [
-    internals?.openings,
-    resourceScopes.get(context)?.openings,
-  ]
-  for (const collector of collectors) collector?.add(registered)
-  try {
-    const result = await open()
-    if (internals !== undefined) {
-      const opened = openedIn(internals)
-      for (const entry of registered) opened.add(entry)
-      // The stream may use what was acquired before it, as the inner stream
-      // of `flatMap` may use what its outer pull acquired.
-      const newest = internals.scope.finalizers.at(-1)
-      if (newest !== undefined) opened.add(newest)
-    }
-    return result
-  } finally {
-    for (const collector of collectors) collector?.delete(registered)
-  }
-}
-
-/**
- * Internal: interrupts an execution, then runs the `onCancel` cleanups and
- * releases the resources that it registered after `mark`, newest first.
- * The rest wait for `cancel`, which runs every cleanup before it releases
- * any resource.
- *
- * - It stops at the newest one that an opened stream keeps, so nothing is
- *   released before what was registered after it.
- * - It does not wait for work the cursor's close may be what ends: at an
- *   acquisition still running, or at cleanups or a finalizer still running
- *   after a turn, it leaves the rest for `cancel`. `cancel` still waits for
- *   that finalizer and reports its failure.
- */
-export async function releaseExecutionAfter(
+export function handOverExecution(
   execution: EffectExecution,
-  mark: EffectExecutionMark
-): Promise<void> {
-  interruptExecution(execution)
-  const internals = internalsOf(execution)
-  const { cleanups, start, scope } = internals
-  const opened = openedRegistrations.get(internals)
-  const kept = (entry: object): boolean =>
-    mark.has(entry) || opened?.has(entry) === true
-  const newer = [...cleanups]
-  for (let index = newer.length - 1; index >= 0; index -= 1) {
-    if (kept(newer[index] as object)) {
-      newer.splice(0, index + 1)
-      break
-    }
+  owner: EffectContext
+): boolean {
+  const scope = resourceScopes.get(execution.context)
+  const finalizers = scope?.finalizers ?? []
+  // A finished `scoped` leaves an inactive entry behind.
+  while (finalizers.at(-1)?.active === false) finalizers.pop()
+  const ownerScope = resourceScopeOf(owner)
+  if (
+    (scope?.acquisitions.size ?? 0) > 0 ||
+    (executionCleanups.get(execution.context)?.size ?? 0) > 0 ||
+    (finalizers.length > 0 && ownerScope.state !== "open")
+  ) {
+    registerResourceFinalizer(owner, () => execution.close())
+    return true
   }
-  for (const cleanup of newer) start(cleanup)
-  if (!(await settlesWithinTurn(cleanupsSinceInterrupt(internals)))) return
-  if (scope.state !== "open") return await scope.close()
-  const defects: unknown[] = []
-  while (scope.state === "open" && scope.acquisitions.size === 0) {
-    const entry = scope.finalizers.at(-1)
-    // A kept entry is a boundary even once unregistered, as the one `scoped`
-    // leaves behind.
-    if (entry === undefined || kept(entry)) break
-    scope.finalizers.pop()
-    if (!entry.active) continue
-    entry.active = false
-    const failures: unknown[] = []
-    const task = (async () => {
-      await entry.finalizer()
-    })().catch((error: unknown) => {
-      failures.push(normalizeFinalizerDefect(error))
-    })
-    let movedOn = false
-    // Closing the scope waits for this finalizer as for an acquisition, so
-    // nothing older is released before it has finished. A failure after the
-    // release moved on is reported by that close.
-    const running: Promise<void> = task.then(() => {
-      scope.acquisitions.delete(running)
-      if (!movedOn) return
-      for (const failure of failures) {
-        scope.register(() => {
-          throw failure
-        })
-      }
-    })
-    scope.acquisitions.add(running)
-    if (!(await settlesWithinTurn(task))) {
-      movedOn = true
-      break
-    }
-    defects.push(...failures)
+  // The same entries move, so their registrations can still unregister them.
+  for (const entry of finalizers.splice(0)) {
+    if (entry.active) ownerScope.finalizers.push(entry)
   }
-  if (defects.length > 0) throw defectWithSuppressed(defects)
+  return false
 }
 
 export type EffectFailure<Failure> = {
@@ -1709,12 +1516,14 @@ export async function run<Environment, Failure, Success>(
 }
 
 async function runCancellationCleanup(
-  cleanup: EffectCancellationCleanup
+  cleanup: EffectCancellationCleanup,
+  failures: unknown[] | undefined
 ): Promise<void> {
   try {
     await cleanup()
-  } catch {
+  } catch (error) {
     // A cancelled UI must not be resurrected by cleanup defects.
+    failures?.push(error)
   }
 }
 

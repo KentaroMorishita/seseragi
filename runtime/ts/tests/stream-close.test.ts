@@ -722,3 +722,61 @@ test("a defect is never suppressed by itself", async () => {
   expect(suppressed).not.toContain(error)
   expect(new Set(suppressed).size).toBe(suppressed.length)
 })
+
+test("a stopped source's close may run an Effect in its own context", async () => {
+  const log: string[] = []
+  const source = streams.fromPull<unknown, never, number>(
+    (_environment, context) => ({
+      pull: async (pullContext) => {
+        await untilStopped(pullContext)
+        return { done: true, value: undefined }
+      },
+      close: async () => {
+        await yieldNow()(undefined, context)
+        log.push("handle-released")
+      },
+    })
+  )
+  const result = await run(
+    streams.runCollect(streams.zip(source, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  expect(log).toEqual(["handle-released"])
+})
+
+test("a close that a stopped pull's cleanup runs first keeps its failure", async () => {
+  const source = streams.fromPull<unknown, never, number>(() => {
+    let closed = false
+    const close = async (): Promise<void> => {
+      if (closed) return
+      closed = true
+      throw new Error("close failed")
+    }
+    return {
+      pull: async (context) => {
+        context.onCancel(close)
+        await yieldNow()(undefined, context)
+        return { done: false, value: 1 }
+      },
+      close,
+    }
+  })
+  await expect(
+    run(streams.runCollect(streams.zip(source, streams.empty)), {})
+  ).rejects.toThrow("close failed")
+})
+
+test("a parent cancellation reaches a stopped branch closing its source", async () => {
+  const log: string[] = []
+  const root = createEffectExecution()
+  const running = run(
+    streams.runCollect(streams.zip(closedOnCancel(log), streams.empty)),
+    {},
+    root.context
+  ).catch(() => undefined)
+  await delay(5)
+  await root.cancel()
+  await running
+  expect(log).toEqual(["closed", "open-released"])
+})

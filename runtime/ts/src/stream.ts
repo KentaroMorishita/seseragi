@@ -3,21 +3,16 @@ import { type Iterable, NonPositiveSize, type SizeError } from "./collection"
 import {
   awaitEffectValue,
   awaitTurnEnd,
-  cancelExecutionCleanups,
   createEffectExecution,
   type Effect,
   type EffectContext,
   type EffectExecution,
-  type EffectExecutionMark,
-  interruptExecution,
+  handOverExecution,
   mapError as mapEffectError,
-  markExecution,
-  openingStream,
-  releaseExecutionAfter,
-  settlesWithinTurn,
   throwIfCancelled,
   type Unit,
   unit,
+  withResourceAcquisition,
 } from "./effect"
 import type { Iterator as SeseragiIterator } from "./iterator"
 import { type Either, Left, type Maybe, Right } from "./sum"
@@ -36,8 +31,14 @@ export type BufferCapacity = Readonly<{
   readonly value: number
 }>
 
+/**
+ * `next` runs in the context it is given, or else in the one the stream was
+ * opened with. A stream that pulls its sources concurrently, as `zip` does,
+ * gives each pull its own context, so it can stop a pull and still close the
+ * cursor in the context the stream was opened with.
+ */
 export type StreamCursor<Value> = Readonly<{
-  next: () => Promise<IteratorResult<Value>>
+  next: (context?: EffectContext) => Promise<IteratorResult<Value>>
   close: () => Promise<void>
 }>
 
@@ -74,10 +75,10 @@ export function fromPull<Environment, Failure, Value>(
       await source.close()
     }
     return Object.freeze({
-      async next() {
+      async next(pull = context) {
         if (closed) return done()
-        throwIfCancelled(context)
-        return awaitEffectValue(source.pull(context), context)
+        throwIfCancelled(pull)
+        return awaitEffectValue(source.pull(pull), pull)
       },
       close,
     })
@@ -134,10 +135,10 @@ export function fromEffect<Environment, Failure, Value>(
 ): Stream<Environment, Failure, Value> {
   return makeStream((environment, context) => {
     let state: "pending" | "emitted" = "pending"
-    return cursor(async () => {
+    return cursor(async (pull = context) => {
       if (state === "emitted") return done()
       state = "emitted"
-      return item(await awaitEffectValue(effect(environment, context), context))
+      return item(await awaitEffectValue(effect(environment, pull), pull))
     })
   })
 }
@@ -162,8 +163,8 @@ export function map<Environment, Failure, Value, Result>(
   mapper: (value: Value) => Result,
   source: Stream<Environment, Failure, Value>
 ): Stream<Environment, Failure, Result> {
-  return transform(source, async (sourceCursor) => {
-    const result = await sourceCursor.next()
+  return transform(source, async (sourceCursor, pull) => {
+    const result = await sourceCursor.next(pull)
     return result.done ? done() : item(mapper(result.value))
   })
 }
@@ -172,9 +173,9 @@ export function filter<Environment, Failure, Value>(
   predicate: (value: Value) => boolean,
   source: Stream<Environment, Failure, Value>
 ): Stream<Environment, Failure, Value> {
-  return transform(source, async (sourceCursor) => {
+  return transform(source, async (sourceCursor, pull) => {
     while (true) {
-      const result = await sourceCursor.next()
+      const result = await sourceCursor.next(pull)
       if (result.done || predicate(result.value)) return result
     }
   })
@@ -184,9 +185,9 @@ export function filterMap<Environment, Failure, Value, Result>(
   mapper: (value: Value) => Maybe<Result>,
   source: Stream<Environment, Failure, Value>
 ): Stream<Environment, Failure, Result> {
-  return transform(source, async (sourceCursor) => {
+  return transform(source, async (sourceCursor, pull) => {
     while (true) {
-      const result = await sourceCursor.next()
+      const result = await sourceCursor.next(pull)
       if (result.done) return done()
       const mapped = mapper(result.value)
       if (mapped.tag === "Just") return item(mapped.value)
@@ -201,12 +202,13 @@ export function mapError<Environment, Failure, NextFailure, Value>(
   return makeStream(async (environment, context) => {
     const sourceCursor = await source.open(environment, context)
     return Object.freeze({
-      next: async () =>
-        await mapEffectError(mapper, (() => sourceCursor.next()) as Effect<
+      next: async (pull = context) =>
+        await mapEffectError(mapper, ((_environment, pullContext) =>
+          sourceCursor.next(pullContext)) as Effect<
           Environment,
           Failure,
           IteratorResult<Value>
-        >)(environment, context),
+        >)(environment, pull),
       close: sourceCursor.close,
     })
   })
@@ -218,23 +220,35 @@ export function flatMap<Environment, Failure, Value, Result>(
 ): Stream<Environment, Failure, Result> {
   return makeStream(async (environment, context) => {
     const outer = await source.open(environment, context)
-    let inner: StreamCursor<Result> | undefined
+    let inner: OwnedCursor<Result> | undefined
+    const closeInner = async (): Promise<void> => {
+      const current = inner
+      inner = undefined
+      await current?.close()
+    }
     return cursor(
-      async () => {
+      async (pull = context) => {
         while (true) {
           if (inner !== undefined) {
-            const result = await inner.next()
+            const result = await inner.cursor.next(pull)
             if (!result.done) return result
-            await inner.close()
-            inner = undefined
+            await closeInner()
           }
-          const result = await outer.next()
-          if (result.done) return done()
-          inner = await mapper(result.value).open(environment, context)
+          // The pull for the next value and the inner stream it opens share
+          // one execution, so the inner cursor's close can still use what
+          // that pull acquired.
+          const opened = await duringPull(context, pull, async (element) => {
+            const result = await outer.next(element)
+            return result.done
+              ? undefined
+              : await mapper(result.value).open(environment, element)
+          })
+          if (opened === undefined) return done()
+          inner = opened
         }
       },
       async () => {
-        await closeAll([inner, outer])
+        await closeAll([{ close: closeInner }, outer])
       }
     )
   })
@@ -254,12 +268,12 @@ export function take<Environment, Failure, Value>(
       await sourceCursor.close()
     }
     return Object.freeze({
-      async next() {
+      async next(pull = context) {
         if (remaining <= 0) {
           await close()
           return done()
         }
-        const result = await sourceCursor.next()
+        const result = await sourceCursor.next(pull)
         if (result.done) {
           await close()
           return result
@@ -279,13 +293,13 @@ export function drop<Environment, Failure, Value>(
   return makeStream(async (environment, context) => {
     const sourceCursor = await source.open(environment, context)
     let remaining = Math.max(0, count)
-    return cursor(async () => {
+    return cursor(async (pull = context) => {
       while (remaining > 0) {
-        const skipped = await sourceCursor.next()
+        const skipped = await sourceCursor.next(pull)
         if (skipped.done) return skipped
         remaining -= 1
       }
-      return sourceCursor.next()
+      return sourceCursor.next(pull)
     }, sourceCursor.close)
   })
 }
@@ -304,10 +318,10 @@ export function chunk<Environment, Failure, Value>(
     makeStream(async (environment, context) => {
       const sourceCursor = await source.open(environment, context)
       let finished = false
-      return cursor(async () => {
+      return cursor(async (pull = context) => {
         const values: Value[] = []
         while (!finished && values.length < size) {
-          const result = await sourceCursor.next()
+          const result = await sourceCursor.next(pull)
           if (result.done) finished = true
           else values.push(result.value)
         }
@@ -322,16 +336,23 @@ export function concat<Environment, Failure, Value>(
   prefix: Stream<Environment, Failure, Value>
 ): Stream<Environment, Failure, Value> {
   return makeStream(async (environment, context) => {
-    let current = await prefix.open(environment, context)
+    let current: OwnedCursor<Value> = {
+      cursor: await prefix.open(environment, context),
+      close: async () => {
+        await current.cursor.close()
+      },
+    }
     let suffixStarted = false
     return cursor(
-      async () => {
-        const result = await current.next()
+      async (pull = context) => {
+        const result = await current.cursor.next(pull)
         if (!result.done || suffixStarted) return result
         await current.close()
         suffixStarted = true
-        current = await suffix.open(environment, context)
-        return current.next()
+        current = (await duringPull(context, pull, async (opening) =>
+          suffix.open(environment, opening)
+        )) as OwnedCursor<Value>
+        return current.cursor.next(pull)
       },
       () => current.close()
     )
@@ -524,7 +545,7 @@ export function buffer<Environment, Failure, Value>(
           }
           if (closed) return
           const result = await awaitEffectValue(
-            branch.cursor.next(),
+            pullBranch(branch),
             branch.execution.context
           )
           if (result.done) {
@@ -558,7 +579,7 @@ export function buffer<Environment, Failure, Value>(
       await runCleanups([() => closeBranch(branch), () => producer])
     }
     return Object.freeze({
-      async next() {
+      async next(pull = context) {
         while (true) {
           if (values.length > 0) {
             const value = values.shift() as Value
@@ -567,7 +588,7 @@ export function buffer<Environment, Failure, Value>(
           }
           if (failure !== undefined) throw failure
           if (terminal === "complete" || closed) return done()
-          await awaitEffectValue(change.promise, context)
+          await awaitEffectValue(change.promise, pull)
         }
       },
       close,
@@ -654,19 +675,14 @@ export const streamMonad = /* @__PURE__ */ Object.freeze({
       flatMap(mapper, source),
 })
 
-// What a stream registers while it opens stays until its cursor has closed,
-// even when it opens during a pull of another stream.
 function makeStream<Environment, Failure, Value>(
   open: Stream<Environment, Failure, Value>["open"]
 ): Stream<Environment, Failure, Value> {
-  return Object.freeze({
-    open: (environment: Environment, context: EffectContext) =>
-      openingStream(context, () => open(environment, context)),
-  }) as Stream<Environment, Failure, Value>
+  return Object.freeze({ open }) as Stream<Environment, Failure, Value>
 }
 
 function cursor<Value>(
-  next: () => Promise<IteratorResult<Value>>,
+  next: (context?: EffectContext) => Promise<IteratorResult<Value>>,
   close: () => Promise<void> = async () => undefined
 ): StreamCursor<Value> {
   return Object.freeze({ next, close: onceAsync(close) })
@@ -674,12 +690,73 @@ function cursor<Value>(
 
 function transform<Environment, Failure, Value, Result>(
   source: Stream<Environment, Failure, Value>,
-  next: (source: StreamCursor<Value>) => Promise<IteratorResult<Result>>
+  next: (
+    source: StreamCursor<Value>,
+    context: EffectContext
+  ) => Promise<IteratorResult<Result>>
 ): Stream<Environment, Failure, Result> {
   return makeStream(async (environment, context) => {
     const sourceCursor = await source.open(environment, context)
-    return cursor(() => next(sourceCursor), sourceCursor.close)
+    return cursor(
+      (pull = context) => next(sourceCursor, pull),
+      sourceCursor.close
+    )
   })
+}
+
+// A cursor opened during a pull, with what that pull holds for it.
+type OwnedCursor<Value> = Readonly<{
+  cursor: StreamCursor<Value>
+  close: () => Promise<void>
+}>
+
+/*
+ * Opens a stream during a pull, as `flatMap` opens its inner stream. When
+ * the pull has a context of its own, the opening runs in a new execution:
+ * stopping the pull stops the opening too, but once the stream is open, what
+ * the opening acquired stays until its cursor has closed, and then as long as
+ * `context` does. So the cursor's close can still use it.
+ */
+async function duringPull<Value>(
+  context: EffectContext,
+  pull: EffectContext,
+  open: (context: EffectContext) => Promise<StreamCursor<Value> | undefined>
+): Promise<OwnedCursor<Value> | undefined> {
+  if (pull === context) {
+    const opened = await open(context)
+    return opened && { cursor: opened, close: opened.close }
+  }
+  const execution = createEffectExecution(context, true)
+  const unlink = pull.onCancel(() => execution.cancel())
+  const forget = stopsWith(context, () => stopPullsUnder(execution.context))
+  let opened: StreamCursor<Value> | undefined
+  try {
+    opened = await open(execution.context)
+  } catch (error) {
+    unlink()
+    forget()
+    return await cleanupThenThrow(error, [
+      () => releaseOpening(execution, context),
+    ])
+  }
+  unlink()
+  if (opened === undefined) {
+    forget()
+    await releaseOpening(execution, context)
+    return undefined
+  }
+  const cursor = opened
+  return {
+    cursor,
+    close: async () => {
+      try {
+        await cursor.close()
+      } finally {
+        forget()
+        await releaseOpening(execution, context)
+      }
+    },
+  }
 }
 
 function terminal<Environment, Failure, Value, Result>(
@@ -719,16 +796,43 @@ function terminal<Environment, Failure, Value, Result>(
   }
 }
 
+async function releaseOpening(
+  execution: EffectExecution,
+  context: EffectContext
+): Promise<void> {
+  if (!handOverExecution(execution, context)) await execution.close()
+}
+
+/*
+ * `zip`, `merge` and `buffer` pull each source in a branch, as native code
+ * pulls it in a branch Fiber. The branch's execution holds what opening the
+ * source acquired, and its cursor closes in that context. Each pull runs in
+ * an execution of its own, a child of the branch's:
+ *
+ * - Stopping the branch cancels the pull still running, so it never resumes,
+ *   and releases what it acquired. Then the cursor closes, while the branch's
+ *   context is still live, and what opening acquired is released last. This
+ *   is the native order.
+ * - What a pull that finishes acquired stays until the branch ends. Its
+ *   execution then serves the next pull too.
+ * - Stopping a branch stops the pulls of the branches opened under it too,
+ *   such as the sides of a nested `zip`, before any cursor closes.
+ * - The pull's `onCancel` cleanups may share the source's close, so their
+ *   failures are reported with the branch's, not absorbed.
+ */
+// A branch closes when its source has ended, stops when its consumer is
+// done with it, and is cancelled with its parent.
+type Settling = "close" | "stop" | "cancel"
+
 type Branch<Value> = {
   readonly cursor: StreamCursor<Value>
   readonly execution: EffectExecution
-  // What the branch had registered once its source was open. Later
-  // registrations come from its pulls.
-  readonly opened: EffectExecutionMark
+  // The execution for the current pull, or the next one.
+  pull: EffectExecution | undefined
   // Unlinks the branch from its parent.
   readonly detach: () => void
   // How the branch is being settled, once it is.
-  settling: "cancel" | "close" | undefined
+  settling: Settling | undefined
   // Set by the first settle, which every later one waits for.
   closing: Promise<void> | undefined
 }
@@ -738,30 +842,28 @@ async function openBranch<Environment, Failure, Value>(
   environment: Environment,
   context: EffectContext
 ): Promise<Branch<Value>> {
-  // The branch is linked to its parent here, not by createEffectExecution.
-  // When the parent is stopped, a pull this branch is running stops at once
-  // too. When the parent is cancelled, the branch is settled in the native
-  // order, like a branch its consumer cancels.
+  // The branch is linked to its parent here, not by createEffectExecution:
+  // when the parent is cancelled, the branch settles in the native order,
+  // like a branch its consumer stops.
   const execution = createEffectExecution()
-  const interrupt = (): void => interruptExecution(execution)
   let cancel = (): Promise<void> => execution.cancel()
   const detachCancel = context.onCancel(() => cancel())
-  context.signal.addEventListener("abort", interrupt, { once: true })
+  let forget = (): void => undefined
   const detach = (): void => {
-    context.signal.removeEventListener("abort", interrupt)
     detachCancel()
+    forget()
   }
-  if (context.signal.aborted) interrupt()
   try {
     const cursor = await source.open(environment, execution.context)
     const branch: Branch<Value> = {
       cursor,
       execution,
-      opened: markExecution(execution),
+      pull: undefined,
       detach,
       settling: undefined,
       closing: undefined,
     }
+    forget = stopsWith(context, () => stopBranchPulls(branch))
     cancel = () => settleBranch(branch, "cancel")
     return branch
   } catch (error) {
@@ -770,75 +872,174 @@ async function openBranch<Environment, Failure, Value>(
   }
 }
 
-async function closeBranch(branch: Branch<unknown>): Promise<void> {
-  await settleBranch(branch, "cancel")
+async function pullBranch<Value>(
+  branch: Branch<Value>
+): Promise<IteratorResult<Value>> {
+  if (branch.pull === undefined || branch.pull.context.cancelled) {
+    branch.pull = createEffectExecution(branch.execution.context, true)
+  }
+  const pull = branch.pull
+  try {
+    return await branch.cursor.next(pull.context)
+  } finally {
+    // What a finished pull acquired stays until the branch ends. A pull
+    // that left a cleanup keeps its execution, and the next pull gets a new
+    // one.
+    if (
+      branch.pull === pull &&
+      !pull.context.cancelled &&
+      handOverExecution(pull, branch.execution.context)
+    ) {
+      branch.pull = undefined
+    }
+  }
 }
 
-// Cancelling follows the native order. It stops the branch first, so a
-// pending pull never resumes, and releases what the pulls acquired. Then it
-// closes the cursor, which may still use what opening a stream acquired,
-// and releases that last. A stream opened during a pull, such as the inner
-// stream of flatMap, counts as opening, not as the pull. A branch is settled
-// once: a cancellation from a parent can start it while its consumer is
-// closing it too.
-function settleBranch(
-  branch: Branch<unknown>,
-  mode: "cancel" | "close"
+// What stops the pulls of the branches opened in each context.
+const pullStoppers = new WeakMap<EffectContext, Set<() => Promise<void>>>()
+
+function stopsWith(context: EffectContext, stop: () => Promise<void>) {
+  let stoppers = pullStoppers.get(context)
+  if (stoppers === undefined) {
+    stoppers = new Set()
+    pullStoppers.set(context, stoppers)
+  }
+  stoppers.add(stop)
+  return (): void => {
+    stoppers.delete(stop)
+  }
+}
+
+// Every stop starts at once, so no pull resumes while another is stopping.
+async function stopPullsUnder(context: EffectContext): Promise<void> {
+  await settleAll([...(pullStoppers.get(context) ?? [])].map((stop) => stop()))
+}
+
+// Cancels the branch's pull and those of the branches opened under it.
+async function stopBranchPulls(branch: Branch<unknown>): Promise<void> {
+  await settleAll([
+    branch.pull?.cancel(),
+    stopPullsUnder(branch.execution.context),
+  ])
+}
+
+async function settleAll(
+  work: ReadonlyArray<Promise<void> | undefined>
 ): Promise<void> {
+  const outcomes = await Promise.allSettled(work)
+  const defects = outcomes.flatMap((outcome) =>
+    outcome.status === "rejected" ? [outcome.reason] : []
+  )
+  if (defects.length > 0) throw defectWithSuppressed(defects)
+}
+
+async function closeBranch(branch: Branch<unknown>): Promise<void> {
+  await settleBranch(branch, "stop")
+}
+
+// A branch is settled once: a cancellation from a parent can start it while
+// its consumer is closing it too.
+function settleBranch(branch: Branch<unknown>, mode: Settling): Promise<void> {
   if (branch.closing === undefined) {
     branch.settling = mode
     branch.closing = runSettleBranch(branch, mode)
-  } else if (mode === "cancel" && branch.settling === "close") {
-    // The cursor closes only once. A close that finishes within a turn
-    // completes normally. One still running may be waiting for the
-    // cancellation, so it then reaches the source through the branch's
-    // cleanups. The resources stay until the close has finished.
-    branch.settling = "cancel"
+  } else if (
+    (branch.settling === "close" && mode !== "close") ||
+    (branch.settling === "stop" && mode === "cancel")
+  ) {
+    // The cursor closes only once. A branch closing normally that is then
+    // stopped, or one closing that its parent then cancels, cancels its
+    // execution, since the close may be waiting for that notice; what opening
+    // acquired still waits for the close. The close then fails or not
+    // depending on how far it had got, so its failure goes to those already
+    // waiting for it, not to the one that came later.
+    branch.settling = mode
     const closing = branch.closing
-    branch.closing = (async () => {
-      if (!(await settlesWithinTurn(closing))) {
-        await cancelExecutionCleanups(branch.execution)
-      }
-      await closing
-    })()
+    branch.closing = runCleanups([
+      () => branch.execution.cancel(),
+      () => closing.catch(() => undefined),
+    ])
   }
   return branch.closing
 }
 
 async function runSettleBranch(
   branch: Branch<unknown>,
-  mode: "cancel" | "close"
+  mode: Settling
 ): Promise<void> {
+  // Until the cursor has closed, the branch's scope holds an acquisition, so
+  // cancelling the branch meanwhile releases nothing that opening acquired.
+  let closed = (): void => undefined
+  if (!branch.execution.context.cancelled) {
+    void withResourceAcquisition(
+      branch.execution.context,
+      () =>
+        new Promise<void>((resolve) => {
+          closed = resolve
+        })
+    )
+  }
+  const closeCursor = async (): Promise<void> => {
+    try {
+      await branch.cursor.close()
+    } finally {
+      closed()
+    }
+  }
   // The parent stays linked until the branch has settled, so its
   // cancellation still reaches a source that is closing.
   try {
-    // A branch stopped with its outer branch cancels, so its cleanups run.
-    if (mode === "close" && !branch.execution.context.cancelled) {
+    if (mode === "close") {
       await runCleanups([
-        () => branch.cursor.close(),
+        closeCursor,
+        () => branch.pull?.close(),
         () => branch.execution.close(),
       ])
       return
     }
-    await runCleanups([
-      () => releaseExecutionAfter(branch.execution, branch.opened),
-      () => closeStoppedCursor(branch),
-      () => branch.execution.cancel(),
-    ])
+    const stopping = stopBranchPulls(branch)
+    // A pull that cannot finish stopping until its source closes, such as
+    // an acquisition the close ends, lets the cursor close meanwhile.
+    const stopped = async (): Promise<void> => {
+      await settlesWithinTurns(stopping)
+    }
+    await runCleanups(
+      mode === "stop"
+        ? [
+            stopped,
+            closeCursor,
+            () => stopping,
+            () => branch.execution.cancel(),
+          ]
+        : // A parent's cancellation reaches the branch's execution as it
+          // reaches any other, while the cursor closes.
+          [
+            stopped,
+            () => settleAll([closeCursor(), branch.execution.cancel()]),
+            () => stopping,
+          ]
+    )
   } finally {
+    closed()
     branch.detach()
   }
 }
 
-// A close still running after a turn may be waiting for the cancellation
-// notice its source registered while opening, so the notice starts then.
-// The close is still the one that reports a failure.
-async function closeStoppedCursor(branch: Branch<unknown>): Promise<void> {
-  const closing = branch.cursor.close()
-  if (!(await settlesWithinTurn(closing))) {
-    void cancelExecutionCleanups(branch.execution)
-  }
-  await closing
+// Whether `work` settles before the event loop has run two more turns. A
+// stopped pull drains its cleanups over one turn before it releases what it
+// acquired.
+async function settlesWithinTurns(work: Promise<unknown>): Promise<boolean> {
+  const turn = (): Promise<void> =>
+    new Promise((resolve) => setTimeout(resolve, 0))
+  return await Promise.race([
+    work.then(
+      () => true,
+      () => true
+    ),
+    turn()
+      .then(turn)
+      .then(() => false),
+  ])
 }
 
 async function closeBranches(
@@ -877,7 +1078,7 @@ async function openMergeBranch<Environment, Failure, Value>(
 
 function startMergeDemand<Value>(branch: MergeBranch<Value>): void {
   if (branch.done || branch.pending !== undefined) return
-  branch.pending = branch.cursor.next().then(
+  branch.pending = pullBranch(branch).then(
     (value) => {
       branch.settled = { kind: "result", value }
     },
@@ -888,7 +1089,7 @@ function startMergeDemand<Value>(branch: MergeBranch<Value>): void {
 }
 
 async function closeAll(
-  cursors: ReadonlyArray<StreamCursor<unknown> | undefined>
+  cursors: ReadonlyArray<Pick<StreamCursor<unknown>, "close"> | undefined>
 ): Promise<void> {
   const outcomes = await Promise.allSettled(
     cursors.map((source) => source?.close())
