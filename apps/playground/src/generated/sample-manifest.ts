@@ -1495,8 +1495,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/signal-state/main.ssrg",
       "guidePath": "examples/samples/signal-state/guide.md",
       "expectedOutputPath": "examples/samples/signal-state/stdout.txt",
-      "sourceHash": "sha256:12ac15043e3ddabd6ce14b2dfca5792041481d19134e2097624b18a792d75600",
-      "workspaceHash": "sha256:86bf1f30ed7223c822650f3df3a53bc892d22383bacb61116c58dbc6add89f1e"
+      "sourceHash": "sha256:13d7038dc06a624de5dec10d16c9f7236bad6c18da12a2c1bed7d8a74fc43656",
+      "workspaceHash": "sha256:6b11d076b18c560c0dabc748ddc484e1d6d359747a0a8c6f264e673051cdbb2f"
     },
     source: sample19Source,
     manifest: "",

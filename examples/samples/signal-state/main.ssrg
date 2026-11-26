@@ -20,9 +20,10 @@ pub effect fn main = do {
   afterMorning <- *summary
 
   let restockBags = 6
+  let afternoonSales = 2
   signals.transaction [
-    signals.planUpdate (\n: Int -> n + restockBags) stock,
-    signals.planUpdate (\n: Int -> n + 2) sold,
+    signals.planUpdate (\n: Int -> n + restockBags - afternoonSales) stock,
+    signals.planUpdate (\n: Int -> n + afternoonSales) sold,
   ]
   afterAfternoon <- *summary
 
