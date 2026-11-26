@@ -1,18 +1,36 @@
+// 複数の Signal から導出状態を作り、transaction で在庫と販売数を一度に更新します。
 import * as signals from "std/signal"
 
-fn add left: Int -> right: Int -> Int = left + right
+fn formatInventory remaining: Int -> sold: Int -> String =
+  `在庫 ${remaining} 袋 / 販売済み ${sold} 袋（累計 ${remaining + sold} 袋）`
 
 pub effect fn main = do {
-  tasks <- signals.make 2
-  points <- signals.make 10
-  let total = signals.combine add tasks points
+  stock <- signals.make 12
+  sold <- signals.make 0
+  let summary = signals.combine formatInventory stock sold
 
-  // transactionは途中状態を公開せず、安定した結果を一度だけ通知します。
+  opening <- *summary
+
+  // transaction は複数の更新をまとめて確定し、途中の不整合な状態を見せません。
+  let orderBags = 3
   signals.transaction [
-    signals.planSet 12 tasks,
-    signals.planUpdate (\value: Int -> value + 30) points
+    signals.planUpdate (\n: Int -> n - orderBags) stock,
+    signals.planUpdate (\n: Int -> n + orderBags) sold,
   ]
+  afterMorning <- *summary
 
-  current <- *total
-  println $ `Dashboard total: ${current}`
+  let restockBags = 6
+  signals.transaction [
+    signals.planUpdate (\n: Int -> n + restockBags) stock,
+    signals.planUpdate (\n: Int -> n + 2) sold,
+  ]
+  afterAfternoon <- *summary
+
+  [
+    `開店時:   ${opening}`,
+    `午前の後: ${afterMorning}`,
+    `午後の後: ${afterAfternoon}`,
+  ]
+    |> join "\n"
+    |> println
 }

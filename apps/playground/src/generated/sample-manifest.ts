@@ -129,8 +129,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "collection-patterns",
-      "title": "Collection patternと再帰",
-      "summary": "ArrayとListを空・先頭・残りへ分け、同じ再帰処理を比較します。",
+      "title": "先頭からたどる停車駅の所要時間",
+      "summary": "Array と List を空・先頭・残りに分解するパターンマッチで、各駅までの累計時間と合計を求めます。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -151,11 +151,42 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": false,
       "isNew": true,
       "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "終点に三島駅を足す",
+            "edits": [
+              {
+                "find": "  Leg { station: \"熱海\", minutes: 10 },\n]\n\nlet routeList",
+                "replace": "  Leg { station: \"熱海\", minutes: 10 },\n  Leg { station: \"三島\", minutes: 8 },\n]\n\nlet routeList"
+              },
+              {
+                "find": "  Leg { station: \"熱海\", minutes: 10 },\n]\n\n// Array",
+                "replace": "  Leg { station: \"熱海\", minutes: 10 },\n  Leg { station: \"三島\", minutes: 8 },\n]\n\n// Array"
+              }
+            ]
+          },
+          {
+            "label": "新横浜から小田原を 12 分に縮める",
+            "edits": [
+              {
+                "find": "let routeArray: Array<Leg> = [\n  Leg { station: \"東京\", minutes: 0 },\n  Leg { station: \"品川\", minutes: 8 },\n  Leg { station: \"新横浜\", minutes: 11 },\n  Leg { station: \"小田原\", minutes: 16 },",
+                "replace": "let routeArray: Array<Leg> = [\n  Leg { station: \"東京\", minutes: 0 },\n  Leg { station: \"品川\", minutes: 8 },\n  Leg { station: \"新横浜\", minutes: 11 },\n  Leg { station: \"小田原\", minutes: 12 },"
+              },
+              {
+                "find": "let routeList: List<Leg> = `[\n  Leg { station: \"東京\", minutes: 0 },\n  Leg { station: \"品川\", minutes: 8 },\n  Leg { station: \"新横浜\", minutes: 11 },\n  Leg { station: \"小田原\", minutes: 16 },",
+                "replace": "let routeList: List<Leg> = `[\n  Leg { station: \"東京\", minutes: 0 },\n  Leg { station: \"品川\", minutes: 8 },\n  Leg { station: \"新横浜\", minutes: 11 },\n  Leg { station: \"小田原\", minutes: 12 },"
+              }
+            ]
+          }
+        ]
+      },
       "sourcePath": "examples/samples/collection-patterns/main.ssrg",
       "guidePath": "examples/samples/collection-patterns/guide.md",
       "expectedOutputPath": "examples/samples/collection-patterns/stdout.txt",
-      "sourceHash": "sha256:8430207753fcc755cd1e0077bcbfcc08469b6ef2717332fc0d28d1646c0e168c",
-      "workspaceHash": "sha256:7bf153870c55d41ac27f07f9ef71cb62872053c05af51996b5bb9fe23ccfd9fe"
+      "sourceHash": "sha256:f5f0e228ff2bd86c0aec858e88c7e6781844e6699f606f7b1230f38d2c0abd5e",
+      "workspaceHash": "sha256:a7b9dc6faefb139ab49ec3ca436e27f8e7d8440e53a0484ab49e4b14e622cdae"
     },
     source: sample0Source,
     manifest: "",
@@ -364,8 +395,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "feature-composition",
-      "title": "Signal + dom.runでfeatureを合成",
-      "summary": "複数のfeature-owned Signalとcustom実行境界を明示的なdom.runで合成します。",
+      "title": "独立した Signal で公開準備ボードを合成する",
+      "summary": "各カードが自分専用の非公開 Signal を持ち、表示の切り替え・順番の入れ替え・差し替えをしても状態を保ったまま dom.run で合成します。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
@@ -390,8 +421,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/feature-composition/main.ssrg",
       "guidePath": "examples/samples/feature-composition/guide.md",
-      "sourceHash": "sha256:31789d7e4b9c5583d6fe15769a60eb3c488a18c674a8e325d075aa1f11f73d0d",
-      "workspaceHash": "sha256:bb10cf8936431d8a6a932117dbd626962a58824ddd34a773474df84e7957d26e"
+      "sourceHash": "sha256:c921b41647b83559a3eb219ec20200b5a191d80a8ead5795c4a7a650f68241b4",
+      "workspaceHash": "sha256:4b2b44e92edf4af9be1bd9bc179278d17a098d6c10c3bc7686a285ae284b21ba"
     },
     source: sample4Source,
     manifest: "",
@@ -722,8 +753,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "impl-and-operators",
-      "title": "implと演算子",
-      "summary": "Structのimplでmethodと演算子をdomainの型へまとめます。",
+      "title": "作業時間の合計を impl と演算子で計算する",
+      "summary": "構造体の impl ブロックに +・-・== の演算子を定義し、作業時間の加算と予定時間との比較を自然な式で書きます。",
       "kind": "recipe",
       "difficulty": "advanced",
       "topics": [
@@ -743,11 +774,34 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": false,
       "isNew": false,
       "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "レビュー時間を 35 分に延ばす",
+            "edits": [
+              {
+                "find": "let review = Duration { minutes: 15 }",
+                "replace": "let review = Duration { minutes: 35 }"
+              }
+            ]
+          },
+          {
+            "label": "予定時間を 2 時間に広げる",
+            "edits": [
+              {
+                "find": "let planned = Duration { minutes: 90 }",
+                "replace": "let planned = Duration { minutes: 120 }"
+              }
+            ]
+          }
+        ]
+      },
       "sourcePath": "examples/samples/impl-and-operators/main.ssrg",
       "guidePath": "examples/samples/impl-and-operators/guide.md",
       "expectedOutputPath": "examples/samples/impl-and-operators/stdout.txt",
-      "sourceHash": "sha256:c88337e4c713a861bdad89303d6be1e91212c76e60ffb3a90f938e11eee1996a",
-      "workspaceHash": "sha256:2f04246291b9024a89449a0da8e6fc655f762b6a445c69f85b6f18e7026dea2b"
+      "sourceHash": "sha256:70daa56097b13442818d6552648afbb14b12a374be941a2b41f868d2fb27a275",
+      "workspaceHash": "sha256:7f9180f3bc4bf83d6a2dc4f6c279fa8285f362d0c7f3a22fa5a98ef8420c89b1"
     },
     source: sample10Source,
     manifest: "",
@@ -863,8 +917,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "local-functions",
-      "title": "Local functionと再帰",
-      "summary": "Pure blockで値をcaptureし、generic関数とself recursionを組み立てます。",
+      "title": "10 万回の模擬試行を局所関数と末尾再帰で集計する",
+      "summary": "ブロック内の局所関数で外側の値を参照し、ジェネリックな補助関数と末尾再帰で 10 万回の試行をスタック消費なく集計します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -884,11 +938,34 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": false,
       "isNew": true,
       "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "試行回数を 20 万回に増やす",
+            "edits": [
+              {
+                "find": "let trialCount = 100000",
+                "replace": "let trialCount = 200000"
+              }
+            ]
+          },
+          {
+            "label": "当たり確率を 25% に広げる",
+            "edits": [
+              {
+                "find": "let hitThreshold = 15",
+                "replace": "let hitThreshold = 25"
+              }
+            ]
+          }
+        ]
+      },
       "sourcePath": "examples/samples/local-functions/main.ssrg",
       "guidePath": "examples/samples/local-functions/guide.md",
       "expectedOutputPath": "examples/samples/local-functions/stdout.txt",
-      "sourceHash": "sha256:dfa83bfe8cc623bd7bf37fb03c375a22d9dc813f12567808b2803f1596f9c8ea",
-      "workspaceHash": "sha256:e28f2898b1bc24aea37b48c497b57cfb226e554b2d3deb46b449430a59333646"
+      "sourceHash": "sha256:47cb3c207bfbf490387933ab1e8bf95d37ba004d2c8cb3b0c563c6c4d93c3dc0",
+      "workspaceHash": "sha256:b741332ec79259374a44677150d497730a807b892b8b46abc946b9727a15c07e"
     },
     source: sample13Source,
     manifest: "",
@@ -1171,8 +1248,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "records",
-      "title": "Recordと更新",
-      "summary": "Recordのfield、spread更新、width typingを一つの値で確認します。",
+      "title": "異動前後の名札と配送先をレコードで作る",
+      "summary": "必要なフィールドだけを宣言するレコード型と、元の値を保ったまま一部を書き換えるスプレッド更新を試します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -1190,11 +1267,34 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": false,
       "isNew": false,
       "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "異動先を札幌・基盤チームに変える",
+            "edits": [
+              {
+                "find": "department: \"設計\", city: \"京都\",",
+                "replace": "department: \"基盤\", city: \"札幌\","
+              }
+            ]
+          },
+          {
+            "label": "名前をアオイに変える",
+            "edits": [
+              {
+                "find": "  first: \"ミオ\",",
+                "replace": "  first: \"アオイ\","
+              }
+            ]
+          }
+        ]
+      },
       "sourcePath": "examples/samples/records/main.ssrg",
       "guidePath": "examples/samples/records/guide.md",
       "expectedOutputPath": "examples/samples/records/stdout.txt",
-      "sourceHash": "sha256:83c2ba746060a0e815b5e34dd3a2db09a8a29b38cadfaf2d797d322fc75b72c0",
-      "workspaceHash": "sha256:d6c3566df89c577d5105e7c882158a6129b8b6eb01af2fd444ae98749f4a4b52"
+      "sourceHash": "sha256:0c1113ebaf3964f773608b59530c9058ea75fa5d7941605b18b4805ceae74a95",
+      "workspaceHash": "sha256:2a8fb8e5bae2bd17a2fbf835109b541d758e290fd8626009f5ea7974dc3345cb"
     },
     source: sample17Source,
     manifest: "",
@@ -1350,8 +1450,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "signal-state",
-      "title": "Signalで状態をまとめる",
-      "summary": "複数Signalからderived stateを作り、transactionで一度に更新します。",
+      "title": "在庫と販売数を Signal のトランザクションで揃える",
+      "summary": "複数の Signal から導出状態を作り、transaction で途中状態を出さずに在庫と販売数を一度に更新します。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
@@ -1369,11 +1469,34 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": false,
       "isNew": false,
       "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "午前の注文を 5 袋に増やす",
+            "edits": [
+              {
+                "find": "let orderBags = 3",
+                "replace": "let orderBags = 5"
+              }
+            ]
+          },
+          {
+            "label": "午後の補充を 10 袋に増やす",
+            "edits": [
+              {
+                "find": "let restockBags = 6",
+                "replace": "let restockBags = 10"
+              }
+            ]
+          }
+        ]
+      },
       "sourcePath": "examples/samples/signal-state/main.ssrg",
       "guidePath": "examples/samples/signal-state/guide.md",
       "expectedOutputPath": "examples/samples/signal-state/stdout.txt",
-      "sourceHash": "sha256:f5ecbf0e887c574881e24e312e9a57161aea381479bd5ab369eae66713f54f86",
-      "workspaceHash": "sha256:5086e44587ccffb1bda5b6fdb7066662c54b947b3ac2f9d0fdee46a81aeaf586"
+      "sourceHash": "sha256:12ac15043e3ddabd6ce14b2dfca5792041481d19134e2097624b18a792d75600",
+      "workspaceHash": "sha256:86bf1f30ed7223c822650f3df3a53bc892d22383bacb61116c58dbc6add89f1e"
     },
     source: sample19Source,
     manifest: "",
@@ -1451,8 +1574,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "type-aliases",
-      "title": "型aliasとTask",
-      "summary": "透明なgeneric aliasと標準Taskを、Signal更新前後のパス比較で確認します。",
+      "title": "ページ遷移の前後を型エイリアスと Task で表す",
+      "summary": "既存の型に読みやすい別名を付ける型エイリアスと、副作用を簡潔に書く Task を使ってページ番号と URL の変化を記録します。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -1472,11 +1595,34 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": false,
       "isNew": true,
       "interactive": false,
+      "guidance": {
+        "autoRun": true,
+        "tryNext": [
+          {
+            "label": "最初のページを 10 にする",
+            "edits": [
+              {
+                "find": "currentPage <- signals.make 4",
+                "replace": "currentPage <- signals.make 10"
+              }
+            ]
+          },
+          {
+            "label": "2 ページずつ進める",
+            "edits": [
+              {
+                "find": "\\page: PageNumber -> page + 1",
+                "replace": "\\page: PageNumber -> page + 2"
+              }
+            ]
+          }
+        ]
+      },
       "sourcePath": "examples/samples/type-aliases/main.ssrg",
       "guidePath": "examples/samples/type-aliases/guide.md",
       "expectedOutputPath": "examples/samples/type-aliases/stdout.txt",
-      "sourceHash": "sha256:e1bf42638d6c27a338a0bc286fbf6cb84269413e18a2b07a94f3495e46699c92",
-      "workspaceHash": "sha256:f8ee134cc1c0cbf02037e4c0e76087720bb29a486068b37aa9eac1163eabee69"
+      "sourceHash": "sha256:a8694d4ff97c25554769a2083a83a48ea28520b7d10bba6c5c7871e05eeadabc",
+      "workspaceHash": "sha256:cb15d04652a77c76ecfceae0151eaec788cebf0ed3b0f77a9ea504187410b171"
     },
     source: sample21Source,
     manifest: "",

@@ -1,25 +1,68 @@
-fn sumArray values: Array<Int> -> Int = {
-  fn loop total: Int -> rest: Array<Int> -> Int = match rest {
-    [] -> total
-    [head, ...tail] -> loop (total + head) tail
+// 停車駅ごとの区間時間を、Array と List のパターンマッチで先頭からたどって集計します。
+import * as arrays from "std/array"
+
+struct Leg { station: String, minutes: Int }
+
+let routeArray: Array<Leg> = [
+  Leg { station: "東京", minutes: 0 },
+  Leg { station: "品川", minutes: 8 },
+  Leg { station: "新横浜", minutes: 11 },
+  Leg { station: "小田原", minutes: 16 },
+  Leg { station: "熱海", minutes: 10 },
+]
+
+let routeList: List<Leg> = `[
+  Leg { station: "東京", minutes: 0 },
+  Leg { station: "品川", minutes: 8 },
+  Leg { station: "新横浜", minutes: 11 },
+  Leg { station: "小田原", minutes: 16 },
+  Leg { station: "熱海", minutes: 10 },
+]
+
+// Array は [] と [head, ...tail] で空と先頭・残りに分解します。
+fn totalMinutesArray legs: Array<Leg> -> Int = {
+  fn loop elapsed: Int -> rest: Array<Leg> -> Int = match rest {
+    [] -> elapsed
+    [head, ...tail] -> loop (elapsed + head.minutes) tail
   }
 
-  loop 0 values
+  loop 0 legs
 }
 
-fn sumList values: List<Int> -> Int = {
-  fn loop total: Int -> rest: List<Int> -> Int = match rest {
-    `[] -> total
-    `[head, ...tail] -> loop (total + head) tail
+// List は `[] と `[head, ...tail] を使い、tail は元の List を共有します。
+fn totalMinutesList legs: List<Leg> -> Int = {
+  fn loop elapsed: Int -> rest: List<Leg> -> Int = match rest {
+    `[] -> elapsed
+    `[head, ...tail] -> loop (elapsed + head.minutes) tail
   }
 
-  loop 0 values
+  loop 0 legs
 }
 
-fn summary unit: Unit -> String = {
-  let arrayTotal = sumArray [1, 2, 3, 4]
-  let listTotal = sumList `[1, 2, 3, 4]
-  `Array total: ${arrayTotal} / List total: ${listTotal}`
+fn formatTimeline legs: List<Leg> -> Array<String> = {
+  fn loop elapsed: Int -> acc: Array<String> -> rest: List<Leg> -> Array<String> =
+    match rest {
+    `[] -> acc
+    `[head, ...tail] -> {
+      let nextElapsed = elapsed + head.minutes
+      let line = `${head.station}（累計 ${nextElapsed} 分）`
+      loop nextElapsed (arrays.append [line] acc) tail
+    }
+  }
+
+  loop 0 [] legs
 }
 
-pub effect fn main = println (summary ())
+fn buildReport -> String = {
+  let timeline = formatTimeline routeList |> join " -> "
+  let arrayTotal = totalMinutesArray routeArray
+  let listTotal = totalMinutesList routeList
+  [
+    timeline,
+    `合計（Array 再帰）: ${arrayTotal} 分`,
+    `合計（List 再帰）: ${listTotal} 分`,
+  ]
+    |> join "\n"
+}
+
+pub effect fn main = buildReport () |> println

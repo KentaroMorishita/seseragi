@@ -1,13 +1,16 @@
-このsampleを選ぶ理由: `dom.app`が扱う一つのpure reducerを越えて、複数のfeature-owned Signal、effectful Action、custom実行境界を明示的な`dom.run`で制御したいときに選びます。
+このサンプルを選ぶ理由: 画面全体の状態を 1 つの大きな型へ集約せず、機能ごとに独立した `MutableSignal` を所有して `dom.run` で合成する設計を見たいときに選びます。
 
-各feature constructorはprivateな`MutableSignal`を一度だけ生成し、外へは`Signal<Html<Task<Unit>>>`だけを返します。親は子の`PulseState`や`PulseAction`を知らず、Effectになったeventをrootの実行境界へ渡すだけです。
+公開準備ボードの 3 つの確認カードがそれぞれ自分専用の `MutableSignal` を持ち、親のレイアウト制御からは `Signal<html.Html<Task<Unit>>>` として合成します。
 
-`Hide / show`では`switchMap`が表示branchを切り替えます。非表示中もconstructorを呼び直さないためstateは保持されます。`Swap order`でnode順を変えてもstateは`first` / `second`のSignal bindingに所属し、HTMLの`key`やcomponent呼び出し順をfeature identityには使いません。
+## この画面で試すこと
 
-Playgroundは単一file編集なので同じ境界を一file内で見せています。実際のmodule privacy、Todo Form / Listのshared state、root所有のapp-wide stateは`project-schema-1/feature-module-composition`、動的branchは`project-schema-1/feature-module-lifetime`で固定しています。
+- 「下書き確認」で「確認を 1 件進める」を何度か押してから「先頭カードを隠す」→「先頭カードを再表示する」を押し、確認数がそのまま残るのを確かめる
+- 「カードの順番を入れ替える」を押し、位置が入れ替わっても確認数がカードごとに独立して保たれるのを見る
+- 「先頭を最終チェックへ差し替える」で別のカードへ切り替え、さらに戻しても元の進捗が消えないことを確かめる
 
-長いutility列は同じsourceの`cx`と役割名を持つclass valueへ分けています。Signalの所有権を説明するcomponentと見た目の定義を混ぜず、上からclassの意図、component、mount経路を追えます。
+## コードの読みどころ
 
-lavenderのRelease rhythmはrootが合成するsurface、amber / blue / greenのPulseはfeatureごとのprivate stateです。fixed Unsplash imageをheroへ置き、mobileではheroとPulseが一列、desktopでは二つのfeature surfaceが並びます。`Counter A`のような仮ラベルではなく、PreviewでもSignalの独立性を読むための具体的なritualとして表示します。
-
-一つのState / Action / pure reducerだけで足りる場合は`interactive-app`の`dom.app`が短い選択です。明示的runtime接続の最小構成から読みたい場合は`web-starter`、form、validation、keyboard / pointer eventまで一つの画面で試す場合は`form-todo`へ、同じSignal ownershipをmodule境界で追う場合は`project-flow-app`へ進みます。
+1. `createChecklistCard`: 呼び出された時点でカード専用の `MutableSignal<CheckState>` を一度だけ作り、外へは描画結果の `Signal<html.Html<Task<Unit>>>` だけを返します。
+2. `LayoutState` と `selectFirstSlot`: 親は表示・順序・差し替えだけを管理し、子の `CheckState` や `CheckAction` には一切触れません。
+3. `signals.switchMap`: 表示する分岐を動的に切り替えます。非表示中もカードの Signal を作り直さないため状態が維持されます。
+4. `pageView <$> layoutView <*> panel <*> activeFirst <*> second`: 複数の独立した Signal を 1 つの画面 Signal に合成し、`mount` から `dom.run` へ渡します。

@@ -3484,7 +3484,9 @@ pub effect fn main -> Unit with Console fails String = do {
 
     expect(sample?.source).toContain("alias Pair<A>")
     expect(sample?.source).toContain("Task<Unit>")
-    expect(sample?.expectedOutput).toBe("/users/41 -> /users/42")
+    expect(sample?.expectedOutput).toBe(
+      "ページ: 4 -> 5\nURL: /articles?page=4 -> /articles?page=5"
+    )
   })
 
   test("returns structured diagnostics for invalid source", async () => {

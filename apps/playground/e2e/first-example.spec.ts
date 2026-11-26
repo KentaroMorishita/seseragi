@@ -123,8 +123,10 @@ test("the auto-run note leaves with the run it describes", async ({ page }) => {
 
   // 自動では動かさない例に切り替えると消える
   await page.locator("#sample-browser-button").click()
-  await page.locator('[data-sample-id="records"]').click()
-  await expect(page.locator("#current-sample-title")).toHaveText("Recordと更新")
+  await page.locator('[data-sample-id="html-components"]').click()
+  await expect(page.locator("#current-sample-title")).toHaveText(
+    "読書メモのカードを HTML の部品で組み立てる"
+  )
   await expect(note).toBeHidden()
 
   // 自動で動く例に戻すと出て、出力を Clear すると消える
@@ -141,8 +143,10 @@ test("the auto-run note leaves with the run it describes", async ({ page }) => {
 test("?example= opens that example without running the first one", async ({
   page,
 }) => {
-  await page.goto("/?example=records")
-  await expect(page.locator("#current-sample-title")).toHaveText("Recordと更新")
+  await page.goto("/?example=html-components")
+  await expect(page.locator("#current-sample-title")).toHaveText(
+    "読書メモのカードを HTML の部品で組み立てる"
+  )
   await expect(page.locator("#status-text")).toHaveText("Analysis ready", {
     timeout: 60_000,
   })
