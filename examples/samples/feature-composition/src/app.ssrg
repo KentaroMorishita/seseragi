@@ -1,0 +1,57 @@
+// 独立した機能カードの Signal と親のレイアウト Signal を 1 つの画面へ合成します。
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+import { heroSection } from "self/components/hero"
+import { createChecklistCard } from "self/features/checklist"
+import {
+  LayoutState,
+  controlsView,
+  initialLayout,
+  selectFirstSlot
+} from "self/features/layout"
+import {
+  amberTheme,
+  featureGridStyle,
+  forestTheme,
+  pageStyle,
+  shellStyle,
+  tealTheme,
+} from "self/ui/styles"
+
+fn pageView layout: LayoutState
+  -> panel: html.Html<Task<Unit>>
+  -> first: html.Html<Task<Unit>>
+  -> second: html.Html<Task<Unit>>
+  -> html.Html<Task<Unit>> = {
+    let shell: html.Html<Task<Unit>> = html.div {
+      style: shellStyle,
+      children: [
+        heroSection (),
+        panel,
+        html.section {
+          style: featureGridStyle,
+          children:
+            if layout.reversed then
+              [second, first]
+            else
+              [first, second],
+        },
+      ],
+    }
+    html.main { style: pageStyle, children: shell }
+  }
+
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails Never = do {
+  layout <- signals.make initialLayout
+  first <- createChecklistCard "下書き確認" "本文の誤字・リンク切れ・サンプル出力を確認します。" 4 amberTheme
+  second <- createChecklistCard "変更点の整理" "CHANGELOG と移行手順の要点をまとめます。" 3 tealTheme
+  replacement <- createChecklistCard "最終チェック" "本番ビルドと公開タグの整合を確かめます。" 5 forestTheme
+
+  let panel = signals.map (controlsView layout) layout
+  let layoutView = signals.map (\current: LayoutState -> current) layout
+  // switchMap は表示中の Signal だけへ購読を切り替え、外したカードの Signal はそのまま保持します。
+  let activeFirst =
+    signals.switchMap (\current: LayoutState -> selectFirstSlot first replacement current) layout
+  succeed (pageView <$> layoutView <*> panel <*> activeFirst <*> second)
+}

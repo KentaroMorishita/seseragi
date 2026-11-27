@@ -12,7 +12,7 @@
     "layoutRhythm": "濃いヒーロー帯、白い操作パネル、色分けされた機能カード群を縦のリズムで切り替え、単調なカードの繰り返しにならない構成にする。",
     "visualIdentity": "公開準備ボードを題材に、和紙調の背景の上で琥珀・青緑・深緑のカードテーマを分け、各 Signal の所有境界を色と進捗バーで読めるようにする。",
     "interaction": "非表示・並べ替え・差し替えの後もカードごとの確認数と進捗バーを保ち、非表示時にも復帰手順を示すプレースホルダーを残す。",
-    "codeStructure": "機能カードの状態と名前付き style、createChecklistCard、親の LayoutState と switchMap、mount と dom.run を上から順に分け、所有境界をコードから追えるようにする。"
+    "codeStructure": "features/checklist・features/layout・components/hero・ui/styles・app・main の 6 モジュールと tests/composition.ssrg へ責務を分け、各カードの非公開 Signal 所有と親の switchMap 合成、dom.run へのマウント境界をファイル単位で追えるようにする。"
   },
   "approval": {
     "status": "approved",
