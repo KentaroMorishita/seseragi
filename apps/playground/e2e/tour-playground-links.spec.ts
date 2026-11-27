@@ -15,7 +15,7 @@ test("opens the edited Tour lesson code in Playground free-writing mode", async 
   await expect(tourEditor).toContainText("// from-tour")
 
   await page.locator("#tour-open-playground-button").click()
-  await expect(page).toHaveURL(/\/\?source=/u)
+  await expect(page).toHaveURL(/\/\?(source|workspace)=/u)
   await expect(page.locator("#status-text")).toHaveText("Analysis ready", {
     timeout: 60_000,
   })
