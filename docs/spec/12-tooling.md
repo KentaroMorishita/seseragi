@@ -417,7 +417,7 @@ release noteへ記録し、同じlanguage major内では旧codeから新codeへ�
 | SES-F0102 | Error    | binding設定がsymbol shapeと一致しない       |
 | SES-F0103 | Error    | generated binding metadataがstale           |
 | SES-F0104 | Error    | TypeScript公開ABIを生成できない             |
-| SES-L0101 | Warning  | standard HTML props literalの未知field      |
+| SES-L0101 | Warning  | standard HTML / SVG props literalの未知field |
 | SES-L0201 | Warning  | deprecated symbolを参照                     |
 | SES-L0301 | Warning  | 局所pattern bindingに解決済み参照がない     |
 

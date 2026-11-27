@@ -52522,6 +52522,18 @@
                       }
                     },
                     {
+                      "name": "style",
+                      "optional": true,
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Style",
+                        "canonical": "std/web/html::Style",
+                        "providerModule": "std/web/html",
+                        "providerExport": "Style",
+                        "arguments": []
+                      }
+                    },
+                    {
                       "name": "role",
                       "optional": true,
                       "type": {
@@ -52586,6 +52598,15 @@
                     },
                     {
                       "name": "strokeLinejoin",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "strokeDasharray",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -52979,6 +53000,18 @@
                       }
                     },
                     {
+                      "name": "style",
+                      "optional": true,
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Style",
+                        "canonical": "std/web/html::Style",
+                        "providerModule": "std/web/html",
+                        "providerExport": "Style",
+                        "arguments": []
+                      }
+                    },
+                    {
                       "name": "role",
                       "optional": true,
                       "type": {
@@ -53043,6 +53076,15 @@
                     },
                     {
                       "name": "strokeLinejoin",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "strokeDasharray",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -53418,6 +53460,18 @@
                       }
                     },
                     {
+                      "name": "style",
+                      "optional": true,
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Style",
+                        "canonical": "std/web/html::Style",
+                        "providerModule": "std/web/html",
+                        "providerExport": "Style",
+                        "arguments": []
+                      }
+                    },
+                    {
                       "name": "role",
                       "optional": true,
                       "type": {
@@ -53482,6 +53536,15 @@
                     },
                     {
                       "name": "strokeLinejoin",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "strokeDasharray",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -53837,6 +53900,18 @@
                       }
                     },
                     {
+                      "name": "style",
+                      "optional": true,
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Style",
+                        "canonical": "std/web/html::Style",
+                        "providerModule": "std/web/html",
+                        "providerExport": "Style",
+                        "arguments": []
+                      }
+                    },
+                    {
                       "name": "role",
                       "optional": true,
                       "type": {
@@ -53901,6 +53976,15 @@
                     },
                     {
                       "name": "strokeLinejoin",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "strokeDasharray",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -54264,6 +54348,18 @@
                       }
                     },
                     {
+                      "name": "style",
+                      "optional": true,
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Style",
+                        "canonical": "std/web/html::Style",
+                        "providerModule": "std/web/html",
+                        "providerExport": "Style",
+                        "arguments": []
+                      }
+                    },
+                    {
                       "name": "role",
                       "optional": true,
                       "type": {
@@ -54328,6 +54424,15 @@
                     },
                     {
                       "name": "strokeLinejoin",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "strokeDasharray",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -54683,6 +54788,18 @@
                       }
                     },
                     {
+                      "name": "style",
+                      "optional": true,
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Style",
+                        "canonical": "std/web/html::Style",
+                        "providerModule": "std/web/html",
+                        "providerExport": "Style",
+                        "arguments": []
+                      }
+                    },
+                    {
                       "name": "role",
                       "optional": true,
                       "type": {
@@ -54747,6 +54864,15 @@
                     },
                     {
                       "name": "strokeLinejoin",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "strokeDasharray",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -55102,6 +55228,18 @@
                       }
                     },
                     {
+                      "name": "style",
+                      "optional": true,
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Style",
+                        "canonical": "std/web/html::Style",
+                        "providerModule": "std/web/html",
+                        "providerExport": "Style",
+                        "arguments": []
+                      }
+                    },
+                    {
                       "name": "role",
                       "optional": true,
                       "type": {
@@ -55166,6 +55304,15 @@
                     },
                     {
                       "name": "strokeLinejoin",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "strokeDasharray",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -55529,6 +55676,18 @@
                       }
                     },
                     {
+                      "name": "style",
+                      "optional": true,
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Style",
+                        "canonical": "std/web/html::Style",
+                        "providerModule": "std/web/html",
+                        "providerExport": "Style",
+                        "arguments": []
+                      }
+                    },
+                    {
                       "name": "role",
                       "optional": true,
                       "type": {
@@ -55593,6 +55752,15 @@
                     },
                     {
                       "name": "strokeLinejoin",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "strokeDasharray",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -55956,6 +56124,18 @@
                       }
                     },
                     {
+                      "name": "style",
+                      "optional": true,
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Style",
+                        "canonical": "std/web/html::Style",
+                        "providerModule": "std/web/html",
+                        "providerExport": "Style",
+                        "arguments": []
+                      }
+                    },
+                    {
                       "name": "role",
                       "optional": true,
                       "type": {
@@ -56020,6 +56200,15 @@
                     },
                     {
                       "name": "strokeLinejoin",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "strokeDasharray",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -56318,6 +56507,33 @@
                     },
                     {
                       "name": "dominantBaseline",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "fontSize",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "fontWeight",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "letterSpacing",
                       "optional": true,
                       "type": {
                         "kind": "named",
@@ -65046,6 +65262,53 @@
                   "parameter": {
                     "kind": "named",
                     "name": "Duration",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "DurationError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Duration",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/time::durationBetween",
+            "namespace": "value",
+            "name": "durationBetween",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Instant",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Instant",
                     "arguments": []
                   },
                   "result": {

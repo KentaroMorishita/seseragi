@@ -1,5 +1,5 @@
 use crate::{typed::TypedResolution, SymbolNamespace};
-use seseragi_project::standard_html_tag_props;
+use seseragi_project::{standard_html_tag_props, standard_svg_tag_props};
 use seseragi_syntax::{
     ByteRange, ByteSpan, Diagnostic, DiagnosticEdit, DiagnosticFix, DiagnosticSeverity,
     RelatedDiagnostic, SurfaceBlockItem, SurfaceComprehensionClause, SurfaceDecl, SurfaceDoItem,
@@ -197,13 +197,19 @@ fn collect_tag_call(
     resolution: &TypedResolution<'_>,
     diagnostics: &mut Vec<Diagnostic>,
 ) {
-    let Some(tag_name) = html_tag_name(function, resolution) else {
+    let SurfaceExpr::Record { items, span } = argument else {
+        return;
+    };
+    if let Some(tag_name) = standard_tag_name(function, resolution, SVG_MODULE) {
+        if let Some(fields) = standard_svg_tag_props(&tag_name) {
+            collect_svg_tag_call(&tag_name, &fields, items, diagnostics);
+        }
+        return;
+    }
+    let Some(tag_name) = standard_tag_name(function, resolution, HTML_MODULE) else {
         return;
     };
     let Some((tag, fields)) = standard_html_tag_props(&tag_name) else {
-        return;
-    };
-    let SurfaceExpr::Record { items, span } = argument else {
         return;
     };
     let allowed = fields
@@ -260,7 +266,41 @@ fn collect_tag_call(
     }
 }
 
-fn html_tag_name(function: &SurfaceExpr, resolution: &TypedResolution<'_>) -> Option<String> {
+const HTML_MODULE: &str = "std/web/html";
+const SVG_MODULE: &str = "std/web/svg";
+
+/// Warns on each field of an SVG props literal that the tag does not declare.
+fn collect_svg_tag_call(
+    tag_name: &str,
+    fields: &[seseragi_syntax::InterfaceRecordField],
+    items: &[SurfaceRecordItem],
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    let allowed = fields
+        .iter()
+        .map(|field| field.name.clone())
+        .collect::<Vec<_>>();
+    for item in items {
+        let SurfaceRecordItem::Field {
+            name, name_span, ..
+        } = item
+        else {
+            continue;
+        };
+        if !allowed.iter().any(|allowed| allowed == name) {
+            diagnostics.push(unknown_svg_prop_diagnostic(
+                tag_name, name, *name_span, &allowed,
+            ));
+        }
+    }
+}
+
+/// The tag name when `function` names a value exported by the standard `module`.
+fn standard_tag_name(
+    function: &SurfaceExpr,
+    resolution: &TypedResolution<'_>,
+    module: &str,
+) -> Option<String> {
     if let SurfaceExpr::Member {
         receiver, field, ..
     } = function
@@ -268,27 +308,28 @@ fn html_tag_name(function: &SurfaceExpr, resolution: &TypedResolution<'_>) -> Op
         let SurfaceExpr::Name { name, .. } = receiver.as_ref() else {
             return None;
         };
-        let is_html_namespace = resolution
+        let is_namespace = resolution
             .resolved()
             .dependencies
             .iter()
-            .filter(|dependency| dependency.specifier == "std/web/html")
+            .filter(|dependency| dependency.specifier == module)
             .flat_map(|dependency| &dependency.imports)
             .any(|import| {
                 import.namespace == "namespace"
                     && import.local_name.as_deref() == Some(name.as_str())
             });
-        return is_html_namespace.then(|| field.clone());
+        return is_namespace.then(|| field.clone());
     }
 
     let SurfaceExpr::Name { name, span, .. } = function else {
         return None;
     };
+    let prefix = format!("{module}::");
     if let Some(canonical) = resolution
         .target(*span, SymbolNamespace::Value)
         .and_then(|target| resolution.symbol(target))
         .and_then(|symbol| symbol.canonical.as_deref())
-        .and_then(|canonical| canonical.strip_prefix("std/web/html::"))
+        .and_then(|canonical| canonical.strip_prefix(&prefix))
     {
         return Some(canonical.to_owned());
     }
@@ -296,7 +337,7 @@ fn html_tag_name(function: &SurfaceExpr, resolution: &TypedResolution<'_>) -> Op
         .resolved()
         .dependencies
         .iter()
-        .filter(|dependency| dependency.specifier == "std/web/html")
+        .filter(|dependency| dependency.specifier == module)
         .flat_map(|dependency| &dependency.imports)
         .find(|import| {
             import.namespace == "value"
@@ -358,6 +399,42 @@ fn unknown_prop_diagnostic(
         code: "SES-L0101".to_owned(),
         severity: DiagnosticSeverity::Warning,
         message_key: "web.html.unknown-prop".to_owned(),
+        primary: byte_range(primary),
+        related: vec![RelatedDiagnostic {
+            source: None,
+            message,
+            primary: byte_range(primary),
+        }],
+        fixes: suggestion
+            .map(|suggestion| DiagnosticFix {
+                title: format!("Replace with `{suggestion}`"),
+                edits: vec![DiagnosticEdit {
+                    range: byte_range(primary),
+                    replacement: suggestion,
+                }],
+            })
+            .into_iter()
+            .collect(),
+    }
+}
+
+fn unknown_svg_prop_diagnostic(
+    tag: &str,
+    name: &str,
+    primary: ByteSpan,
+    allowed: &[String],
+) -> Diagnostic {
+    let suggestion = closest(name, allowed);
+    let message = suggestion.as_deref().map_or_else(
+        || format!("`svg.{tag}` has no prop `{name}`"),
+        |suggestion| format!("`svg.{tag}` has no prop `{name}`; did you mean `{suggestion}`?"),
+    );
+    Diagnostic {
+        type_difference: None,
+        id: String::new(),
+        code: "SES-L0101".to_owned(),
+        severity: DiagnosticSeverity::Warning,
+        message_key: "web.svg.unknown-prop".to_owned(),
         primary: byte_range(primary),
         related: vec![RelatedDiagnostic {
             source: None,

@@ -231,6 +231,7 @@ impl Diagnostic {
                 "This HTML tag is missing a required prop".to_owned()
             }
             "web.html.unknown-prop" => "This HTML tag has no such standard prop".to_owned(),
+            "web.svg.unknown-prop" => "This SVG tag has no such prop".to_owned(),
             "web.html.event-control-without-handler" => {
                 "This event control has no matching handler".to_owned()
             }
@@ -366,6 +367,9 @@ impl Diagnostic {
             }
             "web.html.unknown-prop" => {
                 "Use the suggested standard prop, or put a validated custom Attribute in `attributes`."
+            }
+            "web.svg.unknown-prop" => {
+                "Use the suggested prop, or remove this field; SVG tags accept only the props they declare."
             }
             "web.html.event-control-without-handler" => {
                 "Add `onClick`, or remove the unused event control prop."

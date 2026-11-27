@@ -962,6 +962,21 @@ metadataをpure Htmlのまま表現できます。
 SVG tagを追加したり、任意tag名からnamespaceを推測したりしません。SSRとbrowser DOMは同じSVG
 markupを使い、browser parserが子孫へSVG namespaceを継承します。
 
+SVG tagのpropsは次の属性を持ちます。rendererはSVG namespaceでこれらを書き出し、camelCaseのfield名を
+SVGの属性名（`strokeWidth`は`stroke-width`）へ変換します。
+
+| 対象 | prop |
+| --- | --- |
+| すべてのtag | `elementRef`、`id`、`class`、`style`、`role`、`ariaLabel`、`transform`、`fill`、`stroke`、`strokeWidth`、`strokeLinecap`、`strokeLinejoin`、`strokeDasharray`、`pointerEvents`、pointerとwheelのevent、`x`、`y`、`x1`、`y1`、`x2`、`y2`、`cx`、`cy`、`r`、`rx`、`ry`、`width`、`height`、`opacity` |
+| `svg` | `viewBox`、`preserveAspectRatio`、`children: Array<Svg<Action>>` |
+| `g` | `children: Array<Svg<Action>>` |
+| `path` | `d` |
+| `polyline`、`polygon` | `points` |
+| `text` | `textAnchor`、`dominantBaseline`、`fontSize`、`fontWeight`、`letterSpacing`、`children: String` |
+
+数値の属性は`Float`、それ以外は`String`です。`style`は`html.style`で作った`Style`です。HTML tagと同じく
+record width subtypingは維持し、fresh record literalがtagのprops外のfieldを持てばSES-L0101 Warningを出します。
+
 reactive SVG attributeは同じ`ElementRef`と`dom.bind`を使います。`viewBoxTarget`、`transformTarget`、
 `pathDataTarget`、`pointsTarget`、`fillTarget`、`strokeTarget`、`strokeWidthTarget`、
 `pointerEventsTarget`、`ariaLabelTarget`は`String` Signal、`xTarget`、`yTarget`、`x1Target`、

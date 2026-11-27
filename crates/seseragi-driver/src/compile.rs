@@ -661,6 +661,55 @@ pub fn missing -> html.Html<Never> =
     }
 
     #[test]
+    fn warns_on_svg_props_the_tag_does_not_declare() {
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-svg-prop-warnings",
+            r#"import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+import { rect } from "std/web/svg"
+
+pub fn scene -> svg.Svg<Never> =
+  svg.svg {
+    style: html.style { width: "100%" },
+    viewBox: "0 0 10 10",
+    children: [
+      svg.text { fontSize: "7px", fontWeight: "700", children: "label" },
+      svg.path { d: "M0 0 L1 1", strokeDasharray: "4 2" },
+      svg.rect { widht: 3.0 },
+      rect { fontSize: "7px" },
+    ],
+  }
+
+// A record passed on is not a literal at the call, so width subtyping applies.
+pub fn sized props: { width: Float, label: String } -> svg.Svg<Never> = svg.rect props
+"#,
+        ))
+        .expect("unknown SVG props are lint warnings");
+
+        let unknown = compiled
+            .diagnostics
+            .diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.message_key == "web.svg.unknown-prop")
+            .collect::<Vec<_>>();
+        assert_eq!(unknown.len(), 2, "{unknown:#?}");
+        assert!(unknown
+            .iter()
+            .all(|diagnostic| diagnostic.code == "SES-L0101"
+                && diagnostic.severity == seseragi_syntax::DiagnosticSeverity::Warning));
+        assert_eq!(
+            unknown[0].related[0].message,
+            "`svg.rect` has no prop `widht`; did you mean `width`?"
+        );
+        assert_eq!(unknown[0].fixes[0].edits[0].replacement, "width");
+        assert_eq!(
+            unknown[1].related[0].message,
+            "`svg.rect` has no prop `fontSize`"
+        );
+    }
+
+    #[test]
     fn compiles_public_html_props_aliases_and_validated_custom_attributes() {
         let source = r#"import * as html from "std/web/html"
 
