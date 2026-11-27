@@ -750,5 +750,18 @@ fn native_html_safe_url(value: &str) -> bool {
 }
 
 fn native_html_url_host(host: &str) -> bool {
-    native_url_host(host).is_some()
+    let Some(domain) = native_url_host(host) else {
+        return false;
+    };
+    if domain.starts_with('[') {
+        return true;
+    }
+    domain
+        .split('.')
+        .all(|label| match label.strip_prefix("xn--") {
+            None => true,
+            Some(encoded) => native_url_punycode(encoded)
+                .and_then(|decoded| native_url_domain_to_ascii(&decoded))
+                .is_some_and(|roundtrip| roundtrip == label),
+        })
 }

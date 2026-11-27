@@ -238,6 +238,8 @@ fn image_urls_keep_ts_validation_and_original_spelling() {
         "https://M%C3%BCnchen.DE/a",
         "//bücher.example/a",
         "https://xn--a.example/a",
+        "https://xn--a-ugn.example/",
+        "https://xn--a-wbb.example/",
         "https://a%D7%90.example/a",
     ];
     let mut source = String::from("import * as html from \"std/web/html\"\nfn allowed value: String -> Bool = match html.parseWebUrl value { Left _ -> False; Right _ -> True }\npub effect fn main = do {\n");
