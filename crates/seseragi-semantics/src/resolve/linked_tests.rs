@@ -13,6 +13,7 @@ mod imported_scheme_nominals;
 mod imported_trait_contracts;
 mod namespace_constructors;
 mod namespace_types;
+mod signal_coercion;
 
 #[test]
 fn resolves_an_imported_function_to_its_canonical_dependency_symbol() {

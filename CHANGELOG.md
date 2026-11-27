@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.12] - 2026-11-28
+
+### Fixed
+
+- Type checking now compares the payload type of one-way `MutableSignal<A>` to `Signal<A>` coercions via `SemanticTypeKey` instead of raw display `TypedType` equality, so a `MutableSignal` constructed from an imported module's constructor coerces cleanly when passed to `signals.map` (including functions returning `html.Html`), while reverse coercions and distinct same-named imported types remain rejected (#1429). Removed the workaround `let` annotation from `examples/samples/feature-composition`.
+
 ## [0.62.11] - 2026-11-28
 
 ### Changed

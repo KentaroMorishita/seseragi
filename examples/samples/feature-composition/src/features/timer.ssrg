@@ -237,9 +237,7 @@ pub effect fn create -> KitchenTimer with clock: clock.Clock fails String = do {
     |> effects.mapError (\_error: time.DurationError -> "タイマーの刻みを作れません")
   service <- effects.service (\environment: { clock: clock.Clock } -> environment.clock)
   started <- clock.now ()
-  // 型を書いた let で受けるのは、Signal への読み替えが効かない不具合（#1429）を避けるためです。
-  let initial: Clocked = Clocked { timer: Idle, last: started, carry: 0 }
-  state <- signals.make initial
+  state <- signals.make (Clocked { timer: Idle, last: started, carry: 0 })
   let send = dispatch service state
   // 時刻と端数は刻みごとに変わるので、タイマーの状態が変わったときだけ描き直します。
   let timer = signals.distinct (signals.map (\clocked: Clocked -> clocked.timer) state)
