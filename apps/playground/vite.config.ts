@@ -1,7 +1,7 @@
-import { fileURLToPath } from "node:url"
-import { build as bundleExecutionFrame } from "esbuild"
 import { readFile } from "node:fs/promises"
 import { createRequire } from "node:module"
+import { fileURLToPath } from "node:url"
+import { build as bundleExecutionFrame } from "esbuild"
 import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite"
 import packageManifest from "./package.json" with { type: "json" }
 import { fontPackages } from "./src/ui/design/font-packages"
@@ -178,6 +178,7 @@ function rewriteEnglishPath(url: string | undefined): string | undefined {
 
 const englishRoutesPlugin: Plugin = {
   name: "seseragi-english-routes",
+  enforce: "post",
   configureServer(server) {
     server.middlewares.use((req, _res, next) => {
       const rewritten = rewriteEnglishPath(req.url)
@@ -209,7 +210,11 @@ const englishRoutesPlugin: Plugin = {
     ]
     for (const [sourceFile, targetFile, jaUrl, enUrl] of pairs) {
       const asset = bundle[sourceFile]
-      if (asset?.type !== "asset" || typeof asset.source !== "string") continue
+      if (asset?.type !== "asset" || typeof asset.source !== "string") {
+        this.error(
+          `englishRoutesPlugin expected emitted HTML asset ${sourceFile}`
+        )
+      }
       const localized = asset.source
         .replace('<html lang="ja">', '<html lang="en">')
         .replaceAll(`content="${jaUrl}"`, `content="${enUrl}"`)
