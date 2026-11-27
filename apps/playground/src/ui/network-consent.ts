@@ -1,6 +1,7 @@
 // 外部通信の許可を確かめるモーダル、止めたことの知らせ、許可の一覧（#1371）。
 // ラベルは英語（Allow / Cancel / Remove）、説明の文は日本語（DESIGN.md「画面の言葉」）。
 import type { NetworkPermissionStore } from "../runtime/network-permissions"
+import { type UiLocale, uiMessages } from "./i18n"
 import { createIcon } from "./icons"
 
 export type NetworkConsent = Readonly<{
@@ -8,7 +9,10 @@ export type NetworkConsent = Readonly<{
   ask: (label: string) => Promise<boolean>
 }>
 
-export function createNetworkConsent(ownerDocument: Document): NetworkConsent {
+export function createNetworkConsent(
+  ownerDocument: Document,
+  locale: () => UiLocale = () => "ja"
+): NetworkConsent {
   const dialog = ownerDocument.createElement("dialog")
   dialog.id = "network-consent-dialog"
   dialog.className = "pg-dialog network-consent"
@@ -16,13 +20,9 @@ export function createNetworkConsent(ownerDocument: Document): NetworkConsent {
   dialog.setAttribute("aria-describedby", "network-consent-lead")
   dialog.innerHTML = `
     <div class="network-consent-body">
-      <h2 id="network-consent-title">外部と通信してよいですか</h2>
+      <h2 id="network-consent-title"></h2>
       <p id="network-consent-lead"></p>
-      <ul>
-        <li>入力した内容や、このブラウザに保存したデータが、外部へ送られることがあります。</li>
-        <li>許可は、この例（または作業場所）についてだけ、このブラウザに覚えます。あとでコードを書き換えても、許可は残ります。</li>
-        <li>Search の Settings にある Network access から、いつでも取り消せます。</li>
-      </ul>
+      <ul id="network-consent-bullets"></ul>
     </div>
     <form method="dialog" class="network-consent-actions">
       <button class="ui-button ui-button--ghost" value="cancel" type="submit">Cancel</button>
@@ -30,12 +30,25 @@ export function createNetworkConsent(ownerDocument: Document): NetworkConsent {
     </form>
   `
   ownerDocument.body.append(dialog)
+  const title = dialog.querySelector<HTMLElement>("#network-consent-title")!
   const lead = dialog.querySelector<HTMLElement>("#network-consent-lead")!
+  const bullets = dialog.querySelector<HTMLUListElement>(
+    "#network-consent-bullets"
+  )!
   let pending: Promise<boolean> | undefined
   return {
     ask(label) {
       if (pending !== undefined) return pending
-      lead.textContent = `「${label}」は、外部のサイトから画像を読み込んだり、外部と通信したりします。`
+      const messages = uiMessages(locale())
+      title.textContent = messages.networkConsentTitle
+      lead.textContent = messages.networkConsentLead(label)
+      bullets.replaceChildren(
+        ...messages.networkConsentBullets.map((text) => {
+          const item = ownerDocument.createElement("li")
+          item.textContent = text
+          return item
+        })
+      )
       const opener = ownerDocument.activeElement as HTMLElement | null
       dialog.returnValue = "cancel"
       pending = new Promise<boolean>((resolve) => {
@@ -60,15 +73,20 @@ export function createNetworkConsent(ownerDocument: Document): NetworkConsent {
 export type NetworkNotice = Readonly<{
   show: () => void
   hide: () => void
+  refreshLocale?: () => void
 }>
 
 /** 止めたときに Preview の上へ一行で出す。Allow を押すと許可して実行し直す */
 export function connectNetworkNotice(
   element: HTMLElement,
-  onAllow: () => void
+  onAllow: () => void,
+  locale: () => UiLocale = () => "ja"
 ): NetworkNotice {
   const text = element.ownerDocument.createElement("span")
-  text.textContent = "外部の画像と通信を止めています。"
+  const syncText = (): void => {
+    text.textContent = uiMessages(locale()).networkBlockedNotice
+  }
+  syncText()
   const allow = element.ownerDocument.createElement("button")
   allow.type = "button"
   allow.className = "ui-button ui-button--ghost ui-button--sm"
@@ -78,18 +96,21 @@ export function connectNetworkNotice(
   element.hidden = true
   return {
     show: () => {
+      syncText()
       element.hidden = false
     },
     hide: () => {
       element.hidden = true
     },
+    refreshLocale: syncText,
   }
 }
 
 /** Search の Settings から開く、許可の一覧。一つずつ取り消せる */
 export function createNetworkSettings(
   ownerDocument: Document,
-  store: NetworkPermissionStore
+  store: NetworkPermissionStore,
+  locale: () => UiLocale = () => "ja"
 ): Readonly<{ open: (opener?: HTMLElement) => void }> {
   const dialog = ownerDocument.createElement("dialog")
   dialog.id = "network-settings-dialog"
@@ -102,8 +123,7 @@ export function createNetworkSettings(
   title.id = "network-settings-title"
   title.textContent = "Network access"
   const lead = ownerDocument.createElement("p")
-  lead.textContent =
-    "外部の画像と通信について答えた例と作業場所です。取り消すと、次に要るときにもう一度聞きます。"
+  lead.textContent = uiMessages(locale()).networkSettingsLead
   heading.append(title, lead)
   const close = ownerDocument.createElement("button")
   close.type = "button"
@@ -118,11 +138,13 @@ export function createNetworkSettings(
   ownerDocument.body.append(dialog)
 
   const render = (): void => {
+    const messages = uiMessages(locale())
+    lead.textContent = messages.networkSettingsLead
     const permissions = store.list()
     if (permissions.length === 0) {
       const empty = ownerDocument.createElement("li")
       empty.className = "network-settings-empty"
-      empty.textContent = "まだ、どの例にも答えていません。"
+      empty.textContent = messages.networkSettingsEmpty
       list.replaceChildren(empty)
       return
     }

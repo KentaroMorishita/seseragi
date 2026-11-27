@@ -4,6 +4,7 @@
 // - Settings の Hints をオフにすると、ひとこと、Try next、開いたときの自動実行を止める
 // 文字は日本語、ボタンのラベル（Try next、Hide、Show、Close）は英語のまま。
 import type { SampleTryNext } from "../sample-catalog"
+import { type UiLocale, uiMessages } from "./i18n"
 
 type GuidanceStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">
 
@@ -86,20 +87,27 @@ export function applyTryNext(
 export function createCoachCard(
   ownerDocument: Document,
   hint: Readonly<{ title: string; body: string }>,
-  options: Readonly<{ tourHref: string; onClose: () => void }>
+  options: Readonly<{
+    tourHref: string
+    onClose: () => void
+    locale?: UiLocale
+  }>
 ): HTMLElement {
+  const locale = options.locale ?? "ja"
   const card = ownerDocument.createElement("div")
   card.className = "pg-coach"
   card.setAttribute("role", "note")
   const title = ownerDocument.createElement("strong")
   title.textContent = hint.title
+  if (locale === "en") title.setAttribute("lang", "ja")
   const body = ownerDocument.createElement("span")
   body.textContent = hint.body
+  if (locale === "en") body.setAttribute("lang", "ja")
   const row = ownerDocument.createElement("div")
   row.className = "pg-coach-row"
   const tour = ownerDocument.createElement("a")
   tour.href = options.tourHref
-  tour.textContent = "Tour で基本から →"
+  tour.textContent = uiMessages(locale).coachTourLink
   const close = ownerDocument.createElement("button")
   close.type = "button"
   close.textContent = "Close"
@@ -113,13 +121,15 @@ export type TryNextView = Readonly<{
   /** 用意した例のチップを出す。undefined なら隠す（自由に書く状態） */
   show: (chips: readonly SampleTryNext[] | undefined) => void
   markUsed: (index: number) => void
+  refresh: () => void
 }>
 
 export function connectTryNext(
   element: HTMLElement,
   options: Readonly<{
     preferences: GuidancePreferences
-    tourHref: string
+    tourHref: string | (() => string)
+    locale?: () => UiLocale
     onApply: (chip: SampleTryNext, index: number) => void
   }>
 ): TryNextView {
@@ -131,6 +141,8 @@ export function connectTryNext(
     const visible = options.preferences.hintsEnabled() && chips.length > 0
     element.hidden = !visible
     if (!visible) return
+    const locale = options.locale?.() ?? "ja"
+    const messages = uiMessages(locale)
     const collapsed = options.preferences.tryNextCollapsed()
     element.dataset.collapsed = String(collapsed)
     const head = ownerDocument.createElement("div")
@@ -161,9 +173,10 @@ export function connectTryNext(
         button.className = "ui-chip pg-try-chip"
         button.dataset.tryNext = String(index)
         button.textContent = chip.label
+        if (locale === "en") button.setAttribute("lang", "ja")
         if (used.has(index)) {
           button.disabled = true
-          button.setAttribute("aria-label", `${chip.label}（入れました）`)
+          button.setAttribute("aria-label", messages.tryNextApplied(chip.label))
         }
         button.addEventListener("click", () => options.onApply(chip, index))
         return button
@@ -171,8 +184,11 @@ export function connectTryNext(
     )
     const tour = ownerDocument.createElement("a")
     tour.className = "ui-chip ui-chip--link pg-try-chip"
-    tour.href = options.tourHref
-    tour.textContent = "基本から順に学ぶ →"
+    tour.href =
+      typeof options.tourHref === "function"
+        ? options.tourHref()
+        : options.tourHref
+    tour.textContent = messages.tryNextTourLink
     list.append(tour)
     element.replaceChildren(head, list)
   }
@@ -187,5 +203,6 @@ export function connectTryNext(
       used.add(index)
       render()
     },
+    refresh: render,
   }
 }
