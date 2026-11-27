@@ -246,6 +246,10 @@ fn named(name: &str) -> TypedType {
     }
 }
 
+pub(crate) fn is_standard_type_coercion_canonical(expected: &str, actual: &str) -> bool {
+    expected == SIGNAL && actual == MUTABLE_SIGNAL
+}
+
 pub(crate) fn standard_type_coercion(expected: &TypedType, actual: &TypedType) -> bool {
     standard_type_coercion_arguments(expected, actual)
         .is_some_and(|(expected, actual)| expected == actual)

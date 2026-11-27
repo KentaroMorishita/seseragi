@@ -197,7 +197,14 @@ pub(crate) fn semantic_values_are_compatible(
     {
         return semantic_values_have_same_identity(expected, actual);
     }
-    if crate::standard::standard_type_coercion(&expected.type_ref, &actual.type_ref) {
+    if !matches!(
+        (&expected.key, &actual.key),
+        (
+            SemanticTypeKey::ExternalNominal { .. },
+            SemanticTypeKey::ExternalNominal { .. }
+        )
+    ) && crate::standard::standard_type_coercion(&expected.type_ref, &actual.type_ref)
+    {
         return true;
     }
     if let Some(same) = intrinsic_primitive_relation(expected, actual) {
@@ -300,7 +307,11 @@ pub(crate) fn semantic_values_are_compatible(
                 arguments: actual_arguments,
             },
         ) => {
-            expected_canonical == actual_canonical
+            (expected_canonical == actual_canonical
+                || crate::standard::is_standard_type_coercion_canonical(
+                    expected_canonical,
+                    actual_canonical,
+                ))
                 && expected_arguments.len() == actual_arguments.len()
                 && if expected_canonical == "std/stream::Stream" {
                     semantic_effect_arguments_are_compatible(expected_arguments, actual_arguments)
