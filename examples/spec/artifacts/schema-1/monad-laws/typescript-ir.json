@@ -288,7 +288,6 @@
     "core.int.add",
     "core.int.multiply",
     "core.string",
-    "core.string.eq-dictionary",
     "core.bool",
     "core.string.add-dictionary",
     "core.unit",
@@ -311,10 +310,6 @@
     {
       "feature": "core.int.multiply",
       "local": "_ssrg_int_multiply"
-    },
-    {
-      "feature": "core.string.eq-dictionary",
-      "local": "_ssrg_string_eq_dictionary"
     },
     {
       "feature": "core.string.add-dictionary",
@@ -1510,88 +1505,64 @@
       "body": {
         "kind": "conditional",
         "condition": {
-          "kind": "runtime-call",
-          "callee": "$ssrg$atSource",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "$ssrg$source1650"
-            },
-            {
-              "kind": "lambda",
-              "parameter": "",
-              "body": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_string_eq_dictionary"
-                },
-                "method": "eq",
-                "arguments": [
-                  {
-                    "kind": "runtime-call",
-                    "callee": "$ssrg$atSource",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "$ssrg$source1650"
-                      },
-                      {
-                        "kind": "lambda",
-                        "parameter": "",
-                        "body": {
-                          "kind": "call",
-                          "callee": "render",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "left"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "kind": "boolean",
-                        "value": false
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "runtime-call",
-                    "callee": "$ssrg$atSource",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "$ssrg$source1665"
-                      },
-                      {
-                        "kind": "lambda",
-                        "parameter": "",
-                        "body": {
-                          "kind": "call",
-                          "callee": "render",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "right"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "kind": "boolean",
-                        "value": false
-                      }
-                    ]
-                  }
-                ]
+          "kind": "binary",
+          "operator": "===",
+          "left": {
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source1650"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "left"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
-            },
-            {
-              "kind": "boolean",
-              "value": false
-            }
-          ]
+            ]
+          },
+          "right": {
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source1665"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "right"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
+              }
+            ]
+          }
         },
         "thenBranch": {
           "kind": "runtime-call",

@@ -10,11 +10,6 @@
     },
     {
       "source": "main.ssrg",
-      "start": 178,
-      "end": 203
-    },
-    {
-      "source": "main.ssrg",
       "start": 240,
       "end": 264
     },
@@ -42,7 +37,6 @@
   "runtimeRequirements": [
     "core.int",
     "core.int.add",
-    "core.int.eq-dictionary",
     "core.bool",
     "core.unit",
     "core.string",
@@ -53,10 +47,6 @@
     {
       "feature": "core.int.add",
       "local": "_ssrg_int_add"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.int.show",
@@ -211,48 +201,24 @@
               }
             ],
             "body": {
-              "kind": "runtime-call",
-              "callee": "$ssrg$atSource",
-              "arguments": [
-                {
+              "kind": "binary",
+              "operator": "===",
+              "left": {
+                "kind": "field-access",
+                "receiver": {
                   "kind": "identifier",
-                  "name": "$ssrg$source178"
+                  "name": "self"
                 },
-                {
-                  "kind": "lambda",
-                  "parameter": "",
-                  "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_int_eq_dictionary"
-                    },
-                    "method": "eq",
-                    "arguments": [
-                      {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "identifier",
-                          "name": "self"
-                        },
-                        "field": "value"
-                      },
-                      {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "identifier",
-                          "name": "other"
-                        },
-                        "field": "value"
-                      }
-                    ]
-                  }
+                "field": "value"
+              },
+              "right": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "other"
                 },
-                {
-                  "kind": "boolean",
-                  "value": false
-                }
-              ]
+                "field": "value"
+              }
             },
             "origin": {
               "source": "main.ssrg",

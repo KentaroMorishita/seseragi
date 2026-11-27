@@ -1,6 +1,5 @@
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { atSource as $ssrg$atSource } from "@seseragi/runtime/effect"
-import { intEq as _ssrg_int_eq_dictionary, intOrd as _ssrg_int_ord_dictionary } from "@seseragi/runtime/equality"
 import { remainder as _ssrg_int_remainder, subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { arrayReducible as _ssrg_array_reducible, collectMap as _ssrg_array_comprehend, find as _ssrg_array_find, take as _ssrg_array_take, drop as _ssrg_array_drop } from "@seseragi/runtime/array"
@@ -47,8 +46,8 @@ const $ssrg$source1174 = { file: "main.ssrg", line: 39, column: 5, uri: "seserag
 const $ssrg$source1184 = { file: "main.ssrg", line: 39, column: 15, uri: "seseragi://artifact/collection-slice", start: 1184, end: 1208 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const even = (value: number) => $ssrg$atSource($ssrg$source102, () => _ssrg_int_eq_dictionary["eq"](_ssrg_int_remainder(value, 2, $ssrg$source102))(0), false)
-const negative = (value: number) => (_ssrg_int_ord_dictionary["compare"](value)(0))["tag"] === "Less"
+const even = (value: number) => _ssrg_int_remainder(value, 2, $ssrg$source102) === 0
+const negative = (value: number) => value < 0
 const showMaybe = (value: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number }) => (($ssrg_match: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number }): string => $ssrg_match.tag === "Nothing" ? "none" : $ssrg_match.tag === "Just" ? ((item: number): string => _ssrg_show_intShow["show"](item))($ssrg_match.value) : ((): never => { throw new globalThis.Error("non-exhaustive Seseragi match"); })())(value)
 const showArray = (values: ReadonlyArray<number>) => $ssrg$atSource($ssrg$source323, () => _ssrg_collection_join(_ssrg_array_reducible, ",", _ssrg_array_comprehend(values, (value) => true, (value) => _ssrg_show_intShow["show"](value))), false)
 const showList = (values: List<number>) => $ssrg$atSource($ssrg$source408, () => _ssrg_collection_join(_ssrg_array_reducible, ",", _ssrg_list_comprehend(values, (value) => true, (value) => _ssrg_show_intShow["show"](value))), false)

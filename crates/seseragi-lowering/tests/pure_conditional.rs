@@ -33,14 +33,9 @@ fn lowers_typed_conditional_to_sync_typescript_expression() {
     let typescript = lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
     assert_eq!(
         typescript.runtime_requirements,
-        vec![
-            "core.int",
-            "core.string",
-            "core.int.eq-dictionary",
-            "core.bool"
-        ]
+        vec!["core.int", "core.string", "core.bool"]
     );
-    assert_eq!(typescript.imports.len(), 1);
+    assert!(typescript.imports.is_empty());
     assert!(matches!(
         &typescript.functions[0],
         TypeScriptFunction::ConstFunction {
@@ -52,6 +47,9 @@ fn lowers_typed_conditional_to_sync_typescript_expression() {
     let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert_eq!(
         bundle.typescript,
-        with_unicode_header("import { intEq as _ssrg_int_eq_dictionary } from \"@seseragi/runtime/equality\"\n", "export const classify = (value: number) => _ssrg_int_eq_dictionary[\"eq\"](value)(0) ? \"zero\" : \"other\"\n")
+        with_unicode_header(
+            "",
+            "export const classify = (value: number) => value === 0 ? \"zero\" : \"other\"\n"
+        )
     );
 }

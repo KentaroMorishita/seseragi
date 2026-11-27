@@ -69,7 +69,6 @@
     "core.string",
     "core.bool",
     "core.array.append",
-    "core.int.eq-dictionary",
     "core.array.filter",
     "core.int.show",
     "core.string.show",
@@ -82,10 +81,6 @@
     {
       "feature": "core.array.append",
       "local": "_ssrg_array_append"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.array.filter",
@@ -337,32 +332,18 @@
       ],
       "body": {
         "kind": "binary",
-        "operator": "===",
+        "operator": "!==",
         "left": {
-          "kind": "dictionary-call",
-          "dictionary": {
-            "kind": "runtime-reference",
-            "name": "_ssrg_int_eq_dictionary"
+          "kind": "field-access",
+          "receiver": {
+            "kind": "identifier",
+            "name": "todo"
           },
-          "method": "eq",
-          "arguments": [
-            {
-              "kind": "field-access",
-              "receiver": {
-                "kind": "identifier",
-                "name": "todo"
-              },
-              "field": "id"
-            },
-            {
-              "kind": "identifier",
-              "name": "removedId"
-            }
-          ]
+          "field": "id"
         },
         "right": {
-          "kind": "boolean",
-          "value": false
+          "kind": "identifier",
+          "name": "removedId"
         }
       },
       "origin": {

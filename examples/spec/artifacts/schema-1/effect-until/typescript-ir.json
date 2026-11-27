@@ -35,11 +35,6 @@
     },
     {
       "source": "main.ssrg",
-      "start": 385,
-      "end": 395
-    },
-    {
-      "source": "main.ssrg",
       "start": 462,
       "end": 507
     }
@@ -51,7 +46,6 @@
     "core.array.iterable",
     "core.collection.reduce-until",
     "core.int",
-    "core.int.ord-dictionary",
     "core.bool",
     "core.collection.reduce-step.done",
     "core.collection.reduce-step.next",
@@ -60,7 +54,6 @@
     "effect.iterable.for-each-until",
     "core.unit",
     "effect.core.succeed",
-    "core.int.eq-dictionary",
     "effect.iterable.break",
     "effect.iterable.continue"
   ],
@@ -72,10 +65,6 @@
     {
       "feature": "core.collection.reduce-until",
       "local": "_ssrg_collection_reduceUntil"
-    },
-    {
-      "feature": "core.int.ord-dictionary",
-      "local": "_ssrg_int_ord_dictionary"
     },
     {
       "feature": "core.collection.reduce-step.done",
@@ -100,10 +89,6 @@
     {
       "feature": "effect.core.succeed",
       "local": "_ssrg_effect_succeed"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "effect.iterable.break",
@@ -169,32 +154,14 @@
                       "kind": "conditional",
                       "condition": {
                         "kind": "binary",
-                        "operator": "===",
+                        "operator": "<",
                         "left": {
-                          "kind": "field-access",
-                          "receiver": {
-                            "kind": "dictionary-call",
-                            "dictionary": {
-                              "kind": "runtime-reference",
-                              "name": "_ssrg_int_ord_dictionary"
-                            },
-                            "method": "compare",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "value"
-                              },
-                              {
-                                "kind": "number",
-                                "value": "0"
-                              }
-                            ]
-                          },
-                          "field": "tag"
+                          "kind": "identifier",
+                          "name": "value"
                         },
                         "right": {
-                          "kind": "string",
-                          "value": "Less"
+                          "kind": "number",
+                          "value": "0"
                         }
                       },
                       "thenBranch": {
@@ -436,40 +403,16 @@
                 {
                   "kind": "conditional",
                   "condition": {
-                    "kind": "runtime-call",
-                    "callee": "$ssrg$atSource",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "$ssrg$source385"
-                      },
-                      {
-                        "kind": "lambda",
-                        "parameter": "",
-                        "body": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_int_eq_dictionary"
-                          },
-                          "method": "eq",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "value"
-                            },
-                            {
-                              "kind": "number",
-                              "value": "3"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "kind": "boolean",
-                        "value": false
-                      }
-                    ]
+                    "kind": "binary",
+                    "operator": "===",
+                    "left": {
+                      "kind": "identifier",
+                      "name": "value"
+                    },
+                    "right": {
+                      "kind": "number",
+                      "value": "3"
+                    }
                   },
                   "thenBranch": {
                     "kind": "runtime-reference",

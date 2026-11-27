@@ -1,7 +1,9 @@
 use crate::bytes_ops::runtime_bytes_operation;
 use crate::collection_ops::{runtime_collection_operation, runtime_prelude_collection_operation};
 use crate::effect_ops::runtime_effect_operation;
-use crate::equality_ops::strict_equality_operator_with_evidence;
+use crate::equality_ops::{
+    javascript_operator_with_evidence, strict_equality_operator_with_evidence,
+};
 use crate::int_ops::{runtime_int_operation, runtime_int_operation_with_evidence};
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::json_ops::{json_decoder_factory_arity, runtime_json_operation};
@@ -2361,6 +2363,13 @@ fn lower_binary(
             });
         }
     }
+    if let Some(operator) = javascript_operator_with_evidence(&operator, &evidence) {
+        return Ok(TypeScriptExpr::Binary {
+            operator: operator.to_owned(),
+            left: Box::new(left),
+            right: Box::new(right),
+        });
+    }
     if standard_operator(&operator)
         .is_some_and(|operator| operator.kind == StandardOperatorKind::Comparison)
     {
@@ -2396,13 +2405,6 @@ fn lower_binary(
                     left: Box::new(equals),
                     right: Box::new(TypeScriptExpr::Boolean { value: false }),
                 }
-            });
-        }
-        if let Some(operator) = strict_equality_operator_with_evidence(&operator, &evidence) {
-            return Ok(TypeScriptExpr::Binary {
-                operator: operator.to_owned(),
-                left: Box::new(left),
-                right: Box::new(right),
             });
         }
     }

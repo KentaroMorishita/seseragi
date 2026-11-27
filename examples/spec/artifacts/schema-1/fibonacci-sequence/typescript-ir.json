@@ -5,11 +5,6 @@
   "runtimeSources": [
     {
       "source": "main.ssrg",
-      "start": 105,
-      "end": 119
-    },
-    {
-      "source": "main.ssrg",
       "start": 154,
       "end": 196
     },
@@ -41,7 +36,6 @@
   ],
   "runtimeRequirements": [
     "core.int",
-    "core.int.eq-dictionary",
     "core.bool",
     "core.int.subtract",
     "core.int.add",
@@ -53,10 +47,6 @@
     "core.range.inclusive"
   ],
   "imports": [
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
-    },
     {
       "feature": "core.int.subtract",
       "local": "_ssrg_int_subtract"
@@ -116,40 +106,16 @@
             "body": {
               "kind": "conditional",
               "condition": {
-                "kind": "runtime-call",
-                "callee": "$ssrg$atSource",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "$ssrg$source105"
-                  },
-                  {
-                    "kind": "lambda",
-                    "parameter": "",
-                    "body": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_int_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "remaining"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "0"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
-                  }
-                ]
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "identifier",
+                  "name": "remaining"
+                },
+                "right": {
+                  "kind": "number",
+                  "value": "0"
+                }
               },
               "thenBranch": {
                 "kind": "identifier",

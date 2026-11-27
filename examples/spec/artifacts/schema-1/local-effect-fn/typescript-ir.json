@@ -40,11 +40,6 @@
     },
     {
       "source": "main.ssrg",
-      "start": 376,
-      "end": 382
-    },
-    {
-      "source": "main.ssrg",
       "start": 388,
       "end": 394
     },
@@ -225,7 +220,6 @@
     "core.string",
     "core.int",
     "effect.core.applicative",
-    "core.int.eq-dictionary",
     "core.bool",
     "core.int.subtract",
     "core.int.show",
@@ -241,10 +235,6 @@
     {
       "feature": "effect.core.applicative",
       "local": "_ssrg_effect_applicative"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.int.subtract",
@@ -756,40 +746,16 @@
                       "body": {
                         "kind": "conditional",
                         "condition": {
-                          "kind": "runtime-call",
-                          "callee": "$ssrg$atSource",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "$ssrg$source376"
-                            },
-                            {
-                              "kind": "lambda",
-                              "parameter": "",
-                              "body": {
-                                "kind": "dictionary-call",
-                                "dictionary": {
-                                  "kind": "runtime-reference",
-                                  "name": "_ssrg_int_eq_dictionary"
-                                },
-                                "method": "eq",
-                                "arguments": [
-                                  {
-                                    "kind": "identifier",
-                                    "name": "n"
-                                  },
-                                  {
-                                    "kind": "number",
-                                    "value": "0"
-                                  }
-                                ]
-                              }
-                            },
-                            {
-                              "kind": "boolean",
-                              "value": false
-                            }
-                          ]
+                          "kind": "binary",
+                          "operator": "===",
+                          "left": {
+                            "kind": "identifier",
+                            "name": "n"
+                          },
+                          "right": {
+                            "kind": "number",
+                            "value": "0"
+                          }
                         },
                         "thenBranch": {
                           "kind": "runtime-call",

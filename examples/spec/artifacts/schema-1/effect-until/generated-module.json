@@ -14,7 +14,6 @@
       "core.array.iterable",
       "core.collection.reduce-until",
       "core.int",
-      "core.int.ord-dictionary",
       "core.bool",
       "core.collection.reduce-step.done",
       "core.collection.reduce-step.next",
@@ -23,7 +22,6 @@
       "effect.iterable.for-each-until",
       "core.unit",
       "effect.core.succeed",
-      "core.int.eq-dictionary",
       "effect.iterable.break",
       "effect.iterable.continue"
     ]

@@ -25,11 +25,6 @@
     },
     {
       "source": "main.ssrg",
-      "start": 271,
-      "end": 284
-    },
-    {
-      "source": "main.ssrg",
       "start": 305,
       "end": 318
     },
@@ -37,11 +32,6 @@
       "source": "main.ssrg",
       "start": 320,
       "end": 334
-    },
-    {
-      "source": "main.ssrg",
-      "start": 408,
-      "end": 429
     },
     {
       "source": "main.ssrg",
@@ -53,7 +43,6 @@
     "core.iterator",
     "core.int",
     "core.maybe",
-    "core.int.ord-dictionary",
     "core.bool",
     "core.maybe.just",
     "core.int.add",
@@ -61,16 +50,11 @@
     "core.string",
     "core.iterator.next",
     "core.adt",
-    "core.int.eq-dictionary",
     "core.unit",
     "effect.console.println",
     "core.iterator.unfold"
   ],
   "imports": [
-    {
-      "feature": "core.int.ord-dictionary",
-      "local": "_ssrg_int_ord_dictionary"
-    },
     {
       "feature": "core.maybe.just",
       "local": "_ssrg_maybe_Just"
@@ -86,10 +70,6 @@
     {
       "feature": "core.iterator.next",
       "local": "_ssrg_iterator_next"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "effect.console.println",
@@ -122,32 +102,14 @@
         "kind": "conditional",
         "condition": {
           "kind": "binary",
-          "operator": "!==",
+          "operator": "<=",
           "left": {
-            "kind": "field-access",
-            "receiver": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_ord_dictionary"
-              },
-              "method": "compare",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "current"
-                },
-                {
-                  "kind": "number",
-                  "value": "3"
-                }
-              ]
-            },
-            "field": "tag"
+            "kind": "identifier",
+            "name": "current"
           },
           "right": {
-            "kind": "string",
-            "value": "Greater"
+            "kind": "number",
+            "value": "3"
           }
         },
         "thenBranch": {
@@ -448,40 +410,16 @@
             "value": {
               "kind": "conditional",
               "condition": {
-                "kind": "runtime-call",
-                "callee": "$ssrg$atSource",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "$ssrg$source271"
-                  },
-                  {
-                    "kind": "lambda",
-                    "parameter": "",
-                    "body": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_int_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "left"
-                        },
-                        {
-                          "kind": "identifier",
-                          "name": "right"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
-                  }
-                ]
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "identifier",
+                  "name": "left"
+                },
+                "right": {
+                  "kind": "identifier",
+                  "name": "right"
+                }
               },
               "thenBranch": {
                 "kind": "decision",
@@ -658,40 +596,16 @@
                     "value": {
                       "kind": "conditional",
                       "condition": {
-                        "kind": "runtime-call",
-                        "callee": "$ssrg$atSource",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "$ssrg$source408"
-                          },
-                          {
-                            "kind": "lambda",
-                            "parameter": "",
-                            "body": {
-                              "kind": "dictionary-call",
-                              "dictionary": {
-                                "kind": "runtime-reference",
-                                "name": "_ssrg_int_eq_dictionary"
-                              },
-                              "method": "eq",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "leftNext"
-                                },
-                                {
-                                  "kind": "identifier",
-                                  "name": "rightNext"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "kind": "boolean",
-                            "value": false
-                          }
-                        ]
+                        "kind": "binary",
+                        "operator": "===",
+                        "left": {
+                          "kind": "identifier",
+                          "name": "leftNext"
+                        },
+                        "right": {
+                          "kind": "identifier",
+                          "name": "rightNext"
+                        }
                       },
                       "thenBranch": {
                         "kind": "string",

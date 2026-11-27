@@ -1,6 +1,5 @@
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { atSource as $ssrg$atSource } from "@seseragi/runtime/effect"
-import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { remainder as _ssrg_int_remainder, subtract as _ssrg_int_subtract } from "@seseragi/runtime/int"
 import { Just as _ssrg_maybe_Just, Nothing as _ssrg_maybe_Nothing } from "@seseragi/runtime/sum"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
@@ -28,7 +27,7 @@ const $ssrg$source844 = { file: "main.ssrg", line: 29, column: 5, uri: "seseragi
 const $ssrg$source854 = { file: "main.ssrg", line: 29, column: 15, uri: "seseragi://artifact/collection-transform", start: 854, end: 886 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const even = (value: number) => $ssrg$atSource($ssrg$source102, () => _ssrg_int_eq_dictionary["eq"](_ssrg_int_remainder(value, 2, $ssrg$source102))(0), false)
+const even = (value: number) => _ssrg_int_remainder(value, 2, $ssrg$source102) === 0
 const labelEven = (value: number) => $ssrg$atSource($ssrg$source166, () => even(value), false) ? $ssrg$atSource($ssrg$source182, () => _ssrg_maybe_Just("#" + _ssrg_show_intShow["show"](value)), false) : _ssrg_maybe_Nothing
 const signedArray = (value: number) => [value, _ssrg_int_subtract(0, value, $ssrg$source265)]
 const signedList = (value: number) => _ssrg_list_from_array([value, _ssrg_int_subtract(0, value, $ssrg$source328)])

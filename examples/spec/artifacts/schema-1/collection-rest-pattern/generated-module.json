@@ -13,8 +13,7 @@
       "core.int.add",
       "core.unit",
       "core.list.from-array",
-      "core.bool",
-      "core.int.eq-dictionary"
+      "core.bool"
     ]
   },
   "exports": [

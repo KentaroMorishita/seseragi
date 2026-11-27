@@ -202,10 +202,8 @@
   "runtimeRequirements": [
     "core.list",
     "core.int",
-    "core.int.eq-dictionary",
     "core.bool",
     "core.int.remainder",
-    "core.int.ord-dictionary",
     "core.maybe",
     "core.string",
     "core.adt",
@@ -226,16 +224,8 @@
   ],
   "imports": [
     {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
-    },
-    {
       "feature": "core.int.remainder",
       "local": "_ssrg_int_remainder"
-    },
-    {
-      "feature": "core.int.ord-dictionary",
-      "local": "_ssrg_int_ord_dictionary"
     },
     {
       "feature": "core.int.show",
@@ -309,54 +299,30 @@
         }
       ],
       "body": {
-        "kind": "runtime-call",
-        "callee": "$ssrg$atSource",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "$ssrg$source102"
-          },
-          {
-            "kind": "lambda",
-            "parameter": "",
-            "body": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_eq_dictionary"
-              },
-              "method": "eq",
-              "arguments": [
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_int_remainder",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "value"
-                    },
-                    {
-                      "kind": "number",
-                      "value": "2"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "$ssrg$source102"
-                    }
-                  ]
-                },
-                {
-                  "kind": "number",
-                  "value": "0"
-                }
-              ]
+        "kind": "binary",
+        "operator": "===",
+        "left": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_int_remainder",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "value"
+            },
+            {
+              "kind": "number",
+              "value": "2"
+            },
+            {
+              "kind": "identifier",
+              "name": "$ssrg$source102"
             }
-          },
-          {
-            "kind": "boolean",
-            "value": false
-          }
-        ]
+          ]
+        },
+        "right": {
+          "kind": "number",
+          "value": "0"
+        }
       },
       "origin": {
         "source": "main.ssrg",
@@ -377,32 +343,14 @@
       ],
       "body": {
         "kind": "binary",
-        "operator": "===",
+        "operator": "<",
         "left": {
-          "kind": "field-access",
-          "receiver": {
-            "kind": "dictionary-call",
-            "dictionary": {
-              "kind": "runtime-reference",
-              "name": "_ssrg_int_ord_dictionary"
-            },
-            "method": "compare",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "value"
-              },
-              {
-                "kind": "number",
-                "value": "0"
-              }
-            ]
-          },
-          "field": "tag"
+          "kind": "identifier",
+          "name": "value"
         },
         "right": {
-          "kind": "string",
-          "value": "Less"
+          "kind": "number",
+          "value": "0"
         }
       },
       "origin": {

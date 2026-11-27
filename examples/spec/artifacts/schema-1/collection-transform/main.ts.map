@@ -10,8 +10,6 @@
   ],
   "names": [
     "even",
-    "$ssrg$atSource",
-    "intEq",
     "remainder",
     "labelEven",
     "$ssrg$atSource",
@@ -68,5 +66,5 @@
     "_ssrg_list_flatMap",
     "fromArray"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAGAA;AAGAI;AAGAO;AAGAE;AAGAG;AAGAM;AAGAM"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAGAA;AAGAE;AAGAO;AAGAE;AAGAG;AAGAM;AAGAM"
 }

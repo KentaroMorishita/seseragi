@@ -85,12 +85,8 @@
     "$ssrg$atSource",
     "returnedEquality",
     "$ssrg$atSource",
-    "intEq",
-    "$ssrg$atSource",
     "arithmeticApply",
     "add",
-    "$ssrg$atSource",
-    "intEq",
     "$ssrg$atSource",
     "returnedArithmetic",
     "main",
@@ -136,7 +132,6 @@
     "println",
     "$ssrg$atSource",
     "$ssrg$closedDisplay$0",
-    "intOrd",
     "boolOrd",
     "unitOrd",
     "stringOrd",
@@ -146,5 +141,5 @@
     "boolShow",
     "stringOrd"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAS;;;;AAEAC;AAKAC;AAIAC;AACAE;AACAE;AAEAG;AACAG;AACAE;AACAE;AACAK;AAEAI;AAkBAiD"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAS;;;;AAEAC;AAKAC;AAIAC;AACAE;AACAE;AAEAG;AACAG;AACAE;AACAE;AACAK;AAEAI;AAkBA6C"
 }

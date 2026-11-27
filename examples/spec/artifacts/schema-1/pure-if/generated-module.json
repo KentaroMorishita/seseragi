@@ -10,7 +10,6 @@
     "requirements": [
       "core.int",
       "core.string",
-      "core.int.eq-dictionary",
       "core.bool"
     ]
   },

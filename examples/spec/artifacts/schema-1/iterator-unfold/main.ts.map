@@ -10,7 +10,6 @@
   ],
   "names": [
     "step",
-    "intOrd",
     "$ssrg$atSource",
     "Just",
     "add",
@@ -25,15 +24,11 @@
     "right",
     "rightRest",
     "$ssrg$atSource",
-    "intEq",
-    "$ssrg$atSource",
     "next",
     "$ssrg$atSource",
     "next",
     "leftNext",
     "rightNext",
-    "$ssrg$atSource",
-    "intEq",
     "main",
     "$ssrg$atSource",
     "println",
@@ -42,5 +37,5 @@
     "$ssrg$atSource",
     "unfold"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;AAAAA;AAMAM;AAiBAmB"
+  "mappings": ";;;;;;;;;;;;;;;AAAAA;AAMAK;AAiBAe"
 }

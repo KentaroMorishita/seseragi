@@ -14,7 +14,6 @@
     "__ssrg$instance$Iterable$0",
     "__ssrg$instance$Reducible$1",
     "advance",
-    "intOrd",
     "$ssrg$atSource",
     "Just",
     "add",
@@ -22,7 +21,6 @@
     "oddSquares",
     "collectMap",
     "__ssrg$instance$Iterable$0",
-    "intEq",
     "remainder",
     "multiply",
     "addInt",
@@ -50,5 +48,5 @@
     "$ssrg$atSource",
     "Countdown"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;AAAAA;;AACIC;AAQJC;AAOAC;AAbAC;AAqBAM;AAGAM;AAGAE;AAKAG;AAMAS;AAMAC"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;AAAAA;;AACIC;AAQJC;AAOAC;AAbAC;AAqBAK;AAGAK;AAGAE;AAKAG;AAMAS;AAMAC"
 }

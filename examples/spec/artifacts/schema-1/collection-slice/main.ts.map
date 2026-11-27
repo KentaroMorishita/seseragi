@@ -10,11 +10,8 @@
   ],
   "names": [
     "even",
-    "$ssrg$atSource",
-    "intEq",
     "remainder",
     "negative",
-    "intOrd",
     "showMaybe",
     "item",
     "intShow",
@@ -108,5 +105,5 @@
     "_ssrg_list_drop",
     "fromArray"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAGAA;AAGAI;AAGAE;AAMAG;AAGAM;AAGAM"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAGAA;AAGAE;AAGAC;AAMAG;AAGAM;AAGAM"
 }

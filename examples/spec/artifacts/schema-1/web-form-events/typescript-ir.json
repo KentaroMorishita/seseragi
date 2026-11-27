@@ -67,11 +67,6 @@
       "source": "main.ssrg",
       "start": 1185,
       "end": 1261
-    },
-    {
-      "source": "main.ssrg",
-      "start": 1231,
-      "end": 1242
     }
   ],
   "runtimeRequirements": [
@@ -88,8 +83,7 @@
     "web.html.textarea",
     "web.html.select",
     "web.html.option",
-    "web.html.button",
-    "core.string.eq-dictionary"
+    "web.html.button"
   ],
   "imports": [
     {
@@ -119,10 +113,6 @@
     {
       "feature": "web.html.button",
       "local": "_ssrg_html_button"
-    },
-    {
-      "feature": "core.string.eq-dictionary",
-      "local": "_ssrg_string_eq_dictionary"
     }
   ],
   "typeImports": [
@@ -859,40 +849,16 @@
                                           "kind": "field",
                                           "name": "disabled",
                                           "value": {
-                                            "kind": "runtime-call",
-                                            "callee": "$ssrg$atSource",
-                                            "arguments": [
-                                              {
-                                                "kind": "identifier",
-                                                "name": "$ssrg$source1231"
-                                              },
-                                              {
-                                                "kind": "lambda",
-                                                "parameter": "",
-                                                "body": {
-                                                  "kind": "dictionary-call",
-                                                  "dictionary": {
-                                                    "kind": "runtime-reference",
-                                                    "name": "_ssrg_string_eq_dictionary"
-                                                  },
-                                                  "method": "eq",
-                                                  "arguments": [
-                                                    {
-                                                      "kind": "identifier",
-                                                      "name": "draft"
-                                                    },
-                                                    {
-                                                      "kind": "string",
-                                                      "value": ""
-                                                    }
-                                                  ]
-                                                }
-                                              },
-                                              {
-                                                "kind": "boolean",
-                                                "value": false
-                                              }
-                                            ]
+                                            "kind": "binary",
+                                            "operator": "===",
+                                            "left": {
+                                              "kind": "identifier",
+                                              "name": "draft"
+                                            },
+                                            "right": {
+                                              "kind": "string",
+                                              "value": ""
+                                            }
                                           }
                                         },
                                         {

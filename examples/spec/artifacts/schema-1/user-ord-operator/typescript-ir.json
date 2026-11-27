@@ -5,11 +5,6 @@
   "runtimeSources": [
     {
       "source": "main.ssrg",
-      "start": 96,
-      "end": 121
-    },
-    {
-      "source": "main.ssrg",
       "start": 282,
       "end": 312
     },
@@ -258,7 +253,6 @@
     }
   ],
   "runtimeRequirements": [
-    "core.int.eq-dictionary",
     "core.bool",
     "core.int",
     "core.int.ord-dictionary",
@@ -274,10 +268,6 @@
     "core.string.ord-dictionary"
   ],
   "imports": [
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
-    },
     {
       "feature": "core.int.ord-dictionary",
       "local": "_ssrg_int_ord_dictionary"
@@ -373,48 +363,24 @@
               }
             ],
             "body": {
-              "kind": "runtime-call",
-              "callee": "$ssrg$atSource",
-              "arguments": [
-                {
+              "kind": "binary",
+              "operator": "===",
+              "left": {
+                "kind": "field-access",
+                "receiver": {
                   "kind": "identifier",
-                  "name": "$ssrg$source96"
+                  "name": "left"
                 },
-                {
-                  "kind": "lambda",
-                  "parameter": "",
-                  "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_int_eq_dictionary"
-                    },
-                    "method": "eq",
-                    "arguments": [
-                      {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "identifier",
-                          "name": "left"
-                        },
-                        "field": "value"
-                      },
-                      {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "identifier",
-                          "name": "right"
-                        },
-                        "field": "value"
-                      }
-                    ]
-                  }
+                "field": "value"
+              },
+              "right": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "right"
                 },
-                {
-                  "kind": "boolean",
-                  "value": false
-                }
-              ]
+                "field": "value"
+              }
             },
             "origin": {
               "source": "main.ssrg",
@@ -2099,87 +2065,103 @@
               }
             },
             "thenBranch": {
+              "kind": "binary",
+              "operator": "===",
+              "left": {
+                "kind": "runtime-call",
+                "callee": "$ssrg$atSource",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "$ssrg$source1568"
+                  },
+                  {
+                    "kind": "lambda",
+                    "parameter": "",
+                    "body": {
+                      "kind": "call",
+                      "callee": "arithmeticApply",
+                      "arguments": [
+                        {
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "curried-runtime-reference",
+                            "name": "_ssrg_int_add",
+                            "arity": 2
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "number"
+                            },
+                            "result": {
+                              "kind": "function",
+                              "parameter": {
+                                "kind": "number"
+                              },
+                              "result": {
+                                "kind": "number"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "kind": "number",
+                          "value": "1"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "2"
+                        }
+                      ],
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                ]
+              },
+              "right": {
+                "kind": "number",
+                "value": "3"
+              }
+            },
+            "elseBranch": {
+              "kind": "boolean",
+              "value": false
+            }
+          },
+          "thenBranch": {
+            "kind": "binary",
+            "operator": "===",
+            "left": {
               "kind": "runtime-call",
               "callee": "$ssrg$atSource",
               "arguments": [
                 {
                   "kind": "identifier",
-                  "name": "$ssrg$source1568"
+                  "name": "$ssrg$source1604"
                 },
                 {
                   "kind": "lambda",
                   "parameter": "",
                   "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_int_eq_dictionary"
-                    },
-                    "method": "eq",
+                    "kind": "call",
+                    "callee": "returnedArithmetic",
                     "arguments": [
                       {
-                        "kind": "runtime-call",
-                        "callee": "$ssrg$atSource",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "$ssrg$source1568"
-                          },
-                          {
-                            "kind": "lambda",
-                            "parameter": "",
-                            "body": {
-                              "kind": "call",
-                              "callee": "arithmeticApply",
-                              "arguments": [
-                                {
-                                  "kind": "checked-result",
-                                  "value": {
-                                    "kind": "curried-runtime-reference",
-                                    "name": "_ssrg_int_add",
-                                    "arity": 2
-                                  },
-                                  "type": {
-                                    "kind": "function",
-                                    "parameter": {
-                                      "kind": "number"
-                                    },
-                                    "result": {
-                                      "kind": "function",
-                                      "parameter": {
-                                        "kind": "number"
-                                      },
-                                      "result": {
-                                        "kind": "number"
-                                      }
-                                    }
-                                  }
-                                },
-                                {
-                                  "kind": "number",
-                                  "value": "1"
-                                },
-                                {
-                                  "kind": "number",
-                                  "value": "2"
-                                }
-                              ],
-                              "typeArguments": [
-                                {
-                                  "kind": "number"
-                                }
-                              ]
-                            }
-                          },
-                          {
-                            "kind": "boolean",
-                            "value": false
-                          }
-                        ]
+                        "kind": "number",
+                        "value": "1"
                       },
                       {
                         "kind": "number",
-                        "value": "3"
+                        "value": "2"
                       }
                     ]
                   }
@@ -2190,74 +2172,10 @@
                 }
               ]
             },
-            "elseBranch": {
-              "kind": "boolean",
-              "value": false
+            "right": {
+              "kind": "number",
+              "value": "3"
             }
-          },
-          "thenBranch": {
-            "kind": "runtime-call",
-            "callee": "$ssrg$atSource",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "$ssrg$source1604"
-              },
-              {
-                "kind": "lambda",
-                "parameter": "",
-                "body": {
-                  "kind": "dictionary-call",
-                  "dictionary": {
-                    "kind": "runtime-reference",
-                    "name": "_ssrg_int_eq_dictionary"
-                  },
-                  "method": "eq",
-                  "arguments": [
-                    {
-                      "kind": "runtime-call",
-                      "callee": "$ssrg$atSource",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "$ssrg$source1604"
-                        },
-                        {
-                          "kind": "lambda",
-                          "parameter": "",
-                          "body": {
-                            "kind": "call",
-                            "callee": "returnedArithmetic",
-                            "arguments": [
-                              {
-                                "kind": "number",
-                                "value": "1"
-                              },
-                              {
-                                "kind": "number",
-                                "value": "2"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "kind": "boolean",
-                          "value": false
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "number",
-                      "value": "3"
-                    }
-                  ]
-                }
-              },
-              {
-                "kind": "boolean",
-                "value": false
-              }
-            ]
           },
           "elseBranch": {
             "kind": "boolean",
@@ -3244,32 +3162,14 @@
                                     "elements": [
                                       {
                                         "kind": "binary",
-                                        "operator": "===",
+                                        "operator": "<",
                                         "left": {
-                                          "kind": "field-access",
-                                          "receiver": {
-                                            "kind": "dictionary-call",
-                                            "dictionary": {
-                                              "kind": "runtime-reference",
-                                              "name": "_ssrg_int_ord_dictionary"
-                                            },
-                                            "method": "compare",
-                                            "arguments": [
-                                              {
-                                                "kind": "number",
-                                                "value": "1"
-                                              },
-                                              {
-                                                "kind": "number",
-                                                "value": "2"
-                                              }
-                                            ]
-                                          },
-                                          "field": "tag"
+                                          "kind": "number",
+                                          "value": "1"
                                         },
                                         "right": {
-                                          "kind": "string",
-                                          "value": "Less"
+                                          "kind": "number",
+                                          "value": "2"
                                         }
                                       },
                                       {

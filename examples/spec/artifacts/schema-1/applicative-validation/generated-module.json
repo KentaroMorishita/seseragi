@@ -11,9 +11,7 @@
       "core.adt",
       "core.string",
       "core.int",
-      "core.string.eq-dictionary",
       "core.bool",
-      "core.int.ord-dictionary",
       "core.unit",
       "effect.core.flatMap",
       "effect.console.println"

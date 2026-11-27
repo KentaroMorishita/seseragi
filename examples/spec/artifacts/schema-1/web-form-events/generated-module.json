@@ -21,8 +21,7 @@
       "web.html.textarea",
       "web.html.select",
       "web.html.option",
-      "web.html.button",
-      "core.string.eq-dictionary"
+      "web.html.button"
     ]
   },
   "exports": [

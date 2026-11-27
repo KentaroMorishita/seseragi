@@ -17,11 +17,9 @@
     "anyPositive",
     "$ssrg$atSource",
     "_ssrg_collection_any",
-    "intOrd",
     "allPositive",
     "$ssrg$atSource",
     "_ssrg_collection_all",
-    "intOrd",
     "emptyValues",
     "yesNo",
     "number",
@@ -139,5 +137,5 @@
     "$ssrg$atSource",
     "allEmpty"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA;AAIAK;AAIAI;AAIAI;AAGAC;AAGAC;AAGAE;AAGAM;AAGAO;AAGAQ;AAGAQ;AAGAM;AAGAO;AAGAQ;AAGAQ;AAGAM;AAGAO;AAGAQ;AAGAQ"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA;AAIAK;AAIAG;AAIAG;AAGAC;AAGAC;AAGAE;AAGAM;AAGAO;AAGAQ;AAGAQ;AAGAM;AAGAO;AAGAQ;AAGAQ;AAGAM;AAGAO;AAGAQ;AAGAQ"
 }

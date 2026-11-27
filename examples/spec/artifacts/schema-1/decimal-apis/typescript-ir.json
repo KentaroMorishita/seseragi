@@ -669,7 +669,6 @@
     "core.bool.show",
     "core.decimal.eq-dictionary",
     "core.bool",
-    "core.int.eq-dictionary",
     "core.decimal.hash-dictionary",
     "json.decimal.encode",
     "json.encode-string",
@@ -825,10 +824,6 @@
     {
       "feature": "core.decimal.eq-dictionary",
       "local": "_ssrg_decimalEq"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.decimal.hash-dictionary",
@@ -5961,108 +5956,84 @@
                         "method": "show",
                         "arguments": [
                           {
-                            "kind": "runtime-call",
-                            "callee": "$ssrg$atSource",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "$ssrg$source3813"
-                              },
-                              {
-                                "kind": "lambda",
-                                "parameter": "",
-                                "body": {
-                                  "kind": "dictionary-call",
-                                  "dictionary": {
-                                    "kind": "runtime-reference",
-                                    "name": "_ssrg_int_eq_dictionary"
-                                  },
-                                  "method": "eq",
-                                  "arguments": [
-                                    {
-                                      "kind": "runtime-call",
-                                      "callee": "$ssrg$atSource",
+                            "kind": "binary",
+                            "operator": "===",
+                            "left": {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source3813"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_decimalHash"
+                                      },
+                                      "method": "hash",
                                       "arguments": [
                                         {
                                           "kind": "identifier",
-                                          "name": "$ssrg$source3813"
-                                        },
-                                        {
-                                          "kind": "lambda",
-                                          "parameter": "",
-                                          "body": {
-                                            "kind": "checked-result",
-                                            "value": {
-                                              "kind": "dictionary-call",
-                                              "dictionary": {
-                                                "kind": "runtime-reference",
-                                                "name": "_ssrg_decimalHash"
-                                              },
-                                              "method": "hash",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "huge"
-                                                }
-                                              ]
-                                            },
-                                            "type": {
-                                              "kind": "number"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "kind": "boolean",
-                                          "value": false
+                                          "name": "huge"
                                         }
                                       ]
                                     },
-                                    {
-                                      "kind": "runtime-call",
-                                      "callee": "$ssrg$atSource",
+                                    "type": {
+                                      "kind": "number"
+                                    }
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
+                                }
+                              ]
+                            },
+                            "right": {
+                              "kind": "runtime-call",
+                              "callee": "$ssrg$atSource",
+                              "arguments": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "$ssrg$source3826"
+                                },
+                                {
+                                  "kind": "lambda",
+                                  "parameter": "",
+                                  "body": {
+                                    "kind": "checked-result",
+                                    "value": {
+                                      "kind": "dictionary-call",
+                                      "dictionary": {
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_decimalHash"
+                                      },
+                                      "method": "hash",
                                       "arguments": [
                                         {
                                           "kind": "identifier",
-                                          "name": "$ssrg$source3826"
-                                        },
-                                        {
-                                          "kind": "lambda",
-                                          "parameter": "",
-                                          "body": {
-                                            "kind": "checked-result",
-                                            "value": {
-                                              "kind": "dictionary-call",
-                                              "dictionary": {
-                                                "kind": "runtime-reference",
-                                                "name": "_ssrg_decimalHash"
-                                              },
-                                              "method": "hash",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "same"
-                                                }
-                                              ]
-                                            },
-                                            "type": {
-                                              "kind": "number"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "kind": "boolean",
-                                          "value": false
+                                          "name": "same"
                                         }
                                       ]
+                                    },
+                                    "type": {
+                                      "kind": "number"
                                     }
-                                  ]
+                                  }
+                                },
+                                {
+                                  "kind": "boolean",
+                                  "value": false
                                 }
-                              },
-                              {
-                                "kind": "boolean",
-                                "value": false
-                              }
-                            ]
+                              ]
+                            }
                           }
                         ]
                       }
