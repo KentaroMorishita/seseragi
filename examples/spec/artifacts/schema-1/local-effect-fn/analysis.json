@@ -15048,6 +15048,17 @@
       "constraints": []
     },
     {
+      "identity": "std/time::durationBetween",
+      "name": "durationBetween",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "durationBetween arg1: Instant -> arg2: Instant -> Either<DurationError, Duration>",
+      "description": "Measures the Duration from an earlier Instant to a later one.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/multipart::empty",
       "name": "empty",
       "module": "std/http/multipart",

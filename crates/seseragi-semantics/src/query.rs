@@ -2430,6 +2430,7 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/time::hours" => "Converts exact hours into Duration.",
         "std/time::toNanoseconds" => "Returns a Duration's integer nanosecond count.",
         "std/time::addDuration" => "Adds two Duration values with range validation.",
+        "std/time::durationBetween" => "Measures the Duration from an earlier Instant to a later one.",
         "std/clock::sleep" => "Waits for a Duration through the Clock Effect capability.",
         "std/web/dom::app" => "Mounts a typed state-update-view application into a DOM target.",
         "std/web/html::renderToString" => "Renders typed HTML to an escaped fragment string.",

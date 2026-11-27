@@ -363,6 +363,11 @@ fn duration_operations_match_original_raw_strict_ts_bun_node_and_native() {
 }
 
 #[test]
+fn duration_between_matches_ts_and_native_on_every_edge() {
+    compare_clock_fixture("clock-duration-between", CLOCK_PROVIDER, false);
+}
+
+#[test]
 fn duration_projection_matches_ts_at_and_above_the_safe_int_boundary() {
     compare_clock_fixture("clock-duration-projection", PROVIDER, true);
 }

@@ -36,6 +36,10 @@ fn signature(name: &str) -> Option<(Vec<CoreType>, CoreType)> {
             vec![duration(), duration()],
             named("std/prelude::Either", vec![error(), duration()]),
         ),
+        "std/time::durationBetween" => (
+            vec![value("std/time::Instant"), value("std/time::Instant")],
+            named("std/prelude::Either", vec![error(), duration()]),
+        ),
         "std/time::NegativeDuration" => (vec![value("std/prelude::Int")], error()),
         "std/time::DurationOutsideRange" => (vec![], error()),
         "std/clock::now" | "std/clock::sleep" => (

@@ -82,6 +82,7 @@ export type {
 export {
   addDuration,
   DurationOutsideRange,
+  durationBetween,
   hours,
   milliseconds,
   minutes,

@@ -79,6 +79,7 @@ fn all_duration_operations_reject_forged_result_types_evidence_and_source_arity(
         "fn probe -> Either<time.DurationError, time.Duration> = time.hours 1",
         "fn probe value: time.Duration -> Int = time.toNanoseconds value",
         "fn probe right: time.Duration -> left: time.Duration -> Either<time.DurationError, time.Duration> = time.addDuration right left",
+        "fn probe earlier: time.Instant -> later: time.Instant -> Either<time.DurationError, time.Duration> = time.durationBetween earlier later",
     ] {
         let module = checked(&format!(
             "import * as time from \"std/time\"\n{declaration}\npub effect fn main = succeed ()\n"
