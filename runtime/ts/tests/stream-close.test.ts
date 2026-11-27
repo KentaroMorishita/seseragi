@@ -1,11 +1,14 @@
 import { expect, test } from "bun:test"
 import {
+  acquireRelease,
   createEffectExecution,
   type EffectContext,
   fail,
   registerResourceFinalizer,
   run,
   scoped,
+  succeed,
+  unit,
   withResourceAcquisition,
   yieldNow,
 } from "../src/effect"
@@ -834,4 +837,61 @@ test("merge prefers a left failure from the same turn through flatMap", async ()
   const right = streams.fromEffect(fail("right"))
   const result = await run(streams.runCollect(streams.merge(right, left)), {})
   expect(result).toEqual({ kind: "failure", error: "left" })
+})
+
+test("resources a branch takes over are released newest first", async () => {
+  const log: string[] = []
+  const held = (name: string) =>
+    streams.fromEffect(
+      acquireRelease(succeed(name), () => async () => {
+        log.push(`release-${name}`)
+        return unit
+      })
+    )
+  const result = await run(
+    streams.runCollect(
+      streams.zip(
+        streams.fromArray([1]),
+        streams.flatMap(() => held("inner"), held("outer"))
+      )
+    ),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  expect(log).toEqual(["release-inner", "release-outer"])
+})
+
+test("a buffer stopped while closing its finished source keeps its failure", async () => {
+  const capacity = streams.bufferCapacity(1)
+  if (capacity.tag !== "Right") throw new Error("capacity")
+  const source = streams.fromPull<unknown, never, number>(() => {
+    let sent = false
+    return {
+      pull: async () => {
+        if (sent) return { done: true, value: undefined }
+        sent = true
+        return { done: false, value: 1 }
+      },
+      close: async () => {
+        await delay(5)
+        throw new Error("close failed")
+      },
+    }
+  })
+  // `map` shares its source's close between the callers.
+  await expect(
+    run(
+      streams.runForEach(
+        () => async () => {
+          await delay(1)
+          return unit
+        },
+        streams.buffer(
+          capacity.value,
+          streams.map((value: number) => value, source)
+        )
+      ),
+      {}
+    )
+  ).rejects.toThrow("close failed")
 })

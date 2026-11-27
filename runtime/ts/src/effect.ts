@@ -45,7 +45,12 @@ const effectContext = Symbol("seseragi.effect-context")
 type ResourceFinalizerEntry = {
   active: boolean
   readonly finalizer: EffectResourceFinalizer
+  // When it was registered, so a scope that takes entries over from another
+  // still releases them in reverse order of acquisition.
+  readonly order: number
 }
+
+let finalizerOrder = 0
 
 // `handOverExecution` reads the finalizers, acquisitions and state too.
 class ResourceScope {
@@ -64,7 +69,11 @@ class ResourceScope {
         unregister: () => undefined,
       })
     }
-    const entry: ResourceFinalizerEntry = { active: true, finalizer }
+    const entry: ResourceFinalizerEntry = {
+      active: true,
+      finalizer,
+      order: finalizerOrder++,
+    }
     this.finalizers.push(entry)
     return Object.freeze({
       ready: Promise.resolve(),
@@ -370,16 +379,37 @@ export function handOverExecution(
   if (!busy && finalizers.length === 0) return false
   const ownerScope = resourceScopeOf(owner)
   if (busy || ownerScope.state !== "open") {
-    registerResourceFinalizer(owner, () => execution.close())
+    // Kept whole, it is released where its oldest resource would be.
+    const first = finalizers.find((entry) => entry.active)
+    if (ownerScope.state === "closed" || first === undefined) {
+      registerResourceFinalizer(owner, () => execution.close())
+    } else {
+      insertInOrder(ownerScope.finalizers, {
+        active: true,
+        finalizer: () => execution.close(),
+        order: first.order,
+      })
+    }
     return true
   }
   // The same entries move, so their registrations can still unregister them.
   for (const entry of finalizers.splice(0)) {
-    if (entry.active) ownerScope.finalizers.push(entry)
+    if (entry.active) insertInOrder(ownerScope.finalizers, entry)
   }
   scope.owner = ownerScope
   void execution.close()
   return true
+}
+
+function insertInOrder(
+  finalizers: ResourceFinalizerEntry[],
+  entry: ResourceFinalizerEntry
+): void {
+  let index = finalizers.length
+  while (index > 0 && (finalizers[index - 1]?.order ?? 0) > entry.order) {
+    index -= 1
+  }
+  finalizers.splice(index, 0, entry)
 }
 
 /** Internal: whether an execution is still acquiring a resource. */

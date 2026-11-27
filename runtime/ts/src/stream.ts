@@ -961,17 +961,15 @@ function settleBranch(branch: Branch<unknown>, mode: Settling): Promise<void> {
     (branch.settling === "close" && mode !== "close") ||
     (branch.settling === "stop" && mode === "cancel")
   ) {
-    // The cursor closes only once. A branch closing normally that is then
-    // stopped, or one closing that its parent then cancels, cancels its
-    // execution, since the close may be waiting for that notice; what opening
-    // acquired still waits for the close. The close then fails or not
-    // depending on how far it had got, so its failure goes to those already
-    // waiting for it, not to the one that came later.
+    // A branch closing normally that is then stopped, or one stopping that
+    // its parent then cancels, asks its cursor to close again and cancels
+    // its execution, since the close may be waiting for that notice. A
+    // cursor that shares its close waits for it and reports its failure.
+    // What opening acquired still waits for the close.
     branch.settling = mode
-    const closing = branch.closing
     branch.closing = runCleanups([
+      () => branch.cursor.close(),
       () => branch.execution.cancel(),
-      () => closing.catch(() => undefined),
     ])
   }
   return branch.closing
