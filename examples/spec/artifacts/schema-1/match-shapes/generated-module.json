@@ -13,7 +13,6 @@
       "core.int.add",
       "core.unit",
       "core.bool",
-      "core.int.eq-dictionary",
       "core.int.subtract"
     ]
   },

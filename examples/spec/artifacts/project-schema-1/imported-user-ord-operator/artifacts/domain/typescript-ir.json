@@ -5,26 +5,16 @@
   "runtimeSources": [
     {
       "source": "project/imported-user-ord-operator/src/domain.ssrg",
-      "start": 99,
-      "end": 124
-    },
-    {
-      "source": "project/imported-user-ord-operator/src/domain.ssrg",
       "start": 204,
       "end": 234
     }
   ],
   "runtimeRequirements": [
-    "core.int.eq-dictionary",
     "core.bool",
     "core.int",
     "core.int.ord-dictionary"
   ],
   "imports": [
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
-    },
     {
       "feature": "core.int.ord-dictionary",
       "local": "_ssrg_int_ord_dictionary"
@@ -88,48 +78,24 @@
               }
             ],
             "body": {
-              "kind": "runtime-call",
-              "callee": "$ssrg$atSource",
-              "arguments": [
-                {
+              "kind": "binary",
+              "operator": "===",
+              "left": {
+                "kind": "field-access",
+                "receiver": {
                   "kind": "identifier",
-                  "name": "$ssrg$source99"
+                  "name": "left"
                 },
-                {
-                  "kind": "lambda",
-                  "parameter": "",
-                  "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_int_eq_dictionary"
-                    },
-                    "method": "eq",
-                    "arguments": [
-                      {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "identifier",
-                          "name": "left"
-                        },
-                        "field": "value"
-                      },
-                      {
-                        "kind": "field-access",
-                        "receiver": {
-                          "kind": "identifier",
-                          "name": "right"
-                        },
-                        "field": "value"
-                      }
-                    ]
-                  }
+                "field": "value"
+              },
+              "right": {
+                "kind": "field-access",
+                "receiver": {
+                  "kind": "identifier",
+                  "name": "right"
                 },
-                {
-                  "kind": "boolean",
-                  "value": false
-                }
-              ]
+                "field": "value"
+              }
             },
             "origin": {
               "source": "domain.ssrg",

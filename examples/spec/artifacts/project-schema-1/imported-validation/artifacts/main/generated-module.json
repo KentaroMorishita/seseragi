@@ -20,7 +20,6 @@
       "core.string.show",
       "core.string.debug",
       "core.bool",
-      "core.string.eq-dictionary",
       "core.unit",
       "effect.core.flatMap",
       "core.validation.invalid",

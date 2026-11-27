@@ -67,7 +67,6 @@
       "core.bool.show",
       "core.decimal.eq-dictionary",
       "core.bool",
-      "core.int.eq-dictionary",
       "core.decimal.hash-dictionary",
       "json.decimal.encode",
       "json.encode-string",

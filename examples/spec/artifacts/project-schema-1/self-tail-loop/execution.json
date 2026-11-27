@@ -15,12 +15,10 @@
   "expected": {
     "runtimeRequirements": [
       "core.int",
-      "core.int.ord-dictionary",
       "core.bool",
       "core.int.subtract",
       "core.int.add",
-      "core.unit",
-      "core.int.eq-dictionary"
+      "core.unit"
     ],
     "process": {
       "exitCode": 0

@@ -18,8 +18,7 @@
       "core.int.add",
       "core.unit",
       "core.list.from-array",
-      "core.bool",
-      "core.int.eq-dictionary"
+      "core.bool"
     ],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",

@@ -39,7 +39,6 @@
       "value": "Unit"
     },
     "runtimeRequirements": [
-      "core.int.eq-dictionary",
       "core.bool",
       "core.int",
       "core.int.ord-dictionary",

@@ -38,7 +38,6 @@
       "signal.type",
       "signal.subscription-type",
       "signal.change-type",
-      "core.int.eq-dictionary",
       "core.bool",
       "core.int",
       "core.int.remainder",

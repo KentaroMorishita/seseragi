@@ -5,11 +5,6 @@
   "runtimeSources": [
     {
       "source": "project/imported-validation/src/main.ssrg",
-      "start": 308,
-      "end": 314
-    },
-    {
-      "source": "project/imported-validation/src/main.ssrg",
       "start": 398,
       "end": 434
     },
@@ -117,7 +112,6 @@
     "core.string.show",
     "core.string.debug",
     "core.bool",
-    "core.string.eq-dictionary",
     "core.unit",
     "effect.core.flatMap",
     "core.validation.invalid",
@@ -149,10 +143,6 @@
     {
       "feature": "core.string.debug",
       "local": "_ssrg_debug_stringDebug"
-    },
-    {
-      "feature": "core.string.eq-dictionary",
-      "local": "_ssrg_string_eq_dictionary"
     },
     {
       "feature": "effect.core.flatMap",
@@ -533,40 +523,16 @@
                     }
                   ],
                   "value": {
-                    "kind": "runtime-call",
-                    "callee": "$ssrg$atSource",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "$ssrg$source308"
-                      },
-                      {
-                        "kind": "lambda",
-                        "parameter": "",
-                        "body": {
-                          "kind": "dictionary-call",
-                          "dictionary": {
-                            "kind": "runtime-reference",
-                            "name": "_ssrg_string_eq_dictionary"
-                          },
-                          "method": "eq",
-                          "arguments": [
-                            {
-                              "kind": "identifier",
-                              "name": "a"
-                            },
-                            {
-                              "kind": "identifier",
-                              "name": "b"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "kind": "boolean",
-                        "value": false
-                      }
-                    ]
+                    "kind": "binary",
+                    "operator": "===",
+                    "left": {
+                      "kind": "identifier",
+                      "name": "a"
+                    },
+                    "right": {
+                      "kind": "identifier",
+                      "name": "b"
+                    }
                   }
                 }
               ],

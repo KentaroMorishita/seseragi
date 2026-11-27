@@ -44,7 +44,6 @@
       "core.iterator",
       "core.int",
       "core.maybe",
-      "core.int.ord-dictionary",
       "core.bool",
       "core.maybe.just",
       "core.int.add",
@@ -52,7 +51,6 @@
       "core.string",
       "core.iterator.next",
       "core.adt",
-      "core.int.eq-dictionary",
       "core.unit",
       "effect.console.println",
       "core.iterator.unfold"
