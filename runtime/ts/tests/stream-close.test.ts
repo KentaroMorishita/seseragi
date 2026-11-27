@@ -394,28 +394,6 @@ test("a parent cancellation reaches a buffer closing its source", async () => {
   expect(log).toEqual(["closed", "open-released"])
 })
 
-test("a pull whose cleanup waits for the close does not block zip", async () => {
-  const source = streams.fromPull<unknown, never, number>(() => {
-    let closed = (): void => undefined
-    const closing = new Promise<void>((resolve) => {
-      closed = resolve
-    })
-    return {
-      pull: async (context) => {
-        context.onCancel(() => closing)
-        await yieldNow()(undefined, context)
-        return { done: false, value: 1 }
-      },
-      close: () => closed(),
-    }
-  })
-  const result = await run(
-    streams.runCollect(streams.zip(source, streams.empty)),
-    {}
-  )
-  expect(result.kind).toBe("success")
-})
-
 test("an inner buffer closes before the resource it was opened with", async () => {
   const log: string[] = []
   const capacity = streams.bufferCapacity(1)
@@ -568,28 +546,6 @@ test("a parent cancellation reaches a close that waits for its notice", async ()
   await root.cancel()
   await running
   expect(log).toEqual(["closed", "open-released"])
-})
-
-test("a pull finalizer that waits for the close does not block zip", async () => {
-  const source = streams.fromPull<unknown, never, number>(() => {
-    let closed = (): void => undefined
-    const closing = new Promise<void>((resolve) => {
-      closed = resolve
-    })
-    return {
-      pull: async (context) => {
-        registerResourceFinalizer(context, () => closing)
-        await untilStopped(context)
-        return { done: true, value: undefined }
-      },
-      close: () => closed(),
-    }
-  })
-  const result = await run(
-    streams.runCollect(streams.zip(source, streams.empty)),
-    {}
-  )
-  expect(result.kind).toBe("success")
 })
 
 test("an inner stream keeps what it borrows from the outer pull", async () => {
@@ -779,4 +735,66 @@ test("a parent cancellation reaches a stopped branch closing its source", async 
   await root.cancel()
   await running
   expect(log).toEqual(["closed", "open-released"])
+})
+
+test("a close that comes while an inner stream closes waits for it", async () => {
+  let finishClose = (): void => undefined
+  const slow = streams.fromPull<unknown, never, number>(() => {
+    let sent = false
+    return {
+      pull: async () => {
+        if (sent) return { done: true, value: undefined }
+        sent = true
+        return { done: false, value: 1 }
+      },
+      close: () =>
+        new Promise<void>((resolve) => {
+          finishClose = resolve
+        }),
+    }
+  })
+  // `concat` shares one close between the callers; `slow` comes second.
+  const inner = streams.concat(slow, streams.empty)
+  const execution = createEffectExecution()
+  const cursor = await streams
+    .flatMap(() => inner, streams.singleton(0))
+    .open({}, execution.context)
+  expect((await cursor.next()).done).toBe(false)
+  // The inner stream ends, so this pull closes it and waits.
+  const pulling = cursor.next()
+  await delay(1)
+  let closed = false
+  const closing = cursor.close().then(() => {
+    closed = true
+  })
+  await delay(1)
+  expect(closed).toBe(false)
+  finishClose()
+  await closing
+  expect((await pulling).done).toBe(true)
+  await execution.close()
+})
+
+test("a slow release of the stopped pull finishes before the close", async () => {
+  const log: string[] = []
+  const source = streams.fromPull<unknown, never, number>(() => ({
+    pull: async (context) => {
+      registerResourceFinalizer(context, async () => {
+        log.push("release-start")
+        await delay(20)
+        log.push("released")
+      })
+      await untilStopped(context)
+      return { done: true, value: undefined }
+    },
+    close: () => {
+      log.push("closed")
+    },
+  }))
+  const result = await run(
+    streams.runCollect(streams.zip(source, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+  expect(log).toEqual(["release-start", "released", "closed"])
 })

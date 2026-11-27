@@ -62,8 +62,7 @@ test("a resource an execution holds moves to its owner", async () => {
   const released = registerResourceFinalizer(execution.context, () => {
     log.push("unregistered")
   })
-  expect(handOverExecution(execution, owner.context)).toBe(false)
-  await execution.close()
+  expect(handOverExecution(execution, owner.context)).toBe(true)
   // A moved resource can still be unregistered.
   released.unregister()
   expect(log).toEqual([])
@@ -81,4 +80,23 @@ test("an execution holding a cleanup is kept until its owner closes", async () =
   expect(handOverExecution(execution, owner.context)).toBe(true)
   await owner.cancel()
   expect(cancelled).toBe(true)
+})
+
+test("a moved finalizer may still register in its own scope", async () => {
+  const log: string[] = []
+  const owner = createEffectExecution()
+  registerResourceFinalizer(owner.context, () => {
+    log.push("owner")
+  })
+  const execution = createEffectExecution(owner.context)
+  registerResourceFinalizer(execution.context, () => {
+    log.push("release")
+    registerResourceFinalizer(execution.context, () => {
+      log.push("acquired-while-releasing")
+    })
+    log.push("used")
+  })
+  expect(handOverExecution(execution, owner.context)).toBe(true)
+  await owner.close()
+  expect(log).toEqual(["release", "used", "acquired-while-releasing", "owner"])
 })

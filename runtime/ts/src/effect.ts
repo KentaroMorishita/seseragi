@@ -52,9 +52,12 @@ class ResourceScope {
   readonly finalizers: ResourceFinalizerEntry[] = []
   readonly acquisitions = new Set<Promise<void>>()
   state: "open" | "closing" | "closed" = "open"
+  // The scope that took over what this one held; see `handOverExecution`.
+  owner: ResourceScope | undefined
   private closing: Promise<void> | undefined
 
   register(finalizer: EffectResourceFinalizer): EffectResourceRegistration {
+    if (this.owner !== undefined) return this.owner.register(finalizer)
     if (this.state === "closed") {
       return Object.freeze({
         ready: runResourceFinalizer(finalizer),
@@ -72,6 +75,7 @@ class ResourceScope {
   }
 
   close(): Promise<void> {
+    if (this.owner !== undefined) return Promise.resolve()
     if (this.closing !== undefined) return this.closing
     this.state = "closing"
     this.closing = this.drain()
@@ -81,6 +85,7 @@ class ResourceScope {
   async acquire<Resource>(
     action: () => Resource | Promise<Resource>
   ): Promise<Resource> {
+    if (this.owner !== undefined) return this.owner.acquire(action)
     let completed = (): void => undefined
     const pending = new Promise<void>((resolve) => {
       completed = resolve
@@ -331,27 +336,29 @@ const executionCleanups = new WeakMap<
 
 /**
  * Internal: hands what an execution that has finished its work holds over
- * to `owner`, which releases it when it closes. Its resources move to the
- * owner's scope, and it returns false: the execution is empty and may be
- * reused or closed. One with a cleanup or an acquisition still registered
- * is itself kept until the owner closes, and it returns true. It lives
- * outside `createEffectExecution`, so a program without streams does not
- * carry it.
+ * to `owner`, which releases it when it closes, and closes the execution.
+ * Its resources move to the owner's scope, which also takes what is later
+ * registered in its own, as by a finalizer that acquires. One with a cleanup
+ * or an acquisition still registered is kept whole until the owner closes.
+ * It returns false when the execution holds nothing, and leaves it to the
+ * caller. It lives outside `createEffectExecution`, so a program without
+ * streams does not carry it.
  */
 export function handOverExecution(
   execution: EffectExecution,
   owner: EffectContext
 ): boolean {
   const scope = resourceScopes.get(execution.context)
-  const finalizers = scope?.finalizers ?? []
+  if (scope === undefined || scope.state !== "open") return false
+  const finalizers = scope.finalizers
   // A finished `scoped` leaves an inactive entry behind.
   while (finalizers.at(-1)?.active === false) finalizers.pop()
+  const busy =
+    scope.acquisitions.size > 0 ||
+    (executionCleanups.get(execution.context)?.size ?? 0) > 0
+  if (!busy && finalizers.length === 0) return false
   const ownerScope = resourceScopeOf(owner)
-  if (
-    (scope?.acquisitions.size ?? 0) > 0 ||
-    (executionCleanups.get(execution.context)?.size ?? 0) > 0 ||
-    (finalizers.length > 0 && ownerScope.state !== "open")
-  ) {
+  if (busy || ownerScope.state !== "open") {
     registerResourceFinalizer(owner, () => execution.close())
     return true
   }
@@ -359,7 +366,14 @@ export function handOverExecution(
   for (const entry of finalizers.splice(0)) {
     if (entry.active) ownerScope.finalizers.push(entry)
   }
-  return false
+  scope.owner = ownerScope
+  void execution.close()
+  return true
+}
+
+/** Internal: whether an execution is still acquiring a resource. */
+export function executionAcquiring(execution: EffectExecution): boolean {
+  return (resourceScopes.get(execution.context)?.acquisitions.size ?? 0) > 0
 }
 
 export type EffectFailure<Failure> = {

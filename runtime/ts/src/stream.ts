@@ -7,6 +7,7 @@ import {
   type Effect,
   type EffectContext,
   type EffectExecution,
+  executionAcquiring,
   handOverExecution,
   mapError as mapEffectError,
   throwIfCancelled,
@@ -221,10 +222,14 @@ export function flatMap<Environment, Failure, Value, Result>(
   return makeStream(async (environment, context) => {
     const outer = await source.open(environment, context)
     let inner: OwnedCursor<Result> | undefined
-    const closeInner = async (): Promise<void> => {
-      const current = inner
-      inner = undefined
-      await current?.close()
+    // A close that comes while the inner stream is closing waits for it.
+    let innerClosing: Promise<void> = Promise.resolve()
+    const closeInner = (): Promise<void> => {
+      if (inner !== undefined) {
+        innerClosing = inner.close()
+        inner = undefined
+      }
+      return innerClosing
     }
     return cursor(
       async (pull = context) => {
@@ -336,11 +341,10 @@ export function concat<Environment, Failure, Value>(
   prefix: Stream<Environment, Failure, Value>
 ): Stream<Environment, Failure, Value> {
   return makeStream(async (environment, context) => {
+    const prefixCursor = await prefix.open(environment, context)
     let current: OwnedCursor<Value> = {
-      cursor: await prefix.open(environment, context),
-      close: async () => {
-        await current.cursor.close()
-      },
+      cursor: prefixCursor,
+      close: prefixCursor.close,
     }
     let suffixStarted = false
     return cursor(
@@ -728,10 +732,17 @@ async function duringPull<Value>(
   }
   const execution = createEffectExecution(context, true)
   const unlink = pull.onCancel(() => execution.cancel())
-  const forget = stopsWith(context, () => stopPullsUnder(execution.context))
+  // While opening, the execution belongs to the pull; afterwards, only the
+  // pulls of the branches opened in it do.
+  let opening = true
+  const forget = runsPullsIn(context, () => [
+    ...(opening ? [execution] : []),
+    ...pullsUnder(execution.context),
+  ])
   let opened: StreamCursor<Value> | undefined
   try {
     opened = await open(execution.context)
+    opening = false
   } catch (error) {
     unlink()
     forget()
@@ -812,9 +823,10 @@ async function releaseOpening(
  * - Stopping the branch cancels the pull still running, so it never resumes,
  *   and releases what it acquired. Then the cursor closes, while the branch's
  *   context is still live, and what opening acquired is released last. This
- *   is the native order.
- * - What a pull that finishes acquired stays until the branch ends. Its
- *   execution then serves the next pull too.
+ *   is the native order. A pull still acquiring lets the cursor close while
+ *   it stops, since the acquisition may be waiting for that close.
+ * - What a finished pull acquired moves to the branch and stays until the
+ *   branch ends. An execution that acquired nothing serves the next pull.
  * - Stopping a branch stops the pulls of the branches opened under it too,
  *   such as the sides of a nested `zip`, before any cursor closes.
  * - The pull's `onCancel` cleanups may share the source's close, so their
@@ -863,7 +875,7 @@ async function openBranch<Environment, Failure, Value>(
       settling: undefined,
       closing: undefined,
     }
-    forget = stopsWith(context, () => stopBranchPulls(branch))
+    forget = runsPullsIn(context, () => branchPulls(branch))
     cancel = () => settleBranch(branch, "cancel")
     return branch
   } catch (error) {
@@ -882,9 +894,8 @@ async function pullBranch<Value>(
   try {
     return await branch.cursor.next(pull.context)
   } finally {
-    // What a finished pull acquired stays until the branch ends. A pull
-    // that left a cleanup keeps its execution, and the next pull gets a new
-    // one.
+    // What a finished pull acquired moves to the branch, and the next pull
+    // gets a new execution.
     if (
       branch.pull === pull &&
       !pull.context.cancelled &&
@@ -895,32 +906,35 @@ async function pullBranch<Value>(
   }
 }
 
-// What stops the pulls of the branches opened in each context.
-const pullStoppers = new WeakMap<EffectContext, Set<() => Promise<void>>>()
+// The pulls running in each context: those of the branches opened in it,
+// and of the branches opened under those.
+const pullsIn = new WeakMap<EffectContext, Set<() => EffectExecution[]>>()
 
-function stopsWith(context: EffectContext, stop: () => Promise<void>) {
-  let stoppers = pullStoppers.get(context)
-  if (stoppers === undefined) {
-    stoppers = new Set()
-    pullStoppers.set(context, stoppers)
+function runsPullsIn(
+  context: EffectContext,
+  pulls: () => EffectExecution[]
+): () => void {
+  let entries = pullsIn.get(context)
+  if (entries === undefined) {
+    entries = new Set()
+    pullsIn.set(context, entries)
   }
-  stoppers.add(stop)
+  entries.add(pulls)
   return (): void => {
-    stoppers.delete(stop)
+    entries.delete(pulls)
   }
 }
 
-// Every stop starts at once, so no pull resumes while another is stopping.
-async function stopPullsUnder(context: EffectContext): Promise<void> {
-  await settleAll([...(pullStoppers.get(context) ?? [])].map((stop) => stop()))
+function pullsUnder(context: EffectContext): EffectExecution[] {
+  return [...(pullsIn.get(context) ?? [])].flatMap((pulls) => pulls())
 }
 
-// Cancels the branch's pull and those of the branches opened under it.
-async function stopBranchPulls(branch: Branch<unknown>): Promise<void> {
-  await settleAll([
-    branch.pull?.cancel(),
-    stopPullsUnder(branch.execution.context),
-  ])
+// The branch's pull and those of the branches opened under it.
+function branchPulls(branch: Branch<unknown>): EffectExecution[] {
+  return [
+    ...(branch.pull === undefined ? [] : [branch.pull]),
+    ...pullsUnder(branch.execution.context),
+  ]
 }
 
 async function settleAll(
@@ -997,49 +1011,27 @@ async function runSettleBranch(
       ])
       return
     }
-    const stopping = stopBranchPulls(branch)
-    // A pull that cannot finish stopping until its source closes, such as
-    // an acquisition the close ends, lets the cursor close meanwhile.
-    const stopped = async (): Promise<void> => {
-      await settlesWithinTurns(stopping)
-    }
-    await runCleanups(
+    // Every pull stops at once, so none resumes while another is stopping.
+    const pulls = branchPulls(branch)
+    // An acquisition cannot be stopped, and it may wait for the cursor to
+    // close, so a pull still acquiring lets the cursor close meanwhile.
+    const acquiring = pulls.some(executionAcquiring)
+    const stopping = settleAll(pulls.map((pull) => pull.cancel()))
+    // A parent's cancellation reaches the branch's execution as it reaches
+    // any other, while the cursor closes.
+    const closing =
       mode === "stop"
-        ? [
-            stopped,
-            closeCursor,
-            () => stopping,
-            () => branch.execution.cancel(),
-          ]
-        : // A parent's cancellation reaches the branch's execution as it
-          // reaches any other, while the cursor closes.
-          [
-            stopped,
-            () => settleAll([closeCursor(), branch.execution.cancel()]),
-            () => stopping,
-          ]
-    )
+        ? closeCursor
+        : () => settleAll([closeCursor(), branch.execution.cancel()])
+    const steps: Cleanup[] = acquiring
+      ? [() => settleAll([stopping, closing()])]
+      : [() => stopping, closing]
+    if (mode === "stop") steps.push(() => branch.execution.cancel())
+    await runCleanups(steps)
   } finally {
     closed()
     branch.detach()
   }
-}
-
-// Whether `work` settles before the event loop has run two more turns. A
-// stopped pull drains its cleanups over one turn before it releases what it
-// acquired.
-async function settlesWithinTurns(work: Promise<unknown>): Promise<boolean> {
-  const turn = (): Promise<void> =>
-    new Promise((resolve) => setTimeout(resolve, 0))
-  return await Promise.race([
-    work.then(
-      () => true,
-      () => true
-    ),
-    turn()
-      .then(turn)
-      .then(() => false),
-  ])
 }
 
 async function closeBranches(
