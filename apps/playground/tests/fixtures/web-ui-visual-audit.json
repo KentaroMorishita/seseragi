@@ -101,10 +101,10 @@
     },
     {
       "id": "seseragi-landing-page",
-      "identity": "deep green editorial landing page with forest, river, and interactive code",
-      "photoId": "photo-1760344594784-60ff14035eb0",
+      "identity": "deep green editorial landing page with self-contained SVG forest, river, brand emblem, and interactive code",
+      "photoId": null,
       "photoGroup": "seseragi-landing-page",
-      "layoutMarkers": ["objectFit: \"cover\"", "minHeight: \"100vh\""],
+      "layoutMarkers": ["svg.svg {", "minHeight: \"100vh\""],
       "states": ["initial", "composable", "alive"],
       "artifacts": [
         "docs/reviews/issue-244/visual/desktop-initial.png",

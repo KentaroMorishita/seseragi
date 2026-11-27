@@ -1,15 +1,48 @@
-// 川の写真と短い宣言文で、後半へ視線を切り替える全幅セクションです。
+// 深い森と静かな川を描くインライン SVG 背景と短い宣言文で、後半へ視線を切り替える全幅セクションです。
 import * as html from "std/web/html"
+import * as svg from "std/web/svg"
 import * as styles from "../ui/styles"
 
-fn riverImage riverImageUrl: html.WebUrl -> html.Html<Task<Unit>> = html.img {
-  src: riverImageUrl,
-  alt: "深い森の中を流れる静かな川",
-  width: 2000,
-  height: 1200,
-  loading: "lazy",
-  style: html.style { height: "100%", objectFit: "cover", width: "100%", },
+fn riverArtwork -> html.Html<Task<Unit>> = svg.svg {
+  viewBox: "0 0 1200 540",
+  role: "img",
+  ariaLabel: "深い森の中を流れる静かな川",
+  style: html.style {
+    display: "block",
+    height: "100%",
+    left: "0",
+    position: "absolute",
+    top: "0",
+    width: "100%",
+  },
+  children: [
+    svg.rect { x: 0.0, y: 0.0, width: 1200.0, height: 540.0, fill: "#041612" },
+    svg.path {
+      d: "M 0 180 C 260 120, 480 240, 760 170 C 960 120, 1080 150, 1200 130 L 1200 540 L 0 540 Z",
+      fill: "#07261f",
+    },
+    svg.path {
+      d: "M 0 280 C 280 210, 520 330, 820 250 C 980 205, 1100 240, 1200 220 L 1200 540 L 0 540 Z",
+      fill: "#0a342a",
+    },
+    svg.path {
+      d: "M 0 360 C 240 310, 520 400, 860 330 C 1020 298, 1120 330, 1200 315",
+      fill: "none",
+      stroke: "#2dd4bf",
+      strokeWidth: "2.5",
+      opacity: 0.45,
+    },
+    svg.path {
+      d: "M 0 410 C 300 355, 580 445, 900 380 C 1040 352, 1130 375, 1200 365",
+      fill: "none",
+      stroke: "#79d7ab",
+      strokeWidth: "2.0",
+      opacity: 0.35,
+    },
+    svg.circle { cx: 940.0, cy: 140.0, r: 160.0, fill: "#134e4a", opacity: 0.35 },
+  ],
 }
+  |> svg.toHtml
 
 fn imageOverlay -> html.Html<Task<Unit>> = html.div {
   style: html.style {
@@ -23,61 +56,60 @@ fn imageOverlay -> html.Html<Task<Unit>> = html.div {
   children: "",
 }
 
-pub fn imageStatement riverImageUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.section {
-    style: html.style {
-      height: "clamp(420px, 60vw, 660px)",
-      overflow: "hidden",
-      position: "relative",
-    },
-    children: [
-      riverImage riverImageUrl,
-      imageOverlay (),
-      html.div {
-        style: html.style {
-          alignItems: "center",
-          bottom: "0",
-          display: "flex",
-          left: "0",
-          position: "absolute",
-          right: "0",
-          top: "0",
-        },
-        children: html.div {
-          style: styles.containerStyle (),
-          children: [
-            html.p {
-              style: styles.eyebrowStyle (),
-              children: "Not just another language",
-            },
-            html.blockquote {
-              style: html.style {
-                color: "#f1fff8",
-                fontSize: "clamp(28px, 5.2vw, 56px)",
-                fontWeight: "600",
-                letterSpacing: "-0.02em",
-                lineHeight: "1.12",
-                marginBottom: "0",
-                marginLeft: "0",
-                marginRight: "0",
-                marginTop: "20px",
-                maxWidth: "820px",
-              },
-              children: "複雑なアプリを、美しいまま書く。",
-            },
-            html.p {
-              style: html.style {
-                color: "#c0d6cc",
-                fontSize: "clamp(15px, 1.8vw, 17px)",
-                lineHeight: "1.78",
-                marginBottom: "0",
-                marginTop: "20px",
-                maxWidth: "560px",
-              },
-              children: "理想論ではなく、実際に動くコードとして形になり始めています。型と流れがそのままアプリの土台になる——そこが Seseragi の核です。",
-            },
-          ],
-        },
+pub fn imageStatement -> html.Html<Task<Unit>> = html.section {
+  style: html.style {
+    height: "clamp(420px, 60vw, 660px)",
+    overflow: "hidden",
+    position: "relative",
+  },
+  children: [
+    riverArtwork (),
+    imageOverlay (),
+    html.div {
+      style: html.style {
+        alignItems: "center",
+        bottom: "0",
+        display: "flex",
+        left: "0",
+        position: "absolute",
+        right: "0",
+        top: "0",
       },
-    ],
-  }
+      children: html.div {
+        style: styles.containerStyle (),
+        children: [
+          html.p {
+            style: styles.eyebrowStyle (),
+            children: "Not just another language",
+          },
+          html.blockquote {
+            style: html.style {
+              color: "#f1fff8",
+              fontSize: "clamp(28px, 5.2vw, 56px)",
+              fontWeight: "600",
+              letterSpacing: "-0.02em",
+              lineHeight: "1.12",
+              marginBottom: "0",
+              marginLeft: "0",
+              marginRight: "0",
+              marginTop: "20px",
+              maxWidth: "820px",
+            },
+            children: "複雑なアプリを、美しいまま書く。",
+          },
+          html.p {
+            style: html.style {
+              color: "#c0d6cc",
+              fontSize: "clamp(15px, 1.8vw, 17px)",
+              lineHeight: "1.78",
+              marginBottom: "0",
+              marginTop: "20px",
+              maxWidth: "560px",
+            },
+            children: "理想論ではなく、実際に動くコードとして形になり始めています。型と流れがそのままアプリの土台になる——そこが Seseragi の核です。",
+          },
+        ],
+      },
+    },
+  ],
+}

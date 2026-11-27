@@ -11,10 +11,7 @@ import { closing } from "./components/closing"
 import { footer } from "./components/footer"
 import * as styles from "./ui/styles"
 
-fn page logoUrl: html.WebUrl
-  -> heroImageUrl: html.WebUrl
-  -> riverImageUrl: html.WebUrl
-  -> playgroundUrl: html.WebUrl
+fn page playgroundUrl: html.WebUrl
   -> tourUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> chapter: html.Html<Task<Unit>>
@@ -22,26 +19,19 @@ fn page logoUrl: html.WebUrl
   html.main {
     style: styles.pageStyle (),
     children: [
-      hero logoUrl heroImageUrl playgroundUrl tourUrl repositoryUrl,
+      hero playgroundUrl tourUrl repositoryUrl,
       principles (),
       chapter,
-      imageStatement riverImageUrl,
+      imageStatement (),
       closing playgroundUrl tourUrl repositoryUrl,
-      footer logoUrl repositoryUrl,
+      footer repositoryUrl,
     ],
   }
 
 pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String = do {
-  logoUrl <- parseUrl "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/brand/source/seseragi-logo-dark.svg"
-  heroImageUrl <- parseUrl "https://images.unsplash.com/photo-1760344594784-60ff14035eb0?auto=format&fit=crop&w=1800&q=88"
-  riverImageUrl <- parseUrl "https://images.unsplash.com/photo-1769795070373-aa9021325c86?auto=format&fit=crop&w=2000&q=86"
   playgroundUrl <- parseUrl "https://seseragi.vercel.app/"
   tourUrl <- parseUrl "https://seseragi.vercel.app/tour/"
   repositoryUrl <- parseUrl "https://github.com/KentaroMorishita/seseragi"
   chapter <- createChapter ()
-  succeed (
-    signals.map
-      (page logoUrl heroImageUrl riverImageUrl playgroundUrl tourUrl repositoryUrl)
-      chapter
-  )
+  succeed (signals.map (page playgroundUrl tourUrl repositoryUrl) chapter)
 }
