@@ -234,15 +234,44 @@ impl Drop for NativeHttpTask {
     }
 }
 
-struct NativeHttpTarget {
-    https: bool,
-    host: String,
-    port: u16,
-    authority: String,
-    path: String,
+pub struct NativeHttpTarget {
+    pub https: bool,
+    pub host: String,
+    pub port: u16,
+    pub authority: String,
+    pub path: String,
 }
 
-trait NativeHttpShutdown: Send + Sync {
+#[derive(Debug, PartialEq, Eq)]
+pub enum NativeHttpConnectError {
+    Dns(String),
+    Tls(String),
+    Protocol(String),
+    Connection(String),
+    Cancelled,
+}
+
+impl From<NativeHttpConnectError> for NativeHttpReply {
+    fn from(error: NativeHttpConnectError) -> Self {
+        match error {
+            NativeHttpConnectError::Dns(message) => {
+                NativeHttpReply::Failure("std/http::HttpDnsFailure", message)
+            }
+            NativeHttpConnectError::Tls(message) => {
+                NativeHttpReply::Failure("std/http::HttpTlsFailure", message)
+            }
+            NativeHttpConnectError::Protocol(message) => {
+                NativeHttpReply::Failure("std/http::HttpProtocolFailure", message)
+            }
+            NativeHttpConnectError::Connection(message) => {
+                NativeHttpReply::Failure("std/http::HttpConnectionFailure", message)
+            }
+            NativeHttpConnectError::Cancelled => NativeHttpReply::Cancelled,
+        }
+    }
+}
+
+pub trait NativeHttpShutdown: Send + Sync {
     fn shutdown_write(&self) -> std::io::Result<()>;
     fn shutdown_both(&self) -> std::io::Result<()>;
 }
@@ -257,21 +286,39 @@ impl NativeHttpShutdown for std::net::TcpStream {
     }
 }
 
-struct NativeHttpTransport {
-    reader: Box<dyn std::io::Read + Send>,
-    writer: Box<dyn std::io::Write + Send>,
-    shutdown: std::sync::Arc<dyn NativeHttpShutdown>,
+pub struct NativeHttpTransport {
+    pub reader: Box<dyn std::io::Read + Send>,
+    pub writer: Box<dyn std::io::Write + Send>,
+    pub shutdown: std::sync::Arc<dyn NativeHttpShutdown>,
 }
 
-trait NativeHttpConnector {
+pub trait NativeHttpConnector: Send + Sync {
     fn connect(
         &self,
         target: &NativeHttpTarget,
         cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
-    ) -> Result<NativeHttpTransport, NativeHttpReply>;
+    ) -> Result<NativeHttpTransport, NativeHttpConnectError>;
 }
 
 struct NativePlainHttpConnector;
+
+static NATIVE_HTTP_CONNECTOR: std::sync::OnceLock<std::sync::Arc<dyn NativeHttpConnector>> =
+    std::sync::OnceLock::new();
+
+pub fn native_http_register_connector(
+    connector: std::sync::Arc<dyn NativeHttpConnector>,
+) -> Result<(), &'static str> {
+    NATIVE_HTTP_CONNECTOR
+        .set(connector)
+        .map_err(|_| "HTTP connector is already registered")
+}
+
+fn native_http_active_connector() -> &'static dyn NativeHttpConnector {
+    match NATIVE_HTTP_CONNECTOR.get() {
+        Some(connector) => connector.as_ref(),
+        None => &NativePlainHttpConnector,
+    }
+}
 
 fn native_http_target(url: &str) -> Result<NativeHttpTarget, NativeHttpReply> {
     let (https, default_port, rest) = if let Some(rest) = url.strip_prefix("https://") {
@@ -314,10 +361,10 @@ fn native_http_target(url: &str) -> Result<NativeHttpTarget, NativeHttpReply> {
     })
 }
 
-fn native_http_connect_tcp(
+pub fn native_http_connect_tcp(
     target: &NativeHttpTarget,
     cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
-) -> Result<std::net::TcpStream, NativeHttpReply> {
+) -> Result<std::net::TcpStream, NativeHttpConnectError> {
     let is_cancelled = || cancelled.load(std::sync::atomic::Ordering::Acquire);
     let (connected, connecting) = std::sync::mpsc::channel();
     let (host, port) = (target.host.clone(), target.port);
@@ -334,15 +381,14 @@ fn native_http_connect_tcp(
         let addresses = match std::net::ToSocketAddrs::to_socket_addrs(&(host.as_str(), port)) {
             Ok(addresses) => addresses.collect::<Vec<_>>(),
             Err(error) => {
-                let _ = connected.send(Err(("std/http::HttpDnsFailure", error.to_string())));
+                let _ = connected.send(Err(NativeHttpConnectError::Dns(error.to_string())));
                 return;
             }
         };
         if addresses.is_empty() {
-            let _ = connected.send(Err((
-                "std/http::HttpDnsFailure",
-                format!("no address for {host}"),
-            )));
+            let _ = connected.send(Err(NativeHttpConnectError::Dns(format!(
+                "no address for {host}"
+            ))));
             return;
         }
         let mut last = String::new();
@@ -362,19 +408,18 @@ fn native_http_connect_tcp(
                 Err(error) => last = error.to_string(),
             }
         }
-        let _ = connected.send(Err(("std/http::HttpConnectionFailure", last)));
+        let _ = connected.send(Err(NativeHttpConnectError::Connection(last)));
     });
     loop {
         if is_cancelled() {
-            return Err(NativeHttpReply::Cancelled);
+            return Err(NativeHttpConnectError::Cancelled);
         }
         match connecting.recv_timeout(std::time::Duration::from_millis(20)) {
             Ok(Ok(stream)) => return Ok(stream),
-            Ok(Err((tag, message))) => return Err(NativeHttpReply::Failure(tag, message)),
+            Ok(Err(error)) => return Err(error),
             Err(std::sync::mpsc::RecvTimeoutError::Timeout) => continue,
             Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
-                return Err(NativeHttpReply::Failure(
-                    "std/http::HttpConnectionFailure",
+                return Err(NativeHttpConnectError::Connection(
                     "connection attempt ended without a result".into(),
                 ))
             }
@@ -387,23 +432,20 @@ impl NativeHttpConnector for NativePlainHttpConnector {
         &self,
         target: &NativeHttpTarget,
         cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
-    ) -> Result<NativeHttpTransport, NativeHttpReply> {
+    ) -> Result<NativeHttpTransport, NativeHttpConnectError> {
         if target.https {
-            return Err(NativeHttpReply::Failure(
-                "std/http::HttpTlsFailure",
+            return Err(NativeHttpConnectError::Tls(
                 "https needs TLS, which the native target does not support yet".into(),
             ));
         }
         let stream = native_http_connect_tcp(target, cancelled)?;
         let Ok(writer) = stream.try_clone() else {
-            return Err(NativeHttpReply::Failure(
-                "std/http::HttpConnectionFailure",
+            return Err(NativeHttpConnectError::Connection(
                 "cannot share the connection".into(),
             ));
         };
         let Ok(shutdown) = stream.try_clone() else {
-            return Err(NativeHttpReply::Failure(
-                "std/http::HttpConnectionFailure",
+            return Err(NativeHttpConnectError::Connection(
                 "cannot share the connection".into(),
             ));
         };
@@ -431,7 +473,7 @@ fn native_http_open(
     connection: &std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>,
 ) -> Result<NativeHttpOpened, NativeHttpReply> {
     native_http_open_with(
-        &NativePlainHttpConnector,
+        native_http_active_connector(),
         method,
         url,
         headers,
@@ -531,7 +573,7 @@ fn native_http_exchange(
     connection: &std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>,
 ) -> NativeHttpReply {
     native_http_exchange_with(
-        &NativePlainHttpConnector,
+        native_http_active_connector(),
         method,
         url,
         headers,
@@ -1138,7 +1180,7 @@ mod http_client_tests {
         let cancelled = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
         assert!(matches!(
             NativePlainHttpConnector.connect(&https_target, &cancelled),
-            Err(NativeHttpReply::Failure("std/http::HttpTlsFailure", _))
+            Err(NativeHttpConnectError::Tls(_))
         ));
     }
 
@@ -1180,7 +1222,7 @@ mod http_client_tests {
                 &self,
                 target: &NativeHttpTarget,
                 _cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
-            ) -> Result<NativeHttpTransport, NativeHttpReply> {
+            ) -> Result<NativeHttpTransport, NativeHttpConnectError> {
                 self.seen_https
                     .store(target.https, std::sync::atomic::Ordering::SeqCst);
                 Ok(NativeHttpTransport {
