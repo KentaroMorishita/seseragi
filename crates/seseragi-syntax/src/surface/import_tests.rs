@@ -87,3 +87,65 @@ fn preserves_public_import_visibility() {
     assert_eq!(module.imports[0].items[0].name, "userId");
     assert_eq!(module.imports[0].span, ByteSpan { start: 0, end: 41 });
 }
+
+#[test]
+fn rejects_keyword_as_namespace_import_alias() {
+    let source = "import * as effect from \"std/effect\"\n\nlet x = effect.succeed ()\n";
+    let artifact = crate::parse_diagnostics("main.ssrg", source);
+    let alias_error = artifact.diagnostics.iter().find(|diagnostic| {
+        diagnostic.message_key == "parser.invalid-declaration-name"
+            && diagnostic.primary.start == 12
+            && diagnostic.primary.end == 18
+    });
+    assert!(
+        alias_error.is_some(),
+        "expected invalid-declaration-name at `effect` alias, got: {:#?}",
+        artifact.diagnostics
+    );
+}
+
+#[test]
+fn rejects_reserved_word_or_uppercase_as_namespace_import_alias() {
+    for (source, expected_start, expected_end) in [
+        ("import * as type from \"std/text\"\n", 12, 16),
+        ("import * as Effect from \"std/effect\"\n", 12, 18),
+    ] {
+        let artifact = crate::parse_diagnostics("main.ssrg", source);
+        assert!(
+            artifact.diagnostics.iter().any(|diagnostic| {
+                diagnostic.message_key == "parser.invalid-declaration-name"
+                    && diagnostic.primary.start == expected_start
+                    && diagnostic.primary.end == expected_end
+            }),
+            "expected invalid-declaration-name for `{source}`, got: {:#?}",
+            artifact.diagnostics
+        );
+    }
+}
+
+#[test]
+fn rejects_keyword_as_named_import_alias() {
+    let source = "import { succeed as effect } from \"std/effect\"\n";
+    let artifact = crate::parse_diagnostics("main.ssrg", source);
+    assert!(
+        artifact.diagnostics.iter().any(|diagnostic| {
+            diagnostic.message_key == "parser.invalid-declaration-name"
+                && diagnostic.primary.start == 20
+                && diagnostic.primary.end == 26
+        }),
+        "expected invalid-declaration-name at named import alias, got: {:#?}",
+        artifact.diagnostics
+    );
+}
+
+#[test]
+fn accepts_valid_namespace_and_named_import_aliases() {
+    let source =
+        "import * as effects from \"std/effect\"\nimport { succeed as ok } from \"std/effect\"\n";
+    let artifact = crate::parse_diagnostics("main.ssrg", source);
+    assert!(
+        artifact.diagnostics.is_empty(),
+        "expected no diagnostics for valid import aliases, got: {:#?}",
+        artifact.diagnostics
+    );
+}

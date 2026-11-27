@@ -175,6 +175,7 @@ impl SurfaceParser<'_> {
             .iter()
             .find(|import| import.span.start == self.tokens[start].start)
         {
+            self.validate_import(start, end, diagnostics);
             let tail = self
                 .tokens
                 .partition_point(|token| token.end <= import.span.end);
@@ -412,6 +413,104 @@ impl SurfaceParser<'_> {
 
     /// `rec { fn ...; effect fn ... }` takes no modifiers and holds only
     /// function declarations, each checked as a module function.
+    fn validate_import(&self, start: usize, end: usize, diagnostics: &mut Vec<Diagnostic>) {
+        let Some(first) = self.next_significant_token(start, end) else {
+            return;
+        };
+        let import_index = if self.raw_at(first) == Some("pub") {
+            let Some(next) = self.next_significant_token(first + 1, end) else {
+                return;
+            };
+            next
+        } else {
+            first
+        };
+        if self.raw_at(import_index) != Some("import") {
+            return;
+        }
+        let Some(from_index) = self.find_raw(import_index + 1, end, "from") else {
+            return;
+        };
+        let Some(clause_start) = self.next_significant_token(import_index + 1, from_index) else {
+            return;
+        };
+        if self.raw_at(clause_start) == Some("*") {
+            let Some(as_index) = self.next_significant_token(clause_start + 1, from_index) else {
+                return;
+            };
+            if self.raw_at(as_index) != Some("as") {
+                return;
+            }
+            match self.next_significant_token(as_index + 1, from_index) {
+                Some(alias_index) => {
+                    let token = &self.tokens[alias_index];
+                    if token.kind != TokenKind::IdentifierLower || is_reserved(&token.raw) {
+                        diagnostics.push(error(
+                            "parser.invalid-declaration-name",
+                            ByteSpan {
+                                start: token.start,
+                                end: token.end,
+                            },
+                        ));
+                    }
+                }
+                None => {
+                    let token = &self.tokens[as_index];
+                    diagnostics.push(error(
+                        "parser.invalid-declaration-name",
+                        ByteSpan {
+                            start: token.start,
+                            end: token.end,
+                        },
+                    ));
+                }
+            }
+            return;
+        }
+        if self.kind_at(clause_start) == Some(TokenKind::PunctuationBraceLeft) {
+            let close = self
+                .find_matching_brace(clause_start, from_index)
+                .unwrap_or(from_index);
+            let mut cursor = clause_start + 1;
+            while let Some(index) = self.next_significant_token(cursor, close) {
+                if self.raw_at(index) == Some("as") {
+                    match self.next_significant_token(index + 1, close) {
+                        Some(alias_index) => {
+                            let token = &self.tokens[alias_index];
+                            if !matches!(
+                                token.kind,
+                                TokenKind::IdentifierLower | TokenKind::IdentifierUpper
+                            ) || is_reserved(&token.raw)
+                            {
+                                diagnostics.push(error(
+                                    "parser.invalid-declaration-name",
+                                    ByteSpan {
+                                        start: token.start,
+                                        end: token.end,
+                                    },
+                                ));
+                            }
+                            cursor = alias_index + 1;
+                            continue;
+                        }
+                        None => {
+                            let token = &self.tokens[index];
+                            diagnostics.push(error(
+                                "parser.invalid-declaration-name",
+                                ByteSpan {
+                                    start: token.start,
+                                    end: token.end,
+                                },
+                            ));
+                            break;
+                        }
+                    }
+                }
+                cursor = index + 1;
+            }
+        }
+    }
+
     fn validate_rec_group(
         &self,
         start: usize,
@@ -487,7 +586,7 @@ fn validate_pattern(pattern: &SurfacePattern, diagnostics: &mut Vec<Diagnostic>)
     }
 }
 
-fn is_reserved(name: &str) -> bool {
+pub(super) fn is_reserved(name: &str) -> bool {
     matches!(
         name,
         "as" | "alias"

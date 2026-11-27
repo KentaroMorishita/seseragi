@@ -136,7 +136,10 @@ impl SurfaceParser<'_> {
         let Some(alias_index) = self.next_significant_token(as_index + 1, end) else {
             return (None, start);
         };
-        let Some(alias) = self.identifier_name_at(alias_index) else {
+        let Some(alias) = self
+            .identifier_name_at(alias_index)
+            .filter(|name| !super::validation::is_reserved(name))
+        else {
             return (None, start);
         };
         (
