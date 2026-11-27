@@ -1,0 +1,85 @@
+// 分量の換算: 人数を自分の Signal に持ち、材料の量を人数に合わせて描きます。
+// ほかの機能からは描画の Signal しか見えません。
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import {
+  Ingredient,
+  baseServings,
+  clampServings,
+  ingredients,
+  maxServings,
+  minServings,
+  scaledAmount,
+} from "self/kitchen/recipe"
+import * as styles from "self/ui/styles"
+
+type ServingsAction =
+  | Fewer
+  | More
+
+fn update action: ServingsAction -> servings: Int -> Int = match action {
+  Fewer -> clampServings (servings - 1)
+  More -> clampServings (servings + 1)
+}
+
+fn dispatch state: MutableSignal<Int> -> action: ServingsAction -> Task<Unit> =
+  signals.update (update action) state
+
+fn ingredientRow servings: Int -> ingredient: Ingredient -> html.Html<Task<Unit>> = {
+  let name: html.Html<Task<Unit>> = html.span {
+    style: styles.ingredientNameStyle (),
+    children: ingredient.name,
+  }
+  let amount: html.Html<Task<Unit>> = html.span {
+    style: styles.ingredientAmountStyle (),
+    children: scaledAmount servings ingredient,
+  }
+  html.li {
+    key: ingredient.name,
+    style: styles.ingredientRowStyle (),
+    children: [name, amount]
+  }
+}
+
+fn stepperButton label: String
+  -> caption: String
+  -> disabled: Bool
+  -> action: Task<Unit>
+  -> html.Html<Task<Unit>> =
+  html.button {
+    disabled,
+    onClick: action,
+    style: styles.stepperButtonStyle disabled,
+    title: caption,
+    children: label,
+  }
+
+fn view state: MutableSignal<Int> -> servings: Int -> html.Html<Task<Unit>> = {
+  let rows: Array<html.Html<Task<Unit>>> = map (ingredientRow servings) ingredients
+  html.section {
+    style: styles.ingredientCardStyle (),
+    children: [
+      html.h2 { style: styles.sectionHeadingStyle (), children: "材料" },
+      html.p { style: styles.sectionNoteStyle (), children: "人数を変えると、量だけが変わります。", },
+      html.div {
+        style: styles.servingsRowStyle (),
+        children: [
+          stepperButton "−" "1 人分減らす" (servings <= minServings) (dispatch state Fewer),
+          html.p {
+            role: "status",
+            style: styles.servingsValueStyle (),
+            children: `${servings} 人分`,
+          },
+          stepperButton "+" "1 人分増やす" (servings >= maxServings) (dispatch state More),
+        ],
+      },
+      html.ul { style: styles.ingredientListStyle (), children: rows },
+    ],
+  }
+}
+
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails Never = do {
+  servings <- signals.make baseServings
+  succeed (signals.map (view servings) servings)
+}

@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.62.10] - 2026-11-27
+
+### Changed
+
+- The Playground example `feature-composition` is now a kitchen timer and recipe (#1379). Servings, the step checklist and the timer each own their Signal and are composed into one page; a step starts the timer through an action handed over by the page. The timer runs in a Fiber of its own and advances by the time measured with `std/clock` and `time.durationBetween`, so a browser that throttles a background tab does not make it run late. The example is split into modules with unit tests.
+- `showcase-review.json` accepts `"approval": { "status": "pending" }` for a rebuilt Showcase that a person has not reviewed yet. A pending Showcase keeps no review evidence or audit screenshots; it becomes `approved` after the human review in `docs/SHOWCASE_QUALITY.md`.
+
 ## [0.62.9] - 2026-11-27
 
 ### Added

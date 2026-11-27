@@ -107,7 +107,7 @@ HTML サンプルではこの3つが必須で、生成スクリプトは各役�
 | `html-components` | minimal | static | component | 状態なしで props・子要素・サーバー側描画を確認する |
 | `interactive-app` | minimal | signal-run | state | 散歩コースの状態を `Signal` と `dom.run` で切り替える |
 | `web-starter` | minimal | multi-module | project | `Signal`・`dom.run`・ローカルパッケージの最小構成を確認する |
-| `feature-composition` | guided | signal-run | composition | 機能ごとの非公開 `Signal` と `switchMap` の合成を複数モジュールで追う |
+| `feature-composition` | guided | signal-run | composition | 分量・手順・タイマーがそれぞれ自分の `Signal` を持ち、一つの画面に並ぶ |
 | `form-todo` | showcase | signal-run | form | 座席マップ・連番選択・入力検証・発券を複数モジュールでまとめる |
 | `project-flow-app` | showcase | multi-module | project | 地図ルート・日程・割り勘・共有を機能ごとのモジュール分割で追う |
 | `seseragi-landing-page` | showcase | multi-module | composition | 完成したページのセクション・状態・スタイルをモジュール単位で追う |

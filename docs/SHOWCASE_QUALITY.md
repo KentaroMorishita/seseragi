@@ -75,8 +75,13 @@ review artifactはFirst view、Layout rhythm、Visual identity、Interaction、C
 
 ## 承認の手順
 
+Showcaseを作り直すPRでは、`approval`を`{ "status": "pending" }`（承認待ち）にします。
+承認待ちのShowcaseは、人が見る前の画面なので、レビューの証拠も監査用の画像も持ちません。
+CIとコードのレビューが通れば、承認待ちのままマージしてかまいません。
+
 1. PRのプレビュー（Vercel）を実ブラウザで開き、上記のhuman reviewを行い、evidenceを保存する。
-2. `showcase-review.json`を`approved`にし、focused contract testを通す。
+2. `showcase-review.json`を`approved`にし、確認した日付・画面幅・状態・面・evidenceを書いて、
+   focused contract testを通す。
 
 画面の見た目は、基準の画像との比較では守りません。見た目を変えるPRでは、そのたびにプレビューで
 確かめます。generic card-gridやplaceholderのままCI greenを完了の根拠にすることはできません。

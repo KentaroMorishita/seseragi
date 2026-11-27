@@ -1,16 +1,19 @@
 {
   "$schema": "../sample.schema.json",
   "id": "feature-composition",
-  "title": "独立した Signal で公開準備ボードを合成する",
-  "summary": "各カードが自分専用の非公開 Signal を持ち、表示の切り替え・順番の入れ替え・差し替えをしても状態を保ったまま dom.run で合成します。",
+  "title": "キッチンタイマーとレシピ",
+  "summary": "分量・手順・タイマーの 3 つの機能が、それぞれ自分の Signal を持ったまま一つの画面に並び、タイマーは自分の Fiber で時間を進めます。",
   "kind": "showcase",
   "difficulty": "advanced",
   "topics": [
+    "Signal",
     "feature module",
-    "private state",
-    "Effect Action",
-    "switchMap",
-    "multi-module"
+    "Fiber",
+    "std/clock",
+    "dom.run",
+    "SVG",
+    "multi-module",
+    "test"
   ],
   "capabilities": ["dom"],
   "outputMode": "html",
@@ -30,11 +33,12 @@
     "open": [
       "main.ssrg",
       "app.ssrg",
-      "features/checklist.ssrg",
-      "features/layout.ssrg",
-      "components/hero.ssrg",
+      "features/servings.ssrg",
+      "features/steps.ssrg",
+      "features/timer.ssrg",
+      "kitchen/countdown.ssrg",
       "ui/styles.ssrg"
     ],
-    "expanded": ["features", "components", "ui"]
+    "expanded": ["features", "kitchen", "ui"]
   }
 }

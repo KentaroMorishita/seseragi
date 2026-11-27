@@ -1,0 +1,99 @@
+// 2 人分を基準にしたレシピの材料と手順、人数に合わせた分量の計算です。
+import * as sets from "std/set"
+import { Set } from "std/set"
+
+// 量は 10 分の 1 単位の整数で持ちます。大さじ 1.5 を丸め誤差なしに表すためです。
+pub newtype Tenths deriving Eq, Show = Int
+
+pub type Measure deriving Eq, Show =
+  | Grams
+  | Tablespoons
+  | Teaspoons
+  | Pieces String
+
+pub struct Ingredient { name: String, amount: Tenths, measure: Measure }
+
+pub struct Step { number: Int, title: String, detail: String, minutes: Maybe<Int> }
+
+pub let baseServings: Int = 2
+
+pub let minServings: Int = 1
+
+pub let maxServings: Int = 6
+
+pub let ingredients: Array<Ingredient> = [
+  Ingredient { name: "スパゲッティ", amount: Tenths 2000, measure: Grams },
+  Ingredient { name: "トマト缶（カット）", amount: Tenths 4000, measure: Grams },
+  Ingredient { name: "にんにく", amount: Tenths 10, measure: Pieces "かけ" },
+  Ingredient { name: "オリーブオイル", amount: Tenths 20, measure: Tablespoons },
+  Ingredient { name: "ゆで湯の塩", amount: Tenths 20, measure: Teaspoons },
+  Ingredient { name: "バジルの葉", amount: Tenths 80, measure: Pieces "枚" },
+]
+
+pub let steps: Array<Step> = [
+  Step {
+    number: 1,
+    title: "湯を沸かす",
+    detail: "大きめの鍋にたっぷりの湯を沸かし、塩を入れる。",
+    minutes: Nothing,
+  },
+  Step {
+    number: 2,
+    title: "にんにくを炒める",
+    detail: "オリーブオイルとにんにくを弱火にかけ、香りが立つまで炒める。",
+    minutes: Just 3,
+  },
+  Step {
+    number: 3,
+    title: "ソースを煮つめる",
+    detail: "トマト缶を加え、ときどき混ぜながら半量近くまで煮つめる。",
+    minutes: Just 10,
+  },
+  Step {
+    number: 4,
+    title: "スパゲッティをゆでる",
+    detail: "袋の表示より 1 分短くゆでて、ソースの鍋へ移す。",
+    minutes: Just 8,
+  },
+  Step {
+    number: 5,
+    title: "あえて仕上げる",
+    detail: "ゆで汁を少し足してあえ、バジルをちぎってのせる。",
+    minutes: Nothing,
+  },
+]
+
+pub fn clampServings servings: Int -> Int =
+  if servings < minServings then
+    minServings
+  else if servings > maxServings then
+    maxServings
+  else
+    servings
+
+// 基準の人数分の量を、人数に合わせて四捨五入します。
+pub fn scale servings: Int -> amount: Tenths -> Tenths = match amount {
+  Tenths base -> Tenths ((base * servings + baseServings / 2) / baseServings)
+}
+
+fn decimalText amount: Tenths -> String = match amount {
+  Tenths value ->
+    if value % 10 == 0 then show (value / 10) else `${value / 10}.${value % 10}`
+}
+
+// グラムは整数にそろえ、さじと個数は 0.5 刻みまで見せます。
+pub fn amountText measure: Measure -> amount: Tenths -> String = match measure {
+  Grams -> match amount {
+    Tenths value -> `${(value + 5) / 10} g`
+  }
+  Tablespoons -> `大さじ ${decimalText amount}`
+  Teaspoons -> `小さじ ${decimalText amount}`
+  Pieces unit -> `${decimalText amount} ${unit}`
+}
+
+pub fn scaledAmount servings: Int -> ingredient: Ingredient -> String =
+  amountText ingredient.measure (scale servings ingredient.amount)
+
+// 済んだ手順の番号の集合で、押した手順だけを入れ替えます。
+pub fn toggleDone number: Int -> done: Set<Int> -> Set<Int> =
+  if sets.contains number done then sets.remove number done else sets.insert number done

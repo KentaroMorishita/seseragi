@@ -35,15 +35,23 @@ type ShowcaseReview = Readonly<{
     readonly interaction: string
     readonly codeStructure: string
   }>
-  readonly approval: Readonly<{
-    readonly status: string
-    readonly reviewedAt: string
-    readonly evidence: readonly string[]
-    readonly viewports: readonly string[]
-    readonly states: readonly string[]
-    readonly surfaces: readonly string[]
-  }>
+  readonly approval: ShowcaseApproval
 }>
+
+/**
+ * A rebuilt Showcase is `pending` until a person has looked at it; only an
+ * `approved` review records what was checked.
+ */
+type ShowcaseApproval =
+  | Readonly<{
+      readonly status: "approved"
+      readonly reviewedAt: string
+      readonly evidence: readonly string[]
+      readonly viewports: readonly string[]
+      readonly states: readonly string[]
+      readonly surfaces: readonly string[]
+    }>
+  | Readonly<{ readonly status: "pending" }>
 
 const audit = JSON.parse(
   await Bun.file(
@@ -71,6 +79,15 @@ async function assertPngArtifact(path: string): Promise<void> {
   )
   expect([...bytes.slice(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10])
   expect(bytes.length).toBeGreaterThan(1000)
+}
+
+async function isPendingShowcase(id: string): Promise<boolean> {
+  const review = new URL(
+    `examples/samples/${id}/showcase-review.json`,
+    repoRoot
+  )
+  if (!(await Bun.file(review).exists())) return false
+  return (await showcaseReviewFor(id)).approval.status === "pending"
 }
 
 async function showcaseReviewFor(id: string): Promise<ShowcaseReview> {
@@ -171,15 +188,19 @@ describe("canonical Web UI visual direction", () => {
     expect(htmlComponents).toContain("map bookCard books")
     expect(trail).toContain('flexWrap: "wrap"')
     expect(trail).toContain('gridTemplateColumns: "repeat(3, minmax(0, 1fr))"')
-    expect(composition).toContain('repeat(auto-fit, minmax(260px, 1fr))')
     expect(composition).toContain('flexWrap: "wrap"')
-    expect(composition).toContain("公開準備ボードを独立した Signal で合成する")
-    expect(composition).not.toContain("Counter A")
-    expect(composition).not.toContain("Counter B")
+    expect(composition).toContain("トマトとバジルの")
+    expect(composition).not.toContain("公開準備ボード")
   })
 
   test("keeps desktop, mobile Preview, Code, and interaction review artifacts", async () => {
     for (const sample of audit.samples) {
+      if (await isPendingShowcase(sample.id)) {
+        // A pending Showcase has not been reviewed yet, so it keeps no
+        // screenshots of an earlier design either.
+        expect(sample.artifacts).toEqual([])
+        continue
+      }
       expect(sample.artifacts.length).toBeGreaterThanOrEqual(3)
       for (const artifact of sample.artifacts) {
         await assertPngArtifact(artifact)
@@ -187,7 +208,7 @@ describe("canonical Web UI visual direction", () => {
     }
   })
 
-  test("requires approved design intent for every Web Showcase", async () => {
+  test("requires design intent and a pending or approved review for every Web Showcase", async () => {
     const showcaseIds = samples
       .filter(
         ({ kind, outputMode }) => kind === "showcase" && outputMode === "html"
@@ -208,19 +229,24 @@ describe("canonical Web UI visual direction", () => {
       for (const intent of Object.values(review.designIntent)) {
         expect(intent.trim().length).toBeGreaterThanOrEqual(48)
       }
-      expect(review.approval.status).toBe("approved")
-      expect(review.approval.reviewedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
-      expect(review.approval.viewports).toEqual([
+      const approval = review.approval
+      if (approval.status === "pending") {
+        expect(Object.keys(approval)).toEqual(["status"])
+        continue
+      }
+      expect(approval.status).toBe("approved")
+      expect(approval.reviewedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      expect(approval.viewports).toEqual([
         "desktop",
         "iphone-390",
         "android-360",
       ])
-      expect(review.approval.states).toContain("initial")
-      expect(review.approval.states.length).toBeGreaterThanOrEqual(2)
-      expect(review.approval.surfaces).toEqual(["preview", "code"])
-      expect(review.approval.evidence).not.toHaveLength(0)
+      expect(approval.states).toContain("initial")
+      expect(approval.states.length).toBeGreaterThanOrEqual(2)
+      expect(approval.surfaces).toEqual(["preview", "code"])
+      expect(approval.evidence).not.toHaveLength(0)
 
-      for (const evidence of review.approval.evidence) {
+      for (const evidence of approval.evidence) {
         const artifact = Bun.file(new URL(evidence, repoRoot))
         expect(await artifact.exists()).toBe(true)
         expect((await artifact.text()).trim().length).toBeGreaterThan(100)

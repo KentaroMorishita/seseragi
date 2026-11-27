@@ -20,10 +20,12 @@ import sample3Output from "../../../../examples/samples/expression-calculator/st
 import sample4Manifest from "../../../../examples/samples/feature-composition/seseragi.toml?raw"
 import sample4Source from "../../../../examples/samples/feature-composition/src/main.ssrg?raw"
 import sample4Source2 from "../../../../examples/samples/feature-composition/src/app.ssrg?raw"
-import sample4Source3 from "../../../../examples/samples/feature-composition/src/components/hero.ssrg?raw"
-import sample4Source4 from "../../../../examples/samples/feature-composition/src/features/checklist.ssrg?raw"
-import sample4Source5 from "../../../../examples/samples/feature-composition/src/features/layout.ssrg?raw"
-import sample4Source6 from "../../../../examples/samples/feature-composition/src/ui/styles.ssrg?raw"
+import sample4Source3 from "../../../../examples/samples/feature-composition/src/features/servings.ssrg?raw"
+import sample4Source4 from "../../../../examples/samples/feature-composition/src/features/steps.ssrg?raw"
+import sample4Source5 from "../../../../examples/samples/feature-composition/src/features/timer.ssrg?raw"
+import sample4Source6 from "../../../../examples/samples/feature-composition/src/kitchen/countdown.ssrg?raw"
+import sample4Source7 from "../../../../examples/samples/feature-composition/src/kitchen/recipe.ssrg?raw"
+import sample4Source8 from "../../../../examples/samples/feature-composition/src/ui/styles.ssrg?raw"
 import sample4Guide from "../../../../examples/samples/feature-composition/guide.md?raw"
 
 import sample5Source from "../../../../examples/samples/fibonacci-sequence/main.ssrg?raw"
@@ -402,16 +404,19 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "feature-composition",
-      "title": "独立した Signal で公開準備ボードを合成する",
-      "summary": "各カードが自分専用の非公開 Signal を持ち、表示の切り替え・順番の入れ替え・差し替えをしても状態を保ったまま dom.run で合成します。",
+      "title": "キッチンタイマーとレシピ",
+      "summary": "分量・手順・タイマーの 3 つの機能が、それぞれ自分の Signal を持ったまま一つの画面に並び、タイマーは自分の Fiber で時間を進めます。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
+        "Signal",
         "feature module",
-        "private state",
-        "Effect Action",
-        "switchMap",
-        "multi-module"
+        "Fiber",
+        "std/clock",
+        "dom.run",
+        "SVG",
+        "multi-module",
+        "test"
       ],
       "capabilities": [
         "dom"
@@ -431,54 +436,65 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestPath": "examples/samples/feature-composition/seseragi.toml",
       "manifestHash": "sha256:b30a444a0112805ce6781dfb020c452649680cfa410a09369fd88aaf70b212a0",
       "guidePath": "examples/samples/feature-composition/guide.md",
-      "sourceHash": "sha256:7b9a84e76acd1aa42e705f3f5a04bbb0d6cc266ab87dc169a9cb1ffb11a4f610",
-      "workspaceHash": "sha256:c153f77871860253207e2f8e68560ea7a03fd7eb82fabc4de5c91f8bc0ecda33",
+      "sourceHash": "sha256:c78dbe5d3415275e5d0b62dde3b25bfa4d8933bdff135bc13a89eb8547a5b5c7",
+      "workspaceHash": "sha256:f673dae1040b657a83ad08b0d9c2449adbfd66f4aa3d3162073e081dee7db60e",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
         "openFiles": [
           "main.ssrg",
           "app.ssrg",
-          "features/checklist.ssrg",
-          "features/layout.ssrg",
-          "components/hero.ssrg",
+          "features/servings.ssrg",
+          "features/steps.ssrg",
+          "features/timer.ssrg",
+          "kitchen/countdown.ssrg",
           "ui/styles.ssrg"
         ],
         "expandedFolders": [
           "features",
-          "components",
+          "kitchen",
           "ui"
         ],
         "files": [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/feature-composition/src/main.ssrg",
-            "sourceHash": "sha256:7b9a84e76acd1aa42e705f3f5a04bbb0d6cc266ab87dc169a9cb1ffb11a4f610"
+            "sourceHash": "sha256:c78dbe5d3415275e5d0b62dde3b25bfa4d8933bdff135bc13a89eb8547a5b5c7"
           },
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/feature-composition/src/app.ssrg",
-            "sourceHash": "sha256:5c87e4a9232f494ad923fd6de201ca91a7c77a5d5c77c8a504a0cdf0e8e4e8d1"
+            "sourceHash": "sha256:4afda97d7866d073fa8b872b0e71749c5f3b0121c4c58e02ef126138b3962b40"
           },
           {
-            "path": "components/hero.ssrg",
-            "sourcePath": "examples/samples/feature-composition/src/components/hero.ssrg",
-            "sourceHash": "sha256:3577965dc510ab0d1c72f0113e7a09e09dc0878d9a61c968dbd943154d285a7c"
+            "path": "features/servings.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/features/servings.ssrg",
+            "sourceHash": "sha256:e9865b6c17702268e837ab75eb4bbc833695ea3f76160f2112a7115029156963"
           },
           {
-            "path": "features/checklist.ssrg",
-            "sourcePath": "examples/samples/feature-composition/src/features/checklist.ssrg",
-            "sourceHash": "sha256:813308a792d32b9f17e32dd9619dec57ad628e1e35344e74aca69cf032cf4935"
+            "path": "features/steps.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/features/steps.ssrg",
+            "sourceHash": "sha256:36f13113a1cbf3207a60ded8c040bfbd78179d1f3fa26fee3f115acd7dfaae4e"
           },
           {
-            "path": "features/layout.ssrg",
-            "sourcePath": "examples/samples/feature-composition/src/features/layout.ssrg",
-            "sourceHash": "sha256:5ebd6c63fa1e8fd725508e58de229db25d0a2481b57061814d33a39a19cc2205"
+            "path": "features/timer.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/features/timer.ssrg",
+            "sourceHash": "sha256:0b51bf8ad7a761dbf7ba8fe9294cd8ea1491c8cf1dfc6530b63dca441004a29b"
+          },
+          {
+            "path": "kitchen/countdown.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/kitchen/countdown.ssrg",
+            "sourceHash": "sha256:139a62a4ce04680c76fd22b1163985bb6566df2ce9c1613bbccf459c1d626d06"
+          },
+          {
+            "path": "kitchen/recipe.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/kitchen/recipe.ssrg",
+            "sourceHash": "sha256:42ab523a089cedec08c3592b8ff88661f93304c3039058e4ca28632da1743b74"
           },
           {
             "path": "ui/styles.ssrg",
             "sourcePath": "examples/samples/feature-composition/src/ui/styles.ssrg",
-            "sourceHash": "sha256:9d52bc27d8ea5b5deaf8f4d7774e4b3dd631987c4a078b354addd1c93bb1110a"
+            "sourceHash": "sha256:b36325b4c3819257aa5a9301e679fb6e401a4d2d83a4bddc9a057c224fbd85c3"
           }
         ]
       }
@@ -488,10 +504,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
     projectFiles: [
       { path: "main.ssrg", source: sample4Source },
       { path: "app.ssrg", source: sample4Source2 },
-      { path: "components/hero.ssrg", source: sample4Source3 },
-      { path: "features/checklist.ssrg", source: sample4Source4 },
-      { path: "features/layout.ssrg", source: sample4Source5 },
-      { path: "ui/styles.ssrg", source: sample4Source6 },
+      { path: "features/servings.ssrg", source: sample4Source3 },
+      { path: "features/steps.ssrg", source: sample4Source4 },
+      { path: "features/timer.ssrg", source: sample4Source5 },
+      { path: "kitchen/countdown.ssrg", source: sample4Source6 },
+      { path: "kitchen/recipe.ssrg", source: sample4Source7 },
+      { path: "ui/styles.ssrg", source: sample4Source8 },
     ],
     guide: sample4Guide,
     stdin: "",

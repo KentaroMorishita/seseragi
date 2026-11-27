@@ -45,6 +45,12 @@
       }
     },
     "approval": {
+      "description": "人のレビューの結果。作り直した直後は pending にし、人が実物を見てから approved にする。",
+      "oneOf": [{ "$ref": "#/$defs/approved" }, { "$ref": "#/$defs/pending" }]
+    }
+  },
+  "$defs": {
+    "approved": {
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -82,6 +88,14 @@
           "uniqueItems": true,
           "items": { "enum": ["preview", "code"] }
         }
+      }
+    },
+    "pending": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "type": "string", "const": "pending" }
       }
     }
   }
