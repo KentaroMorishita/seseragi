@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.13] - 2026-11-28
+
+### Fixed
+
+- The standard library registry and parity conformance artifacts now include `std/time::durationBetween`, which #1431 added only to the reference artifact (#1443). Pull request CI now compares the standard library surfaces too, so a standard library change without its regenerated artifacts fails on the pull request instead of in the release gate. `docs/SCOPED_CHECKS.md` lists the same check and how to regenerate these artifacts.
+
 ## [0.62.12] - 2026-11-28
 
 ### Fixed

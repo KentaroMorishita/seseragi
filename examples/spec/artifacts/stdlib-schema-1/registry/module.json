@@ -65069,6 +65069,53 @@
             }
           },
           {
+            "symbol": "std/time::durationBetween",
+            "namespace": "value",
+            "name": "durationBetween",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Instant",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Instant",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "DurationError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Duration",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
             "symbol": "std/time::LocalDate",
             "namespace": "type",
             "name": "LocalDate",
