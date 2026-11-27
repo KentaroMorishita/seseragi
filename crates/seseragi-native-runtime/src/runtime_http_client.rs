@@ -300,7 +300,9 @@ fn native_http_target(url: &str) -> Result<NativeHttpTarget, NativeHttpReply> {
     Ok(NativeHttpTarget {
         https,
         host: host.into(),
-        port: port.and_then(|port| port.parse().ok()).unwrap_or(default_port),
+        port: port
+            .and_then(|port| port.parse().ok())
+            .unwrap_or(default_port),
         authority: authority.into(),
         path: if path.is_empty() {
             "/".into()
@@ -551,12 +553,11 @@ fn native_http_exchange_with(
     cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
     connection: &std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>,
 ) -> NativeHttpReply {
-    let (mut reader, written) = match native_http_open_with(
-        connector, method, url, headers, body, cancelled, connection,
-    ) {
-        Ok(opened) => opened,
-        Err(reply) => return reply,
-    };
+    let (mut reader, written) =
+        match native_http_open_with(connector, method, url, headers, body, cancelled, connection) {
+            Ok(opened) => opened,
+            Err(reply) => return reply,
+        };
     let is_cancelled = || cancelled.load(std::sync::atomic::Ordering::Acquire);
     let failure = |error: std::io::Error, tag: &'static str| {
         if is_cancelled() {
