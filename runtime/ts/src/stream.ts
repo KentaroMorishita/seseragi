@@ -440,7 +440,7 @@ export function zip<Environment, Failure, LeftValue, RightValue>(
           )
           // Let every completion from the same scheduler turn become visible
           // before the checks above choose.
-          await Promise.resolve()
+          await settleMicrotasks()
         }
       },
       close,
@@ -482,7 +482,7 @@ export function merge<Environment, Failure, Value>(
           await Promise.race(pending)
           // Let every completion from the same scheduler turn become visible;
           // the ordered scan below then gives left deterministic priority.
-          await Promise.resolve()
+          await settleMicrotasks()
           const failure = branches.find(
             (branch) => branch.settled?.kind === "failure"
           )?.settled
@@ -759,14 +759,14 @@ async function duringPull<Value>(
   const cursor = opened
   return {
     cursor,
-    close: async () => {
-      try {
-        await cursor.close()
-      } finally {
-        forget()
-        await releaseOpening(execution, context)
-      }
-    },
+    close: () =>
+      runCleanups([
+        () => cursor.close(),
+        () => {
+          forget()
+          return releaseOpening(execution, context)
+        },
+      ]),
   }
 }
 
@@ -1134,6 +1134,14 @@ function onceAsync(action: () => Promise<void>): () => Promise<void> {
     result ??= action()
     return result
   }
+}
+
+// Lets the completions a side's pull queues as microtasks run, however many
+// layers of combinators it passes through, before a stream chooses between
+// its sides. It does not wait for the next turn, so a side that is ready
+// never waits for one that is not.
+async function settleMicrotasks(): Promise<void> {
+  for (let tick = 0; tick < 64; tick += 1) await undefined
 }
 
 function item<Value>(value: Value): IteratorResult<Value> {

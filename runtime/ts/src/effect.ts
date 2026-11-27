@@ -169,13 +169,24 @@ export function registerResourceFinalizer(
   return resourceScopeOf(context).register(finalizer)
 }
 
+// How many acquisitions each execution is running, in any of its scopes, by
+// the signal they share; see `executionAcquiring`.
+const acquiring = new WeakMap<AbortSignal, number>()
+
 /** Supervises host acquisition through its atomic resource handoff. */
 export function withResourceAcquisition<Resource>(
   context: EffectContext,
   action: () => Resource | Promise<Resource>
 ): Promise<Resource> {
   throwIfCancelled(context)
-  return resourceScopeOf(context).acquire(action)
+  const { signal } = context
+  acquiring.set(signal, (acquiring.get(signal) ?? 0) + 1)
+  const acquired = (): void => {
+    acquiring.set(signal, (acquiring.get(signal) ?? 1) - 1)
+  }
+  const acquisition = resourceScopeOf(context).acquire(action)
+  void acquisition.then(acquired, acquired)
+  return acquisition
 }
 
 /** Attaches the shared lifecycle context to a host-owned environment record. */
@@ -373,7 +384,7 @@ export function handOverExecution(
 
 /** Internal: whether an execution is still acquiring a resource. */
 export function executionAcquiring(execution: EffectExecution): boolean {
-  return (resourceScopes.get(execution.context)?.acquisitions.size ?? 0) > 0
+  return (acquiring.get(execution.context.signal) ?? 0) > 0
 }
 
 export type EffectFailure<Failure> = {

@@ -2,8 +2,10 @@ import { expect, test } from "bun:test"
 import {
   createEffectExecution,
   type EffectContext,
+  fail,
   registerResourceFinalizer,
   run,
+  scoped,
   withResourceAcquisition,
   yieldNow,
 } from "../src/effect"
@@ -797,4 +799,39 @@ test("a slow release of the stopped pull finishes before the close", async () =>
   )
   expect(result.kind).toBe("success")
   expect(log).toEqual(["release-start", "released", "closed"])
+})
+
+test("a pull acquiring in a scope of its own does not block zip", async () => {
+  const source = streams.fromPull<unknown, never, number>(() => {
+    let release = (): void => undefined
+    return {
+      pull: (context) =>
+        scoped<unknown, never, IteratorResult<number>>(
+          (_environment, scopeContext) =>
+            withResourceAcquisition(
+              scopeContext as EffectContext,
+              () =>
+                new Promise<IteratorResult<number>>((resolve) => {
+                  release = () => resolve({ done: true, value: undefined })
+                })
+            )
+        )({}, context),
+      close: () => release(),
+    }
+  })
+  const result = await run(
+    streams.runCollect(streams.zip(source, streams.empty)),
+    {}
+  )
+  expect(result.kind).toBe("success")
+})
+
+test("merge prefers a left failure from the same turn through flatMap", async () => {
+  const left = streams.flatMap(
+    () => streams.fromEffect(fail("left")),
+    streams.singleton(0)
+  )
+  const right = streams.fromEffect(fail("right"))
+  const result = await run(streams.runCollect(streams.merge(right, left)), {})
+  expect(result).toEqual({ kind: "failure", error: "left" })
 })
