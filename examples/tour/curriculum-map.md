@@ -1,400 +1,200 @@
-# Tour curriculum map
-
-この文書は、A Tour of Seseragi を固定 3 chapter / 14 lesson から再設計するための
-curriculum 正本です。#168 では学習順と依存関係を確定し、metadata と UI への実装は
-#169 以降で行います。
-
-lesson、chapter、category の総数は契約に含めません。言語 surface が増えたときは、
-既存 lesson へ詰め込まず、安定 ID を持つ新しい学習単位を追加します。
-
-## 設計原則
-
-- 一つの lesson が新しく教える中心概念は原則一つとする。
-- `goal` は教材の話題ではなく、修了後に学習者が書ける code で表す。
-- `introduced` はその lesson で初めて説明する syntax、type、API、operator、
-  runtime concept とする。
-- `required` は source に現れるが、その lesson より前に説明済みでなければならない
-  surface とする。
-- `prerequisites` は直接の依存だけを持つ。推移的な依存を重複して列挙しない。
-- beginner 向け canonical path はこの文書の lesson 掲載順とする。
-- category から参照する場合も prerequisite は省略しない。未修了の prerequisite へ
-  戻れる link を表示する。
-- lesson 数、chapter 数、category 数、ID の数値幅を schema や UI の上限にしない。
-
-## 現行 surface の棚卸し
-
-棚卸しは `docs/spec/grammar.md`、`crates/seseragi-syntax/src/surface/`、
-`crates/seseragi-semantics/src/prelude.rs`、`runtime/ts/src/`、
-`examples/spec/COVERAGE.md`、`examples/samples/` の現行実装を根拠とした。
-将来仕様だけに存在する surface は canonical path へ入れない。
-
-| 領域 | 現行 Tour で扱える surface | 配置 |
-|---|---|---|
-| program | module、`pub`、`effect fn main`、`Unit`、`println` | `start` |
-| literal と式 | String、Int、Float、Bool、Unit、template、型注釈、算術・比較・論理演算、`if`、block | `values` |
-| 関数 | 宣言、application、curry、partial application、lambda、`$`、`|>`、local function、直接再帰 | `functions` |
-| data | structural Record、Struct、tuple、spread、alias、Newtype | `data` |
-| sum と pattern | ADT、constructor、`match`、tuple / record / constructor / collection pattern、網羅性 | `patterns` |
-| collection | Array、List、Range、変換、絞り込み、集約、変換、comprehension | `collections` |
-| 欠如と失敗 | Maybe、Either、`map`、`flatMap`、`do` | `fallibility` |
-| Effect | 遅延計算、`effect fn`、`do`、`with`、`fails`、stdin、`Task<A>`、effectful `for` | `effects` |
-| abstraction | generic function / data、Trait、instance、constraint、deriving、impl、custom operator | `abstraction` |
-| Prelude | Semigroup、Monoid、Show、Debug、Functor、Applicative、Monad と 8 method、標準 instance | `abstraction` |
-| Signal | `make`、`constant`、read `*`、write `:=`、map、combine、subscribe、transaction | `signals` |
-| Web UI | `Html<Action>`、tag、Props、Style、SSR、Function component、typed event、form、`dom.app` | `web-ui` |
-| project | import、namespace、visibility、複数 module、feature-owned state | `applications` |
-
-現行 Prelude registry の学習対象は 7 traits
-（Semigroup、Monoid、Show、Debug、Functor、Applicative、Monad）と、
-8 methods（`append`、`empty`、`show`、`debug`、`map`、`pure`、`apply`、
-`flatMap`）である。標準 instance は primitive と Array、List、Maybe、
-Either、Range、Effect、Signal を含む。すべてを一 lesson へ列挙せず、具体型を先に
-使った後で抽象を説明する。
-
-## Taxonomy と category 導線
-
-| 順 | Category | Chapter | 到達範囲 | 配送 Issue |
-|---:|---|---|---|---:|
-| 1 | `start` はじめの一歩 | 実行、最小 program | source を Run し、出力を読める | #172 |
-| 2 | `values` 値と型 | literal、binding、式 | primitive な値と型を使える | #172 |
-| 3 | `functions` 関数 | 定義と適用、値の流れ、scope | 小さな処理を関数へ分けられる | #173 |
-| 4 | `data` データの形 | Record / tuple、Struct / Newtype | product type を組み立てられる | #174 |
-| 5 | `patterns` 状態と分解 | ADT、pattern | 状態を型で表し安全に分岐できる | #174 |
-| 6 | `collections` 複数の値 | Array / List / Range、変換と集約 | collection 処理を書ける | #175 |
-| 7 | `fallibility` 欠如と失敗 | Maybe、Either | 欠如と失敗を値で扱える | #176 |
-| 8 | `effects` Effect | 遅延、合成、environment / error | 副作用と失敗を型へ表せる | #177 |
-| 9 | `abstraction` 再利用できる契約 | generic、Trait、instance、operator | 型を越えて再利用できる | #178 |
-| 10 | `signals` 時間変化する値 | 生成、導出、更新 | reactive state を合成できる | #179 |
-| 11 | `web-ui` browser UI | Html、component、event、form | typed interactive UI を作れる | #180 |
-| 12 | `applications` 到達課題 | module、feature、統合課題 | 複数概念を project へまとめられる | #181 |
-
-category 別の参照導線は、category の先頭 lesson と「前提を確認する」link を入口にする。
-category 内の検索結果は canonical 順を変えず、lesson title、goal、introduced surface を
-表示する。Recipe は課題別、Showcase は完成品別に Discover から探し、Tour の順序へ
-混ぜない。
-
-### Chapter map
-
-chapter ID も表示順を含まない安定 ID とする。一つの chapter へ収める lesson 数は固定せず、
-目的が二つに分かれた時点で chapter を追加する。
-
-| Category | Chapter ID | 学習単位 | Lessons |
-|---|---|---|---|
-| `start` | `start-execution` | Playground、実行入口、標準 module | `start-run-source`〜`start-import-standard` |
-| `values` | `values-literals` | primitive literal と式 | `values-let`〜`values-float` |
-| `values` | `values-expression-results` | block、template、型、unary operator | `values-unit-block`〜`values-unary` |
-| `functions` | `functions-definition-application` | 定義、application、curry、partial application | `functions-define`〜`functions-partial` |
-| `functions` | `functions-composition` | lambda、`$`、`|>` | `functions-lambda`〜`functions-pipeline` |
-| `functions` | `functions-scope-recursion` | local scope と直接再帰 | `functions-local`〜`functions-recursion` |
-| `data` | `data-structural` | Record と tuple | `data-record-literal`〜`data-tuple` |
-| `data` | `data-nominal` | Struct、alias、Newtype | `data-struct-declaration`〜`data-newtype` |
-| `patterns` | `patterns-sum-types` | ADT と constructor | `patterns-adt`〜`patterns-payload` |
-| `patterns` | `patterns-decomposition` | match、binding、網羅性 | `patterns-match`〜`patterns-let-block` |
-| `collections` | `collections-kinds` | Array、List、Range | `collections-array`〜`collections-range` |
-| `collections` | `collections-operations` | 変換、絞り込み、集約、変換 | `collections-map`〜`collections-convert` |
-| `collections` | `collections-syntax` | comprehension と collection pattern | `collections-comprehension`〜`collections-patterns` |
-| `fallibility` | `fallibility-maybe` | 欠如と安全な query | `fallibility-maybe`〜`fallibility-maybe-chain` |
-| `fallibility` | `fallibility-either` | typed failure と fail-fast | `fallibility-either`〜`fallibility-either-chain` |
-| `effects` | `effects-composition` | Effect value、do、contract | `effects-value`〜`effects-contract` |
-| `effects` | `effects-boundaries` | stdin、Task、effectful traversal | `effects-stdin`〜`effects-for` |
-| `abstraction` | `abstraction-generics` | generic function と data | `abstraction-generic-function`〜`abstraction-generic-data` |
-| `abstraction` | `abstraction-traits` | Trait、instance、constraint、deriving | `abstraction-trait`〜`abstraction-show-debug` |
-| `abstraction` | `abstraction-standard-traits` | Semigroup から Monad | `abstraction-semigroup-monoid`〜`abstraction-monad` |
-| `abstraction` | `abstraction-nominal-behavior` | impl と custom operator | `abstraction-impl-method`〜`abstraction-operator` |
-| `signals` | `signals-state` | 生成、読取、更新 | `signals-create-read`〜`signals-set-update` |
-| `signals` | `signals-derivation` | derived value、購読、transaction | `signals-derived-map`〜`signals-transaction` |
-| `web-ui` | `web-ui-pure-html` | Html、Props、component、SSR | `web-html-value`〜`web-ssr-preview` |
-| `web-ui` | `web-ui-interaction` | Action、DOM、Signal render | `web-action-event`〜`web-signal-render` |
-| `web-ui` | `web-ui-forms-features` | form、IME、feature state | `web-form-input`〜`web-feature-state` |
-| `applications` | `applications-modules` | import、visibility、feature module | `applications-import`〜`applications-feature-module` |
-| `applications` | `applications-capstones` | CLI、form、multi-feature 到達課題 | `applications-console-report`〜`applications-multi-feature` |
-
-## Prerequisite graph
-
-大きな流れは次の DAG とする。横線は「左を理解すれば右を開始できる」を表し、
-category 内の詳細 edge は各 lesson 表を正本とする。
-
-```mermaid
-flowchart LR
-  start --> values --> functions
-  functions --> data --> patterns
-  functions --> collections
-  patterns --> fallibility
-  collections --> fallibility
-  fallibility --> effects
-  data --> abstraction
-  functions --> abstraction
-  abstraction --> signals
-  effects --> signals
-  data --> webui[web-ui]
-  patterns --> webui
-  signals --> webui
-  effects --> webui
-  webui --> applications
-  abstraction --> applications
-```
-
-beginner 向け canonical path は次の順で全 lesson を通る。
-
-```text
-start → values → functions → data → patterns → collections
-→ fallibility → effects → abstraction → signals → web-ui → applications
-```
-
-category 参照では DAG の必要部分だけを辿れる。たとえば collection API の参照者は
-`collections-array` から開始できるが、lambda を使う `collections-map` では
-`functions-lambda` が未修了なら先に案内する。
-
-## Lesson map
-
-表の `required` は直接利用する主要 surface だけを記す。`prerequisites` の
-`required` は推移的に継承する。
-
-### `start` — はじめの一歩と実行
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `start-run-source` | 用意された source を Run して Output を読める | Playground Code / Run / Output、source と出力の関係 | — | — |
-| `start-main` | 最小の実行可能 program を書ける | module、`pub`、`effect fn`、`main`、`Unit` | Run | `start-run-source` |
-| `start-print-string` | 一行の文字列を出力できる | String、string literal、`println`、単一引数 application | `main` | `start-main` |
-| `start-import-standard` | 標準 module の公開関数を qualified name で呼べる | `import * as`、`std/` module specifier、namespace、qualified name | module、application | `start-print-string` |
-
-### `values` — 値・literal・型
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `values-let` | 名前を付けた不変の値を再利用できる | `let`、immutable binding | String、`println` | `start-print-string` |
-| `values-int` | Int を作り、四則演算の結果を出力できる | Int literal、Int、`+ - * / %` | `let` | `values-let` |
-| `values-bool-if` | 条件から二つの値のどちらかを選べる | Bool、`true` / `false`、比較、`==` / `!=`、`if` expression | Int | `values-int` |
-| `values-float` | Float を使い、Int と暗黙変換されないことを説明できる | Float literal、Float、明示的な数値型 | 算術式 | `values-int` |
-| `values-unit-block` | block の最後の式と Unit を使い分けられる | `{ ... }` block、`()`、Unit value、式の結果 | `let` | `values-bool-if` |
-| `values-template` | 値を含む String を組み立てられる | template String、`${...}` | String、Int | `values-int` |
-| `values-annotation` | binding と式へ型注釈を書き、型違いを読める | type annotation、型推論との境界、基本 diagnostic | primitive types、`let` | `values-float`, `values-template` |
-| `values-unary` | 数値の符号反転と Bool の否定を書ける | unary `-`、unary `!` | Int、Float、Bool | `values-bool-if`, `values-float` |
-
-### `functions` — 関数定義・関数適用・値の流れ
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `functions-define` | 引数を一つ受け取り値を返す pure function を定義できる | `fn`、parameter、return type、pure function | type annotation | `values-annotation` |
-| `functions-call` | 自分で定義した関数を呼び出せる | function application、function type | `fn` | `functions-define` |
-| `functions-curry` | 複数 parameter の関数型を左から読める | currying、複数 parameter、right-associative arrow | application | `functions-call` |
-| `functions-partial` | 一部の引数だけを渡して新しい関数を作れる | partial application | currying | `functions-curry` |
-| `functions-lambda` | 小さな処理を匿名関数として渡せる | lambda、parameter annotation、closure | function type、application | `functions-call` |
-| `functions-dollar` | 括弧を増やさず低優先順位で関数を適用できる | `$`、low-precedence application | application | `functions-call` |
-| `functions-pipeline` | 値を複数の処理へ左から順に渡せる | `|>`、data-last function | application、partial application | `functions-partial` |
-| `functions-local` | block 内の helper と capture を使える | local function、lexical scope、capture | block、`fn` | `values-unit-block`, `functions-define` |
-| `functions-recursion` | 終了条件を持つ直接再帰を書ける | direct recursion、base case、tail position | `if`、local function | `functions-local` |
-
-### `data` — Record・Struct・tuple・Newtype
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `data-record-literal` | 名前付き field を持つ structural Record を作れる | Record literal、structural record type | primitive values | `values-annotation` |
-| `data-field-access` | Record の field を読み取れる | field access、width typing の利用側 | Record | `data-record-literal` |
-| `data-record-spread` | 元の値を変更せず Record を更新できる | Record spread、immutable update | Record、field access | `data-field-access` |
-| `data-tuple` | 位置で意味が決まる少数の値を tuple にまとめられる | tuple literal、tuple type、tuple access / pattern の入口 | primitive values | `values-annotation` |
-| `data-struct-declaration` | domain 名を持つ Struct を宣言できる | `struct`、nominal type、constructor record | Record syntax | `data-record-literal` |
-| `data-struct-values` | Struct を構築し field を読む関数を書ける | Struct construction、Struct field access | `struct`、function | `data-struct-declaration`, `functions-define` |
-| `data-alias` | 長い型へ透明な別名を付けられる | `type` alias、transparent alias | type annotation | `values-annotation` |
-| `data-newtype` | 同じ表現でも混同しない domain type を作れる | `newtype`、nominal wrapper、constructor による wrap、non-coercion | Struct construction | `data-struct-values` |
-
-### `patterns` — ADT・constructor・pattern match
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `patterns-adt` | 取りうる状態を ADT と constructor で列挙できる | ADT declaration、nullary constructor | type declaration | `data-struct-declaration` |
-| `patterns-payload` | constructor ごとに異なる payload を持たせられる | constructor payload、sum type | ADT、primitive / Struct | `patterns-adt`, `data-struct-values` |
-| `patterns-match` | constructor に応じて値を返せる | `match` expression、constructor pattern | ADT、function | `patterns-payload`, `functions-define` |
-| `patterns-binding` | pattern から payload、tuple、Record の値を束縛できる | pattern binding、tuple / Record / Struct / Newtype pattern | `match`、tuple、Record、Newtype | `patterns-match`, `data-tuple`, `data-field-access`, `data-newtype` |
-| `patterns-exhaustive` | missing case の diagnostic を読み、網羅的に直せる | exhaustiveness、unreachable pattern diagnostic | `match` | `patterns-match` |
-| `patterns-let-block` | irrefutable pattern を let と block で使える | pattern `let`、irrefutable pattern | binding、patterns | `patterns-binding`, `values-unit-block` |
-
-### `collections` — Array・List・Range
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `collections-array` | 同じ型の値を Array literal に並べられる | Array、Array literal、element type | primitive values | `values-annotation` |
-| `collections-list` | List literal と Array の用途の違いを説明できる | List、List literal、persistent list | Array | `collections-array` |
-| `collections-range` | inclusive / exclusive な Int 範囲を作れる | Range、`..`、`..=`、境界 | Int | `values-int` |
-| `collections-map` | collection の各要素を同じ規則で変換できる | `map` の具体利用、Functor の直感 | Array / List、lambda | `collections-array`, `collections-list`, `functions-lambda` |
-| `collections-filter` | 条件に合う要素だけを残せる | `filter`、predicate | collection、Bool、lambda | `collections-map`, `values-bool-if` |
-| `collections-fold` | 複数要素を一つの値へ集約できる | `reduce`、`sum`、`join`、accumulator | collection、function | `collections-filter`, `functions-curry` |
-| `collections-convert` | Array、List、Range を目的の collection へ変換できる | `toArray`、`toList`、finite collection conversion | Array / List / Range | `collections-list`, `collections-range` |
-| `collections-comprehension` | generator と guard から collection を作れる | collection comprehension、generator、guard | collection、pattern、Bool | `collections-convert`, `patterns-binding` |
-| `collections-patterns` | empty / head / rest pattern で Array と List を分解できる | collection pattern、rest pattern | Array / List、recursion | `collections-list`, `patterns-binding`, `functions-recursion` |
-
-### `fallibility` — Maybe・Either
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `fallibility-maybe` | 値がない可能性を Maybe として作り分けられる | type constructor application の読み方、`Maybe<A>`、`Nothing`、`Just` | ADT intuition | `patterns-match`, `collections-array` |
-| `fallibility-maybe-match` | Maybe の二つの case から値を返せる | Maybe pattern match、default branch の考え方 | Maybe、`match` | `fallibility-maybe` |
-| `fallibility-safe-query` | `get` / `find` の結果を安全に扱える | partial collection API、Maybe-returning lookup | collection、Maybe、predicate | `fallibility-maybe-match`, `collections-filter` |
-| `fallibility-maybe-map` | Just の値だけを関数で変換できる | `map` on Maybe | Maybe、map、function | `fallibility-maybe-match`, `collections-map` |
-| `fallibility-maybe-chain` | 値がない可能性を増やさず処理を連結できる | `flatMap` on Maybe、Maybe `do` | Maybe、function | `fallibility-maybe-map` |
-| `fallibility-either` | success と typed failure を Either で表せる | `Either<E, A>`、`Left`、`Right` | ADT、type parameters の読み方 | `patterns-match`, `fallibility-maybe` |
-| `fallibility-either-match` | Either の failure と success を表示し分けられる | Either pattern match、error value | Either、`match` | `fallibility-either` |
-| `fallibility-either-chain` | 最初の failure で止まる処理を連結できる | `flatMap` / `do` on Either、fail-fast | Either、function | `fallibility-either-match`, `fallibility-maybe-chain` |
-
-### `effects` — Effect・do・with・fails
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `effects-value` | Effect を「まだ実行していない計算」として説明できる | `Effect<R, E, A>`、deferred execution、pure / effect boundary | Either、function type | `fallibility-either` |
-| `effects-do` | 複数 Effect を source 順に実行し結果を束縛できる | Effect `do`、`<-` bind、pure `let` in do | Effect、block | `effects-value`, `fallibility-either-chain` |
-| `effects-contract` | 必要な environment と typed failure を関数型へ書ける | `effect fn` contract、`with`、`fails`、`Never` | Effect、type annotation | `effects-do` |
-| `effects-stdin` | stdin の EOF / error を型に保って一行読める | `std/stdin`、service requirement、typed input failure | standard module、`with` / `fails`、Maybe / Either | `effects-contract`, `fallibility-maybe-match`, `start-import-standard` |
-| `effects-task` | 失敗せず環境も不要な Effect を Task として読める | `Task<A>` alias、`Task<Unit>` | Effect contract、alias | `effects-contract`, `data-alias` |
-| `effects-for` | collection を Effectful に source 順で処理できる | effectful `for`、effectful traversal、short-circuit | Effect、collection、lambda | `effects-do`, `collections-comprehension` |
-
-### `abstraction` — generic・Trait・instance
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `abstraction-generic-function` | 型に依存しない関数を一度だけ定義できる | generic function、type parameter、parametricity | function type | `functions-curry`, `values-annotation` |
-| `abstraction-generic-data` | payload の型を差し替えられる ADT / Struct を宣言できる | generic ADT、generic Struct、constructor inference | ADT、Struct、type parameter | `abstraction-generic-function`, `patterns-payload`, `data-struct-values` |
-| `abstraction-trait` | 型が満たす振る舞いを Trait として宣言できる | `trait`、trait method、contract | generic types、function signature | `abstraction-generic-function` |
-| `abstraction-instance` | concrete type に Trait の実装を与えられる | `instance`、dictionary、coherence | Trait、Struct / ADT | `abstraction-trait`, `data-struct-values` |
-| `abstraction-constraint` | generic function が必要とする Trait を明記できる | `where` constraint、evidence selection | generic function、Trait / instance | `abstraction-instance` |
-| `abstraction-show-debug` | primitive と自作型を canonical 表示できる | Show、Debug、`show`、`debug`、`deriving` | Trait / instance、ADT / Struct | `abstraction-instance`, `patterns-payload` |
-| `abstraction-semigroup-monoid` | 結合と空値を generic に扱える | Semigroup、Monoid、`append`、`empty`、supertrait | constraint、String / Array / List | `abstraction-constraint`, `collections-list` |
-| `abstraction-functor` | container の形を保って中身を変換できる | Functor、higher-kinded parameter、`<$>` | `map` concrete uses、constraint | `abstraction-constraint`, `fallibility-maybe-map`, `collections-map` |
-| `abstraction-applicative` | container 内の関数と値を独立に組み合わせられる | Applicative、`pure`、`apply`、`<*>` | Functor、currying | `abstraction-functor`, `functions-curry` |
-| `abstraction-monad` | 前の結果へ依存する計算を generic に連結できる | Monad、`flatMap`、`>>=`、do desugar | Applicative、Maybe / Either / Effect chain | `abstraction-applicative`, `fallibility-either-chain`, `effects-do` |
-| `abstraction-impl-method` | nominal type に field 以外の操作を定義できる | `impl`、method、method call、visibility | Struct / Newtype、function | `data-newtype`, `abstraction-generic-function` |
-| `abstraction-operator` | 自作型の二項 operator を宣言・実装できる | custom infix declaration、fixity、operator section、operator impl | Trait / instance、impl、function value | `abstraction-instance`, `abstraction-impl-method`, `functions-partial` |
-
-### `signals` — Signal の生成・読取・変換・更新
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `signals-create-read` | MutableSignal を作り、現在値を Effect 内で読める | `std/signal`、`make`、MutableSignal、read `*` | standard module、Effect `do` | `effects-do`, `start-import-standard` |
-| `signals-set-update` | state を明示的に置換・更新できる | write `:=`、update function、state mutation boundary | MutableSignal、lambda | `signals-create-read`, `functions-lambda` |
-| `signals-derived-map` | 元の Signal を変更せず derived Signal を作れる | Signal、`signals.map`、dependency propagation | Signal、Functor intuition | `signals-set-update`, `abstraction-functor` |
-| `signals-combine` | 複数 Signal から一つの値を導出できる | `combine`、Applicative Signal、`<*>` | derived Signal、curried function、Applicative | `signals-derived-map`, `abstraction-applicative` |
-| `signals-subscribe` | 更新を購読し、lifetime を明示的に終了できる | `subscribe`、subscription、`unsubscribe`、lifetime | Signal、Effect | `signals-derived-map`, `effects-do` |
-| `signals-transaction` | 複数更新を途中状態なしで一度に公開できる | `planSet`、`planUpdate`、`transaction`、atomic update | MutableSignal、Array、Effect | `signals-set-update`, `signals-combine`, `collections-array` |
-
-### `web-ui` — Function component・event・form
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `web-html-value` | pure な Html value を一つ作れる | `std/web/html`、`Html<Action>`、text child | standard module、ADT type argument、String | `patterns-adt`, `data-record-literal`, `start-import-standard` |
-| `web-tags-children` | tag と children から文書構造を作れる | element builder、`children`、IntoChildren、void element | Html、Record | `web-html-value`, `collections-array` |
-| `web-props-style` | typed Props と Style で属性・見た目を指定できる | tag-specific Props、global / ARIA / data props、`html.style`、Style | Record、Html tags | `web-tags-children`, `data-record-spread` |
-| `web-component` | Html を返す pure function component を定義できる | Function component、props as parameters、component composition | function、Html | `web-props-style`, `functions-curry` |
-| `web-ssr-preview` | Html を String へ render し Preview で確認できる | `renderToString`、SSR、escaping、HTML Preview | Html component、pipeline | `web-component`, `functions-pipeline` |
-| `web-action-event` | click を typed Action として reducer へ渡せる | event prop、typed Action、pure reducer | Html、ADT / match、function | `web-component`, `patterns-match` |
-| `web-dom-app` | initial state、update、view を browser へ mount できる | `std/web/dom`、`dom.app`、target、mount / cleanup | typed Action、Effect、Struct state | `web-action-event`, `effects-contract`, `data-struct-values` |
-| `web-signal-render` | Signal の変化から Html を再描画できる | Signal child / derived view、reconciliation の利用契約 | Signal、Html、component | `web-dom-app`, `signals-derived-map` |
-| `web-form-input` | input と submit を typed event で処理できる | InputEvent、SubmitEvent、value snapshot、preventDefault | typed Action、form Props | `web-action-event`, `web-props-style` |
-| `web-ime-accessibility` | IME 中の入力と keyboard / pointer、label / ARIA を安全に扱える | composition state、keyboard / pointer Action、accessible form contract | form event、Props | `web-form-input` |
-| `web-feature-state` | component の state と event lifetime を feature 内に閉じられる | feature-owned MutableSignal、opaque action、cleanup boundary | Signal、DOM、module visibility | `web-signal-render`, `web-ime-accessibility`, `signals-subscribe` |
-
-### `applications` — module と段階的な到達課題
-
-| ID | Goal | Introduced | Required | Prerequisites |
-|---|---|---|---|---|
-| `applications-import` | 別 module の公開関数を import して使える | file-as-module、named / namespace import、module specifier | `pub`、function | `functions-call` |
-| `applications-visibility` | 公開 API と private helper の境界を作れる | visibility、public interface、private symbol diagnostic | module、type / function declarations | `applications-import`, `data-struct-declaration` |
-| `applications-feature-module` | model、view、entry を複数 file へ分割できる | module graph、feature boundary、public constructor function | visibility、Web component | `applications-visibility`, `web-feature-state` |
-| `applications-console-report` | collection を読み、変換し、集計して report を出力できる | 到達課題: data report | functions、data、collections、Show | `collections-fold`, `abstraction-show-debug` |
-| `applications-safe-input` | 入力の欠如・失敗を型に保った CLI flow を書ける | 到達課題: typed input flow | Maybe / Either、Effect、stdin | `effects-stdin`, `abstraction-show-debug` |
-| `applications-reactive-form` | validation を含む一画面の typed form を作れる | 到達課題: reactive form | Signal、typed events、ADT reducer | `web-ime-accessibility`, `signals-transaction` |
-| `applications-multi-feature` | 二つ以上の feature state を所有境界を保って合成できる | 到達課題: feature composition | multi-file module、feature-owned state | `applications-feature-module`, `applications-reactive-form` |
-
-## 旧 14 lesson からの移行
-
-旧 lesson は新 lesson の source をそのまま決めない。表は、どの概念をどこへ移すかを示す
-移行 audit である。旧 lesson directory は新教材が実装されるまで fallback として保持し、
-#172〜#180 で置換できた単位から retire する。
-
-| 旧 lesson | 新 lesson |
-|---|---|
-| `01-hello-world` | `start-run-source`、`start-main`、`start-print-string` |
-| `02-values-and-bindings` | `values-let`、`values-int`、`values-template`、`values-annotation` |
-| `03-function-definitions` | `functions-define` |
-| `04-function-calls` | `functions-call`、`functions-curry`、`functions-partial` |
-| `05-pipelines` | `functions-dollar`、`functions-pipeline` |
-| `06-records-and-structs` | `data-record-literal`〜`data-struct-values` |
-| `07-adts-and-patterns` | `patterns-adt`〜`patterns-exhaustive` |
-| `08-collections-and-ranges` | `collections-array`〜`collections-comprehension` |
-| `09-maybe-and-either` | `fallibility-maybe`〜`fallibility-either-chain` |
-| `10-effects-and-do` | `effects-value`〜`effects-task` |
-| `abstraction-concrete-generic`〜`abstraction-custom-operator` | generic、Trait、instance、Functor、Applicative、Monad、Signal境界、impl、operatorを17段階へ分離 |
-| `12-signals-and-state` | `signals-value-difference`〜`signals-handler-boundary` |
-| `13-components-and-web-ui` | `web-html-value`〜`web-feature-state` |
-| `14-integrated-app` | `applications-reactive-form`以降の到達課題 |
-
-## Tour / Recipe / Showcase / Reference の境界
-
-Tour本編と任意のDeep Diveの詳細な判定・topic分類・配置は
-[`deep-dive-boundary.md`](./deep-dive-boundary.md)を正本とする。Deep DiveはTourの
-required topicやprogressへ含めず、`Learn`配下の別導線に置く。
-
-| Surface | 置き場所 | 判定 |
-|---|---|---|
-| 初めて出る syntax、type、operator、基本 API | Tour | prerequisite を持つ一概念の lesson にする |
-| 既習概念の反復、小さな変更、よくある diagnostic | Tour lesson 内 | #170 の lesson format で扱う |
-| Fibonacci、FizzBuzz、word count、目的別 collection 操作 | Recipe | 複数の既習概念を用途別に再利用する |
-| completed form、feature composition、multi-file app | Showcase | 完成形を探索・実行する。導入説明は Tour へ戻す |
-| API 全列挙、ABI、package、TypeScript interop、tooling option | Reference | 学習順ではなく検索性を優先する |
-
-現行 `examples/samples/` の source は seed と実行根拠として再利用できるが、完成例を
-lesson へコピーして新概念をまとめて導入しない。`project-greeting` は
-`applications-import`、`project-flow-app` は `applications-multi-feature` の seed にできる。
-`fizzbuzz`、`fibonacci-sequence`、`local-functions`、`newtypes`、
-`unary-operators`、`html-components`、`interactive-app`、`signal-run-route` は Recipe に残す。
-`form-todo`、`feature-composition`、`signal-state` は Showcase を保ち、Tour では縮小した
-一概念 sourceを新規に用意する。
-
-## 現行 canonical path へ入れない surface
-
-次は現行 compiler fixture や完成仕様に一部存在しても、Web UI application までの beginner
-path では説明しない。実装済みで参照価値があるものは Reference / Recipe に置き、runtime
-契約が未完了のものは教材 source に使用しない。
-
-- Fiber、Deferred、Stream、resource scope、transformer、temporal control
-- Bytes、Decimal、Regex、timezone、filesystem、JSON codec、BigInt
-- Map / Set の完全 API、network / process / package registry
-- TypeScript foreign block、`.d.ts` conversion、ABI と callback lifetime
-- compiler / formatter / LSP / source map / benchmark の authoring surface
-- hydration、portal、animation、router
-
-## 後続 Issue への契約
-
-### #169 data model
-
-- category、chapter、lesson を配列として持ち、件数上限を schema に置かない。
-- この文書の安定 ID、goal、introduced、required、prerequisites を lossless に表せる。
-- order は表示用であり identity にしない。ID に二桁の連番 prefix を要求しない。
-- prerequisite は直前 lesson 固定ではなく DAG の複数 edge を許す。
-- canonical path と category 参照 path を同じ lesson object から導出する。
-
-### #170 lesson format
-
-- goal、prerequisites、完全な source、expected output / Preview、逐次説明、
-  introduced surface、変更課題、実 diagnostic、振り返り、次 lesson を持つ。
-- `required` が未導入なら生成または検証を失敗させる。
-- source 内で教材用に未実装 surface を捏造しない。
-
-### #171 navigation / progress
-
-- global、category、chapter の progress を件数から導出する。
-- long title を一行省略せず、desktop tree と mobile sheet の双方で現在地を示す。
-- prerequisite 未完了 lesson は理由と戻り先を表示する。
-
-### #172〜#181 lesson delivery
-
-- この map の対応 category を実装単位にする。
-- 一つの新 lesson で中心概念を増やしたくなった場合は lesson を追加する。
-- seed sample は実装根拠であり、lesson の粒度を sample の大きさへ合わせない。
-
-### #182 validation
-
-- prerequisite graph の missing ID、self edge、cycle を検出する。
-- canonical path 上で `required - previouslyIntroduced` が空であることを検証する。
-- introduced surface の重複は、明示した再導入理由がない限り失敗させる。
-- 全 lesson の compile、expected output / Preview、diagnostic fixture を検証する。
-- category / chapter / lesson を大量追加した fixture で件数上限がないことを検証する。
+# Tour カリキュラム構成（本編 35 ステップ＋補足トラック 21 ステップ）
+
+この文書は、`A Tour of Seseragi` の現行カリキュラム構成（全 11 カテゴリ・15 章・56 レッスン）を一覧にまとめたものです。データ定義の実体は [`curriculum.json`](./curriculum.json) にあり、Tour の画面・ルーティング・進捗管理・前後移動はすべて `curriculum.json` から生成されます。
+
+## 設計方針
+
+- **1 ステップ 1 概念**: リテラル種別のような細かすぎる単位は統合し、`Effect`・`Signal`・`match` の網羅性・`Trait` など理解の段差が大きい概念は独立したステップで丁寧に扱います。
+- **本編と補足トラックの分離**: 入門から小さな Web アプリの完成までを一本道で学べる **本編コア（Steps 01〜35）** と、抽象の法則・演算子・型設計・Web UI やコレクションの細目を必要に応じて学べる **補足トラック（Steps 36〜56）** に分けています。
+- **手を動かす演習**: 各レッスンはそのまま `Run` できるコード・行範囲と対応した解説・自分で書き換えて確かめる演習・よくある間違いとエラー表示例で構成します。
+- **安定 ID**: カテゴリ・章・レッスンは表示順とは独立した安定 ID を持ち、前提レッスン（`prerequisites`）を明示します。
+
+## カテゴリ一覧
+
+### 本編コア（Steps 01〜35）
+
+| 順 | カテゴリ ID | タイトル | 章数 | ステップ範囲 | 到達内容 |
+|---:|---|---|---:|---|---|
+| 1 | `foundations` | 基本の構文と値 | 1 | 01–03 | プログラムの実行、`let` と型推論、`if` 式による条件分岐 |
+| 2 | `functions-and-pipelines` | 関数とパイプライン | 1 | 04–05 | `fn` による関数定義、部分適用、`|>` と `$` による処理の連結 |
+| 3 | `data-and-collections` | データの形とコレクション | 2 | 06–12 | タプル・無名レコード・`struct`・ADT・`match` と網羅性、`Array`・`Range` と集計パイプライン |
+| 4 | `fallibility` | 値の有無と失敗（Maybe と Either） | 2 | 13–16 | `Maybe` による値の有無の表現、`Either` による失敗理由の伝達と変換 |
+| 5 | `effects` | 副作用と Effect | 1 | 17–21 | 純粋関数と `Effect` の分離、`do` 記法、`fails` と短絡、`mapError`/`recover`、`with` |
+| 6 | `abstraction` | ジェネリクスと Trait | 1 | 22–23 | 型パラメーター `<A>` / `<A, B>`、`deriving Eq/Show` と `where` 制約 |
+| 7 | `signals` | 時間変化する値（Signal） | 1 | 24–27 | `Signal` / `MutableSignal` の読み書き、派生 `Signal`、`transaction` による一括更新 |
+| 8 | `web-ui` | Web UI | 1 | 28–32 | 静的 HTML・スタイル、コンポーネント関数、型付き Action、フォームイベント、`dom.run` |
+| 9 | `applications` | まとめアプリと次のステップ | 1 | 33–35 | 検証付き集計コンソール、対話型 Web UI の総合演習、修了後の案内 |
+
+### 補足トラック（Steps 36〜56）
+
+| 順 | カテゴリ ID | タイトル | 章数 | ステップ範囲 | 到達内容 |
+|---:|---|---|---:|---|---|
+| 10 | `side-trips-abstraction` | 補足トラック：抽象の法則・演算子・型設計 | 2 | 36–47 | `Functor`・`Applicative`・`Monad`、`Signal` の境界と `switchMap`、`impl`・カスタム演算子、kind・一意性・法則・最小境界 |
+| 11 | `side-trips-collections-web` | 補足トラック：Web UI とコレクションの細目 | 2 | 48–56 | 外部リンクと画像、アクセシビリティ属性、機能単位の状態管理、`List`・`reduce` 設計・`append`/`concat`・内包表記・空コレクション |
+
+## レッスン一覧
+
+### 本編コア（Steps 01〜35）
+
+#### 1. 基本の構文と値（`foundations`）
+
+- **章 1: 実行・値・分岐（`foundations-basics`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 1 | `01-hello-world` | 最初のプログラムを動かして書き換える | コードを書き換えて `Run` し、文字列テンプレートの結果を出力できる | なし |
+| 2 | `02-values-and-bindings` | 値に名前を付ける（`let` と型推論） | `let` で値に名前を付け、型注釈の有無と基本演算の結果を説明できる | `01-hello-world` |
+| 3 | `if-expression` | 条件で値を選ぶ（`if` 式） | `if` 式で条件に応じた値を返し、`else` の必須性と型一致を説明できる | `02-values-and-bindings` |
+
+#### 2. 関数とパイプライン（`functions-and-pipelines`）
+
+- **章 1: 関数定義とパイプライン（`functions-core`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 4 | `03-function-definitions` | 関数を作って呼び出す（`fn` と部分適用） | `fn` で関数を定義し、引数適用と部分適用で新しい関数を作れる | `if-expression` |
+| 5 | `05-pipelines` | パイプラインと `$` で処理をつなぐ | `|>` と `$` で値の流れる順に複数の関数を組み合わせて出力できる | `03-function-definitions` |
+
+#### 3. データの形とコレクション（`data-and-collections`）
+
+- **章 1: データの形と `match`（`data-shapes-and-match`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 6 | `tuple-and-record` | タプルと無名レコード | タプルとレコードを作り、参照やスプレッド更新・幅部分型を使える | `05-pipelines` |
+| 7 | `06-records-and-structs` | 名前付きデータ `struct` | `struct` を定義して無名レコードと使い分け、名義型で取り違えを防げる | `tuple-and-record` |
+| 8 | `adt-definition` | 代数的データ型（ADT） | `type` で状態ごとの構築子を持つ代数的データ型を定義できる | `06-records-and-structs` |
+| 9 | `07-adts-and-patterns` | `match` で値を分解する | `match` の分岐で ADT から中身の値を取り出し、変数や `_` で安全に処理できる | `adt-definition` |
+| 10 | `exhaustive-match` | 網羅性チェック | `match` の漏れをエラー表示で確認し、全ケースを網羅して修正できる | `07-adts-and-patterns` |
+
+- **章 2: `Array`・`Range`・集計パイプライン（`collections-basics`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 11 | `08-collections-and-ranges` | `Array` と `Range` の基本 | `Array` と `Range` を作り、境界を意識して安全に要素を取り出せる | `exhaustive-match` |
+| 12 | `collection-pipeline` | `map`・`filter`・`reduce` で集計する | `Array` に対して変換・絞り込み・集約をパイプラインで組み立てられる | `08-collections-and-ranges` |
+
+#### 4. 値の有無と失敗（`fallibility`）
+
+- **章 1: `Maybe` で値の有無を表す（`fallibility-maybe`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 13 | `maybe-match` | `Maybe`（値の有無を表す） | `Maybe` の値を `match` で分岐し、`??` で既定値へ取り出せる | `collection-pipeline` |
+| 14 | `maybe-short-circuit` | `Maybe` の `map`・`apply`・`flatMap` | `Maybe` の `map`・`apply`・`flatMap` と演算子表記を使い分け、`Nothing` の短絡を確認できる | `maybe-match` |
+
+- **章 2: `Either` で失敗理由を伝える（`fallibility-either`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 15 | `09-maybe-and-either` | `Either`（失敗の理由を表す） | `Either` の値を `match` で分岐し、理由の有無に応じて `Maybe` と `Either` を使い分けられる | `maybe-short-circuit` |
+| 16 | `either-map-error` | `Either` の成功と失敗を別々に変換する | `Either` の成功側と失敗側を分けて変換し、失敗情報を保ったまま合成できる | `09-maybe-and-either` |
+
+#### 5. 副作用と `Effect`（`effects`）
+
+- **章 1: `Effect` の組み立てと失敗の扱い（`effects-basics`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 17 | `effect-pure-vs-effect` | 純粋な関数と `Effect` | `fn` と `effect fn` の役割の違いを区別し、純粋な計算を `Effect` から呼び出せる | `either-map-error` |
+| 18 | `10-effects-and-do` | `do` 記法で `Effect` を順につなぐ | `do` と `<-`、`succeed` を組み合わせて順番実行を書け、`flatMap` や `>>=` と対応付けられる | `effect-pure-vs-effect` |
+| 19 | `effect-failure-short-circuit` | `Effect` の失敗（`fails`）と短絡 | `fails` で失敗の型を宣言し、失敗時の短絡動作を実行して確認できる | `10-effects-and-do` |
+| 20 | `effect-map-error` | `Either` と `Effect` の変換・エラー変換 | `Either` の値と `Effect` の失敗をつなぎ、`mapError` と `recover` でアプリ側の型に揃えられる | `effect-failure-short-circuit` |
+| 21 | `effect-with-capability` | 必要な機能（`with`）を宣言する | `with` に必要な環境機能を並べ、省略時との型の違いを読み取れる | `effect-map-error` |
+
+#### 6. ジェネリクスと `Trait`（`abstraction`）
+
+- **章 1: 型パラメーターと `Trait`（`abstraction-traits`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 22 | `abstraction-type-parameter` | ジェネリクス（型パラメーター `<A>` と `<A, B>`） | 型パラメーター `A` や複数の型パラメーターを持つ関数と汎用データ型を読み書きできる | `effect-with-capability` |
+| 23 | `abstraction-trait-operation` | `Trait`（`deriving Eq/Show` と `where` 制約） | `deriving` で `Eq` と `Show` を使えるようにし、`where` 制約で必要な振る舞いを指定できる | `abstraction-type-parameter` |
+
+#### 7. 時間変化する値（`signals`）
+
+- **章 1: `Signal` の基本と更新（`signals-derivation`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 24 | `signals-value-difference` | `Signal` と `MutableSignal`（作る・読む `*`） | `MutableSignal` を作成し、`Signal` としての参照や `*` 演算子による読み取りを書ける | `abstraction-trait-operation` |
+| 25 | `signals-write-operator` | `Signal` を書き換える（`:=`・`update`） | `MutableSignal` を `set`・`:=`・`update` で安全に書き換え、前後の変化を追える | `signals-value-difference` |
+| 26 | `signals-combine` | 派生 `Signal`（`map`・`combine`） | 単一や複数の `Signal` から派生する `Signal` を組み立て、元値の更新が反映されることを確認できる | `signals-write-operator` |
+| 27 | `signals-handler-boundary` | `transaction` でまとめて更新する | `signals.transaction` と `planSet` で同時更新を行い、更新権限と表示用 `Signal` を分けられる | `signals-combine` |
+
+#### 8. Web UI（`web-ui`）
+
+- **章 1: HTML・コンポーネント・対話の仕組み（`web-ui-pure-html`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 28 | `web-html-value` | 静的 HTML とスタイル・属性 | `html` 名前空間と `style`・子要素配列を使って純粋な HTML ツリーを組み立てられる | `signals-handler-boundary` |
+| 29 | `web-component-props` | コンポーネント関数で部品化する | 引数付きで `Html` を返すコンポーネント関数を定義し、親要素の中に組み込める | `web-html-value` |
+| 30 | `web-typed-action` | クリック操作と型付き Action | `Action` 型と `onClick`、`match` による状態更新関数を組み合わせて書ける | `web-component-props` |
+| 31 | `web-form-submit` | 入力フォームとイベント | 各種フォームイベントからそれぞれの型付き Action を生成して接続できる | `web-typed-action` |
+| 32 | `web-dom-run` | `Signal` を画面につなぐ（`dom.run`） | `Signal<Html<Action>>` を `dom.run` へ渡し、動く画面としてブラウザ上で動かせる | `web-form-submit` |
+
+#### 9. まとめアプリと次のステップ（`applications`）
+
+- **章 1: 総合演習と次の案内（`applications-capstone`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 33 | `applications-console-data` | 総合演習 1: 検証付き集計コンソール | 純粋な検証・整形処理と `main` の `Effect` 出力を分離したコンソールプログラムを書ける | `web-dom-run` |
+| 34 | `14-integrated-app` | 総合演習 2: 型付き Action の対話型 Web UI | 純粋な状態更新関数と `Effect` 境界で状態を更新する対話型 Web UI を実行できる | `applications-console-data` |
+| 35 | `design-learning-map` | 次のステップ（Discover・ドキュメント・補足トラック） | Tour の修了後に目的に応じて Discover・ドキュメント・補足トラックを選び進める | `14-integrated-app` |
+
+### 補足トラック（Steps 36〜56）
+
+#### 10. 補足トラック：抽象の法則・演算子・型設計（`side-trips-abstraction`）
+
+- **章 1: 共通の枠組み・固有メソッド・演算子（`side-trips-abstraction-concepts`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 36 | `abstraction-functor-map` | 具体型の `map` と `<$>` を `Functor` で統一する | 複数の具体型で使った `map` と `<$>` を `Functor` の共通な型として説明できる | `abstraction-trait-operation`, `collection-pipeline`, `maybe-short-circuit`, `either-map-error` |
+| 37 | `abstraction-applicative-apply` | `Maybe` の `apply` と `<*>` を `Applicative` で統一する | `Maybe` で使った `apply` と `<*>` を `Applicative` の共通な型として説明できる | `abstraction-functor-map`, `maybe-short-circuit` |
+| 38 | `abstraction-monad-bind` | `Maybe` と `Effect` の `bind` を `Monad` で統一する | `Maybe` と `Effect` で使った連鎖の表記を `Monad` の共通な型として説明できる | `abstraction-applicative-apply`, `maybe-short-circuit`, `10-effects-and-do` |
+| 39 | `abstraction-type-comparison` | 同じ操作を複数の型で比べる | 同じ操作が異なる文脈の形を保ったまま働くことを確認できる | `abstraction-monad-bind` |
+| 40 | `abstraction-signal-contract` | `Signal` が `Monad` ではない理由を理解する | `Signal` で `<$>` と `<*>` は使えて `>>=` は使えない理由を説明できる | `abstraction-type-comparison`, `signals-handler-boundary` |
+| 41 | `signals-switch-map` | `switchMap` で依存先の切り替えを明示する | `switchMap` と `>>=` の違いをコードと動作から説明できる | `abstraction-signal-contract` |
+| 42 | `abstraction-impl-method` | `impl` で型に固有のメソッドを追加する | ジェネリック型へ固有のメソッドを定義して呼び出せる | `signals-switch-map` |
+| 43 | `abstraction-custom-operator` | `infix` でカスタム演算子を定義する | 独自の演算子を定義し、中置記法と関数値の両方で使える | `abstraction-impl-method` |
+
+- **章 2: 型設計の背景（`side-trips-abstraction-design`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 44 | `design-type-constructor-kinds` | `A` と `F<_>` の型引数の数（kind）を読む | `Type` と `Type -> Type` を区別し、型パラメーターによる制約が保つ形を説明できる | `design-learning-map`, `abstraction-custom-operator` |
+| 45 | `design-trait-evidence` | `trait` の実装選択と一意性を追う | 汎用関数でどの `instance` が選ばれるかと、実装の一意性が保つ性質を説明できる | `design-type-constructor-kinds` |
+| 46 | `design-abstraction-laws` | `Functor`・`Applicative`・`Monad` の法則を確かめる | 必要な抽象の強さを選び、法則が支える置き換え可能性を実行して確認できる | `design-trait-evidence` |
+| 47 | `design-trait-boundary` | 最小の `trait` 境界を切り出す | 似た名前ではなく置き換え可能な最小操作から `trait` を設計できる | `design-abstraction-laws` |
+
+#### 11. 補足トラック：Web UI とコレクションの細目（`side-trips-collections-web`）
+
+- **章 1: Web UI の細目（`side-trips-web-ui`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 48 | `web-link-image` | 外部リンクと画像を表示する | `html.parseWebUrl` を使ってリンクと画像を安全に表示できる | `web-component-props` |
+| 49 | `web-accessibility-label` | ラベルとアクセシビリティ属性を付ける | 入力欄と `label` を対応付け、状態の通知属性を設定できる | `web-link-image`, `web-form-submit` |
+| 50 | `web-feature-state` | 部品の分割と状態の管理を保つ | 状態管理の境界を保った対話フォームと表示コンポーネントを組み合わせられる | `web-accessibility-label`, `web-dom-run` |
+
+- **章 2: `List` とコレクションの細目（`side-trips-collections`）**
+
+| 順 | レッスン ID | タイトル | 到達目標 | 前提 |
+|---:|---|---|---|---|
+| 51 | `list-values` | `List` を組み立てる | `List` をリテラルと cons 演算子で組み立てられる | `collection-pipeline` |
+| 52 | `list-decomposition` | `List` を先頭と残りに分解する | `List` を `match` で先頭要素と残りの `List` に分解できる | `list-values` |
+| 53 | `collection-reduce-step` | 集約の計算関数を書く | `reduce` に渡す集約用関数の引数の順と戻り値を設計できる | `list-decomposition` |
+| 54 | `collection-append-concat` | `append` と `concat` でコレクションをつなぐ | `append` と `concat` の違いを区別してコレクションを連結できる | `collection-reduce-step` |
+| 55 | `collection-comprehension` | 内包表記で一覧を作る | 内包表記の要素生成・絞り込み・出力式を読み書きできる | `collection-append-concat` |
+| 56 | `empty-collections` | 空のコレクションを扱う | 空の配列に型注釈を付け、安全な既定値と組み合わせて扱える | `collection-comprehension` |
+
+## Tour と他教材・検証との対応
+
+- **網羅性の自動検証**: `curriculum.json` の `requiredTopics` と各レッスンの `introducedSurfaces` / `requiredSurfaces` / `prerequisites` の整合は `bun run check:tour` で自動検証し、対応表を [`coverage-report.md`](./coverage-report.md) へ出力します。
+- **Deep Dive・Discover との役割分担**:
+  - 必修の Tour と任意の理論・設計解説の境界は [`deep-dive-boundary.md`](./deep-dive-boundary.md) を参照してください。
+  - 標準 `Functor` / `Applicative` / `Monad` インスタンスの配置は [`standard-instance-coverage.md`](./standard-instance-coverage.md) に記録しています。
+  - 目的別の実用レシピや完成アプリ例は Playground の Discover（`examples/samples/`）で扱います。
