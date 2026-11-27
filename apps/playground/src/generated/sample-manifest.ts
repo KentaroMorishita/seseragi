@@ -437,7 +437,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:b30a444a0112805ce6781dfb020c452649680cfa410a09369fd88aaf70b212a0",
       "guidePath": "examples/samples/feature-composition/guide.md",
       "sourceHash": "sha256:c78dbe5d3415275e5d0b62dde3b25bfa4d8933bdff135bc13a89eb8547a5b5c7",
-      "workspaceHash": "sha256:4d2caebc2c635ebc6bfbde01192420636c6b0ab1658f7614298b05ff05b5bd30",
+      "workspaceHash": "sha256:f673dae1040b657a83ad08b0d9c2449adbfd66f4aa3d3162073e081dee7db60e",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -479,7 +479,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "features/timer.ssrg",
             "sourcePath": "examples/samples/feature-composition/src/features/timer.ssrg",
-            "sourceHash": "sha256:b62aafec9f3f0536e884d6e0a2b8fdb9c306b4ba84da053b63b78d149bcdb4ac"
+            "sourceHash": "sha256:0b51bf8ad7a761dbf7ba8fe9294cd8ea1491c8cf1dfc6530b63dca441004a29b"
           },
           {
             "path": "kitchen/countdown.ssrg",

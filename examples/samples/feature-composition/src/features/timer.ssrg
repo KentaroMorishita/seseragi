@@ -5,8 +5,6 @@ import * as clock from "std/clock"
 import * as effects from "std/effect"
 import * as floats from "std/float"
 import * as math from "std/math"
-import * as refs from "std/ref"
-import { Ref } from "std/ref"
 import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
@@ -40,8 +38,48 @@ pub struct KitchenTimer {
   start: String -> Int -> Task<Unit>,
 }
 
-fn dispatch state: MutableSignal<TimerState> -> action: TimerAction -> Task<Unit> =
-  signals.update (update action) state
+// タイマーの状態に、最後に時計を読んだ時刻と、まだ残り時間へ反映していないナノ秒の端数を添えます。
+struct Clocked { timer: TimerState, last: time.Instant, carry: Int }
+
+// 前に時計を読んでからたった時間を、そのあいだの状態に反映します。
+// 動いていたタイマーだけが進み、一時停止中や始まる前の時間は数えません。
+fn catchUp current: time.Instant -> clocked: Clocked -> Clocked =
+  match time.durationBetween clocked.last current {
+    // 先に読んだ時刻があとから届いたときは、すでに反映した分で足りています。
+    Left _ -> clocked
+    Right duration -> {
+      let elapsed = splitElapsed clocked.carry (time.toNanoseconds duration)
+      Clocked {
+        timer: advance elapsed.milliseconds clocked.timer,
+        last: current,
+        carry: elapsed.carry,
+      }
+    }
+  }
+
+// 操作の前に、押した時刻までの経過を反映します。一時停止の直前まで動いた時間を落とさず、
+// 再開したあとは再開した時刻から数えます。
+fn perform action: TimerAction -> current: time.Instant -> clocked: Clocked -> Clocked =
+  {
+    let caught = catchUp current clocked
+    Clocked { ...caught, timer: update action caught.timer }
+  }
+
+effect fn performNow state: MutableSignal<Clocked>
+  -> action: TimerAction
+  -> Unit
+with clock: clock.Clock =
+  do {
+    current <- clock.now ()
+    signals.update (perform action current) state
+  }
+
+// 操作も時計を読みます。create で受け取った Clock を渡して、画面が扱える Task にします。
+fn dispatch service: clock.Clock
+  -> state: MutableSignal<Clocked>
+  -> action: TimerAction
+  -> Task<Unit> =
+  effects.provideSome (\_environment: {} -> { clock: service }) (performNow state action)
 
 fn shownSeconds timer: TimerState -> Int = match timer {
   Running countdown -> secondsLeft countdown
@@ -137,11 +175,10 @@ fn control label: String
     children: label,
   }
 
-fn controls state: MutableSignal<TimerState>
+fn controls send: (TimerAction -> Task<Unit>)
   -> timer: TimerState
   -> html.Html<Task<Unit>> =
   {
-    let send = dispatch state
     let toggle = match timer {
       Paused _ -> control "再開する" True True (send Resume)
       Running _ -> control "一時停止" True True (send Pause)
@@ -168,14 +205,16 @@ fn doneBanner timer: TimerState -> Array<html.Html<Task<Unit>>> = match timer {
   _ -> []
 }
 
-fn view state: MutableSignal<TimerState> -> timer: TimerState -> html.Html<Task<Unit>> =
+fn view send: (TimerAction -> Task<Unit>)
+  -> timer: TimerState
+  -> html.Html<Task<Unit>> =
   html.section {
     style: styles.timerPanelStyle (),
     children: arrays.append (doneBanner timer) [
       html.h2 { style: styles.eyebrowStyle (), children: "タイマー" },
       html.p { style: styles.timerCaptionStyle (), children: caption timer },
       dial timer,
-      controls state timer,
+      controls send timer,
     ],
   }
 
@@ -185,45 +224,32 @@ fn every interval: time.Duration
   -> effects.ScheduleDecision =
   effects.ScheduleContinue interval
 
-// 前に時計を読んだ時刻と、まだ残り時間へ反映していないナノ秒の端数です。
-struct Ticker { last: time.Instant, carry: Int }
-
-fn nanosecondsBetween earlier: time.Instant -> later: time.Instant -> Int =
-  match time.durationBetween earlier later {
-    Right elapsed -> time.toNanoseconds elapsed
-    Left _ -> 0
-  }
-
 // 刻みの回数ではなく、前に時計を読んでからたった時間でタイマーを進めます。
 // ブラウザーが裏のタブで刻みを間引いても、残り時間は実際の時間どおりに減ります。
-effect fn step state: MutableSignal<TimerState>
-  -> ticker: Ref<Ticker>
-  -> Unit
-with clock: clock.Clock =
-  do {
-    current <- clock.now ()
-    previous <- refs.get ticker
-    let elapsed = splitElapsed previous.carry (nanosecondsBetween previous.last current)
-    refs.set (Ticker { last: current, carry: elapsed.carry }) ticker
-    signals.update (advance elapsed.milliseconds) state
-  }
+effect fn step state: MutableSignal<Clocked> -> Unit with clock: clock.Clock = do {
+  current <- clock.now ()
+  signals.update (catchUp current) state
+}
 
 pub effect fn create -> KitchenTimer with clock: clock.Clock fails String = do {
   interval <- time.milliseconds tickMilliseconds
     |> effects.fromEither
     |> effects.mapError (\_error: time.DurationError -> "タイマーの刻みを作れません")
-  // 型を書いた let で受けるのは、Signal への読み替えが効かない不具合（#1429）を避けるためです。
-  let initial: TimerState = Idle
-  state <- signals.make initial
-  let rendered = signals.map (view state) state
+  service <- effects.service (\environment: { clock: clock.Clock } -> environment.clock)
   started <- clock.now ()
-  ticker <- refs.make (Ticker { last: started, carry: 0 })
+  // 型を書いた let で受けるのは、Signal への読み替えが効かない不具合（#1429）を避けるためです。
+  let initial: Clocked = Clocked { timer: Idle, last: started, carry: 0 }
+  state <- signals.make initial
+  let send = dispatch service state
+  // 時刻と端数は刻みごとに変わるので、タイマーの状態が変わったときだけ描き直します。
+  let timer = signals.distinct (signals.map (\clocked: Clocked -> clocked.timer) state)
+  let rendered = signals.map (view send) timer
   // dom.run は操作を一つずつ処理するので、時間の経過は操作ではなく別の Fiber で進めます。
-  _ticking <- effects.fork (effects.repeat (effects.schedule (every interval)) (step state ticker))
+  _ticking <- effects.fork (effects.repeat (effects.schedule (every interval)) (step state))
   succeed (
     KitchenTimer {
       view: rendered,
-      start: \label: String -> \minutes: Int -> dispatch state
+      start: \label: String -> \minutes: Int -> send
         (Start (TimerRequest { label, minutes })),
     }
   )
