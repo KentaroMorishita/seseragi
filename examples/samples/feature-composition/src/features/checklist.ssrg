@@ -1,0 +1,98 @@
+// 各機能カードが自分専用の非公開 Signal を所有し、描画 Signal だけを外へ返します。
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import {
+  CardTheme,
+  badgeStyle,
+  barFillStyle,
+  barTrackStyle,
+  cardActionsStyle,
+  cardNoteStyle,
+  cardStyle,
+  cardTitleStyle,
+  countStyle,
+  primaryActionStyle,
+  secondaryActionStyle,
+} from "self/ui/styles"
+
+pub struct CheckState deriving Eq, Show, Debug { done: Int, goal: Int }
+
+pub type CheckAction deriving Eq, Show =
+  | Advance
+  | Reset
+
+pub fn updateCheck action: CheckAction -> state: CheckState -> CheckState =
+  match action {
+    Advance -> CheckState {
+      ...state,
+      done:
+        if state.done < state.goal then
+          state.done + 1
+        else
+          state.goal,
+    }
+    Reset -> CheckState { ...state, done: 0 }
+  }
+
+fn dispatchCheck state: MutableSignal<CheckState> -> action: CheckAction -> Task<Unit> =
+  signals.update (updateCheck action) state
+
+fn checkCardView title: String
+  -> note: String
+  -> theme: CardTheme
+  -> state: MutableSignal<CheckState>
+  -> current: CheckState
+  -> html.Html<Task<Unit>> =
+  {
+    let percent = current.done * 100 / current.goal
+    let statusText =
+      if current.done == current.goal then
+        "完了（非公開 Signal に保持）"
+      else
+        `残り ${current.goal - current.done} 件`
+    html.section {
+      key: title,
+      style: cardStyle theme,
+      children: [
+        html.span { style: badgeStyle theme, children: statusText },
+        html.h2 { style: cardTitleStyle, children: title },
+        html.p {
+          style: countStyle theme,
+          children: `${current.done} / ${current.goal}`,
+        },
+        html.div {
+          style: barTrackStyle,
+          children: html.div { style: barFillStyle theme percent, children: "" },
+        },
+        html.p { style: cardNoteStyle, children: note },
+        html.div {
+          style: cardActionsStyle,
+          children: [
+            html.button {
+              onClick: dispatchCheck state Advance,
+              style: primaryActionStyle theme,
+              children: "確認を 1 件進める",
+            },
+            html.button {
+              onClick: dispatchCheck state Reset,
+              style: secondaryActionStyle,
+              children: "リセット",
+            },
+          ],
+        },
+      ],
+    }
+  }
+
+// コンストラクタを呼んだ時点で各カード専用の Signal が一度だけ作られ、外へは描画 Signal だけを返します。
+pub effect fn createChecklistCard title: String
+  -> note: String
+  -> goal: Int
+  -> theme: CardTheme
+  -> Signal<html.Html<Task<Unit>>>
+fails Never =
+  do {
+    state <- signals.make (CheckState { done: 0, goal })
+    succeed (signals.map (checkCardView title note theme state) state)
+  }

@@ -17,7 +17,13 @@ import sample3Source from "../../../../examples/samples/expression-calculator/ma
 import sample3Guide from "../../../../examples/samples/expression-calculator/guide.md?raw"
 import sample3Output from "../../../../examples/samples/expression-calculator/stdout.txt?raw"
 
-import sample4Source from "../../../../examples/samples/feature-composition/main.ssrg?raw"
+import sample4Manifest from "../../../../examples/samples/feature-composition/seseragi.toml?raw"
+import sample4Source from "../../../../examples/samples/feature-composition/src/main.ssrg?raw"
+import sample4Source2 from "../../../../examples/samples/feature-composition/src/app.ssrg?raw"
+import sample4Source3 from "../../../../examples/samples/feature-composition/src/components/hero.ssrg?raw"
+import sample4Source4 from "../../../../examples/samples/feature-composition/src/features/checklist.ssrg?raw"
+import sample4Source5 from "../../../../examples/samples/feature-composition/src/features/layout.ssrg?raw"
+import sample4Source6 from "../../../../examples/samples/feature-composition/src/ui/styles.ssrg?raw"
 import sample4Guide from "../../../../examples/samples/feature-composition/guide.md?raw"
 
 import sample5Source from "../../../../examples/samples/fibonacci-sequence/main.ssrg?raw"
@@ -404,7 +410,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "feature module",
         "private state",
         "Effect Action",
-        "switchMap"
+        "switchMap",
+        "multi-module"
       ],
       "capabilities": [
         "dom"
@@ -420,15 +427,71 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": false,
       "isNew": true,
       "interactive": true,
-      "sourcePath": "examples/samples/feature-composition/main.ssrg",
+      "sourcePath": "examples/samples/feature-composition/src/main.ssrg",
+      "manifestPath": "examples/samples/feature-composition/seseragi.toml",
+      "manifestHash": "sha256:b30a444a0112805ce6781dfb020c452649680cfa410a09369fd88aaf70b212a0",
       "guidePath": "examples/samples/feature-composition/guide.md",
-      "sourceHash": "sha256:c921b41647b83559a3eb219ec20200b5a191d80a8ead5795c4a7a650f68241b4",
-      "workspaceHash": "sha256:4b2b44e92edf4af9be1bd9bc179278d17a098d6c10c3bc7686a285ae284b21ba"
+      "sourceHash": "sha256:7b9a84e76acd1aa42e705f3f5a04bbb0d6cc266ab87dc169a9cb1ffb11a4f610",
+      "workspaceHash": "sha256:c153f77871860253207e2f8e68560ea7a03fd7eb82fabc4de5c91f8bc0ecda33",
+      "project": {
+        "entryFile": "main.ssrg",
+        "activeFile": "app.ssrg",
+        "openFiles": [
+          "main.ssrg",
+          "app.ssrg",
+          "features/checklist.ssrg",
+          "features/layout.ssrg",
+          "components/hero.ssrg",
+          "ui/styles.ssrg"
+        ],
+        "expandedFolders": [
+          "features",
+          "components",
+          "ui"
+        ],
+        "files": [
+          {
+            "path": "main.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/main.ssrg",
+            "sourceHash": "sha256:7b9a84e76acd1aa42e705f3f5a04bbb0d6cc266ab87dc169a9cb1ffb11a4f610"
+          },
+          {
+            "path": "app.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/app.ssrg",
+            "sourceHash": "sha256:5c87e4a9232f494ad923fd6de201ca91a7c77a5d5c77c8a504a0cdf0e8e4e8d1"
+          },
+          {
+            "path": "components/hero.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/components/hero.ssrg",
+            "sourceHash": "sha256:3577965dc510ab0d1c72f0113e7a09e09dc0878d9a61c968dbd943154d285a7c"
+          },
+          {
+            "path": "features/checklist.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/features/checklist.ssrg",
+            "sourceHash": "sha256:813308a792d32b9f17e32dd9619dec57ad628e1e35344e74aca69cf032cf4935"
+          },
+          {
+            "path": "features/layout.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/features/layout.ssrg",
+            "sourceHash": "sha256:5ebd6c63fa1e8fd725508e58de229db25d0a2481b57061814d33a39a19cc2205"
+          },
+          {
+            "path": "ui/styles.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/ui/styles.ssrg",
+            "sourceHash": "sha256:9d52bc27d8ea5b5deaf8f4d7774e4b3dd631987c4a078b354addd1c93bb1110a"
+          }
+        ]
+      }
     },
     source: sample4Source,
-    manifest: "",
+    manifest: sample4Manifest,
     projectFiles: [
       { path: "main.ssrg", source: sample4Source },
+      { path: "app.ssrg", source: sample4Source2 },
+      { path: "components/hero.ssrg", source: sample4Source3 },
+      { path: "features/checklist.ssrg", source: sample4Source4 },
+      { path: "features/layout.ssrg", source: sample4Source5 },
+      { path: "ui/styles.ssrg", source: sample4Source6 },
     ],
     guide: sample4Guide,
     stdin: "",

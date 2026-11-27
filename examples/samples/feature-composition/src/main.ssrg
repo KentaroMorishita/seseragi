@@ -1,0 +1,23 @@
+// エントリポイントは合成済みの画面 Signal を #app へマウントするだけに保ちます。
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import { Signal } from "std/signal"
+import { create } from "self/app"
+
+fn perform action: Task<Unit> -> Task<Unit> = action
+
+effect fn mount content: Signal<html.Html<Task<Unit>>>
+  -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    target <- dom.query "#app"
+      |> mapError (\_error: dom.DomError -> "DOM target unavailable")
+    dom.run (dom.defaultOptions ()) target perform content
+      |> mapError (\_error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+  }
+
+pub effect fn main -> Unit with dom: dom.Dom fails String = do {
+  content <- create ()
+  mount content
+}

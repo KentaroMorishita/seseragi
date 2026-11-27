@@ -9,24 +9,32 @@
     "feature module",
     "private state",
     "Effect Action",
-    "switchMap"
+    "switchMap",
+    "multi-module"
   ],
-  "capabilities": [
-    "dom"
-  ],
+  "capabilities": ["dom"],
   "outputMode": "html",
   "experience": "guided",
   "architecture": "signal-run",
   "focus": "composition",
-  "prerequisites": [
-    "signal-state",
-    "interactive-app"
-  ],
+  "prerequisites": ["signal-state", "interactive-app"],
   "featured": false,
   "isNew": true,
   "interactive": true,
   "files": {
-    "source": "main.ssrg",
+    "manifest": "seseragi.toml",
     "guide": "guide.md"
+  },
+  "workspace": {
+    "active": "app.ssrg",
+    "open": [
+      "main.ssrg",
+      "app.ssrg",
+      "features/checklist.ssrg",
+      "features/layout.ssrg",
+      "components/hero.ssrg",
+      "ui/styles.ssrg"
+    ],
+    "expanded": ["features", "components", "ui"]
   }
 }

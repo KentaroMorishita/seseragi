@@ -1,0 +1,80 @@
+// ヒーロー帯と Signal 合成の図解 SVG を描画します。
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+import {
+  diagramCardStyle,
+  eyebrowStyle,
+  headingStyle,
+  heroCopyStyle,
+  heroStyle,
+} from "self/ui/styles"
+
+fn flowDiagram -> html.Html<Task<Unit>> = html.div {
+  style: diagramCardStyle,
+  children: svg.svg {
+    viewBox: "0 0 300 92",
+    role: "img",
+    ariaLabel: "独立した Signal を 1 つの画面へ合成する流れ",
+    children: [
+      svg.rect { x: 8.0, y: 14.0, width: 80.0, height: 28.0, rx: 8.0, fill: "#d97706", },
+      svg.rect { x: 8.0, y: 52.0, width: 80.0, height: 28.0, rx: 8.0, fill: "#0f766e", },
+      svg.line {
+        x1: 88.0,
+        y1: 28.0,
+        x2: 136.0,
+        y2: 46.0,
+        stroke: "#9fd3c7",
+        strokeWidth: "2",
+      },
+      svg.line {
+        x1: 88.0,
+        y1: 66.0,
+        x2: 136.0,
+        y2: 46.0,
+        stroke: "#9fd3c7",
+        strokeWidth: "2",
+      },
+      svg.rect {
+        x: 136.0,
+        y: 28.0,
+        width: 74.0,
+        height: 36.0,
+        rx: 10.0,
+        fill: "#38617a",
+      },
+      svg.line {
+        x1: 210.0,
+        y1: 46.0,
+        x2: 238.0,
+        y2: 46.0,
+        stroke: "#9fd3c7",
+        strokeWidth: "2",
+      },
+      svg.rect {
+        x: 238.0,
+        y: 28.0,
+        width: 54.0,
+        height: 36.0,
+        rx: 10.0,
+        fill: "#9fd3c7",
+      },
+    ],
+  } |> svg.toHtml,
+}
+
+pub fn heroSection -> html.Html<Task<Unit>> = html.section {
+  style: heroStyle,
+  children: [
+    html.div {
+      children: [
+        html.p { style: eyebrowStyle, children: "FEATURE-OWNED SIGNALS" },
+        html.h1 { style: headingStyle, children: "公開準備ボードを独立した Signal で合成する" },
+        html.p {
+          style: heroCopyStyle,
+          children: "カードごとの確認数を親の状態へ吸い上げずに、非表示・並べ替え・差し替えを自在に組み合わせます。",
+        },
+      ],
+    },
+    flowDiagram (),
+  ],
+}

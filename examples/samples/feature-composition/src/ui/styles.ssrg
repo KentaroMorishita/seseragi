@@ -1,0 +1,217 @@
+// 公開準備ボードの配色テーマと名前付き style をまとめます。
+import * as html from "std/web/html"
+
+pub struct CardTheme { accent: String, surface: String, border: String, badgeBg: String, }
+
+pub let amberTheme: CardTheme = CardTheme {
+  accent: "#9a4a12",
+  surface: "#fffaf0",
+  border: "#ead6b8",
+  badgeBg: "#f8e8cc",
+}
+
+pub let tealTheme: CardTheme = CardTheme {
+  accent: "#0f6b64",
+  surface: "#f2faf8",
+  border: "#c5e4dd",
+  badgeBg: "#d8f0ea",
+}
+
+pub let forestTheme: CardTheme = CardTheme {
+  accent: "#2d6a4f",
+  surface: "#f3faf5",
+  border: "#c7e3d0",
+  badgeBg: "#d8eedf",
+}
+
+pub let pageStyle: html.Style = html.style {
+  background: "#f6f4ef",
+  color: "#1b242b",
+  fontFamily: "system-ui, -apple-system, \"Hiragino Sans\", \"Noto Sans JP\", sans-serif",
+  minHeight: "100vh",
+  padding: "32px 20px 56px",
+}
+
+pub let shellStyle: html.Style = html.style { margin: "0 auto", maxWidth: "880px", }
+
+pub let heroStyle: html.Style = html.style {
+  background: "linear-gradient(135deg, #172a3a 0%, #244054 100%)",
+  borderRadius: "20px",
+  color: "#f8fafc",
+  display: "grid",
+  gap: "20px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  alignItems: "center",
+  marginBottom: "20px",
+  padding: "28px 24px",
+}
+
+pub let eyebrowStyle: html.Style = html.style {
+  color: "#9fd3c7",
+  fontSize: "12px",
+  fontWeight: "700",
+  letterSpacing: "0.14em",
+  margin: "0",
+}
+
+pub let headingStyle: html.Style = html.style {
+  fontSize: "clamp(24px, 4.5vw, 34px)",
+  fontWeight: "800",
+  letterSpacing: "-0.02em",
+  lineHeight: "1.25",
+  margin: "8px 0 10px",
+}
+
+pub let heroCopyStyle: html.Style = html.style {
+  color: "#d4e3ec",
+  fontSize: "15px",
+  lineHeight: "1.75",
+  margin: "0",
+}
+
+pub let diagramCardStyle: html.Style = html.style {
+  background: "rgba(255, 255, 255, 0.08)",
+  border: "1px solid rgba(255, 255, 255, 0.16)",
+  borderRadius: "14px",
+  padding: "14px",
+}
+
+pub let controlPanelStyle: html.Style = html.style {
+  background: "#ffffff",
+  border: "1px solid #dfd9cc",
+  borderRadius: "16px",
+  marginBottom: "20px",
+  padding: "18px 20px",
+}
+
+pub let controlGroupStyle: html.Style = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "10px",
+}
+
+pub let controlButtonStyle: html.Style = html.style {
+  background: "#f6f4ef",
+  border: "1px solid #cfc7b6",
+  borderRadius: "10px",
+  color: "#172a3a",
+  cursor: "pointer",
+  font: "inherit",
+  fontSize: "14px",
+  fontWeight: "700",
+  padding: "10px 14px",
+}
+
+pub let controlStatusStyle: html.Style = html.style {
+  color: "#4c5a64",
+  fontSize: "14px",
+  lineHeight: "1.6",
+  margin: "12px 0 0",
+}
+
+pub let featureGridStyle: html.Style = html.style {
+  display: "grid",
+  gap: "16px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+}
+
+pub fn cardStyle theme: CardTheme -> html.Style = html.style {
+  background: theme.surface,
+  border: `1px solid ${theme.border}`,
+  borderRadius: "16px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "12px",
+  padding: "20px",
+}
+
+pub fn badgeStyle theme: CardTheme -> html.Style = html.style {
+  alignSelf: "flex-start",
+  background: theme.badgeBg,
+  borderRadius: "999px",
+  color: theme.accent,
+  fontSize: "12px",
+  fontWeight: "700",
+  padding: "4px 10px",
+}
+
+pub let cardTitleStyle: html.Style = html.style {
+  fontSize: "20px",
+  fontWeight: "800",
+  margin: "0",
+}
+
+pub fn countStyle theme: CardTheme -> html.Style = html.style {
+  color: theme.accent,
+  fontSize: "32px",
+  fontVariantNumeric: "tabular-nums",
+  fontWeight: "800",
+  lineHeight: "1.1",
+  margin: "0",
+}
+
+pub let cardNoteStyle: html.Style = html.style {
+  color: "#4c5a64",
+  fontSize: "14px",
+  lineHeight: "1.6",
+  margin: "0",
+}
+
+pub let barTrackStyle: html.Style = html.style {
+  background: "#e5e0d5",
+  borderRadius: "999px",
+  height: "8px",
+  overflow: "hidden",
+  width: "100%",
+}
+
+pub fn barFillStyle theme: CardTheme -> percent: Int -> html.Style = html.style {
+  background: theme.accent,
+  borderRadius: "999px",
+  height: "100%",
+  transition: "width 180ms ease",
+  width: `${percent}%`,
+}
+
+pub let cardActionsStyle: html.Style = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "8px",
+  marginTop: "4px",
+}
+
+pub fn primaryActionStyle theme: CardTheme -> html.Style = html.style {
+  background: theme.accent,
+  border: "0",
+  borderRadius: "10px",
+  color: "#ffffff",
+  cursor: "pointer",
+  font: "inherit",
+  fontSize: "14px",
+  fontWeight: "700",
+  padding: "10px 14px",
+}
+
+pub let secondaryActionStyle: html.Style = html.style {
+  background: "#ffffff",
+  border: "1px solid #d5cfc2",
+  borderRadius: "10px",
+  color: "#334155",
+  cursor: "pointer",
+  font: "inherit",
+  fontSize: "14px",
+  fontWeight: "600",
+  padding: "10px 12px",
+}
+
+pub let hiddenCardStyle: html.Style = html.style {
+  background: "#efece4",
+  border: "1px dashed #bfb7a6",
+  borderRadius: "16px",
+  color: "#4c5a64",
+  display: "flex",
+  flexDirection: "column",
+  gap: "8px",
+  justifyContent: "center",
+  padding: "24px 20px",
+}

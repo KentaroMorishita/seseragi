@@ -3451,13 +3451,16 @@ pub effect fn main -> Unit with Console fails String = do {
     const sample = samples.find(
       (candidate) => candidate.id === "feature-composition"
     )
+    const combined = sample?.workspace.files
+      .map(({ source }) => source)
+      .join("\n")
 
     expect(sample?.interactive).toBe(true)
-    expect(sample?.source).toContain("Signal<html.Html<Task<Unit>>>")
-    expect(sample?.source).not.toContain("Effect<{}, Never, Unit>")
-    expect(sample?.source).toContain("signals.switchMap")
-    expect(sample?.source).toContain("effect fn mount")
-    expect(sample?.source).not.toContain("type RootAction")
+    expect(combined).toContain("Signal<html.Html<Task<Unit>>>")
+    expect(combined).not.toContain("Effect<{}, Never, Unit>")
+    expect(combined).toContain("signals.switchMap")
+    expect(combined).toContain("effect fn mount")
+    expect(combined).not.toContain("type RootAction")
   })
 
   test("integrates the concert hall seat booking showcase as a signal-run package", () => {

@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "17.0.0"
+timezone_database = "2025b"
+root = "samples/feature-composition@0.0.0#workspace:."
+
+[[packages]]
+id = "samples/feature-composition@0.0.0#workspace:."
+name = "samples/feature-composition"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:b30a444a0112805ce6781dfb020c452649680cfa410a09369fd88aaf70b212a0"
+content_digest = "sha256:b34e488c6a356226d8cc15c7a53f1bf6bb79684c1d955d00c1a18d7dc112b317"
+dependencies = []
