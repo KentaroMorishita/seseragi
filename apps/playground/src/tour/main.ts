@@ -88,6 +88,13 @@ import "./tour.css"
 import curriculumJson from "../../../../examples/tour/curriculum.json"
 import { createReferenceCard } from "../ui/reference-card"
 import { exampleEntries, lessonEntries } from "../ui/search-index"
+import {
+  connectLocaleController,
+  playgroundHref as localizedPlaygroundHref,
+  type UiLocale,
+  UNTRANSLATED_LESSON_NOTICE,
+  uiMessages,
+} from "../ui/i18n"
 import { connectSearchPalette } from "../ui/search-palette"
 import { createThemeController } from "../ui/theme"
 import { browserStorage, connectThemeButton } from "../ui/theme-button"
@@ -238,6 +245,26 @@ let progress: TourProgress = loadTourProgress(
   requestedLesson
 )
 let currentLesson = findTourLesson(progress.currentLessonId)
+const localeController = connectLocaleController({
+  window,
+  jaButton: requiredElement("#lang-ja-button", HTMLButtonElement),
+  enButton: requiredElement("#lang-en-button", HTMLButtonElement),
+  banner: document.querySelector<HTMLElement>("#english-available-banner"),
+  bannerSwitchButton: document.querySelector<HTMLButtonElement>(
+    "#english-banner-switch"
+  ),
+  bannerDismissButton: document.querySelector<HTMLButtonElement>(
+    "#english-banner-dismiss"
+  ),
+  playgroundLinks: Array.from(
+    document.querySelectorAll<HTMLAnchorElement>(
+      '.pg-brand, .pg-views a[href="../"]'
+    )
+  ),
+  tourLinks: Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('.pg-views a[href="./"]')
+  ),
+})
 // 外部通信の許可（#1371）。レッスンごとに覚える
 const networkPermissions = createNetworkPermissionStore(browserStorage())
 const networkNotice = connectNetworkNotice(
@@ -248,11 +275,12 @@ const networkNotice = connectNetworkNotice(
       currentNetworkScope,
       networkNotice,
       () => void run()
-    )
+    ),
+  localeController.current
 )
 const networkGate = createNetworkGate({
   store: networkPermissions,
-  consent: createNetworkConsent(document),
+  consent: createNetworkConsent(document, localeController.current),
   notice: networkNotice,
   current: currentNetworkScope,
   rerun: () => void run(),
@@ -261,7 +289,11 @@ const networkGate = createNetworkGate({
     clearHtmlPreview()
   },
 })
-const networkSettings = createNetworkSettings(document, networkPermissions)
+const networkSettings = createNetworkSettings(
+  document,
+  networkPermissions,
+  localeController.current
+)
 let runNetworkAllowed = false
 let staticPreviewRequest = 0
 let source = currentLesson.source
@@ -328,7 +360,7 @@ const search = connectSearchPalette({
   },
   onExample: (id) => {
     window.location.assign(
-      new URL(`../?example=${encodeURIComponent(id)}`, window.location.href)
+      `${localizedPlaygroundHref(localeController.current())}?example=${encodeURIComponent(id)}`
     )
     return undefined
   },
@@ -382,10 +414,101 @@ const search = connectSearchPalette({
     },
   ],
   renderApiDetail: (item) => createReferenceCard(document, item),
+  locale: localeController.current,
 })
 searchButton.addEventListener("click", () =>
   search.open({ opener: searchButton })
 )
+
+const tourUntranslatedNotice = document.querySelector<HTMLElement>(
+  "#tour-untranslated-notice"
+)
+const tourExpectedSummary = document.querySelector<HTMLElement>(
+  "#tour-expected > summary"
+)
+const tourGuideTitle = document.querySelector<HTMLElement>("#tour-guide-title")
+const tourFocusTitle = document.querySelector<HTMLElement>("#tour-focus-title")
+const tourIntroducedTitle = document.querySelector<HTMLElement>(
+  "#tour-introduced-title"
+)
+const tourDiagnosticTitle = document.querySelector<HTMLElement>(
+  "#tour-diagnostic-title"
+)
+const tourRecapTitle = document.querySelector<HTMLElement>("#tour-recap-title")
+const tourPrerequisiteTitle = document.querySelector<HTMLElement>(
+  "#tour-prerequisite-title"
+)
+const tourNextTitle = document.querySelector<HTMLElement>("#tour-next-title")
+const tourDeepDiveTitle = document.querySelector<HTMLElement>(
+  "#tour-deep-dive-title"
+)
+
+const applyTourLocale = (nextLocale: UiLocale): void => {
+  const messages = uiMessages(nextLocale)
+  const otherMessages = uiMessages(nextLocale === "en" ? "ja" : "en")
+  if (tourUntranslatedNotice !== null) {
+    tourUntranslatedNotice.hidden = nextLocale !== "en"
+    tourUntranslatedNotice.textContent =
+      nextLocale === "en" ? UNTRANSLATED_LESSON_NOTICE : ""
+  }
+  if (tourExpectedSummary) {
+    tourExpectedSummary.textContent = messages.tourExpectedSummary
+  }
+  if (tourGuideTitle) tourGuideTitle.textContent = messages.tourGuideTitle
+  if (tourFocusTitle) tourFocusTitle.textContent = messages.tourFocusTitle
+  if (tourIntroducedTitle) {
+    tourIntroducedTitle.textContent = messages.tourIntroducedTitle
+  }
+  if (tourDiagnosticTitle) {
+    tourDiagnosticTitle.textContent = messages.tourDiagnosticTitle
+  }
+  diagnosticButton.textContent = messages.tourDiagnosticButton
+  if (tourRecapTitle) tourRecapTitle.textContent = messages.tourRecapTitle
+  if (tourPrerequisiteTitle) {
+    tourPrerequisiteTitle.textContent = messages.tourPrerequisiteTitle
+  }
+  if (tourNextTitle) tourNextTitle.textContent = messages.tourNextTitle
+  if (tourDeepDiveTitle) {
+    tourDeepDiveTitle.textContent = messages.tourDeepDiveTitle
+  }
+  if (
+    runCheck.textContent === otherMessages.tourRunCheckOk ||
+    runCheck.textContent === messages.tourRunCheckOk
+  ) {
+    runCheck.textContent = messages.tourRunCheckOk
+  }
+  if (output.dataset.uiPlaceholder === "idle") {
+    output.textContent = messages.outputPlaceholder
+  } else if (output.dataset.uiPlaceholder === "no-errors") {
+    output.textContent = messages.noErrorsRunPrompt
+  }
+  const untranslatedContent = [
+    lessonTitle,
+    lessonSummary,
+    goal,
+    lessonGuide,
+    walkthrough,
+    trySteps,
+    focusList,
+    introduced,
+    diagnosticHeading,
+    diagnosticCopy,
+    recapList,
+    prerequisiteCopy,
+    prerequisiteList,
+    nextCopy,
+    notesList,
+    deepDiveList,
+  ]
+  for (const element of untranslatedContent) {
+    if (nextLocale === "en") element.setAttribute("lang", "ja")
+    else element.removeAttribute("lang")
+  }
+  networkNotice.refreshLocale?.()
+  search.refresh()
+}
+applyTourLocale(localeController.current())
+localeController.subscribe(applyTourLocale)
 
 const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
   analyze: analyzeSingleFile,
@@ -414,7 +537,10 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
       setStatus("error", problemCount(diagnostics.length))
     } else {
       if (output.dataset.liveDiagnostics === "true") {
-        showTextOutput("エラーはありません。Run を押すと実行します。")
+        showTextOutput(
+          localeController.messages().noErrorsRunPrompt,
+          "no-errors"
+        )
       }
       setStatus("ready", "Analysis ready")
     }
@@ -460,7 +586,7 @@ exerciseButton.addEventListener("click", () => {
   if (currentLesson.format === undefined) return
   loadSourceVariant(
     currentLesson.exerciseSource,
-    "答えのコードを開きました。Run を押すと、書き換えたあとの出力になります。",
+    localeController.messages().tourAnswerOpened,
     "Answer opened"
   )
 })
@@ -493,7 +619,8 @@ document.addEventListener("keydown", (event) => {
 })
 window.addEventListener("popstate", () => {
   const lessonId = new URL(window.location.href).searchParams.get("lesson")
-  loadLesson(findTourLesson(lessonId).id, "none")
+  const target = findTourLesson(lessonId).id
+  if (target !== currentLesson.id) loadLesson(target, "none")
 })
 window.addEventListener("beforeunload", () => cancelActiveExecution())
 
@@ -764,7 +891,7 @@ function loadLesson(
   inputSection.hidden = currentLesson.stdin === ""
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))
-  showTextOutput("Run を押すと、結果がここに出ます。")
+  showTextOutput(localeController.messages().outputPlaceholder, "idle")
   renderLesson()
   liveAnalysis.schedule(source)
   setStatus("ready", "Lesson ready")
@@ -1320,15 +1447,21 @@ function showExecutionOutput(stdout: string): void {
   clearHtmlPreview()
   output.className = "output-text"
   delete output.dataset.liveDiagnostics
+  delete output.dataset.uiPlaceholder
   output.textContent = stdout || "Program completed with no output."
   if (outputMode === "html") renderHtmlPreview(stdout)
   setOutputMode(outputMode)
 }
 
-function showTextOutput(message: string): void {
+function showTextOutput(
+  message: string,
+  placeholder?: "idle" | "no-errors"
+): void {
   runCheck.hidden = true
   output.className = "output-text"
   delete output.dataset.liveDiagnostics
+  if (placeholder === undefined) delete output.dataset.uiPlaceholder
+  else output.dataset.uiPlaceholder = placeholder
   output.textContent = message
   clearHtmlPreview()
   renderOutputMode("text")
@@ -1338,6 +1471,7 @@ function showDiagnostics(
   diagnostics: readonly Diagnostic[],
   analyzedSource = source
 ): void {
+  delete output.dataset.uiPlaceholder
   clearHtmlPreview()
   renderOutputMode("text")
   output.dataset.liveDiagnostics = "true"

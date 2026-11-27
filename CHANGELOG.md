@@ -1,10 +1,16 @@
 # Change Log
 
-## [0.62.5] - 2026-11-26
+## [0.62.6] - 2026-11-27
 
 ### Fixed
 
 - On the TypeScript runtime, when `Stream.zip` or `Stream.merge` stops one side, a pull still pending on that side no longer resumes while its source is closing (#1336). The side is now cleaned up in the same order as on native: the pending pull is cancelled, the resources it acquired are released, the source is closed, and the resources acquired while opening a stream are released last, including a stream opened during a pull such as the inner stream of `flatMap`. Nested `zip`, `merge` and `buffer` follow the same order. The source closes in the context it was opened with, which is still live, so its close can run Effects; a failure from an `onCancel` cleanup that the stopped pull registered is reported instead of discarded. `StreamCursor.next` takes the pull's context as an optional argument.
+
+## [0.62.5] - 2026-11-27
+
+### Added
+
+- Playground and Tour: added a `JA` / `EN` language switch in the top bar with URL path routing (`/`, `/tour/`, `/en/`, `/en/tour/`), English UI messages, `Japanese only` badges and untranslated notices with `lang="ja"` for untranslated content, and a one-time `English is available.` banner for non-Japanese browsers without automatic redirects (#1360).
 
 ## [0.62.4] - 2026-11-25
 

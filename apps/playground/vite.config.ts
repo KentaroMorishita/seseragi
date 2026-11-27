@@ -1,10 +1,11 @@
-import { fileURLToPath } from "node:url"
-import { build as bundleExecutionFrame } from "esbuild"
 import { readFile } from "node:fs/promises"
 import { createRequire } from "node:module"
+import { fileURLToPath } from "node:url"
+import { build as bundleExecutionFrame } from "esbuild"
 import { defineConfig, type HtmlTagDescriptor, type Plugin } from "vite"
 import packageManifest from "./package.json" with { type: "json" }
 import { fontPackages } from "./src/ui/design/font-packages"
+import { localeBootScript } from "./src/ui/i18n"
 import { themeBootScript } from "./src/ui/theme"
 
 const appRoot = fileURLToPath(new URL(".", import.meta.url))
@@ -151,10 +152,77 @@ const brandSurfacePlugin: Plugin = {
     return {
       html: html.replaceAll("__SESERAGI_VERSION__", packageManifest.version),
       tags: [
-        // Apply the saved theme before the first paint.
+        // Apply the saved theme and URL locale before the first paint.
         { tag: "script", children: themeBootScript, injectTo: "head-prepend" },
+        { tag: "script", children: localeBootScript, injectTo: "head-prepend" },
         ...brandTags(title, description, url),
       ],
+    }
+  },
+}
+
+function rewriteEnglishPath(url: string | undefined): string | undefined {
+  if (url === undefined) return undefined
+  const queryIndex = url.indexOf("?")
+  const pathname = queryIndex === -1 ? url : url.slice(0, queryIndex)
+  const search = queryIndex === -1 ? "" : url.slice(queryIndex)
+  if (pathname === "/en" || pathname === "/en/") return `/index.html${search}`
+  if (pathname === "/en/tour" || pathname === "/en/tour/") {
+    return `/tour/index.html${search}`
+  }
+  if (pathname === "/en/deep-dive" || pathname === "/en/deep-dive/") {
+    return `/deep-dive/index.html${search}`
+  }
+  return undefined
+}
+
+const englishRoutesPlugin: Plugin = {
+  name: "seseragi-english-routes",
+  enforce: "post",
+  configureServer(server) {
+    server.middlewares.use((req, _res, next) => {
+      const rewritten = rewriteEnglishPath(req.url)
+      if (rewritten !== undefined) req.url = rewritten
+      next()
+    })
+  },
+  configurePreviewServer(server) {
+    server.middlewares.use((req, _res, next) => {
+      const rewritten = rewriteEnglishPath(req.url)
+      if (rewritten !== undefined) req.url = rewritten
+      next()
+    })
+  },
+  generateBundle(_options, bundle) {
+    const pairs: readonly (readonly [string, string, string, string])[] = [
+      [
+        "index.html",
+        "en/index.html",
+        `${publicOrigin}/`,
+        `${publicOrigin}/en/`,
+      ],
+      [
+        "tour/index.html",
+        "en/tour/index.html",
+        `${publicOrigin}/tour/`,
+        `${publicOrigin}/en/tour/`,
+      ],
+    ]
+    for (const [sourceFile, targetFile, jaUrl, enUrl] of pairs) {
+      const asset = bundle[sourceFile]
+      if (asset?.type !== "asset" || typeof asset.source !== "string") {
+        this.error(
+          `englishRoutesPlugin expected emitted HTML asset ${sourceFile}`
+        )
+      }
+      const localized = asset.source
+        .replace('<html lang="ja">', '<html lang="en">')
+        .replaceAll(`content="${jaUrl}"`, `content="${enUrl}"`)
+      this.emitFile({
+        type: "asset",
+        fileName: targetFile,
+        source: localized,
+      })
     }
   },
 }
@@ -244,7 +312,12 @@ export default defineConfig({
   publicDir: fileURLToPath(
     new URL("../../assets/brand/public", import.meta.url)
   ),
-  plugins: [brandSurfacePlugin, fontLicensePlugin, isolatedExecutionPlugin],
+  plugins: [
+    brandSurfacePlugin,
+    englishRoutesPlugin,
+    fontLicensePlugin,
+    isolatedExecutionPlugin,
+  ],
   resolve: {
     dedupe: ["@seseragi/runtime"],
   },

@@ -1,24 +1,41 @@
+// 透明な型エイリアスと標準の Task を使い、ページ遷移の前後を記録します。
 import * as signals from "std/signal"
 import { MutableSignal } from "std/signal"
 
-alias UserId = Int
+alias PageNumber = Int
+
+alias Route = String
+
+// ジェネリックな型エイリアスは、対応するレコード型と同じものとして扱われます。
 alias Pair<A> = { left: A, right: A }
 
-fn userPath id: UserId -> String = `/users/${id}`
+fn articleRoute page: PageNumber -> Route = `/articles?page=${page}`
 
-fn routePair before: UserId -> after: UserId -> Pair<String> = {
-  left: userPath before,
-  right: userPath after
+fn transitionPair before: PageNumber -> after: PageNumber -> Pair<Route> = {
+  left: articleRoute before,
+  right: articleRoute after,
 }
 
-fn advanceUser state: MutableSignal<UserId> -> Task<Unit> =
-  signals.update (\id: UserId -> id + 1) state
+fn pageNumbers before: PageNumber -> after: PageNumber -> Pair<PageNumber> = {
+  left: before,
+  right: after,
+}
 
-pub effect fn main -> Unit with Console fails ConsoleError = do {
-  state <- signals.make 41
-  before <- *state
-  advanceUser state
-  after <- *state
-  let routes = routePair before after
-  println `${routes.left} -> ${routes.right}`
+// Task<Unit> は環境も回復可能な失敗も持たない Effect の標準エイリアスです。
+fn nextPage state: MutableSignal<PageNumber> -> Task<Unit> =
+  signals.update (\page: PageNumber -> page + 1) state
+
+pub effect fn main = do {
+  currentPage <- signals.make 4
+  before <- *currentPage
+  nextPage currentPage
+  after <- *currentPage
+  let pages = pageNumbers before after
+  let routes = transitionPair before after
+  [
+    `ページ: ${pages.left} -> ${pages.right}`,
+    `URL: ${routes.left} -> ${routes.right}`,
+  ]
+    |> join "\n"
+    |> println
 }

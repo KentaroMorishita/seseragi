@@ -1,18 +1,49 @@
 {
   "$schema": "../sample.schema.json",
   "id": "records",
-  "title": "Recordと更新",
-  "summary": "Recordのfield、spread更新、width typingを一つの値で確認します。",
+  "title": "異動前後の名札と配送先をレコードで作る",
+  "summary": "必要なフィールドだけを宣言するレコード型と、元の値を保ったまま一部を書き換えるスプレッド更新を試します。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["Record", "spread", "width typing"],
-  "capabilities": ["console"],
+  "topics": [
+    "Record",
+    "spread",
+    "width typing"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["hello-world"],
+  "prerequisites": [
+    "hello-world"
+  ],
   "featured": false,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "異動先を札幌・基盤チームに変える",
+        "edits": [
+          {
+            "find": "department: \"設計\", city: \"京都\",",
+            "replace": "department: \"基盤\", city: \"札幌\","
+          }
+        ]
+      },
+      {
+        "label": "名前をアオイに変える",
+        "edits": [
+          {
+            "find": "  first: \"ミオ\",",
+            "replace": "  first: \"アオイ\","
+          }
+        ]
+      }
+    ]
   }
 }

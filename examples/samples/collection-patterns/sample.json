@@ -1,19 +1,61 @@
 {
   "$schema": "../sample.schema.json",
   "id": "collection-patterns",
-  "title": "Collection patternと再帰",
-  "summary": "ArrayとListを空・先頭・残りへ分け、同じ再帰処理を比較します。",
+  "title": "先頭からたどる停車駅の所要時間",
+  "summary": "Array と List を空・先頭・残りに分解するパターンマッチで、各駅までの累計時間と合計を求めます。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["Array", "List", "pattern", "rest", "recursion"],
-  "capabilities": ["console"],
+  "topics": [
+    "Array",
+    "List",
+    "pattern",
+    "rest",
+    "recursion"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["local-functions", "collections"],
+  "prerequisites": [
+    "local-functions",
+    "collections"
+  ],
   "featured": false,
   "isNew": true,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "終点に三島駅を足す",
+        "edits": [
+          {
+            "find": "  Leg { station: \"熱海\", minutes: 10 },\n]\n\nlet routeList",
+            "replace": "  Leg { station: \"熱海\", minutes: 10 },\n  Leg { station: \"三島\", minutes: 8 },\n]\n\nlet routeList"
+          },
+          {
+            "find": "  Leg { station: \"熱海\", minutes: 10 },\n]\n\n// Array",
+            "replace": "  Leg { station: \"熱海\", minutes: 10 },\n  Leg { station: \"三島\", minutes: 8 },\n]\n\n// Array"
+          }
+        ]
+      },
+      {
+        "label": "新横浜から小田原を 12 分に縮める",
+        "edits": [
+          {
+            "find": "let routeArray: Array<Leg> = [\n  Leg { station: \"東京\", minutes: 0 },\n  Leg { station: \"品川\", minutes: 8 },\n  Leg { station: \"新横浜\", minutes: 11 },\n  Leg { station: \"小田原\", minutes: 16 },",
+            "replace": "let routeArray: Array<Leg> = [\n  Leg { station: \"東京\", minutes: 0 },\n  Leg { station: \"品川\", minutes: 8 },\n  Leg { station: \"新横浜\", minutes: 11 },\n  Leg { station: \"小田原\", minutes: 12 },"
+          },
+          {
+            "find": "let routeList: List<Leg> = `[\n  Leg { station: \"東京\", minutes: 0 },\n  Leg { station: \"品川\", minutes: 8 },\n  Leg { station: \"新横浜\", minutes: 11 },\n  Leg { station: \"小田原\", minutes: 16 },",
+            "replace": "let routeList: List<Leg> = `[\n  Leg { station: \"東京\", minutes: 0 },\n  Leg { station: \"品川\", minutes: 8 },\n  Leg { station: \"新横浜\", minutes: 11 },\n  Leg { station: \"小田原\", minutes: 12 },"
+          }
+        ]
+      }
+    ]
   }
 }

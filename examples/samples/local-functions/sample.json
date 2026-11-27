@@ -1,19 +1,52 @@
 {
   "$schema": "../sample.schema.json",
   "id": "local-functions",
-  "title": "Local functionと再帰",
-  "summary": "Pure blockで値をcaptureし、generic関数とself recursionを組み立てます。",
+  "title": "10 万回の模擬試行を局所関数と末尾再帰で集計する",
+  "summary": "ブロック内の局所関数で外側の値を参照し、ジェネリックな補助関数と末尾再帰で 10 万回の試行をスタック消費なく集計します。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["local function", "scope", "capture", "recursion", "generic"],
-  "capabilities": ["console"],
+  "topics": [
+    "local function",
+    "scope",
+    "capture",
+    "recursion",
+    "generic"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["hello-world"],
+  "prerequisites": [
+    "hello-world"
+  ],
   "featured": false,
   "isNew": true,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "試行回数を 20 万回に増やす",
+        "edits": [
+          {
+            "find": "let trialCount = 100000",
+            "replace": "let trialCount = 200000"
+          }
+        ]
+      },
+      {
+        "label": "当たり確率を 25% に広げる",
+        "edits": [
+          {
+            "find": "let hitThreshold = 15",
+            "replace": "let hitThreshold = 25"
+          }
+        ]
+      }
+    ]
   }
 }

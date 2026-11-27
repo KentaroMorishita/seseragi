@@ -1,16 +1,34 @@
-fn finalScore base: Int -> Int = {
-  let bonus: Int = 2
+// ブロック内の局所関数と末尾再帰を使って、10 万回の模擬試行を集計します。
 
-  // 局所関数は先に定義した束縛を参照でき、ジェネリック型引数も持てます。
-  fn withLabel<A> label: A -> score: Int -> (A, Int) = (label, score + bonus)
+fn simulateLottery trials: Int -> threshold: Int -> String = {
+  let modulus = 2147483647
+  let multiplier = 48271
 
-  // 末尾位置の自己再帰はループへ変換されるため、コールスタックを消費しません。
-  fn countdown current: Int -> Int = if current == 0 then {
-    let (_, total) = withLabel "final" base
-    total
-  } else countdown (current - 1)
+  // 局所関数は外側の束縛（threshold）を参照でき、ジェネリック型引数も持てます。
+  fn tagResult<A> label: String -> value: A -> (String, A) = (label, value)
 
-  countdown 100000
+  // 末尾位置の自己再帰はループへ変換されるため、10 万回でもスタックを消費しません。
+  fn step remaining: Int -> seed: Int -> hits: Int -> Int =
+    if remaining == 0 then hits else {
+    let nextSeed = (seed * multiplier) % modulus
+    let roll = (nextSeed % 100) + 1
+    let nextHits = if roll <= threshold then hits + 1 else hits
+    step (remaining - 1) nextSeed nextHits
+  }
+
+  let (label, hitCount) = tagResult "当たり回数" (step trials 12345 0)
+  let rateTenths = hitCount * 1000 / trials
+  let rateWhole = rateTenths / 10
+  let rateFrac = rateTenths % 10
+  [
+    `試行回数: ${trials} 回（当たり条件: 1..=${threshold} / 100）`,
+    `${label}: ${hitCount} 回（約 ${rateWhole}.${rateFrac}%）`,
+  ]
+    |> join "\n"
 }
 
-pub effect fn main = println `Final score: ${finalScore 40}`
+let trialCount = 100000
+
+let hitThreshold = 15
+
+pub effect fn main = simulateLottery trialCount hitThreshold |> println

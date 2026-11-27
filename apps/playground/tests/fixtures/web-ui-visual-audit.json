@@ -35,10 +35,13 @@
     },
     {
       "id": "feature-composition",
-      "identity": "lavender release rhythm with distinct feature-owned pulses",
-      "photoId": "photo-1556761175-b413da4baf72",
+      "identity": "warm paper release-readiness board with amber, teal, and forest feature-owned signals",
+      "photoId": null,
       "photoGroup": "feature-composition",
-      "layoutMarkers": ["object-cover", "min-h-screen"],
+      "layoutMarkers": [
+        "repeat(auto-fit, minmax(260px, 1fr))",
+        "minHeight: \"100vh\""
+      ],
       "states": ["initial", "hidden feature retains its Signal"],
       "artifacts": [
         "docs/reviews/issue-190/visual/feature-composition-desktop.png",

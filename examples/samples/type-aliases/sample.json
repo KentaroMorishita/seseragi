@@ -1,19 +1,52 @@
 {
   "$schema": "../sample.schema.json",
   "id": "type-aliases",
-  "title": "型aliasとTask",
-  "summary": "透明なgeneric aliasと標準Taskを、Signal更新前後のパス比較で確認します。",
+  "title": "ページ遷移の前後を型エイリアスと Task で表す",
+  "summary": "既存の型に読みやすい別名を付ける型エイリアスと、副作用を簡潔に書く Task を使ってページ番号と URL の変化を記録します。",
   "kind": "recipe",
   "difficulty": "intermediate",
-  "topics": ["type alias", "generics", "Task", "Signal"],
-  "capabilities": ["console"],
+  "topics": [
+    "type alias",
+    "generics",
+    "Task",
+    "Signal"
+  ],
+  "capabilities": [
+    "console"
+  ],
   "outputMode": "text",
-  "prerequisites": ["records", "newtypes"],
+  "prerequisites": [
+    "records",
+    "newtypes"
+  ],
   "featured": false,
   "isNew": true,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
+  },
+  "guidance": {
+    "autoRun": true,
+    "tryNext": [
+      {
+        "label": "最初のページを 10 にする",
+        "edits": [
+          {
+            "find": "currentPage <- signals.make 4",
+            "replace": "currentPage <- signals.make 10"
+          }
+        ]
+      },
+      {
+        "label": "2 ページずつ進める",
+        "edits": [
+          {
+            "find": "\\page: PageNumber -> page + 1",
+            "replace": "\\page: PageNumber -> page + 2"
+          }
+        ]
+      }
+    ]
   }
 }
