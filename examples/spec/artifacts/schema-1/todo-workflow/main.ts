@@ -25,7 +25,7 @@ type Todo = {
   readonly [__ssrg$brand$Todo]: true;
 };
 const addTodo = (todo: Todo) => (values: ReadonlyArray<Todo>) => $ssrg$atSource($ssrg$source307, () => _ssrg_array_append<Todo>([todo], values), false)
-const keepTodo = (removedId: number) => (todo: Todo) => (todo)["id"] !== removedId
+const keepTodo = (removedId: number) => (todo: Todo) => (((todo)["id"]) as number) !== removedId
 const removeTodo = (id: number) => (values: ReadonlyArray<Todo>) => $ssrg$atSource($ssrg$source475, () => _ssrg_array_filter($ssrg$atSource($ssrg$source490, () => keepTodo(id), false), values), false)
 const isUrgent = (todo: Todo) => (todo)["urgent"]
 const urgentTodos = (values: ReadonlyArray<Todo>) => $ssrg$atSource($ssrg$source613, () => _ssrg_array_filter(isUrgent, values), false)

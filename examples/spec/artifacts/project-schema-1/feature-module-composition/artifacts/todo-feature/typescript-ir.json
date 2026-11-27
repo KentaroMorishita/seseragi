@@ -404,12 +404,18 @@
                 "kind": "binary",
                 "operator": "===",
                 "left": {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "state"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "state"
+                    },
+                    "field": "draft"
                   },
-                  "field": "draft"
+                  "type": {
+                    "kind": "string"
+                  }
                 },
                 "right": {
                   "kind": "string",

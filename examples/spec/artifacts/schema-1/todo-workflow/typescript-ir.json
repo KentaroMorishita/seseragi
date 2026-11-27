@@ -334,12 +334,18 @@
         "kind": "binary",
         "operator": "!==",
         "left": {
-          "kind": "field-access",
-          "receiver": {
-            "kind": "identifier",
-            "name": "todo"
+          "kind": "checked-result",
+          "value": {
+            "kind": "field-access",
+            "receiver": {
+              "kind": "identifier",
+              "name": "todo"
+            },
+            "field": "id"
           },
-          "field": "id"
+          "type": {
+            "kind": "number"
+          }
         },
         "right": {
           "kind": "identifier",

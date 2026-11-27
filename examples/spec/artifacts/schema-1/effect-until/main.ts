@@ -13,6 +13,6 @@ const $ssrg$source362 = { file: "main.ssrg", line: 18, column: 3, uri: "seseragi
 const $ssrg$source462 = { file: "main.ssrg", line: 24, column: 15, uri: "seseragi://artifact/effect-until", start: 462, end: 507 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const stopAtThree = (value: number) => $ssrg$atSource($ssrg$source362, () => _ssrg_effect_succeed(value === 3 ? _ssrg_effect_Break : _ssrg_effect_Continue), true)
+const stopAtThree = (value: number) => $ssrg$atSource($ssrg$source362, () => _ssrg_effect_succeed(((value) as number) === 3 ? _ssrg_effect_Break : _ssrg_effect_Continue), true)
 const totalBeforeNegative: number = $ssrg$atSource($ssrg$source111, () => _ssrg_collection_reduceUntil(_ssrg_array_iterable, 0, (total: number) => (value: number) => value < 0 ? $ssrg$atSource($ssrg$source214, () => _ssrg_collection_Done(total), false) : $ssrg$atSource($ssrg$source252, () => _ssrg_collection_Next(_ssrg_int_add(total, value, $ssrg$source270)), false), [1, 2, _ssrg_int_subtract(0, 1, $ssrg$source125), 100]), false);
 const stopped: Effect<{  }, never, undefined> = $ssrg$atSource($ssrg$source462, () => _ssrg_effect_forEachUntil(stopAtThree, [1, 2, 3, 4], _ssrg_array_iterable), true);

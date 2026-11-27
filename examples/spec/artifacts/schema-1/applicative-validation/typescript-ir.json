@@ -1621,8 +1621,14 @@
           "kind": "binary",
           "operator": "===",
           "left": {
-            "kind": "identifier",
-            "name": "name"
+            "kind": "checked-result",
+            "value": {
+              "kind": "identifier",
+              "name": "name"
+            },
+            "type": {
+              "kind": "string"
+            }
           },
           "right": {
             "kind": "string",

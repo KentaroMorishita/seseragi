@@ -46,7 +46,7 @@ const $ssrg$source1174 = { file: "main.ssrg", line: 39, column: 5, uri: "seserag
 const $ssrg$source1184 = { file: "main.ssrg", line: 39, column: 15, uri: "seseragi://artifact/collection-slice", start: 1184, end: 1208 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const even = (value: number) => _ssrg_int_remainder(value, 2, $ssrg$source102) === 0
+const even = (value: number) => ((_ssrg_int_remainder(value, 2, $ssrg$source102)) as number) === 0
 const negative = (value: number) => value < 0
 const showMaybe = (value: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number }) => (($ssrg_match: { readonly tag: "Nothing" } | { readonly tag: "Just"; readonly value: number }): string => $ssrg_match.tag === "Nothing" ? "none" : $ssrg_match.tag === "Just" ? ((item: number): string => _ssrg_show_intShow["show"](item))($ssrg_match.value) : ((): never => { throw new globalThis.Error("non-exhaustive Seseragi match"); })())(value)
 const showArray = (values: ReadonlyArray<number>) => $ssrg$atSource($ssrg$source323, () => _ssrg_collection_join(_ssrg_array_reducible, ",", _ssrg_array_comprehend(values, (value) => true, (value) => _ssrg_show_intShow["show"](value))), false)

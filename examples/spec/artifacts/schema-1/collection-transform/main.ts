@@ -27,7 +27,7 @@ const $ssrg$source844 = { file: "main.ssrg", line: 29, column: 5, uri: "seseragi
 const $ssrg$source854 = { file: "main.ssrg", line: 29, column: 15, uri: "seseragi://artifact/collection-transform", start: 854, end: 886 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const even = (value: number) => _ssrg_int_remainder(value, 2, $ssrg$source102) === 0
+const even = (value: number) => ((_ssrg_int_remainder(value, 2, $ssrg$source102)) as number) === 0
 const labelEven = (value: number) => $ssrg$atSource($ssrg$source166, () => even(value), false) ? $ssrg$atSource($ssrg$source182, () => _ssrg_maybe_Just("#" + _ssrg_show_intShow["show"](value)), false) : _ssrg_maybe_Nothing
 const signedArray = (value: number) => [value, _ssrg_int_subtract(0, value, $ssrg$source265)]
 const signedList = (value: number) => _ssrg_list_from_array([value, _ssrg_int_subtract(0, value, $ssrg$source328)])

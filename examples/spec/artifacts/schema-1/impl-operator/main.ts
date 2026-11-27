@@ -17,7 +17,7 @@ type Score = {
   readonly [__ssrg$brand$Score]: true;
 };
 export const __ssrg$instance$Add$0 = { "add": (self: Score) => (bonus: number) => (({ "value": _ssrg_int_add((self)["value"], bonus, $ssrg$source107) } as const) as unknown as Score) } as const;
-export const __ssrg$instance$Eq$1 = { "eq": (self: Score) => (other: Score) => (self)["value"] === (other)["value"] } as const;
+export const __ssrg$instance$Eq$1 = { "eq": (self: Score) => (other: Score) => (((self)["value"]) as number) === (other)["value"] } as const;
 const total = (unit: undefined) => $ssrg$atSource($ssrg$source240, () => __ssrg$instance$Add$0["add"]((({ "value": 21 } as const) as unknown as Score))(21), false)
 const render = (score: Score) => $ssrg$atSource($ssrg$source306, () => __ssrg$instance$Eq$1["eq"](score)((({ "value": 42 } as const) as unknown as Score)), false) ? (($ssrg_match: Score): string => ((value: number): string => "Impl operator: " + _ssrg_show_intShow["show"](value))($ssrg_match["value"]))(score) : "unexpected score"
 export const main = (_unit: undefined) => $ssrg$atSource($ssrg$source509, () => _ssrg_console_println($ssrg$atSource($ssrg$source519, () => render($ssrg$atSource($ssrg$source528, () => total(undefined), false)), false)), true)

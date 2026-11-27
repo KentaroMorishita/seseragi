@@ -37,8 +37,11 @@ pub fn atLeast left: Int -> right: Int -> Bool = left >= right
 "#,
     );
     for expected in [
-        "left === right",
-        "left !== right",
+        "same = (left: number) => (right: number) => ((left) as number) === right",
+        "differs = (left: string) => (right: string) => ((left) as string) !== right",
+        "flags = (left: boolean) => (right: boolean) => ((left) as boolean) === right",
+        "letters = (left: string) => (right: string) => ((left) as string) !== right",
+        "units = (left: undefined) => (right: undefined) => left === right",
         "left < right",
         "left <= right",
         "left > right",
@@ -77,7 +80,7 @@ pub fn levelBelow left: Level -> right: Level -> Bool = left < right
     ] {
         assert!(typescript.contains(dispatch), "{dispatch}\n{typescript}");
     }
-    for operator in ["left === right", "left < right"] {
+    for operator in ["=== right", "left < right"] {
         assert!(!typescript.contains(operator), "{operator}\n{typescript}");
     }
 }
@@ -91,19 +94,19 @@ fn body(typescript: &str) -> String {
 }
 
 #[test]
-fn literal_operands_widen_so_strict_typescript_accepts_them() {
+fn equality_operands_widen_so_strict_typescript_accepts_them() {
     let typescript = emit(
         r#"pub fn texts unit: Unit -> Bool = "a" == "b"
 pub fn numbers unit: Unit -> Bool = 40 != 41
 pub fn flags unit: Unit -> Bool = True == False
-pub fn mixed value: Int -> Bool = value == 40
+pub fn narrowed x: Bool -> Bool = if x then x == False else x == True
 "#,
     );
     for expected in [
         r#"(("a") as string) === "b""#,
         "((40) as number) !== 41",
         "((true) as boolean) === false",
-        "value === 40",
+        "x ? ((x) as boolean) === false : ((x) as boolean) === true",
     ] {
         assert!(typescript.contains(expected), "{expected}\n{typescript}");
     }

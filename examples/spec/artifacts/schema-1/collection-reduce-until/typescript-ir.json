@@ -1398,8 +1398,14 @@
                         "kind": "binary",
                         "operator": "===",
                         "left": {
-                          "kind": "identifier",
-                          "name": "value"
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "identifier",
+                            "name": "value"
+                          },
+                          "type": {
+                            "kind": "number"
+                          }
                         },
                         "right": {
                           "kind": "number",
@@ -2205,8 +2211,14 @@
                     "kind": "binary",
                     "operator": "===",
                     "left": {
-                      "kind": "identifier",
-                      "name": "value"
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "value"
+                      },
+                      "type": {
+                        "kind": "number"
+                      }
                     },
                     "right": {
                       "kind": "number",
@@ -3733,8 +3745,14 @@
                                                             "kind": "binary",
                                                             "operator": "===",
                                                             "left": {
-                                                              "kind": "identifier",
-                                                              "name": "count"
+                                                              "kind": "checked-result",
+                                                              "value": {
+                                                                "kind": "identifier",
+                                                                "name": "count"
+                                                              },
+                                                              "type": {
+                                                                "kind": "number"
+                                                              }
                                                             },
                                                             "right": {
                                                               "kind": "number",

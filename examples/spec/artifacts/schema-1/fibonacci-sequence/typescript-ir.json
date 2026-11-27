@@ -109,8 +109,14 @@
                 "kind": "binary",
                 "operator": "===",
                 "left": {
-                  "kind": "identifier",
-                  "name": "remaining"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "remaining"
+                  },
+                  "type": {
+                    "kind": "number"
+                  }
                 },
                 "right": {
                   "kind": "number",

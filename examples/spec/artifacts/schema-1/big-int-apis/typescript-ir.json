@@ -3527,42 +3527,48 @@
                             "kind": "binary",
                             "operator": "===",
                             "left": {
-                              "kind": "runtime-call",
-                              "callee": "$ssrg$atSource",
-                              "arguments": [
-                                {
-                                  "kind": "identifier",
-                                  "name": "$ssrg$source2364"
-                                },
-                                {
-                                  "kind": "lambda",
-                                  "parameter": "",
-                                  "body": {
-                                    "kind": "checked-result",
-                                    "value": {
-                                      "kind": "dictionary-call",
-                                      "dictionary": {
-                                        "kind": "runtime-reference",
-                                        "name": "_ssrg_bigIntHash"
+                              "kind": "checked-result",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "$ssrg$atSource",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "$ssrg$source2364"
+                                  },
+                                  {
+                                    "kind": "lambda",
+                                    "parameter": "",
+                                    "body": {
+                                      "kind": "checked-result",
+                                      "value": {
+                                        "kind": "dictionary-call",
+                                        "dictionary": {
+                                          "kind": "runtime-reference",
+                                          "name": "_ssrg_bigIntHash"
+                                        },
+                                        "method": "hash",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "huge"
+                                          }
+                                        ]
                                       },
-                                      "method": "hash",
-                                      "arguments": [
-                                        {
-                                          "kind": "identifier",
-                                          "name": "huge"
-                                        }
-                                      ]
-                                    },
-                                    "type": {
-                                      "kind": "number"
+                                      "type": {
+                                        "kind": "number"
+                                      }
                                     }
+                                  },
+                                  {
+                                    "kind": "boolean",
+                                    "value": false
                                   }
-                                },
-                                {
-                                  "kind": "boolean",
-                                  "value": false
-                                }
-                              ]
+                                ]
+                              },
+                              "type": {
+                                "kind": "number"
+                              }
                             },
                             "right": {
                               "kind": "runtime-call",

@@ -101,8 +101,14 @@
                     "kind": "binary",
                     "operator": "===",
                     "left": {
-                      "kind": "identifier",
-                      "name": "right"
+                      "kind": "checked-result",
+                      "value": {
+                        "kind": "identifier",
+                        "name": "right"
+                      },
+                      "type": {
+                        "kind": "number"
+                      }
                     },
                     "right": {
                       "kind": "number",

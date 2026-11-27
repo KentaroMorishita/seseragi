@@ -413,8 +413,14 @@
                 "kind": "binary",
                 "operator": "===",
                 "left": {
-                  "kind": "identifier",
-                  "name": "left"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "left"
+                  },
+                  "type": {
+                    "kind": "number"
+                  }
                 },
                 "right": {
                   "kind": "identifier",
@@ -599,8 +605,14 @@
                         "kind": "binary",
                         "operator": "===",
                         "left": {
-                          "kind": "identifier",
-                          "name": "leftNext"
+                          "kind": "checked-result",
+                          "value": {
+                            "kind": "identifier",
+                            "name": "leftNext"
+                          },
+                          "type": {
+                            "kind": "number"
+                          }
                         },
                         "right": {
                           "kind": "identifier",

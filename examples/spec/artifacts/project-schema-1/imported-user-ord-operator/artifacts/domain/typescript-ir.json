@@ -81,12 +81,18 @@
               "kind": "binary",
               "operator": "===",
               "left": {
-                "kind": "field-access",
-                "receiver": {
-                  "kind": "identifier",
-                  "name": "left"
+                "kind": "checked-result",
+                "value": {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "left"
+                  },
+                  "field": "value"
                 },
-                "field": "value"
+                "type": {
+                  "kind": "number"
+                }
               },
               "right": {
                 "kind": "field-access",

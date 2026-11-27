@@ -14,7 +14,7 @@ const $ssrg$source378 = { file: "project/imported-iterable-comprehension/src/mai
 const $ssrg$source594 = { file: "project/imported-iterable-comprehension/src/main.ssrg", line: 27, column: 3, uri: "seseragi://fixture/imported-iterable-comprehension::main", start: 594, end: 605 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const oddSquares = (values: Countdown) => _ssrg_iterator_comprehend(__ssrg$instance$Iterable$0["iterate"](values), (value) => _ssrg_int_remainder(value, 2, $ssrg$source122) !== 0, (value) => _ssrg_int_multiply(value, value, $ssrg$source89))
+const oddSquares = (values: Countdown) => _ssrg_iterator_comprehend(__ssrg$instance$Iterable$0["iterate"](values), (value) => ((_ssrg_int_remainder(value, 2, $ssrg$source122)) as number) !== 0, (value) => _ssrg_int_multiply(value, value, $ssrg$source89))
 const addInt = (left: number) => (right: number) => _ssrg_int_add(left, right, $ssrg$source184)
 const total = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => $ssrg$atSource($ssrg$source255, () => __ssrg$evidence$0["reduce"](0)(addInt)(values), false)
 const totals = (values: Countdown) => [$ssrg$atSource($ssrg$source336, () => _ssrg_array_reduce(0, (((_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1)) as (argument: number) => (argument: number) => number), $ssrg$atSource($ssrg$source336, () => oddSquares(values), false)), false), $ssrg$atSource($ssrg$source378, () => ((total<Countdown>(values)(__ssrg$instance$Reducible$1(__ssrg$instance$Iterable$0))) as number), false)] as const

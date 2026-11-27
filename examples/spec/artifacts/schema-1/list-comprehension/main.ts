@@ -9,7 +9,7 @@ const $ssrg$source139 = { file: "main.ssrg", line: 5, column: 3, uri: "seseragi:
 const $ssrg$source320 = { file: "main.ssrg", line: 15, column: 3, uri: "seseragi://artifact/list-comprehension", start: 320, end: 354 };
 $ssrg$assertUnicodeVersion("17.0.0")
 
-const oddSquares = (values: List<number>) => _ssrg_list_from_array(_ssrg_list_comprehend(values, (value) => _ssrg_int_remainder(value, 2, $ssrg$source84) === 1, (value) => _ssrg_int_multiply(value, value, $ssrg$source51)))
+const oddSquares = (values: List<number>) => _ssrg_list_from_array(_ssrg_list_comprehend(values, (value) => ((_ssrg_int_remainder(value, 2, $ssrg$source84)) as number) === 1, (value) => _ssrg_int_multiply(value, value, $ssrg$source51)))
 const total = (values: List<number>) => $ssrg$atSource($ssrg$source139, () => _ssrg_list_reduce(0, (((_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1)) as (argument: number) => (argument: number) => number), values), false)
 const renderTotal = (total: number) => (($ssrg_match: number): string => $ssrg_match === 35 ? "persistent List total: 35" : "unexpected List total")(total)
 export const main = (_unit: undefined) => $ssrg$atSource($ssrg$source320, () => _ssrg_console_println($ssrg$atSource($ssrg$source320, () => renderTotal($ssrg$atSource($ssrg$source320, () => total($ssrg$atSource($ssrg$source320, () => oddSquares(_ssrg_list_from_array([1, 2, 3, 4, 5])), false)), false)), false)), true)

@@ -49,7 +49,7 @@ fn lowers_typed_conditional_to_sync_typescript_expression() {
         bundle.typescript,
         with_unicode_header(
             "",
-            "export const classify = (value: number) => value === 0 ? \"zero\" : \"other\"\n"
+            "export const classify = (value: number) => ((value) as number) === 0 ? \"zero\" : \"other\"\n"
         )
     );
 }

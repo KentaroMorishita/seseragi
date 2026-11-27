@@ -174,36 +174,42 @@
         "kind": "binary",
         "operator": "===",
         "left": {
-          "kind": "runtime-call",
-          "callee": "$ssrg$atSource",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "$ssrg$source176"
-            },
-            {
-              "kind": "lambda",
-              "parameter": "",
-              "body": {
-                "kind": "call",
-                "callee": "sumTo",
-                "arguments": [
-                  {
-                    "kind": "number",
-                    "value": "100000"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "0"
-                  }
-                ]
+          "kind": "checked-result",
+          "value": {
+            "kind": "runtime-call",
+            "callee": "$ssrg$atSource",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source176"
+              },
+              {
+                "kind": "lambda",
+                "parameter": "",
+                "body": {
+                  "kind": "call",
+                  "callee": "sumTo",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "100000"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "0"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "boolean",
+                "value": false
               }
-            },
-            {
-              "kind": "boolean",
-              "value": false
-            }
-          ]
+            ]
+          },
+          "type": {
+            "kind": "number"
+          }
         },
         "right": {
           "kind": "number",

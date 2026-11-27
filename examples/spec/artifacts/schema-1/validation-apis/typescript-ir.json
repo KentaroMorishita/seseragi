@@ -1001,12 +1001,18 @@
                 "kind": "binary",
                 "operator": "===",
                 "left": {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "left"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "left"
+                    },
+                    "field": "name"
                   },
-                  "field": "name"
+                  "type": {
+                    "kind": "string"
+                  }
                 },
                 "right": {
                   "kind": "field-access",
@@ -1021,12 +1027,18 @@
                 "kind": "binary",
                 "operator": "===",
                 "left": {
-                  "kind": "field-access",
-                  "receiver": {
-                    "kind": "identifier",
-                    "name": "left"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "left"
+                    },
+                    "field": "age"
                   },
-                  "field": "age"
+                  "type": {
+                    "kind": "number"
+                  }
                 },
                 "right": {
                   "kind": "field-access",
@@ -1379,8 +1391,14 @@
           "kind": "binary",
           "operator": "===",
           "left": {
-            "kind": "identifier",
-            "name": "name"
+            "kind": "checked-result",
+            "value": {
+              "kind": "identifier",
+              "name": "name"
+            },
+            "type": {
+              "kind": "string"
+            }
           },
           "right": {
             "kind": "string",

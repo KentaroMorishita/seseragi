@@ -587,8 +587,14 @@
             "kind": "binary",
             "operator": "===",
             "left": {
-              "kind": "identifier",
-              "name": "arrayTotal"
+              "kind": "checked-result",
+              "value": {
+                "kind": "identifier",
+                "name": "arrayTotal"
+              },
+              "type": {
+                "kind": "number"
+              }
             },
             "right": {
               "kind": "number",
@@ -599,8 +605,14 @@
             "kind": "binary",
             "operator": "===",
             "left": {
-              "kind": "identifier",
-              "name": "listTotal"
+              "kind": "checked-result",
+              "value": {
+                "kind": "identifier",
+                "name": "listTotal"
+              },
+              "type": {
+                "kind": "number"
+              }
             },
             "right": {
               "kind": "number",

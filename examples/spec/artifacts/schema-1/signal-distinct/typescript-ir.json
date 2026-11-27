@@ -260,26 +260,32 @@
               "kind": "binary",
               "operator": "===",
               "left": {
-                "kind": "runtime-call",
-                "callee": "_ssrg_int_remainder",
-                "arguments": [
-                  {
-                    "kind": "field-access",
-                    "receiver": {
-                      "kind": "identifier",
-                      "name": "left"
+                "kind": "checked-result",
+                "value": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_remainder",
+                  "arguments": [
+                    {
+                      "kind": "field-access",
+                      "receiver": {
+                        "kind": "identifier",
+                        "name": "left"
+                      },
+                      "field": "value"
                     },
-                    "field": "value"
-                  },
-                  {
-                    "kind": "number",
-                    "value": "2"
-                  },
-                  {
-                    "kind": "identifier",
-                    "name": "$ssrg$source150"
-                  }
-                ]
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source150"
+                    }
+                  ]
+                },
+                "type": {
+                  "kind": "number"
+                }
               },
               "right": {
                 "kind": "runtime-call",

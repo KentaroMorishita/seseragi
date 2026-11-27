@@ -116,8 +116,14 @@
                 "kind": "binary",
                 "operator": "===",
                 "left": {
-                  "kind": "identifier",
-                  "name": "current"
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "identifier",
+                    "name": "current"
+                  },
+                  "type": {
+                    "kind": "number"
+                  }
                 },
                 "right": {
                   "kind": "number",
@@ -225,32 +231,38 @@
           "kind": "binary",
           "operator": "===",
           "left": {
-            "kind": "runtime-call",
-            "callee": "$ssrg$atSource",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "$ssrg$source245"
-              },
-              {
-                "kind": "lambda",
-                "parameter": "",
-                "body": {
-                  "kind": "call",
-                  "callee": "countdown",
-                  "arguments": [
-                    {
-                      "kind": "number",
-                      "value": "3"
-                    }
-                  ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source245"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "countdown",
+                    "arguments": [
+                      {
+                        "kind": "number",
+                        "value": "3"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
-              },
-              {
-                "kind": "boolean",
-                "value": false
-              }
-            ]
+              ]
+            },
+            "type": {
+              "kind": "number"
+            }
           },
           "right": {
             "kind": "number",

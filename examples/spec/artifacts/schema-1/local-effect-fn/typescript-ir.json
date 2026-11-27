@@ -749,8 +749,14 @@
                           "kind": "binary",
                           "operator": "===",
                           "left": {
-                            "kind": "identifier",
-                            "name": "n"
+                            "kind": "checked-result",
+                            "value": {
+                              "kind": "identifier",
+                              "name": "n"
+                            },
+                            "type": {
+                              "kind": "number"
+                            }
                           },
                           "right": {
                             "kind": "number",

@@ -1508,32 +1508,38 @@
           "kind": "binary",
           "operator": "===",
           "left": {
-            "kind": "runtime-call",
-            "callee": "$ssrg$atSource",
-            "arguments": [
-              {
-                "kind": "identifier",
-                "name": "$ssrg$source1650"
-              },
-              {
-                "kind": "lambda",
-                "parameter": "",
-                "body": {
-                  "kind": "call",
-                  "callee": "render",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "left"
-                    }
-                  ]
+            "kind": "checked-result",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source1650"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "render",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "left"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
                 }
-              },
-              {
-                "kind": "boolean",
-                "value": false
-              }
-            ]
+              ]
+            },
+            "type": {
+              "kind": "string"
+            }
           },
           "right": {
             "kind": "runtime-call",

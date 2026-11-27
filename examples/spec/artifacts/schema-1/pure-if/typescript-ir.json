@@ -25,8 +25,14 @@
           "kind": "binary",
           "operator": "===",
           "left": {
-            "kind": "identifier",
-            "name": "value"
+            "kind": "checked-result",
+            "value": {
+              "kind": "identifier",
+              "name": "value"
+            },
+            "type": {
+              "kind": "number"
+            }
           },
           "right": {
             "kind": "number",

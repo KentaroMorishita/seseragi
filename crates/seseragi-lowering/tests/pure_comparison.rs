@@ -44,7 +44,10 @@ fn lowers_int_comparison_to_sync_boolean_function() {
     let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert_eq!(
         bundle.typescript,
-        with_unicode_header("", "export const isZero = (value: number) => value === 0\n")
+        with_unicode_header(
+            "",
+            "export const isZero = (value: number) => ((value) as number) === 0\n"
+        )
     );
 }
 
@@ -73,6 +76,6 @@ pub fn sameString left: String -> right: String -> Bool = left != right
     let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
     assert_eq!(
         bundle.typescript,
-        with_unicode_header("", "export const sameBool = (left: boolean) => (right: boolean) => left === right\nexport const sameString = (left: string) => (right: string) => left !== right\n")
+        with_unicode_header("", "export const sameBool = (left: boolean) => (right: boolean) => ((left) as boolean) === right\nexport const sameString = (left: string) => (right: string) => ((left) as string) !== right\n")
     );
 }
