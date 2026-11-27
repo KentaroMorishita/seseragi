@@ -23,7 +23,7 @@ enum NativeHttpReply {
 struct NativeHttpTask {
     limit: i64,
     cancelled: std::sync::Arc<std::sync::atomic::AtomicBool>,
-    connection: std::sync::Arc<std::sync::Mutex<Option<std::net::TcpStream>>>,
+    connection: std::sync::Arc<std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>>,
     completion: std::sync::mpsc::Receiver<NativeHttpReply>,
 }
 
@@ -185,9 +185,7 @@ impl NativeHttpTask {
     fn cancel(&self) {
         self.cancelled
             .store(true, std::sync::atomic::Ordering::Release);
-        if let Some(stream) = self.connection.lock().unwrap().as_ref() {
-            let _ = stream.shutdown(std::net::Shutdown::Both);
-        }
+        native_http_shutdown_both(&self.connection);
     }
 
     fn poll(&mut self) -> Option<NativeOutcome> {
@@ -237,22 +235,55 @@ impl Drop for NativeHttpTask {
 }
 
 struct NativeHttpTarget {
+    https: bool,
     host: String,
     port: u16,
     authority: String,
     path: String,
 }
 
-fn native_http_target(url: &str) -> Result<NativeHttpTarget, NativeHttpReply> {
-    if url.starts_with("https://") {
-        return Err(NativeHttpReply::Failure(
-            "std/http::HttpTlsFailure",
-            "https needs TLS, which the native target does not support yet".into(),
-        ));
+trait NativeHttpShutdown: Send + Sync {
+    fn shutdown_write(&self) -> std::io::Result<()>;
+    fn shutdown_both(&self) -> std::io::Result<()>;
+}
+
+impl NativeHttpShutdown for std::net::TcpStream {
+    fn shutdown_write(&self) -> std::io::Result<()> {
+        self.shutdown(std::net::Shutdown::Write)
     }
-    let rest = url.strip_prefix("http://").ok_or_else(|| {
-        NativeHttpReply::Failure("std/http::HttpProtocolFailure", "invalid HTTP URL".into())
-    })?;
+
+    fn shutdown_both(&self) -> std::io::Result<()> {
+        self.shutdown(std::net::Shutdown::Both)
+    }
+}
+
+struct NativeHttpTransport {
+    reader: Box<dyn std::io::Read + Send>,
+    writer: Box<dyn std::io::Write + Send>,
+    shutdown: std::sync::Arc<dyn NativeHttpShutdown>,
+}
+
+trait NativeHttpConnector {
+    fn connect(
+        &self,
+        target: &NativeHttpTarget,
+        cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
+    ) -> Result<NativeHttpTransport, NativeHttpReply>;
+}
+
+struct NativePlainHttpConnector;
+
+fn native_http_target(url: &str) -> Result<NativeHttpTarget, NativeHttpReply> {
+    let (https, default_port, rest) = if let Some(rest) = url.strip_prefix("https://") {
+        (true, 443, rest)
+    } else if let Some(rest) = url.strip_prefix("http://") {
+        (false, 80, rest)
+    } else {
+        return Err(NativeHttpReply::Failure(
+            "std/http::HttpProtocolFailure",
+            "invalid HTTP URL".into(),
+        ));
+    };
     // An empty fragment can remain in a parsed URL; it is never sent.
     let rest = rest.split('#').next().unwrap_or("");
     let end = rest.find(['/', '?']).unwrap_or(rest.len());
@@ -267,8 +298,11 @@ fn native_http_target(url: &str) -> Result<NativeHttpTarget, NativeHttpReply> {
         }
     };
     Ok(NativeHttpTarget {
+        https,
         host: host.into(),
-        port: port.and_then(|port| port.parse().ok()).unwrap_or(80),
+        port: port
+            .and_then(|port| port.parse().ok())
+            .unwrap_or(default_port),
         authority: authority.into(),
         path: if path.is_empty() {
             "/".into()
@@ -280,22 +314,10 @@ fn native_http_target(url: &str) -> Result<NativeHttpTarget, NativeHttpReply> {
     })
 }
 
-// Connects and starts writing one request. The returned flag turns true once
-// the whole request has been written.
-type NativeHttpOpened = (
-    std::io::BufReader<std::net::TcpStream>,
-    std::sync::Arc<std::sync::atomic::AtomicBool>,
-);
-fn native_http_open(
-    method: &str,
-    url: &str,
-    headers: &[(String, String)],
-    body: NativeHttpBody,
+fn native_http_connect_tcp(
+    target: &NativeHttpTarget,
     cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
-    connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
-) -> Result<NativeHttpOpened, NativeHttpReply> {
-    use std::io::Write;
-    let target = native_http_target(url)?;
+) -> Result<std::net::TcpStream, NativeHttpReply> {
     let is_cancelled = || cancelled.load(std::sync::atomic::Ordering::Acquire);
     let (connected, connecting) = std::sync::mpsc::channel();
     let (host, port) = (target.host.clone(), target.port);
@@ -342,12 +364,12 @@ fn native_http_open(
         }
         let _ = connected.send(Err(("std/http::HttpConnectionFailure", last)));
     });
-    let stream = loop {
+    loop {
         if is_cancelled() {
             return Err(NativeHttpReply::Cancelled);
         }
         match connecting.recv_timeout(std::time::Duration::from_millis(20)) {
-            Ok(Ok(stream)) => break stream,
+            Ok(Ok(stream)) => return Ok(stream),
             Ok(Err((tag, message))) => return Err(NativeHttpReply::Failure(tag, message)),
             Err(std::sync::mpsc::RecvTimeoutError::Timeout) => continue,
             Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
@@ -357,11 +379,88 @@ fn native_http_open(
                 ))
             }
         }
-    };
-    if let Ok(clone) = stream.try_clone() {
-        *connection.lock().unwrap() = Some(clone);
     }
+}
+
+impl NativeHttpConnector for NativePlainHttpConnector {
+    fn connect(
+        &self,
+        target: &NativeHttpTarget,
+        cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
+    ) -> Result<NativeHttpTransport, NativeHttpReply> {
+        if target.https {
+            return Err(NativeHttpReply::Failure(
+                "std/http::HttpTlsFailure",
+                "https needs TLS, which the native target does not support yet".into(),
+            ));
+        }
+        let stream = native_http_connect_tcp(target, cancelled)?;
+        let Ok(writer) = stream.try_clone() else {
+            return Err(NativeHttpReply::Failure(
+                "std/http::HttpConnectionFailure",
+                "cannot share the connection".into(),
+            ));
+        };
+        let Ok(shutdown) = stream.try_clone() else {
+            return Err(NativeHttpReply::Failure(
+                "std/http::HttpConnectionFailure",
+                "cannot share the connection".into(),
+            ));
+        };
+        Ok(NativeHttpTransport {
+            reader: Box::new(stream),
+            writer: Box::new(writer),
+            shutdown: std::sync::Arc::new(shutdown),
+        })
+    }
+}
+
+// Connects and starts writing one request. The returned flag turns true once
+// the whole request has been written.
+type NativeHttpOpened = (
+    std::io::BufReader<Box<dyn std::io::Read + Send>>,
+    std::sync::Arc<std::sync::atomic::AtomicBool>,
+);
+
+fn native_http_open(
+    method: &str,
+    url: &str,
+    headers: &[(String, String)],
+    body: NativeHttpBody,
+    cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
+    connection: &std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>,
+) -> Result<NativeHttpOpened, NativeHttpReply> {
+    native_http_open_with(
+        &NativePlainHttpConnector,
+        method,
+        url,
+        headers,
+        body,
+        cancelled,
+        connection,
+    )
+}
+
+fn native_http_open_with(
+    connector: &dyn NativeHttpConnector,
+    method: &str,
+    url: &str,
+    headers: &[(String, String)],
+    body: NativeHttpBody,
+    cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
+    connection: &std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>,
+) -> Result<NativeHttpOpened, NativeHttpReply> {
+    use std::io::Write;
+    let target = native_http_target(url)?;
+    let is_cancelled = || cancelled.load(std::sync::atomic::Ordering::Acquire);
+    let NativeHttpTransport {
+        reader,
+        mut writer,
+        shutdown,
+    } = connector.connect(&target, cancelled)?;
+    *connection.lock().unwrap() = Some(shutdown);
     if is_cancelled() {
+        native_http_shutdown_both(connection);
         return Err(NativeHttpReply::Cancelled);
     }
     // Header values are Latin-1, as the TS hosts write them.
@@ -402,12 +501,6 @@ fn native_http_open(
     // The request is written on its own thread, so a final response that
     // arrives before the body is fully sent (such as 413) is still read.
     // Closing the connection after the response stops the writer.
-    let Ok(mut writer) = stream.try_clone() else {
-        return Err(NativeHttpReply::Failure(
-            "std/http::HttpConnectionFailure",
-            "cannot share the connection".into(),
-        ));
-    };
     let written = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
     let writer_done = written.clone();
     std::thread::spawn(move || {
@@ -422,7 +515,7 @@ fn native_http_open(
         }
     });
     Ok((
-        std::io::BufReader::with_capacity(NATIVE_HTTP_CHUNK_BYTES, stream),
+        std::io::BufReader::with_capacity(NATIVE_HTTP_CHUNK_BYTES, reader),
         written,
     ))
 }
@@ -435,10 +528,33 @@ fn native_http_exchange(
     body: NativeHttpBody,
     limit: u64,
     cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
-    connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
+    connection: &std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>,
+) -> NativeHttpReply {
+    native_http_exchange_with(
+        &NativePlainHttpConnector,
+        method,
+        url,
+        headers,
+        body,
+        limit,
+        cancelled,
+        connection,
+    )
+}
+
+#[allow(clippy::too_many_arguments)]
+fn native_http_exchange_with(
+    connector: &dyn NativeHttpConnector,
+    method: &str,
+    url: &str,
+    headers: &[(String, String)],
+    body: NativeHttpBody,
+    limit: u64,
+    cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
+    connection: &std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>,
 ) -> NativeHttpReply {
     let (mut reader, written) =
-        match native_http_open(method, url, headers, body, cancelled, connection) {
+        match native_http_open_with(connector, method, url, headers, body, cancelled, connection) {
             Ok(opened) => opened,
             Err(reply) => return reply,
         };
@@ -472,7 +588,7 @@ fn native_http_exchange(
         }
         Err(NativeHttpRead::Limit) => NativeHttpReply::LimitExceeded,
         Ok((status, headers, body)) => {
-            let _ = reader.get_mut().shutdown(std::net::Shutdown::Both);
+            native_http_shutdown_both(connection);
             NativeHttpReply::Response {
                 status,
                 headers,
@@ -660,11 +776,19 @@ fn native_http_append(body: &mut Vec<u8>, chunk: &[u8], limit: u64) -> Result<()
 }
 
 fn native_http_stop_writing(
-    connection: &std::sync::Mutex<Option<std::net::TcpStream>>,
+    connection: &std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>,
 ) -> std::io::Result<()> {
     match connection.lock().unwrap().as_ref() {
-        Some(stream) => stream.shutdown(std::net::Shutdown::Write),
+        Some(handle) => handle.shutdown_write(),
         None => Ok(()),
+    }
+}
+
+fn native_http_shutdown_both(
+    connection: &std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>,
+) {
+    if let Some(handle) = connection.lock().unwrap().as_ref() {
+        let _ = handle.shutdown_both();
     }
 }
 
@@ -985,18 +1109,133 @@ mod http_client_tests {
     }
 
     #[test]
-    fn targets_keep_the_authority_and_refuse_https() {
+    fn targets_keep_the_authority_and_plain_connector_refuses_https() {
         let target = native_http_target("http://[::1]:8080?q").ok().unwrap();
         assert_eq!(
-            (target.host.as_str(), target.port, target.path.as_str()),
-            ("::1", 8080, "/?q")
+            (
+                target.https,
+                target.host.as_str(),
+                target.port,
+                target.path.as_str()
+            ),
+            (false, "::1", 8080, "/?q")
         );
         assert_eq!(target.authority, "[::1]:8080");
         let target = native_http_target("http://a/p?#").ok().unwrap();
         assert_eq!(target.path, "/p?");
+        let https_target = native_http_target("https://example.com/v1?x=1")
+            .ok()
+            .unwrap();
+        assert_eq!(
+            (
+                https_target.https,
+                https_target.host.as_str(),
+                https_target.port,
+                https_target.path.as_str()
+            ),
+            (true, "example.com", 443, "/v1?x=1")
+        );
+        let cancelled = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
         assert!(matches!(
-            native_http_target("https://a/"),
+            NativePlainHttpConnector.connect(&https_target, &cancelled),
             Err(NativeHttpReply::Failure("std/http::HttpTlsFailure", _))
         ));
+    }
+
+    #[test]
+    fn custom_connector_runs_https_exchange_and_invokes_shutdown() {
+        struct RecordingShutdown {
+            writes: std::sync::atomic::AtomicUsize,
+            both: std::sync::atomic::AtomicUsize,
+        }
+        impl NativeHttpShutdown for RecordingShutdown {
+            fn shutdown_write(&self) -> std::io::Result<()> {
+                self.writes
+                    .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+                Ok(())
+            }
+            fn shutdown_both(&self) -> std::io::Result<()> {
+                self.both.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+                Ok(())
+            }
+        }
+        struct SharedSink(std::sync::Arc<std::sync::Mutex<Vec<u8>>>);
+        impl std::io::Write for SharedSink {
+            fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+                self.0.lock().unwrap().extend_from_slice(buf);
+                Ok(buf.len())
+            }
+            fn flush(&mut self) -> std::io::Result<()> {
+                Ok(())
+            }
+        }
+        struct MemoryConnector {
+            response: Vec<u8>,
+            sent: std::sync::Arc<std::sync::Mutex<Vec<u8>>>,
+            shutdown: std::sync::Arc<RecordingShutdown>,
+            seen_https: std::sync::Arc<std::sync::atomic::AtomicBool>,
+        }
+        impl NativeHttpConnector for MemoryConnector {
+            fn connect(
+                &self,
+                target: &NativeHttpTarget,
+                _cancelled: &std::sync::Arc<std::sync::atomic::AtomicBool>,
+            ) -> Result<NativeHttpTransport, NativeHttpReply> {
+                self.seen_https
+                    .store(target.https, std::sync::atomic::Ordering::SeqCst);
+                Ok(NativeHttpTransport {
+                    reader: Box::new(std::io::Cursor::new(self.response.clone())),
+                    writer: Box::new(SharedSink(self.sent.clone())),
+                    shutdown: self.shutdown.clone(),
+                })
+            }
+        }
+
+        let sent = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+        let shutdown = std::sync::Arc::new(RecordingShutdown {
+            writes: std::sync::atomic::AtomicUsize::new(0),
+            both: std::sync::atomic::AtomicUsize::new(0),
+        });
+        let seen_https = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
+        let connector = MemoryConnector {
+            response: b"HTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nhello".to_vec(),
+            sent: sent.clone(),
+            shutdown: shutdown.clone(),
+            seen_https: seen_https.clone(),
+        };
+        let cancelled = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false));
+        let connection = std::sync::Mutex::new(None);
+        let reply = native_http_exchange_with(
+            &connector,
+            "GET",
+            "https://example.com/hello",
+            &[("x-test".into(), "1".into())],
+            NativeHttpBody::Bytes(Vec::new()),
+            16,
+            &cancelled,
+            &connection,
+        );
+        assert!(seen_https.load(std::sync::atomic::Ordering::SeqCst));
+        assert_eq!(
+            reply,
+            NativeHttpReply::Response {
+                status: 200,
+                headers: vec![("content-length".into(), "5".into())],
+                body: b"hello".to_vec(),
+            }
+        );
+        assert!(shutdown.both.load(std::sync::atomic::Ordering::SeqCst) >= 1);
+
+        let limit_reply = native_http_exchange_with(
+            &connector,
+            "GET",
+            "https://example.com/hello",
+            &[],
+            NativeHttpBody::Bytes(Vec::new()),
+            4,
+            &cancelled,
+            &connection,
+        );
+        assert_eq!(limit_reply, NativeHttpReply::LimitExceeded);
     }
 }
