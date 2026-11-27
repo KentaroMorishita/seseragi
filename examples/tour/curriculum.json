@@ -1768,8 +1768,8 @@
     },
     {
       "sampleId": "signal-state",
-      "currentKind": "showcase",
-      "decision": "tour-seed-and-showcase",
+      "currentKind": "recipe",
+      "decision": "tour-seed-and-recipe",
       "tourLessons": [
         "signals-value-difference",
         "signals-write-operator",

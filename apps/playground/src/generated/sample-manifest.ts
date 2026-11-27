@@ -1372,8 +1372,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "seseragi-landing-page",
-      "title": "Seseragi Landing Page Showcase",
-      "summary": "公式ロゴ、responsiveなsection、interactive code chapterを責務別moduleから一つの完成pageへ合成します。",
+      "title": "Seseragi ランディングページ",
+      "summary": "公式ロゴ、レスポンシブな構成、動かせるコード紹介を責務ごとのモジュールから一つのページへ組み立てます。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
@@ -1522,7 +1522,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "id": "signal-state",
       "title": "在庫と販売数を Signal のトランザクションで揃える",
       "summary": "複数の Signal から導出状態を作り、transaction で途中状態を出さずに在庫と販売数を一度に更新します。",
-      "kind": "showcase",
+      "kind": "recipe",
       "difficulty": "advanced",
       "topics": [
         "Signal",
@@ -1870,7 +1870,7 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
     {
       "id": "domain-recipes",
       "title": "データの形と失敗",
-      "summary": "型で値を守り、失敗や外部入力を安全に扱い、複数ファイルとテストへ分けます。",
+      "summary": "型で値を守り、失敗や外部入力、複数の Signal の一括更新を安全に扱い、複数ファイルとテストへ分けます。",
       "kind": "recipe",
       "samples": [
         "newtypes",
@@ -1880,7 +1880,8 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
         "project-greeting",
         "records",
         "type-aliases",
-        "impl-and-operators"
+        "impl-and-operators",
+        "signal-state"
       ]
     },
     {
@@ -1896,11 +1897,10 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
     },
     {
       "id": "signal-showcases",
-      "title": "Signalによる状態管理と機能合成",
-      "summary": "複数のSignalの一括更新から、機能単位で状態を所有する設計へ進みます。",
+      "title": "Signal による機能合成",
+      "summary": "機能ごとに非公開の Signal を持ち、状態を保ったまま画面へ合成します。",
       "kind": "showcase",
       "samples": [
-        "signal-state",
         "feature-composition"
       ]
     },

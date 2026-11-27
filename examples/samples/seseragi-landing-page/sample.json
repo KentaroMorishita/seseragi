@@ -1,8 +1,8 @@
 {
   "$schema": "../sample.schema.json",
   "id": "seseragi-landing-page",
-  "title": "Seseragi Landing Page Showcase",
-  "summary": "公式ロゴ、responsiveなsection、interactive code chapterを責務別moduleから一つの完成pageへ合成します。",
+  "title": "Seseragi ランディングページ",
+  "summary": "公式ロゴ、レスポンシブな構成、動かせるコード紹介を責務ごとのモジュールから一つのページへ組み立てます。",
   "kind": "showcase",
   "difficulty": "advanced",
   "topics": [

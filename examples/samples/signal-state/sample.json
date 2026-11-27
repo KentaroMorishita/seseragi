@@ -3,7 +3,7 @@
   "id": "signal-state",
   "title": "在庫と販売数を Signal のトランザクションで揃える",
   "summary": "複数の Signal から導出状態を作り、transaction で途中状態を出さずに在庫と販売数を一度に更新します。",
-  "kind": "showcase",
+  "kind": "recipe",
   "difficulty": "advanced",
   "topics": [
     "Signal",
