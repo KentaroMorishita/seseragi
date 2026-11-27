@@ -34,6 +34,18 @@ effect fn yieldedFailure label: String -> Int with Console fails String = do {
 fn failingLater label: String -> streams.Stream<{ console: Console }, String, Int> =
   streams.fromEffect (yieldedFailure label)
 
+effect fn yieldedValue label: String -> Int with Console fails String = do {
+  opened label
+  effects.yieldNow ()
+  say `resumed:${label}`
+  effects.succeed 1
+}
+
+// Acquires a resource, then yields before its value, so a zip that stops in
+// an earlier turn cancels the pull while it waits.
+fn pulledLater label: String -> streams.Stream<{ console: Console }, String, Int> =
+  streams.fromEffect (yieldedValue label)
+
 fn closedText _closed: queues.QueueClosed -> String = "closed"
 
 // A source that opens a resource, then waits on a Queue nobody fills.
@@ -87,6 +99,9 @@ pub effect fn main -> Unit with Console fails String = do {
   // wins over it.
   laterLeft <- streams.zip (failing "right") (failingLater "left") |> streams.runCollect |> effects.attempt
   say (show laterLeft)
+  // The cancelled pull never resumes, and what it acquired is released.
+  pending <- streams.zip (pulledLater "pending") nothing |> streams.runCollect
+  say (show pending)
   // The outer zip finishes only after the inner zip has closed its source.
   nested <- streams.zip nothing (streams.zip nothing (tracked "inner" [1])) |> streams.runCollect
   say (show nested)

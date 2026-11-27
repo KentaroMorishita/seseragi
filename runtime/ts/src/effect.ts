@@ -45,22 +45,35 @@ const effectContext = Symbol("seseragi.effect-context")
 type ResourceFinalizerEntry = {
   active: boolean
   readonly finalizer: EffectResourceFinalizer
+  // When it was registered, so a scope that takes entries over from another
+  // still releases them in reverse order of acquisition.
+  readonly order: number
 }
 
+let finalizerOrder = 0
+
+// `handOverExecution` reads the finalizers, acquisitions and state too.
 class ResourceScope {
-  private readonly finalizers: ResourceFinalizerEntry[] = []
-  private readonly acquisitions = new Set<Promise<void>>()
-  private state: "open" | "closing" | "closed" = "open"
+  readonly finalizers: ResourceFinalizerEntry[] = []
+  readonly acquisitions = new Set<Promise<void>>()
+  state: "open" | "closing" | "closed" = "open"
+  // The scope that took over what this one held; see `handOverExecution`.
+  owner: ResourceScope | undefined
   private closing: Promise<void> | undefined
 
   register(finalizer: EffectResourceFinalizer): EffectResourceRegistration {
+    if (this.owner !== undefined) return this.owner.register(finalizer)
     if (this.state === "closed") {
       return Object.freeze({
         ready: runResourceFinalizer(finalizer),
         unregister: () => undefined,
       })
     }
-    const entry: ResourceFinalizerEntry = { active: true, finalizer }
+    const entry: ResourceFinalizerEntry = {
+      active: true,
+      finalizer,
+      order: finalizerOrder++,
+    }
     this.finalizers.push(entry)
     return Object.freeze({
       ready: Promise.resolve(),
@@ -71,6 +84,7 @@ class ResourceScope {
   }
 
   close(): Promise<void> {
+    if (this.owner !== undefined) return Promise.resolve()
     if (this.closing !== undefined) return this.closing
     this.state = "closing"
     this.closing = this.drain()
@@ -80,6 +94,7 @@ class ResourceScope {
   async acquire<Resource>(
     action: () => Resource | Promise<Resource>
   ): Promise<Resource> {
+    if (this.owner !== undefined) return this.owner.acquire(action)
     let completed = (): void => undefined
     const pending = new Promise<void>((resolve) => {
       completed = resolve
@@ -163,13 +178,24 @@ export function registerResourceFinalizer(
   return resourceScopeOf(context).register(finalizer)
 }
 
+// How many acquisitions each execution is running, in any of its scopes, by
+// the signal they share; see `executionAcquiring`.
+const acquiring = new WeakMap<AbortSignal, number>()
+
 /** Supervises host acquisition through its atomic resource handoff. */
 export function withResourceAcquisition<Resource>(
   context: EffectContext,
   action: () => Resource | Promise<Resource>
 ): Promise<Resource> {
   throwIfCancelled(context)
-  return resourceScopeOf(context).acquire(action)
+  const { signal } = context
+  acquiring.set(signal, (acquiring.get(signal) ?? 0) + 1)
+  const acquired = (): void => {
+    acquiring.set(signal, (acquiring.get(signal) ?? 1) - 1)
+  }
+  const acquisition = resourceScopeOf(context).acquire(action)
+  void acquisition.then(acquired, acquired)
+  return acquisition
 }
 
 /** Attaches the shared lifecycle context to a host-owned environment record. */
@@ -224,16 +250,20 @@ export function throwIfCancelled(context: EffectContext): void {
  * settling, including cleanup registered by another cleanup. The drain closes
  * only after one quiet event-loop turn with no tracked work.
  * Cleanup failures are intentionally absorbed: cancellation must not surface
- * as a stale host exception after the owning UI has moved on.
+ * as a stale host exception after the owning UI has moved on. A stream that
+ * stops one of its pulls passes `reportCleanupFailures`, so `cancel` rejects
+ * with them: its consumer is still waiting for the stream to close.
  */
 export function createEffectExecution(
-  parentContext?: EffectContext
+  parentContext?: EffectContext,
+  reportCleanupFailures = false
 ): EffectExecution {
   const controller = new AbortController()
   const rootScope = new ResourceScope()
   const cleanups = new Set<EffectCancellationCleanup>()
   const started = new Set<EffectCancellationCleanup>()
   const pending = new Set<Promise<void>>()
+  const failures: unknown[] | undefined = reportCleanupFailures ? [] : undefined
   let cancellation: Promise<void> | undefined
   let cleanupEpoch = 0
   const startCleanup = (cleanup: EffectCancellationCleanup): void => {
@@ -241,7 +271,7 @@ export function createEffectExecution(
     started.add(cleanup)
     cleanupEpoch += 1
     cleanups.delete(cleanup)
-    const task = runCancellationCleanup(cleanup)
+    const task = runCancellationCleanup(cleanup, failures)
     pending.add(task)
     void task.then(() => pending.delete(task))
   }
@@ -282,6 +312,7 @@ export function createEffectExecution(
     },
   })
   resourceScopes.set(context, rootScope)
+  executionCleanups.set(context, cleanups)
   let detachParent = (): void => undefined
   const execution = Object.freeze({
     context,
@@ -298,7 +329,11 @@ export function createEffectExecution(
       for (const cleanup of [...cleanups]) startCleanup(cleanup)
       void (async () => {
         await drainCleanups()
-        await rootScope.close()
+        if (failures === undefined) return await rootScope.close()
+        await rootScope.close().catch((error: unknown) => {
+          failures.push(error)
+        })
+        if (failures.length > 0) throw defectWithSuppressed(failures)
       })().then(resolveCancellation, rejectCancellation)
       return cancellation
     },
@@ -311,6 +346,75 @@ export function createEffectExecution(
     detachParent = parentContext.onCancel(() => execution.cancel())
   }
   return execution
+}
+
+// The unstarted cleanups of each execution, by its context.
+const executionCleanups = new WeakMap<
+  EffectContext,
+  ReadonlySet<EffectCancellationCleanup>
+>()
+
+/**
+ * Internal: hands what an execution that has finished its work holds over
+ * to `owner`, which releases it when it closes, and closes the execution.
+ * Its resources move to the owner's scope, which also takes what is later
+ * registered in its own, as by a finalizer that acquires. One with a cleanup
+ * or an acquisition still registered is kept whole until the owner closes.
+ * It returns false when the execution holds nothing, and leaves it to the
+ * caller. It lives outside `createEffectExecution`, so a program without
+ * streams does not carry it.
+ */
+export function handOverExecution(
+  execution: EffectExecution,
+  owner: EffectContext
+): boolean {
+  const scope = resourceScopes.get(execution.context)
+  if (scope === undefined || scope.state !== "open") return false
+  const finalizers = scope.finalizers
+  // A finished `scoped` leaves an inactive entry behind.
+  while (finalizers.at(-1)?.active === false) finalizers.pop()
+  const busy =
+    scope.acquisitions.size > 0 ||
+    (executionCleanups.get(execution.context)?.size ?? 0) > 0
+  if (!busy && finalizers.length === 0) return false
+  const ownerScope = resourceScopeOf(owner)
+  if (busy || ownerScope.state !== "open") {
+    // Kept whole, it is released where its oldest resource would be.
+    const first = finalizers.find((entry) => entry.active)
+    if (ownerScope.state === "closed" || first === undefined) {
+      registerResourceFinalizer(owner, () => execution.close())
+    } else {
+      insertInOrder(ownerScope.finalizers, {
+        active: true,
+        finalizer: () => execution.close(),
+        order: first.order,
+      })
+    }
+    return true
+  }
+  // The same entries move, so their registrations can still unregister them.
+  for (const entry of finalizers.splice(0)) {
+    if (entry.active) insertInOrder(ownerScope.finalizers, entry)
+  }
+  scope.owner = ownerScope
+  void execution.close()
+  return true
+}
+
+function insertInOrder(
+  finalizers: ResourceFinalizerEntry[],
+  entry: ResourceFinalizerEntry
+): void {
+  let index = finalizers.length
+  while (index > 0 && (finalizers[index - 1]?.order ?? 0) > entry.order) {
+    index -= 1
+  }
+  finalizers.splice(index, 0, entry)
+}
+
+/** Internal: whether an execution is still acquiring a resource. */
+export function executionAcquiring(execution: EffectExecution): boolean {
+  return (acquiring.get(execution.context.signal) ?? 0) > 0
 }
 
 export type EffectFailure<Failure> = {
@@ -1467,12 +1571,14 @@ export async function run<Environment, Failure, Success>(
 }
 
 async function runCancellationCleanup(
-  cleanup: EffectCancellationCleanup
+  cleanup: EffectCancellationCleanup,
+  failures: unknown[] | undefined
 ): Promise<void> {
   try {
     await cleanup()
-  } catch {
+  } catch (error) {
     // A cancelled UI must not be resurrected by cleanup defects.
+    failures?.push(error)
   }
 }
 

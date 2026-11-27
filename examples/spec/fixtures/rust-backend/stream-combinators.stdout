@@ -26,6 +26,9 @@ Left failed:left
 open:right
 close:right
 Left failed:right
+open:pending
+close:pending
+[]
 open:inner
 close:inner
 []
