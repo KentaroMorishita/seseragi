@@ -801,6 +801,13 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         "addDuration"
     ),
     surface_operation!(
+        "std/time::durationBetween",
+        "time.duration.between",
+        "_ssrg_time_durationBetween",
+        "@seseragi/runtime/clock",
+        "durationBetween"
+    ),
+    surface_operation!(
         "std/time::InvalidDate",
         "time.invalid-date",
         "_ssrg_time_InvalidDate",
@@ -1163,6 +1170,7 @@ mod tests {
             ("std/ref::modify", "@seseragi/runtime/ref"),
             ("std/time::zeroDuration", "@seseragi/runtime/clock"),
             ("std/time::addDuration", "@seseragi/runtime/clock"),
+            ("std/time::durationBetween", "@seseragi/runtime/clock"),
         ] {
             assert_eq!(
                 runtime_effect_operation(canonical)

@@ -1,0 +1,53 @@
+import * as clock from "std/clock"
+import { Clock } from "std/clock"
+import * as time from "std/time"
+
+fn measureText earlier: String -> later: String
+  -> Either<time.DurationError, time.Duration> =
+  match time.parseOffsetDateTime earlier {
+    Left _ -> Left time.DurationOutsideRange
+    Right start -> match time.parseOffsetDateTime later {
+      Left _ -> Left time.DurationOutsideRange
+      Right end -> time.durationBetween (time.offsetInstant start) (time.offsetInstant end)
+    }
+  }
+
+fn describe value: Either<time.DurationError, time.Duration> -> String =
+  match value {
+    Left error -> show error
+    Right duration -> show (time.toNanoseconds duration)
+  }
+
+fn accepted value: Either<time.DurationError, time.Duration> -> String =
+  match value {
+    Left error -> show error
+    Right _ -> "duration"
+  }
+
+fn between earlier: String -> later: String -> String =
+  describe (measureText earlier later)
+
+fn fits earlier: String -> later: String -> String =
+  accepted (measureText earlier later)
+
+fn measure -> (time.Instant -> time.Instant -> Either<time.DurationError, time.Duration>) =
+  time.durationBetween
+
+pub effect fn main -> Unit with Clock, Console fails ConsoleError = do {
+  println (between "2026-11-27T09:00:00Z" "2026-11-27T09:00:00Z")
+  println (between "2026-11-27T09:00:00Z" "2026-11-27T09:00:00.25Z")
+  println (between "2026-11-27T09:00:00+09:00" "2026-11-27T09:00:00Z")
+  println (between "1969-12-31T23:59:59.999999999Z" "1970-01-01T00:00:00.000000001Z")
+  println (between "2026-11-27T09:00:01Z" "2026-11-27T09:00:00Z")
+  println (fits "1970-01-01T00:00:00Z" "2262-04-11T23:47:16.854775807Z")
+  println (fits "1970-01-01T00:00:00Z" "2262-04-11T23:47:16.854775808Z")
+  println (between "1970-04-15T05:59:59.254740991Z" "1970-01-01T00:00:00Z")
+  println (between "1970-04-15T05:59:59.254740992Z" "1970-01-01T00:00:00Z")
+  let measured = measure ()
+  started <- clock.now ()
+  finished <- clock.now ()
+  match measured started finished {
+    Left error -> println (show error)
+    Right _ -> println "now never goes back"
+  }
+}

@@ -5934,6 +5934,16 @@
       "import": { "module": "@seseragi/runtime/clock", "export": "addDuration" }
     },
     {
+      "id": "time.duration.between",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "checked exact Duration from an earlier Instant to a later Instant",
+      "import": {
+        "module": "@seseragi/runtime/clock",
+        "export": "durationBetween"
+      }
+    },
+    {
       "id": "time.local-date.type",
       "kind": "value-representation",
       "typescript": "type LocalDate",

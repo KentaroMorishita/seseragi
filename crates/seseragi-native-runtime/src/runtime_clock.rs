@@ -77,6 +77,25 @@ pub fn native_clock_operation(name: &str, arguments: Vec<V>) -> V {
                 None => native_left(V::adt("std/time::DurationOutsideRange", V::Unit)),
             }
         }
+        ("std/time::durationBetween", [earlier, later]) => {
+            let difference = native_time_instant(later).subtract(native_time_instant(earlier));
+            if difference.negative {
+                match difference.to_safe_int() {
+                    Some(value) => native_left(V::adt("std/time::NegativeDuration", V::Int(value))),
+                    None => native_left(V::adt("std/time::DurationOutsideRange", V::Unit)),
+                }
+            } else {
+                match difference
+                    .decimal()
+                    .parse::<u64>()
+                    .ok()
+                    .filter(|nanos| *nanos <= i64::MAX as u64)
+                {
+                    Some(nanos) => native_right(native_duration(nanos)),
+                    None => native_left(V::adt("std/time::DurationOutsideRange", V::Unit)),
+                }
+            }
+        }
         ("std/time::NegativeDuration", [value]) => {
             V::adt("std/time::NegativeDuration", value.clone())
         }
@@ -316,6 +335,53 @@ mod clock_tests {
         assert!(result.payload().tagged("std/time::DurationOutsideRange"));
         drop(result);
         assert_eq!(LIVE.with(Cell::get), 0);
+    }
+
+    fn signed_instant(nanoseconds: i128) -> V {
+        V::adt(
+            "std/time::Instant",
+            native_big_int_parse(&nanoseconds.to_string()).payload(),
+        )
+    }
+
+    #[test]
+    fn duration_between_measures_ordered_instants_and_reports_reversed_ones() {
+        let between = |earlier: i128, later: i128| {
+            native_clock_operation(
+                "std/time::durationBetween",
+                vec![signed_instant(earlier), signed_instant(later)],
+            )
+        };
+        for (earlier, later, expected) in [
+            (0, 0, 0),
+            (
+                1_700_000_000_000_000_000,
+                1_700_000_000_250_000_000,
+                250_000_000,
+            ),
+            (-5, 7, 12),
+            (-(i64::MAX as i128), 0, i64::MAX as u64),
+        ] {
+            let result = between(earlier, later);
+            assert!(result.tagged("std/prelude::Right"));
+            assert_eq!(
+                native_duration_nanoseconds(&result.payload()).unwrap(),
+                expected
+            );
+        }
+        let reversed = between(1_000, 1);
+        assert!(reversed.payload().tagged("std/time::NegativeDuration"));
+        assert!(matches!(reversed.payload().payload(), V::Int(-999)));
+        for (earlier, later) in [(0, i64::MAX as i128 + 1), (9_007_199_254_740_992, 0)] {
+            let result = between(earlier, later);
+            assert!(result.tagged("std/prelude::Left"));
+            assert!(result.payload().tagged("std/time::DurationOutsideRange"));
+        }
+        let edge = between(9_007_199_254_740_991, 0);
+        assert!(matches!(
+            edge.payload().payload(),
+            V::Int(-9_007_199_254_740_991)
+        ));
     }
 
     fn instant_nanos(value: V) -> u128 {

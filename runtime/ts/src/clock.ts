@@ -3,6 +3,7 @@ import {
   type Duration,
   durationNanoseconds,
   type Instant,
+  instantNanoseconds,
 } from "./clock-value"
 import type { Effect, EffectContext, Unit } from "./effect"
 import { assertInt } from "./int"
@@ -74,6 +75,28 @@ export function addDuration(
     return Right(
       createDuration(durationNanoseconds(left) + durationNanoseconds(right))
     )
+  } catch {
+    return Left(DurationOutsideRange)
+  }
+}
+
+/**
+ * Measures the Duration from `earlier` to `later`. A `later` before `earlier`
+ * returns NegativeDuration with the signed nanosecond difference when it is a
+ * safe Int, and DurationOutsideRange otherwise.
+ */
+export function durationBetween(
+  earlier: Instant,
+  later: Instant
+): Either<DurationError, Duration> {
+  const difference = instantNanoseconds(later) - instantNanoseconds(earlier)
+  if (difference < 0n) {
+    return difference >= BigInt(Number.MIN_SAFE_INTEGER)
+      ? Left(NegativeDuration(Number(difference)))
+      : Left(DurationOutsideRange)
+  }
+  try {
+    return Right(createDuration(difference))
   } catch {
     return Left(DurationOutsideRange)
   }

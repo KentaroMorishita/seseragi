@@ -2518,6 +2518,7 @@ mod tests {
             "hours",
             "toNanoseconds",
             "addDuration",
+            "durationBetween",
             "LocalDate",
             "LocalTime",
             "LocalDateTime",

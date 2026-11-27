@@ -1553,6 +1553,8 @@ fn hours value: Int -> Either<DurationError, Duration>
 fn toNanoseconds value: Duration -> Int
 fn addDuration right: Duration -> left: Duration
   -> Either<DurationError, Duration>
+fn durationBetween earlier: Instant -> later: Instant
+  -> Either<DurationError, Duration>
 
 fn localDate year: Int -> month: Int -> day: Int
   -> Either<DateTimeError, LocalDate>
@@ -1591,6 +1593,9 @@ fn zonedTimeZone value: ZonedDateTime -> TimeZone
 
 duration constructorは単位をnanosecondへexactに変換します。負入力は元の値をNegativeDurationへ、単位変換または
 加算が `2^63 - 1` nanosecondsを超える場合はDurationOutsideRangeを返します。zeroDurationは0 nanosecondsです。
+durationBetweenは `earlier` から `later` までの長さを返します。`later` が `earlier` より前なら、
+`later - earlier` のnanosecond差（負の値）をNegativeDurationへ入れます。差がIntの範囲に入らない負の値、
+または `2^63 - 1` nanosecondsを超える場合はDurationOutsideRangeを返します。
 Durationは値に基づくEq、Ord、Hashを持ち、implicitなInt変換やFloat second constructorを持ちません。
 
 date/time parserはASCIIのextended ISO 8601 subsetだけを受理します。LocalDateはyear、month、dayを
@@ -1636,6 +1641,11 @@ fn sleep duration: Duration -> Effect<{ clock: Clock }, Never, Unit>
 ClockのProvider Contractは`std/clock::Clock#now`と`#sleep`です。どちらもContract上のtyped
 failureは`Never`であり、host timerのthrow、invalid Instant、bridge不整合を`ClockError`という
 application failureへ捏造しません。sleep cancellationはEffectのcancellation channelを使います。
+
+標準のClock providerの`now`は、hostの単調な時計から読みます。同じprogramの中で後から読んだ`now`は前に読んだ
+`now`より前になりません。そのため、二つの`now`を`durationBetween`へ渡すと、壁時計がNTPなどで戻っても
+NegativeDurationになりません。単調な時計の起点はhostが決めるので、`now`のInstantを壁時計の日時として
+表示する用途には使いません。
 
 疑似乱数は`std/random`、cryptographic entropyは`std/entropy`の別serviceです。Randomは再現可能なsimulation、sampling、shuffle用で、
 秘密鍵、session token、nonce、saltへ使ってはなりません。Entropyだけが秘密用途のhost CSPRNGを表します。
