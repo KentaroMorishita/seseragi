@@ -8,8 +8,9 @@ fn label name: String -> svg.Svg<Unit> = svg.text {
   textAnchor: "middle",
   dominantBaseline: "central",
   fill: "<&\">",
-  // Not written by either renderer.
   fontSize: "12",
+  fontWeight: "700",
+  letterSpacing: "0.1em",
   children: name + " <&>"
 }
 
@@ -33,7 +34,7 @@ fn scene shift: Float -> svg.Svg<Unit> = svg.svg {
         svg.rect { x: 0.0, y: 0.0, width: 10.0, height: 5.0, rx: 1.0, ry: 1.0, fill: "red" },
         svg.circle { cx: 25.0, cy: 12.5, r: 0.125, stroke: "blue", strokeWidth: "2" },
         svg.line { x1: 0.0, y1: 0.0, x2: 1e21, y2: 1e-7, strokeLinecap: "round" },
-        svg.path { d: "M0 0 L10 10", strokeLinejoin: "bevel", pointerEvents: "none" },
+        svg.path { d: "M0 0 L10 10", strokeLinejoin: "bevel", strokeDasharray: "4 2", pointerEvents: "none" },
         svg.polyline { points: "0,0 1,1 2,0" },
         svg.polygon { points: "0,0 1,1 2,0", fill: "none" },
         label "first"

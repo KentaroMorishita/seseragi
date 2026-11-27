@@ -188,6 +188,14 @@ pub fn standard_html_tag_props(name: &str) -> Option<(StandardHtmlTag, Vec<Inter
     Some((tag, fields))
 }
 
+/// The fields of a standard `std/web/svg` tag's props record, for checking record literals.
+pub fn standard_svg_tag_props(name: &str) -> Option<Vec<InterfaceRecordField>> {
+    let InterfaceType::Record { fields, .. } = web_svg::svg_tag_props(name)? else {
+        unreachable!("standard SVG tag props must be a record")
+    };
+    Some(fields)
+}
+
 pub fn is_standard_void_html_tag(name: &str) -> bool {
     standard_html_tag(name).is_some_and(|tag| tag.void_element)
 }

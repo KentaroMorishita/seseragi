@@ -107,9 +107,9 @@ pub use specifier::{
 pub use standard::{
     is_available_standard_module, is_standard_module, is_standard_void_html_tag, standard_html_tag,
     standard_html_tag_props, standard_module_interfaces, standard_module_registry_surface,
-    standard_module_status, standard_module_target, StandardHtmlTag, StandardHtmlTagKind,
-    StandardModuleRegistrySurface, StandardModuleStatus, StandardModuleSurface,
-    StandardPreludeBoundary, STANDARD_HTML_TAGS,
+    standard_module_status, standard_module_target, standard_svg_tag_props, StandardHtmlTag,
+    StandardHtmlTagKind, StandardModuleRegistrySurface, StandardModuleStatus,
+    StandardModuleSurface, StandardPreludeBoundary, STANDARD_HTML_TAGS,
 };
 pub use target::{
     select_project_target, ProjectCommand, ProjectTarget, TargetSelection, TargetSelectionError,

@@ -344,7 +344,7 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:835e70dad24429f8",
+      "interfaceFingerprint": "fnv1a64:72d069286cdba552",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
     },
@@ -425,7 +425,7 @@
       "capabilityServices": [
         "std/time::TimeZones"
       ],
-      "interfaceFingerprint": "fnv1a64:05d004f8762ff82d",
+      "interfaceFingerprint": "fnv1a64:20882f06003b70c7",
       "implementation": "lowering-runtime",
       "route": "browser-provider-project"
     },

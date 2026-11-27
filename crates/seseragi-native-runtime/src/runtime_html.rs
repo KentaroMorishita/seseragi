@@ -278,8 +278,12 @@ fn native_html_attributes(
             ("strokeWidth", "stroke-width"),
             ("strokeLinecap", "stroke-linecap"),
             ("strokeLinejoin", "stroke-linejoin"),
+            ("strokeDasharray", "stroke-dasharray"),
             ("textAnchor", "text-anchor"),
             ("dominantBaseline", "dominant-baseline"),
+            ("fontSize", "font-size"),
+            ("fontWeight", "font-weight"),
+            ("letterSpacing", "letter-spacing"),
             ("pointerEvents", "pointer-events"),
         ] {
             write(property, name, "string");

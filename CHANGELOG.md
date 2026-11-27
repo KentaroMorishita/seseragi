@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.62.12] - 2026-11-28
+
+### Fixed
+
+- A field that a `std/web/svg` tag does not declare, written in the record literal passed to that tag, such as `svg.rect { widht: 3.0 }`, now gets the `SES-L0101` warning with a spelling suggestion, as HTML tags already do (#1442). Before, such a field was dropped without any diagnostic. A record passed on through a variable or parameter is still accepted by width subtyping.
+
+### Added
+
+- SVG props now include `style`, which the renderers already wrote, `strokeDasharray` on every tag, and `fontSize`, `fontWeight` and `letterSpacing` on `svg.text` (#1442). The TS and native renderers write them as `stroke-dasharray`, `font-size`, `font-weight` and `letter-spacing`, so the labels and dashed lines that the `html-components` and `project-flow-app` examples already declared are now drawn.
+
 ## [0.62.11] - 2026-11-28
 
 ### Changed

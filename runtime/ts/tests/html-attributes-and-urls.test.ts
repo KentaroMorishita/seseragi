@@ -61,6 +61,26 @@ describe("html attributes and URLs", () => {
     ).toThrow("duplicate HTML custom attribute VIEWBOX")
   })
 
+  test("writes SVG dash and text presentation props as SVG attributes", () => {
+    expect(
+      renderToString(
+        createSvgElement("path", { d: "M0 0", strokeDasharray: "4 2" })
+      )
+    ).toBe('<path d="M0 0" stroke-dasharray="4 2"></path>')
+    expect(
+      renderToString(
+        createSvgElement("text", {
+          fontSize: "7px",
+          fontWeight: "700",
+          letterSpacing: "0.1em",
+          children: "N",
+        })
+      )
+    ).toBe(
+      '<text font-size="7px" font-weight="700" letter-spacing="0.1em">N</text>'
+    )
+  })
+
   test("accepts internationalized domain URLs and preserves spelling", () => {
     for (const url of [
       "https://bücher.example/a",
