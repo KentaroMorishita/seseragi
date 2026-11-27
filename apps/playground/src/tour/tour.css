@@ -969,6 +969,65 @@
   }
 }
 
+/* ---------- 章の終わりの関連例 ---------- */
+
+.tour-chapter-examples {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.tour-chapter-examples h2 {
+  margin: 0 0 var(--space-3);
+  color: var(--fg-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.tour-chapter-examples-list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.tour-chapter-example-card {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--fg-1);
+  text-decoration: none;
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    background var(--duration-fast) var(--ease);
+}
+
+.tour-chapter-example-card:hover,
+.tour-chapter-example-card:focus-visible {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.tour-chapter-example-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tour-chapter-example-head strong {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.tour-chapter-example-card small {
+  color: var(--fg-2);
+  font-size: var(--text-xs);
+  line-height: 1.5;
+}
+
 @media (max-width: 960px) and (max-height: 520px) {
   .pg-lang-banner {
     padding: var(--space-1) var(--space-3);
