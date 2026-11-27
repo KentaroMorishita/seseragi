@@ -1,16 +1,33 @@
-このサンプルを選ぶ理由: 画面全体の状態を 1 つの大きな型へ集約せず、機能ごとに独立した `MutableSignal` を所有して `dom.run` で合成する設計を、複数モジュールに分かれた実アプリ構成で見たいときに選びます。
+このサンプルを選ぶ理由: 画面の状態を一つの大きな型に集めず、機能ごとに自分の Signal を持たせて一つの画面に組み合わせる形を見たいときに選びます。
 
-公開準備ボードの 3 つの確認カードがそれぞれ自分専用の `MutableSignal` を持ち、親のレイアウト制御からは `Signal<html.Html<Task<Unit>>>` として合成します。
+トマトとバジルのスパゲッティを作る台所です。分量・手順・タイマーの 3 つの機能が、それぞれ自分の状態を持っています。手順の「タイマーをかける」を押すと、タイマーが時間を刻み始めます。
 
 ## この画面で試すこと
 
-- 「下書き確認」で「確認を 1 件進める」を何度か押してから「先頭カードを隠す」→「先頭カードを再表示する」を押し、確認数がそのまま残るのを確かめる
-- 「カードの順番を入れ替える」を押し、位置が入れ替わっても確認数がカードごとに独立して保たれるのを見る
-- 「先頭を最終チェックへ差し替える」で別のカードへ切り替え、さらに戻しても元の進捗が消えないことを確かめる
+- 材料の「+」を押して 3 人分にし、量だけが変わるのを見る
+- 手順 4 の「8 分のタイマーをかける」を押し、タイマーが 8:00 から減っていくのを見る。そのあいだに人数を変えたり手順を済みにしたりしても、タイマーは止まりません
+- 「一時停止」「+1 分」「リセット」を押し、タイマーの状態だけが変わるのを見る
 
-## モジュール構成と読みどころ
+## コードの読みどころ
 
-1. `features/checklist.ssrg`: `createChecklistCard` が呼ばれた時点でカード専用の `MutableSignal<CheckState>` を一度だけ作り、外へは描画結果の `Signal<html.Html<Task<Unit>>>` だけを返します。
-2. `features/layout.ssrg`: 親は表示・順序・差し替えだけを管理し、子の `CheckState` や `CheckAction` には一切触れません。
-3. `app.ssrg`: `signals.switchMap` で表示する分岐を切り替え、`pageView <$> layoutView <*> panel <*> activeFirst <*> second` で複数の独立した Signal を 1 つの画面 Signal に合成します。
-4. `components/hero.ssrg`・`ui/styles.ssrg`・`main.ssrg`: ヒーロー帯の図解 SVG、配色テーマと名前付き `html.style`、そして `#app` へマウントする入口をそれぞれのモジュールへ分けています。
+1. `app.ssrg` の `create`: 3 つの機能を作り、描画の Signal を `<$>` と `<*>` で一つの画面にまとめます。組み立て側は、どの機能の状態にも触れません。
+2. `features/servings.ssrg`: 人数を `MutableSignal<Int>` に持ち、外へは描画の `Signal` だけを返します。
+3. `features/steps.ssrg`: 済んだ手順を `Set<Int>` で持ちます。タイマーの状態は知らず、引数で受け取った「タイマーをかける」操作だけを使います。
+4. `features/timer.ssrg` の `create`: 残り時間の Signal と、それを 250 ミリ秒ごとに進める Fiber を `effects.fork` で起こします。`dom.run` は操作を一つずつ処理するので、時間の経過は操作ではなく別の Fiber で進めます。
+5. `kitchen/countdown.ssrg` と `kitchen/recipe.ssrg`: タイマーの状態遷移と分量の計算は、画面と切り離した純粋な関数です。`seseragi test examples/samples/feature-composition` で、画面なしに確かめられます。
+
+## ファイル構成
+
+```text
+main.ssrg               #app を探して dom.run に渡す入口
+app.ssrg                3 つの機能を作って並べる
+features/servings.ssrg  分量の換算（人数の Signal）
+features/steps.ssrg     手順のチェック（済んだ番号の Signal）
+features/timer.ssrg     タイマー（残り時間の Signal と刻みの Fiber）
+kitchen/recipe.ssrg     材料と手順のデータ、分量の計算
+kitchen/countdown.ssrg  タイマーの状態と遷移
+ui/styles.ssrg          台所の色の名前付き style
+tests/kitchen.ssrg      分量とタイマーの単体テスト
+```
+
+一つの状態を Signal に持ついちばん小さな形は `interactive-app`、複数の画面を持つアプリは `project-flow-app` を見てください。

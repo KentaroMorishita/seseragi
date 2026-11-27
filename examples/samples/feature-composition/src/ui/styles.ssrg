@@ -1,217 +1,449 @@
-// 公開準備ボードの配色テーマと名前付き style をまとめます。
+// 台所の色（生成りの紙、トマトの赤、バジルの緑、鋳鉄の焦げ茶）を、名前付きの style にまとめます。
+// 色の値は、このファイルにだけ書きます。
 import * as html from "std/web/html"
 
-pub struct CardTheme { accent: String, surface: String, border: String, badgeBg: String, }
+let ink = "#2a211b"
 
-pub let amberTheme: CardTheme = CardTheme {
-  accent: "#9a4a12",
-  surface: "#fffaf0",
-  border: "#ead6b8",
-  badgeBg: "#f8e8cc",
-}
+let mutedInk = "#6b5d52"
 
-pub let tealTheme: CardTheme = CardTheme {
-  accent: "#0f6b64",
-  surface: "#f2faf8",
-  border: "#c5e4dd",
-  badgeBg: "#d8f0ea",
-}
+let paper = "#fffdf8"
 
-pub let forestTheme: CardTheme = CardTheme {
-  accent: "#2d6a4f",
-  surface: "#f3faf5",
-  border: "#c7e3d0",
-  badgeBg: "#d8eedf",
-}
+let tomato = "#c4432b"
 
-pub let pageStyle: html.Style = html.style {
-  background: "#f6f4ef",
-  color: "#1b242b",
-  fontFamily: "system-ui, -apple-system, \"Hiragino Sans\", \"Noto Sans JP\", sans-serif",
+let basil = "#3e6b3a"
+
+let iron = "#2b2622"
+
+let serif = "\"Hiragino Mincho ProN\", \"Yu Mincho\", \"Noto Serif JP\", serif"
+
+let sans = "system-ui, -apple-system, \"Hiragino Sans\", \"Noto Sans JP\", sans-serif"
+
+// ── ページの骨組み ─────────────────────────────────
+
+pub fn pageStyle -> html.Style = html.style {
+  background: "linear-gradient(180deg, #efe3cf 0%, #f6efe4 340px, #f6efe4 100%)",
+  boxSizing: "border-box",
+  color: ink,
+  fontFamily: sans,
   minHeight: "100vh",
-  padding: "32px 20px 56px",
+  overflowX: "hidden",
+  padding: "28px 16px 56px",
 }
 
-pub let shellStyle: html.Style = html.style { margin: "0 auto", maxWidth: "880px", }
-
-pub let heroStyle: html.Style = html.style {
-  background: "linear-gradient(135deg, #172a3a 0%, #244054 100%)",
-  borderRadius: "20px",
-  color: "#f8fafc",
+pub fn shellStyle -> html.Style = html.style {
   display: "grid",
-  gap: "20px",
-  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-  alignItems: "center",
-  marginBottom: "20px",
-  padding: "28px 24px",
+  gap: "28px",
+  margin: "0 auto",
+  maxWidth: "1080px",
 }
 
-pub let eyebrowStyle: html.Style = html.style {
-  color: "#9fd3c7",
-  fontSize: "12px",
-  fontWeight: "700",
-  letterSpacing: "0.14em",
-  margin: "0",
-}
+// ── 見出しとタイマーの帯 ─────────────────────────────
 
-pub let headingStyle: html.Style = html.style {
-  fontSize: "clamp(24px, 4.5vw, 34px)",
-  fontWeight: "800",
-  letterSpacing: "-0.02em",
-  lineHeight: "1.25",
-  margin: "8px 0 10px",
-}
-
-pub let heroCopyStyle: html.Style = html.style {
-  color: "#d4e3ec",
-  fontSize: "15px",
-  lineHeight: "1.75",
-  margin: "0",
-}
-
-pub let diagramCardStyle: html.Style = html.style {
-  background: "rgba(255, 255, 255, 0.08)",
-  border: "1px solid rgba(255, 255, 255, 0.16)",
-  borderRadius: "14px",
-  padding: "14px",
-}
-
-pub let controlPanelStyle: html.Style = html.style {
-  background: "#ffffff",
-  border: "1px solid #dfd9cc",
-  borderRadius: "16px",
-  marginBottom: "20px",
-  padding: "18px 20px",
-}
-
-pub let controlGroupStyle: html.Style = html.style {
+pub fn heroStyle -> html.Style = html.style {
+  alignItems: "stretch",
   display: "flex",
   flexWrap: "wrap",
-  gap: "10px",
+  gap: "24px",
 }
 
-pub let controlButtonStyle: html.Style = html.style {
-  background: "#f6f4ef",
-  border: "1px solid #cfc7b6",
-  borderRadius: "10px",
-  color: "#172a3a",
-  cursor: "pointer",
-  font: "inherit",
-  fontSize: "14px",
-  fontWeight: "700",
-  padding: "10px 14px",
-}
-
-pub let controlStatusStyle: html.Style = html.style {
-  color: "#4c5a64",
-  fontSize: "14px",
-  lineHeight: "1.6",
-  margin: "12px 0 0",
-}
-
-pub let featureGridStyle: html.Style = html.style {
+pub fn introStyle -> html.Style = html.style {
   display: "grid",
-  gap: "16px",
-  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  flex: "1 1 360px",
+  gap: "14px",
+  alignContent: "center",
+  minWidth: "0",
 }
 
-pub fn cardStyle theme: CardTheme -> html.Style = html.style {
-  background: theme.surface,
-  border: `1px solid ${theme.border}`,
-  borderRadius: "16px",
-  display: "flex",
-  flexDirection: "column",
-  gap: "12px",
-  padding: "20px",
-}
-
-pub fn badgeStyle theme: CardTheme -> html.Style = html.style {
-  alignSelf: "flex-start",
-  background: theme.badgeBg,
-  borderRadius: "999px",
-  color: theme.accent,
-  fontSize: "12px",
+pub fn eyebrowStyle -> html.Style = html.style {
+  color: tomato,
+  fontSize: "13px",
   fontWeight: "700",
-  padding: "4px 10px",
-}
-
-pub let cardTitleStyle: html.Style = html.style {
-  fontSize: "20px",
-  fontWeight: "800",
+  letterSpacing: "0.12em",
   margin: "0",
 }
 
-pub fn countStyle theme: CardTheme -> html.Style = html.style {
-  color: theme.accent,
-  fontSize: "32px",
-  fontVariantNumeric: "tabular-nums",
-  fontWeight: "800",
-  lineHeight: "1.1",
+pub fn titleStyle -> html.Style = html.style {
+  fontFamily: serif,
+  fontSize: "clamp(30px, 6vw, 46px)",
+  fontWeight: "700",
+  letterSpacing: "0.02em",
+  lineHeight: "1.2",
   margin: "0",
 }
 
-pub let cardNoteStyle: html.Style = html.style {
-  color: "#4c5a64",
+pub fn titleLineStyle -> html.Style = html.style { display: "inline-block" }
+
+pub fn leadStyle -> html.Style = html.style {
+  color: mutedInk,
+  fontSize: "16px",
+  lineHeight: "1.8",
+  margin: "0",
+  maxWidth: "34em",
+}
+
+pub fn ownershipListStyle -> html.Style = html.style {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "8px 18px",
+  listStyle: "none",
+  margin: "4px 0 0",
+  padding: "0",
+}
+
+pub fn ownershipItemStyle -> html.Style = html.style {
+  color: ink,
+  fontSize: "14px",
+  lineHeight: "1.6",
+}
+
+pub fn ownershipMarkStyle color: String -> html.Style = html.style {
+  background: color,
+  borderRadius: "50%",
+  display: "inline-block",
+  height: "9px",
+  marginRight: "7px",
+  verticalAlign: "1px",
+  width: "9px",
+}
+
+pub fn servingsMark -> String = tomato
+
+pub fn stepsMark -> String = basil
+
+pub fn timerMark -> String = "#c9a24a"
+
+// ── タイマー（鋳鉄の台） ─────────────────────────────
+
+pub fn timerPanelStyle -> html.Style = html.style {
+  background: iron,
+  borderRadius: "28px",
+  boxShadow: "0 18px 40px rgba(43, 38, 34, 0.28)",
+  boxSizing: "border-box",
+  color: "#f6efe4",
+  display: "grid",
+  flex: "1 1 300px",
+  gap: "16px",
+  justifyItems: "center",
+  maxWidth: "100%",
+  padding: "24px 20px",
+}
+
+pub fn timerCaptionStyle -> html.Style = html.style {
+  color: "#d9c9b4",
   fontSize: "14px",
   lineHeight: "1.6",
   margin: "0",
+  minHeight: "1.6em",
+  textAlign: "center",
 }
 
-pub let barTrackStyle: html.Style = html.style {
-  background: "#e5e0d5",
-  borderRadius: "999px",
-  height: "8px",
-  overflow: "hidden",
+pub fn dialStyle -> html.Style = html.style {
+  maxWidth: "220px",
+  position: "relative",
   width: "100%",
 }
 
-pub fn barFillStyle theme: CardTheme -> percent: Int -> html.Style = html.style {
-  background: theme.accent,
-  borderRadius: "999px",
-  height: "100%",
-  transition: "width 180ms ease",
-  width: `${percent}%`,
+pub fn dialDigitsStyle active: Bool -> html.Style = html.style {
+  alignItems: "center",
+  color:
+    if active then
+      "#fff8ee"
+    else
+      "#8d7f72",
+  display: "flex",
+  fontFamily: serif,
+  fontSize: "48px",
+  fontVariantNumeric: "tabular-nums",
+  fontWeight: "700",
+  inset: "0",
+  justifyContent: "center",
+  letterSpacing: "0.02em",
+  margin: "0",
+  pointerEvents: "none",
+  position: "absolute",
 }
 
-pub let cardActionsStyle: html.Style = html.style {
+pub fn dialTrack -> String = "#4a413a"
+
+pub fn dialProgress -> String = tomato
+
+pub fn dialDone -> String = "#e2683f"
+
+pub fn timerControlsStyle -> html.Style = html.style {
   display: "flex",
   flexWrap: "wrap",
-  gap: "8px",
-  marginTop: "4px",
+  gap: "10px",
+  justifyContent: "center",
 }
 
-pub fn primaryActionStyle theme: CardTheme -> html.Style = html.style {
-  background: theme.accent,
-  border: "0",
-  borderRadius: "10px",
-  color: "#ffffff",
+pub fn timerButtonStyle primary: Bool -> disabled: Bool -> html.Style = html.style {
+  background:
+    if primary then
+      tomato
+    else
+      "transparent",
+  border:
+    if primary then
+      `1px solid ${tomato}`
+    else
+      "1px solid #6b5f55",
+  borderRadius: "999px",
+  color:
+    if primary then
+      "#fff8ee"
+    else
+      "#f0e5d6",
+  cursor:
+    if disabled then
+      "default"
+    else
+      "pointer",
+  font: "inherit",
+  fontSize: "15px",
+  fontWeight: "700",
+  minHeight: "44px",
+  opacity:
+    if disabled then
+      "0.4"
+    else
+      "1",
+  padding: "10px 18px",
+}
+
+pub fn doneBannerStyle -> html.Style = html.style {
+  background: "#e2683f",
+  borderRadius: "14px",
+  color: "#2b1208",
+  fontSize: "15px",
+  fontWeight: "700",
+  lineHeight: "1.6",
+  margin: "0",
+  padding: "10px 16px",
+  textAlign: "center",
+}
+
+// ── 調理台（材料と手順） ─────────────────────────────
+
+pub fn workbenchStyle -> html.Style = html.style {
+  alignItems: "flex-start",
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "24px",
+}
+
+pub fn ingredientCardStyle -> html.Style = html.style {
+  background: paper,
+  borderRadius: "6px 6px 22px 22px",
+  borderTop: `6px solid ${tomato}`,
+  boxShadow: "0 10px 26px rgba(90, 60, 30, 0.10)",
+  boxSizing: "border-box",
+  flex: "1 1 300px",
+  minWidth: "0",
+  padding: "22px 22px 24px",
+}
+
+pub fn stepsColumnStyle -> html.Style = html.style {
+  boxSizing: "border-box",
+  flex: "2 1 420px",
+  minWidth: "0",
+}
+
+pub fn sectionHeadingStyle -> html.Style = html.style {
+  fontFamily: serif,
+  fontSize: "22px",
+  fontWeight: "700",
+  margin: "0",
+}
+
+pub fn sectionNoteStyle -> html.Style = html.style {
+  color: mutedInk,
+  fontSize: "13px",
+  lineHeight: "1.6",
+  margin: "4px 0 0",
+}
+
+// ── 分量の換算 ───────────────────────────────────
+
+pub fn servingsRowStyle -> html.Style = html.style {
+  alignItems: "center",
+  borderBottom: "1px dashed #e2d3bf",
+  display: "flex",
+  gap: "14px",
+  justifyContent: "space-between",
+  margin: "18px 0 6px",
+  paddingBottom: "16px",
+}
+
+pub fn servingsValueStyle -> html.Style = html.style {
+  fontFamily: serif,
+  fontSize: "28px",
+  fontWeight: "700",
+  minWidth: "4em",
+  textAlign: "center",
+}
+
+pub fn stepperButtonStyle disabled: Bool -> html.Style = html.style {
+  background:
+    if disabled then
+      "#f1e8dc"
+    else
+      "#fbe3da",
+  border: "none",
+  borderRadius: "50%",
+  color:
+    if disabled then
+      "#b9a999"
+    else
+      tomato,
+  cursor:
+    if disabled then
+      "default"
+    else
+      "pointer",
+  font: "inherit",
+  fontSize: "22px",
+  fontWeight: "700",
+  height: "44px",
+  lineHeight: "1",
+  width: "44px",
+}
+
+pub fn ingredientListStyle -> html.Style = html.style {
+  listStyle: "none",
+  margin: "0",
+  padding: "0",
+}
+
+pub fn ingredientRowStyle -> html.Style = html.style {
+  alignItems: "baseline",
+  borderBottom: "1px solid #f0e6d8",
+  display: "flex",
+  gap: "12px",
+  justifyContent: "space-between",
+  padding: "11px 0",
+}
+
+pub fn ingredientNameStyle -> html.Style = html.style {
+  fontSize: "15px",
+  lineHeight: "1.5"
+}
+
+pub fn ingredientAmountStyle -> html.Style = html.style {
+  color: tomato,
+  fontSize: "15px",
+  fontVariantNumeric: "tabular-nums",
+  fontWeight: "700",
+  whiteSpace: "nowrap",
+}
+
+// ── 手順のチェック ─────────────────────────────────
+
+pub fn stepsHeaderStyle -> html.Style = html.style {
+  alignItems: "baseline",
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "6px 16px",
+  justifyContent: "space-between",
+  marginBottom: "14px",
+}
+
+pub fn progressTextStyle -> html.Style = html.style {
+  color: basil,
+  fontSize: "14px",
+  fontWeight: "700",
+  margin: "0",
+}
+
+pub fn stepListStyle -> html.Style = html.style {
+  display: "grid",
+  gap: "12px",
+  listStyle: "none",
+  margin: "0",
+  padding: "0",
+}
+
+pub fn stepRowStyle done: Bool -> html.Style = html.style {
+  alignItems: "flex-start",
+  background:
+    if done then
+      "#eef3e7"
+    else
+      paper,
+  border:
+    if done then
+      "1px solid #cddcbf"
+    else
+      "1px solid #eadfce",
+  borderRadius: "18px",
+  display: "flex",
+  gap: "14px",
+  padding: "16px",
+  transition: "background 200ms ease",
+}
+
+pub fn checkButtonStyle done: Bool -> html.Style = html.style {
+  background:
+    if done then
+      basil
+    else
+      paper,
+  border: `2px solid ${if done then basil else "#c8b8a4"}`,
+  borderRadius: "50%",
+  color:
+    if done then
+      "#ffffff"
+    else
+      mutedInk,
+  cursor: "pointer",
+  flex: "0 0 auto",
+  font: "inherit",
+  fontSize: "16px",
+  fontWeight: "700",
+  height: "44px",
+  width: "44px",
+}
+
+pub fn stepBodyStyle -> html.Style = html.style {
+  display: "grid",
+  flex: "1 1 auto",
+  gap: "6px",
+  minWidth: "0",
+}
+
+pub fn stepTitleStyle done: Bool -> html.Style = html.style {
+  color:
+    if done then
+      mutedInk
+    else
+      ink,
+  fontSize: "17px",
+  fontWeight: "700",
+  margin: "0",
+  textDecoration:
+    if done then
+      "line-through"
+    else
+      "none",
+}
+
+pub fn stepDetailStyle -> html.Style = html.style {
+  color: mutedInk,
+  fontSize: "14px",
+  lineHeight: "1.7",
+  margin: "0",
+}
+
+pub fn stepTimerButtonStyle -> html.Style = html.style {
+  background: "transparent",
+  border: `1px solid ${tomato}`,
+  borderRadius: "999px",
+  color: tomato,
   cursor: "pointer",
   font: "inherit",
   fontSize: "14px",
   fontWeight: "700",
-  padding: "10px 14px",
-}
-
-pub let secondaryActionStyle: html.Style = html.style {
-  background: "#ffffff",
-  border: "1px solid #d5cfc2",
-  borderRadius: "10px",
-  color: "#334155",
-  cursor: "pointer",
-  font: "inherit",
-  fontSize: "14px",
-  fontWeight: "600",
-  padding: "10px 12px",
-}
-
-pub let hiddenCardStyle: html.Style = html.style {
-  background: "#efece4",
-  border: "1px dashed #bfb7a6",
-  borderRadius: "16px",
-  color: "#4c5a64",
-  display: "flex",
-  flexDirection: "column",
-  gap: "8px",
-  justifyContent: "center",
-  padding: "24px 20px",
+  justifySelf: "start",
+  marginTop: "4px",
+  minHeight: "40px",
+  padding: "8px 14px",
 }

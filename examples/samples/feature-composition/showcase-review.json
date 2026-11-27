@@ -8,21 +8,13 @@
     "checked": true
   },
   "designIntent": {
-    "firstView": "深い藍色のヒーロー帯に見出しと Signal 合成の図解 SVG を並べ、操作前から複数 Signal を合成する題材が一目で伝わるようにする。",
-    "layoutRhythm": "濃いヒーロー帯、白い操作パネル、色分けされた機能カード群を縦のリズムで切り替え、単調なカードの繰り返しにならない構成にする。",
-    "visualIdentity": "公開準備ボードを題材に、和紙調の背景の上で琥珀・青緑・深緑のカードテーマを分け、各 Signal の所有境界を色と進捗バーで読めるようにする。",
-    "interaction": "非表示・並べ替え・差し替えの後もカードごとの確認数と進捗バーを保ち、非表示時にも復帰手順を示すプレースホルダーを残す。",
-    "codeStructure": "features/checklist・features/layout・components/hero・ui/styles・app・main の 6 モジュールと tests/composition.ssrg へ責務を分け、各カードの非公開 Signal 所有と親の switchMap 合成、dom.run へのマウント境界をファイル単位で追えるようにする。"
+    "firstView": "生成りの紙の上に料理名の明朝体の見出しと、鋳鉄色の台に載ったトマト色の輪のタイマーを並べ、開いた瞬間に「台所で動く道具が並んでいる」ことが伝わるようにする。",
+    "layoutRhythm": "上段は見出しとタイマーの二つの塊、下段は材料の紙のカードと手順の縦の流れという疎密の違う二段にし、モバイルでは見出し、タイマー、材料、手順の順の一本の流れにする。",
+    "visualIdentity": "生成り、トマトの赤、バジルの緑、鋳鉄の焦げ茶という台所の色で統一し、三つの機能の持ち物を見出しの下の色の点で示す。紫のヒーローや白いカードの並びは使わない。",
+    "interaction": "人数の増減は上限と下限でボタンを弱め、手順は aria-pressed で済みを伝え、タイマーは一時停止・再開・+1 分・リセットと終わったときの知らせを持つ。どの操作でも横にはみ出さない。",
+    "codeStructure": "入口、組み立て、三つの機能、計算だけのモジュール、名前付き style、テストにファイルを分け、組み立て側はどの機能の状態にも触れずに描画の Signal と操作だけを受け渡す。"
   },
   "approval": {
-    "status": "approved",
-    "reviewedAt": "2026-08-11",
-    "evidence": [
-      "docs/reviews/issue-190/README.md",
-      "docs/reviews/issue-191/README.md"
-    ],
-    "viewports": ["desktop", "iphone-390", "android-360"],
-    "states": ["initial", "hidden-feature"],
-    "surfaces": ["preview", "code"]
+    "status": "pending"
   }
 }

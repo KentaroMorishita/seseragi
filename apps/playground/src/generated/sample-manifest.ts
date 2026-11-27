@@ -20,10 +20,12 @@ import sample3Output from "../../../../examples/samples/expression-calculator/st
 import sample4Manifest from "../../../../examples/samples/feature-composition/seseragi.toml?raw"
 import sample4Source from "../../../../examples/samples/feature-composition/src/main.ssrg?raw"
 import sample4Source2 from "../../../../examples/samples/feature-composition/src/app.ssrg?raw"
-import sample4Source3 from "../../../../examples/samples/feature-composition/src/components/hero.ssrg?raw"
-import sample4Source4 from "../../../../examples/samples/feature-composition/src/features/checklist.ssrg?raw"
-import sample4Source5 from "../../../../examples/samples/feature-composition/src/features/layout.ssrg?raw"
-import sample4Source6 from "../../../../examples/samples/feature-composition/src/ui/styles.ssrg?raw"
+import sample4Source3 from "../../../../examples/samples/feature-composition/src/features/servings.ssrg?raw"
+import sample4Source4 from "../../../../examples/samples/feature-composition/src/features/steps.ssrg?raw"
+import sample4Source5 from "../../../../examples/samples/feature-composition/src/features/timer.ssrg?raw"
+import sample4Source6 from "../../../../examples/samples/feature-composition/src/kitchen/countdown.ssrg?raw"
+import sample4Source7 from "../../../../examples/samples/feature-composition/src/kitchen/recipe.ssrg?raw"
+import sample4Source8 from "../../../../examples/samples/feature-composition/src/ui/styles.ssrg?raw"
 import sample4Guide from "../../../../examples/samples/feature-composition/guide.md?raw"
 
 import sample5Source from "../../../../examples/samples/fibonacci-sequence/main.ssrg?raw"
@@ -96,18 +98,17 @@ import sample17Output from "../../../../examples/samples/records/stdout.txt?raw"
 import sample18Manifest from "../../../../examples/samples/seseragi-landing-page/seseragi.toml?raw"
 import sample18Source from "../../../../examples/samples/seseragi-landing-page/src/main.ssrg?raw"
 import sample18Source2 from "../../../../examples/samples/seseragi-landing-page/src/app.ssrg?raw"
-import sample18Source3 from "../../../../examples/samples/seseragi-landing-page/src/components/brand.ssrg?raw"
-import sample18Source4 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg?raw"
-import sample18Source5 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg?raw"
-import sample18Source6 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg?raw"
-import sample18Source7 from "../../../../examples/samples/seseragi-landing-page/src/components/closing.ssrg?raw"
-import sample18Source8 from "../../../../examples/samples/seseragi-landing-page/src/components/footer.ssrg?raw"
-import sample18Source9 from "../../../../examples/samples/seseragi-landing-page/src/components/header.ssrg?raw"
-import sample18Source10 from "../../../../examples/samples/seseragi-landing-page/src/components/hero.ssrg?raw"
-import sample18Source11 from "../../../../examples/samples/seseragi-landing-page/src/components/image-statement.ssrg?raw"
-import sample18Source12 from "../../../../examples/samples/seseragi-landing-page/src/components/principles.ssrg?raw"
-import sample18Source13 from "../../../../examples/samples/seseragi-landing-page/src/ui/styles.ssrg?raw"
-import sample18Source14 from "../../../../examples/samples/seseragi-landing-page/src/url.ssrg?raw"
+import sample18Source3 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg?raw"
+import sample18Source4 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg?raw"
+import sample18Source5 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg?raw"
+import sample18Source6 from "../../../../examples/samples/seseragi-landing-page/src/components/closing.ssrg?raw"
+import sample18Source7 from "../../../../examples/samples/seseragi-landing-page/src/components/footer.ssrg?raw"
+import sample18Source8 from "../../../../examples/samples/seseragi-landing-page/src/components/header.ssrg?raw"
+import sample18Source9 from "../../../../examples/samples/seseragi-landing-page/src/components/hero.ssrg?raw"
+import sample18Source10 from "../../../../examples/samples/seseragi-landing-page/src/components/image-statement.ssrg?raw"
+import sample18Source11 from "../../../../examples/samples/seseragi-landing-page/src/components/principles.ssrg?raw"
+import sample18Source12 from "../../../../examples/samples/seseragi-landing-page/src/ui/styles.ssrg?raw"
+import sample18Source13 from "../../../../examples/samples/seseragi-landing-page/src/url.ssrg?raw"
 import sample18Guide from "../../../../examples/samples/seseragi-landing-page/guide.md?raw"
 
 import sample19Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
@@ -402,16 +403,19 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "feature-composition",
-      "title": "独立した Signal で公開準備ボードを合成する",
-      "summary": "各カードが自分専用の非公開 Signal を持ち、表示の切り替え・順番の入れ替え・差し替えをしても状態を保ったまま dom.run で合成します。",
+      "title": "キッチンタイマーとレシピ",
+      "summary": "分量・手順・タイマーの 3 つの機能が、それぞれ自分の Signal を持ったまま一つの画面に並び、タイマーは自分の Fiber で時間を進めます。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
+        "Signal",
         "feature module",
-        "private state",
-        "Effect Action",
-        "switchMap",
-        "multi-module"
+        "Fiber",
+        "std/clock",
+        "dom.run",
+        "SVG",
+        "multi-module",
+        "test"
       ],
       "capabilities": [
         "dom"
@@ -431,54 +435,65 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestPath": "examples/samples/feature-composition/seseragi.toml",
       "manifestHash": "sha256:b30a444a0112805ce6781dfb020c452649680cfa410a09369fd88aaf70b212a0",
       "guidePath": "examples/samples/feature-composition/guide.md",
-      "sourceHash": "sha256:7b9a84e76acd1aa42e705f3f5a04bbb0d6cc266ab87dc169a9cb1ffb11a4f610",
-      "workspaceHash": "sha256:c153f77871860253207e2f8e68560ea7a03fd7eb82fabc4de5c91f8bc0ecda33",
+      "sourceHash": "sha256:c78dbe5d3415275e5d0b62dde3b25bfa4d8933bdff135bc13a89eb8547a5b5c7",
+      "workspaceHash": "sha256:6f9978671e289019fa16b067409cd9bb0ea4c11480064308e898c06411432121",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
         "openFiles": [
           "main.ssrg",
           "app.ssrg",
-          "features/checklist.ssrg",
-          "features/layout.ssrg",
-          "components/hero.ssrg",
+          "features/servings.ssrg",
+          "features/steps.ssrg",
+          "features/timer.ssrg",
+          "kitchen/countdown.ssrg",
           "ui/styles.ssrg"
         ],
         "expandedFolders": [
           "features",
-          "components",
+          "kitchen",
           "ui"
         ],
         "files": [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/feature-composition/src/main.ssrg",
-            "sourceHash": "sha256:7b9a84e76acd1aa42e705f3f5a04bbb0d6cc266ab87dc169a9cb1ffb11a4f610"
+            "sourceHash": "sha256:c78dbe5d3415275e5d0b62dde3b25bfa4d8933bdff135bc13a89eb8547a5b5c7"
           },
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/feature-composition/src/app.ssrg",
-            "sourceHash": "sha256:5c87e4a9232f494ad923fd6de201ca91a7c77a5d5c77c8a504a0cdf0e8e4e8d1"
+            "sourceHash": "sha256:4afda97d7866d073fa8b872b0e71749c5f3b0121c4c58e02ef126138b3962b40"
           },
           {
-            "path": "components/hero.ssrg",
-            "sourcePath": "examples/samples/feature-composition/src/components/hero.ssrg",
-            "sourceHash": "sha256:3577965dc510ab0d1c72f0113e7a09e09dc0878d9a61c968dbd943154d285a7c"
+            "path": "features/servings.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/features/servings.ssrg",
+            "sourceHash": "sha256:e9865b6c17702268e837ab75eb4bbc833695ea3f76160f2112a7115029156963"
           },
           {
-            "path": "features/checklist.ssrg",
-            "sourcePath": "examples/samples/feature-composition/src/features/checklist.ssrg",
-            "sourceHash": "sha256:813308a792d32b9f17e32dd9619dec57ad628e1e35344e74aca69cf032cf4935"
+            "path": "features/steps.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/features/steps.ssrg",
+            "sourceHash": "sha256:36f13113a1cbf3207a60ded8c040bfbd78179d1f3fa26fee3f115acd7dfaae4e"
           },
           {
-            "path": "features/layout.ssrg",
-            "sourcePath": "examples/samples/feature-composition/src/features/layout.ssrg",
-            "sourceHash": "sha256:5ebd6c63fa1e8fd725508e58de229db25d0a2481b57061814d33a39a19cc2205"
+            "path": "features/timer.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/features/timer.ssrg",
+            "sourceHash": "sha256:4d95f4722b6c5316604dbcf68c12b955db13eb5dcbd9823cf52ad27e725e8123"
+          },
+          {
+            "path": "kitchen/countdown.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/kitchen/countdown.ssrg",
+            "sourceHash": "sha256:ec674679178da3542f7d77d79eb6eed94226b7b1cc5d152183f18b253e7d9b3f"
+          },
+          {
+            "path": "kitchen/recipe.ssrg",
+            "sourcePath": "examples/samples/feature-composition/src/kitchen/recipe.ssrg",
+            "sourceHash": "sha256:42ab523a089cedec08c3592b8ff88661f93304c3039058e4ca28632da1743b74"
           },
           {
             "path": "ui/styles.ssrg",
             "sourcePath": "examples/samples/feature-composition/src/ui/styles.ssrg",
-            "sourceHash": "sha256:9d52bc27d8ea5b5deaf8f4d7774e4b3dd631987c4a078b354addd1c93bb1110a"
+            "sourceHash": "sha256:b36325b4c3819257aa5a9301e679fb6e401a4d2d83a4bddc9a057c224fbd85c3"
           }
         ]
       }
@@ -488,10 +503,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
     projectFiles: [
       { path: "main.ssrg", source: sample4Source },
       { path: "app.ssrg", source: sample4Source2 },
-      { path: "components/hero.ssrg", source: sample4Source3 },
-      { path: "features/checklist.ssrg", source: sample4Source4 },
-      { path: "features/layout.ssrg", source: sample4Source5 },
-      { path: "ui/styles.ssrg", source: sample4Source6 },
+      { path: "features/servings.ssrg", source: sample4Source3 },
+      { path: "features/steps.ssrg", source: sample4Source4 },
+      { path: "features/timer.ssrg", source: sample4Source5 },
+      { path: "kitchen/countdown.ssrg", source: sample4Source6 },
+      { path: "kitchen/recipe.ssrg", source: sample4Source7 },
+      { path: "ui/styles.ssrg", source: sample4Source8 },
     ],
     guide: sample4Guide,
     stdin: "",
@@ -1405,7 +1422,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:fc0ae07afa43259aceef4b81e4385cc8b2340973075035d8d47bf35a9a2c1950",
       "guidePath": "examples/samples/seseragi-landing-page/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:31f23075f98e4dc4435d76aa315cdaf7e120fd14ec8ec93b99afaf9758cca7bc",
+      "workspaceHash": "sha256:0a94af1d2d58a1e0139e955f9faf492f63bddd581f6d7bed0300ef98f5381dcf",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1430,12 +1447,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/app.ssrg",
-            "sourceHash": "sha256:e7ecdd73a3244623e5d657c92fd67dd4c31f7cd06ceaeb3fe0d0acb55d3f886e"
-          },
-          {
-            "path": "components/brand.ssrg",
-            "sourcePath": "examples/samples/seseragi-landing-page/src/components/brand.ssrg",
-            "sourceHash": "sha256:dc6a0fbe68f88049d1369144c7852c1a97cf43481fcb6ea1723ed4ba1d9b987c"
+            "sourceHash": "sha256:4adbb5f7ba980868db2d49725bf8a0fb60d23ce4605297e52a78a059c65f5e72"
           },
           {
             "path": "components/chapter/code-panel.ssrg",
@@ -1460,22 +1472,22 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "components/footer.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/footer.ssrg",
-            "sourceHash": "sha256:6bc0714340ef9f0e064f339013ba48774e68c2b71bf1f502f8fa18bac600bbe3"
+            "sourceHash": "sha256:8948f5bdddadcaa522bf3f366f5208775c80dcce111bfac747b5d5aa9e908727"
           },
           {
             "path": "components/header.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/header.ssrg",
-            "sourceHash": "sha256:98ff3f70c7162ee4a84411a94f953f47fe0cd9fcaf85409265a889de1e193b0a"
+            "sourceHash": "sha256:492e5056cf850a6b9b58347ad2e95ddb18e8a7e27c33cd49f1c2fb3de3fde5be"
           },
           {
             "path": "components/hero.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/hero.ssrg",
-            "sourceHash": "sha256:bf0cbe556fcfc56ff5d5cc4155736bbf3b49fa7eb54776dddf56d77896923aa5"
+            "sourceHash": "sha256:e18b0219de4c3da654c400fc69cc93d5f7c7adb1759bc8c4337545610b8c5666"
           },
           {
             "path": "components/image-statement.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/image-statement.ssrg",
-            "sourceHash": "sha256:c5543ada0f3b741d1b8d87040b72ab31daa82b0c4e19171d60daf35901dafa3f"
+            "sourceHash": "sha256:336e410038dfa1281e7a7832253dec7acb94b556cd9bd0a5ac682f5bfa831394"
           },
           {
             "path": "components/principles.ssrg",
@@ -1500,18 +1512,17 @@ export const generatedSamples: readonly GeneratedSample[] = [
     projectFiles: [
       { path: "main.ssrg", source: sample18Source },
       { path: "app.ssrg", source: sample18Source2 },
-      { path: "components/brand.ssrg", source: sample18Source3 },
-      { path: "components/chapter/code-panel.ssrg", source: sample18Source4 },
-      { path: "components/chapter/model.ssrg", source: sample18Source5 },
-      { path: "components/chapter/view.ssrg", source: sample18Source6 },
-      { path: "components/closing.ssrg", source: sample18Source7 },
-      { path: "components/footer.ssrg", source: sample18Source8 },
-      { path: "components/header.ssrg", source: sample18Source9 },
-      { path: "components/hero.ssrg", source: sample18Source10 },
-      { path: "components/image-statement.ssrg", source: sample18Source11 },
-      { path: "components/principles.ssrg", source: sample18Source12 },
-      { path: "ui/styles.ssrg", source: sample18Source13 },
-      { path: "url.ssrg", source: sample18Source14 },
+      { path: "components/chapter/code-panel.ssrg", source: sample18Source3 },
+      { path: "components/chapter/model.ssrg", source: sample18Source4 },
+      { path: "components/chapter/view.ssrg", source: sample18Source5 },
+      { path: "components/closing.ssrg", source: sample18Source6 },
+      { path: "components/footer.ssrg", source: sample18Source7 },
+      { path: "components/header.ssrg", source: sample18Source8 },
+      { path: "components/hero.ssrg", source: sample18Source9 },
+      { path: "components/image-statement.ssrg", source: sample18Source10 },
+      { path: "components/principles.ssrg", source: sample18Source11 },
+      { path: "ui/styles.ssrg", source: sample18Source12 },
+      { path: "url.ssrg", source: sample18Source13 },
     ],
     guide: sample18Guide,
     stdin: "",

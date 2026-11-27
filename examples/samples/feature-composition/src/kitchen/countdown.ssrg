@@ -1,0 +1,74 @@
+// キッチンタイマーの状態と、時間の経過や操作による変化を純粋関数で表します。
+
+// 刻みを 1 秒より細かくして、開始から最初の 1 秒が短くならないようにします。
+pub let tickMilliseconds: Int = 250
+
+// 残り時間と全体の時間はミリ秒で持ちます。
+pub struct Countdown deriving Eq, Show, Debug { label: String, total: Int, remaining: Int }
+
+pub type TimerState deriving Eq, Show, Debug =
+  | Idle
+  | Running Countdown
+  | Paused Countdown
+  | Finished String
+
+pub struct TimerRequest deriving Eq, Show { label: String, minutes: Int }
+
+pub type TimerAction deriving Eq, Show =
+  | Start TimerRequest
+  | Pause
+  | Resume
+  | AddMinute
+  | Reset
+
+let minute = 60000
+
+pub fn update action: TimerAction -> timer: TimerState -> TimerState =
+  match (action, timer) {
+    (Start request, _) -> {
+      let total = request.minutes * minute
+      Running (Countdown { label: request.label, total, remaining: total })
+    }
+    (Pause, Running countdown) -> Paused countdown
+    (Resume, Paused countdown) -> Running countdown
+    (AddMinute, Running countdown) -> Running (longer countdown)
+    (AddMinute, Paused countdown) -> Paused (longer countdown)
+    (Reset, _) -> Idle
+    (_, unchanged) -> unchanged
+  }
+
+fn longer countdown: Countdown -> Countdown = Countdown {
+  ...countdown,
+  total: countdown.total + minute,
+  remaining: countdown.remaining + minute,
+}
+
+pub fn tick timer: TimerState -> TimerState = match timer {
+  Running countdown ->
+    if countdown.remaining <= tickMilliseconds then
+      Finished countdown.label
+    else
+      Running (Countdown { ...countdown, remaining: countdown.remaining - tickMilliseconds })
+  other -> other
+}
+
+// 表示は秒に切り上げます。残り 0.2 秒は「0:01」と見せます。
+pub fn secondsLeft countdown: Countdown -> Int = (countdown.remaining + 999) / 1000
+
+fn twoDigits value: Int -> String = if value < 10 then `0${value}` else show value
+
+pub fn clockText seconds: Int -> String = `${seconds / 60}:${twoDigits (seconds % 60)}`
+
+// 経過した割合を 0 から 1000 の千分率で返します。
+pub fn elapsedPermille timer: TimerState -> Int = match timer {
+  Running countdown -> elapsed countdown
+  Paused countdown -> elapsed countdown
+  Finished _ -> 1000
+  Idle -> 0
+}
+
+fn elapsed countdown: Countdown -> Int =
+  if countdown.total <= 0 then
+    1000
+  else
+    (countdown.total - countdown.remaining) * 1000 / countdown.total

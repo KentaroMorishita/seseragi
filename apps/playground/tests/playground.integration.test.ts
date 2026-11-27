@@ -3447,20 +3447,25 @@ pub effect fn main -> Unit with Console fails String = do {
       expect(line.match(/aria-pressed="true"/gu)).toHaveLength(1)
   })
 
-  test("shows stateful feature composition without a flattened root Action", () => {
+  test("composes features that own their Signals without a shared root Action", () => {
     const sample = samples.find(
       (candidate) => candidate.id === "feature-composition"
     )
-    const combined = sample?.workspace.files
-      .map(({ source }) => source)
-      .join("\n")
+    const files = new Map(
+      sample?.workspace.files.map(({ path, source }) => [path, source])
+    )
+    const combined = [...files.values()].join("\n")
 
     expect(sample?.interactive).toBe(true)
+    expect(files.get("app.ssrg")).toContain(
+      "kitchen <$> servingsView <*> stepsView <*> kitchenTimer.view"
+    )
+    expect(files.get("features/steps.ssrg")).not.toContain("TimerState")
+    expect(files.get("features/timer.ssrg")).toContain("effects.fork")
+    expect(files.get("features/timer.ssrg")).toContain("time.durationBetween")
     expect(combined).toContain("Signal<html.Html<Task<Unit>>>")
-    expect(combined).not.toContain("Effect<{}, Never, Unit>")
-    expect(combined).toContain("signals.switchMap")
-    expect(combined).toContain("effect fn mount")
     expect(combined).not.toContain("type RootAction")
+    expect(combined).not.toContain("dom.app")
   })
 
   test("integrates the concert hall seat booking showcase as a signal-run package", () => {

@@ -1,0 +1,108 @@
+// 手順のチェック: 済んだ手順の番号を自分の Signal に持ちます。
+// タイマーの状態には触れず、組み立て側から渡された「タイマーをかける」操作だけを使います。
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import * as sets from "std/set"
+import { Set } from "std/set"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import { Step, steps, toggleDone } from "self/kitchen/recipe"
+import * as styles from "self/ui/styles"
+
+// 済んだかどうかを、ボタンの aria-pressed で伝えます。
+struct Pressed { on: html.Attribute, off: html.Attribute }
+
+struct Context {
+  pressed: Pressed,
+  done: MutableSignal<Set<Int>>,
+  startTimer: String -> Int -> Task<Unit>,
+}
+
+fn timerButton context: Context -> step: Step -> Array<html.Html<Task<Unit>>> =
+  match step.minutes {
+    Just minutes -> [
+      html.button {
+        onClick: context.startTimer step.title minutes,
+        style: styles.stepTimerButtonStyle (),
+        children: `${minutes} 分のタイマーをかける`,
+      },
+    ]
+    Nothing -> []
+  }
+
+fn stepRow context: Context -> done: Set<Int> -> step: Step -> html.Html<Task<Unit>> = {
+  let finished = sets.contains step.number done
+  html.li {
+    key: show step.number,
+    style: styles.stepRowStyle finished,
+    children: [
+      html.button {
+        attributes: [if finished then
+          context.pressed.on
+        else
+          context.pressed.off],
+        onClick: signals.update (toggleDone step.number) context.done,
+        style: styles.checkButtonStyle finished,
+        title: `手順 ${step.number} を済みにする`,
+        children:
+          if finished then
+            "✓"
+          else
+            show step.number,
+      },
+      html.div {
+        style: styles.stepBodyStyle (),
+        children: arrays.append (timerButton context step) [
+          html.h3 { style: styles.stepTitleStyle finished, children: step.title },
+          html.p { style: styles.stepDetailStyle (), children: step.detail },
+        ],
+      },
+    ],
+  }
+}
+
+fn view context: Context -> done: Set<Int> -> html.Html<Task<Unit>> = {
+  let rows: Array<html.Html<Task<Unit>>> = map (stepRow context done) steps
+  html.section {
+    style: styles.stepsColumnStyle (),
+    children: [
+      html.div {
+        style: styles.stepsHeaderStyle (),
+        children: [
+          html.div {
+            children: [
+              html.h2 { style: styles.sectionHeadingStyle (), children: "手順" },
+              html.p {
+                style: styles.sectionNoteStyle (),
+                children: "時間のかかる手順から、タイマーをかけられます。",
+              },
+            ],
+          },
+          html.p {
+            role: "status",
+            style: styles.progressTextStyle (),
+            children: `${sets.size done} / ${arrays.length steps} 済み`,
+          },
+        ],
+      },
+      html.ol { style: styles.stepListStyle (), children: rows },
+    ],
+  }
+}
+
+effect fn ariaPressed value: String -> html.Attribute fails String =
+  html.attribute "aria-pressed" value
+  |> fromEither
+  |> mapError (\error: html.HtmlBuildError -> show error)
+
+pub effect fn create startTimer: (String -> Int -> Task<Unit>)
+  -> Signal<html.Html<Task<Unit>>>
+fails String =
+  do {
+    on <- ariaPressed "true"
+    off <- ariaPressed "false"
+    let nothingDone: Set<Int> = sets.empty ()
+    done <- signals.make nothingDone
+    let context = Context { pressed: Pressed { on, off }, done, startTimer }
+    succeed (signals.map (view context) done)
+  }

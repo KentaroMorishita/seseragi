@@ -35,20 +35,12 @@
     },
     {
       "id": "feature-composition",
-      "identity": "warm paper release-readiness board with amber, teal, and forest feature-owned signals",
+      "identity": "kitchen counter in cream paper, tomato red, basil green, and cast iron where servings, steps, and a timer each own a Signal",
       "photoId": null,
       "photoGroup": "feature-composition",
-      "layoutMarkers": [
-        "repeat(auto-fit, minmax(260px, 1fr))",
-        "minHeight: \"100vh\""
-      ],
-      "states": ["initial", "hidden feature retains its Signal"],
-      "artifacts": [
-        "docs/reviews/issue-190/visual/feature-composition-desktop.png",
-        "docs/reviews/issue-190/visual/feature-composition-hidden.png",
-        "docs/reviews/issue-190/visual/feature-composition-iphone-390.png",
-        "docs/reviews/issue-190/visual/feature-composition-android-360.png"
-      ]
+      "layoutMarkers": ["flex: \"2 1 420px\"", "minHeight: \"100vh\""],
+      "states": ["initial", "timer running from a step"],
+      "artifacts": []
     },
     {
       "id": "form-todo",

@@ -1,0 +1,202 @@
+// タイマー: 残り時間を自分の Signal に持ち、時間を進める Fiber も自分で起こします。
+// 外へは描画の Signal と「タイマーをかける」操作だけを渡します。
+import * as arrays from "std/array"
+import * as clock from "std/clock"
+import * as effects from "std/effect"
+import * as floats from "std/float"
+import * as math from "std/math"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import * as svg from "std/web/svg"
+import * as time from "std/time"
+import {
+  AddMinute,
+  Finished,
+  Idle,
+  Pause,
+  Paused,
+  Reset,
+  Resume,
+  Running,
+  Start,
+  TimerState,
+  TimerAction,
+  TimerRequest,
+  clockText,
+  elapsedPermille,
+  secondsLeft,
+  tick,
+  tickMilliseconds,
+  update,
+} from "self/kitchen/countdown"
+import * as styles from "self/ui/styles"
+
+pub struct KitchenTimer {
+  view: Signal<html.Html<Task<Unit>>>,
+  start: String -> Int -> Task<Unit>,
+}
+
+fn dispatch state: MutableSignal<TimerState> -> action: TimerAction -> Task<Unit> =
+  signals.update (update action) state
+
+fn shownSeconds timer: TimerState -> Int = match timer {
+  Running countdown -> secondsLeft countdown
+  Paused countdown -> secondsLeft countdown
+  Finished _ -> 0
+  Idle -> 0
+}
+
+fn caption timer: TimerState -> String = match timer {
+  Running countdown -> `${countdown.label}　残り`
+  Paused countdown -> `${countdown.label}　一時停止中`
+  Finished label -> label
+  Idle -> "手順のボタンからタイマーをかけます"
+}
+
+fn isActive timer: TimerState -> Bool = match timer {
+  Idle -> False
+  _ -> True
+}
+
+fn isFinished timer: TimerState -> Bool = match timer {
+  Finished _ -> True
+  _ -> False
+}
+
+// 残り時間の割合だけ、12 時の位置から時計回りに円弧を描きます。
+fn arcPath remaining: Int -> String = {
+  let angle = 2.0 * math.pi * floats.fromInt remaining / 1000.0
+  let endX = 100.0 + 86.0 * math.sin angle
+  let endY = 100.0 - 86.0 * math.cos angle
+  let largeArc = if remaining > 500 then 1 else 0
+  `M 100 14 A 86 86 0 ${largeArc} 1 ${show endX} ${show endY}`
+}
+
+fn ring color: String -> svg.Svg<Task<Unit>> = svg.circle {
+  cx: 100.0,
+  cy: 100.0,
+  r: 86.0,
+  fill: "none",
+  stroke: color,
+  strokeWidth: "12"
+}
+
+fn remainingArc timer: TimerState -> Array<svg.Svg<Task<Unit>>> = {
+  let remaining = 1000 - elapsedPermille timer
+  match timer {
+    Idle -> []
+    Finished _ -> [ring (styles.dialDone ())]
+    _ ->
+      if remaining >= 1000 then
+        [ring (styles.dialProgress ())]
+      else if remaining <= 0 then
+        []
+      else
+        [
+          svg.path {
+            d: arcPath remaining,
+            fill: "none",
+            stroke: styles.dialProgress (),
+            strokeWidth: "12",
+            strokeLinecap: "round",
+          },
+        ]
+  }
+}
+
+fn dial timer: TimerState -> html.Html<Task<Unit>> = {
+  let remaining = clockText (shownSeconds timer)
+  let face: html.Html<Task<Unit>> = svg.svg {
+    viewBox: "0 0 200 200",
+    role: "img",
+    ariaLabel: `残り ${remaining}`,
+    children: arrays.append (remainingArc timer) [ring (styles.dialTrack ())],
+  }
+    |> svg.toHtml
+  // 数字は大きな文字で見せたいので、SVG の外に置いて輪の中央へ重ねます。
+  let digits: html.Html<Task<Unit>> = html.p {
+    style: styles.dialDigitsStyle (isActive timer),
+    children: remaining,
+  }
+  html.div { style: styles.dialStyle (), children: [face, digits] }
+}
+
+fn control label: String
+  -> primary: Bool
+  -> enabled: Bool
+  -> action: Task<Unit>
+  -> html.Html<Task<Unit>> =
+  html.button {
+    disabled: ! enabled,
+    onClick: action,
+    style: styles.timerButtonStyle primary (!enabled),
+    children: label,
+  }
+
+fn controls state: MutableSignal<TimerState>
+  -> timer: TimerState
+  -> html.Html<Task<Unit>> =
+  {
+    let send = dispatch state
+    let toggle = match timer {
+      Paused _ -> control "再開する" True True (send Resume)
+      Running _ -> control "一時停止" True True (send Pause)
+      _ -> control "一時停止" True False (send Pause)
+    }
+    html.div {
+      style: styles.timerControlsStyle (),
+      children: [
+        toggle,
+        control "+1 分" False (isActive timer && !(isFinished timer)) (send AddMinute),
+        control "リセット" False (isActive timer) (send Reset),
+      ],
+    }
+  }
+
+fn doneBanner timer: TimerState -> Array<html.Html<Task<Unit>>> = match timer {
+  Finished label -> [
+    html.p {
+      role: "alert",
+      style: styles.doneBannerStyle (),
+      children: `「${label}」の時間です`,
+    },
+  ]
+  _ -> []
+}
+
+fn view state: MutableSignal<TimerState> -> timer: TimerState -> html.Html<Task<Unit>> =
+  html.section {
+    style: styles.timerPanelStyle (),
+    children: arrays.append (doneBanner timer) [
+      html.h2 { style: styles.eyebrowStyle (), children: "タイマー" },
+      html.p { style: styles.timerCaptionStyle (), children: caption timer },
+      dial timer,
+      controls state timer,
+    ],
+  }
+
+fn every interval: time.Duration
+  -> _runs: Int
+  -> _value: Unit
+  -> effects.ScheduleDecision =
+  effects.ScheduleContinue interval
+
+pub effect fn create -> KitchenTimer with clock: clock.Clock fails String = do {
+  interval <- time.milliseconds tickMilliseconds
+    |> effects.fromEither
+    |> effects.mapError (\_error: time.DurationError -> "タイマーの刻みを作れません")
+  // 型を書いた let で受けるのは、Signal への読み替えが効かない不具合（#1429）を避けるためです。
+  let initial: TimerState = Idle
+  state <- signals.make initial
+  let rendered = signals.map (view state) state
+  // dom.run は操作を一つずつ処理するので、時間の経過は操作ではなく別の Fiber で進めます。
+  _ticking <- effects.fork (effects.repeat (effects.schedule (every interval)) (signals.update tick state))
+  succeed (
+    KitchenTimer {
+      view: rendered,
+      start: \label: String -> \minutes: Int -> dispatch state
+        (Start (TimerRequest { label, minutes })),
+    }
+  )
+}
