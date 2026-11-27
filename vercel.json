@@ -6,6 +6,14 @@
   "framework": null,
   "rewrites": [
     {
+      "source": "/en/deep-dive",
+      "destination": "/deep-dive/index.html"
+    },
+    {
+      "source": "/en/deep-dive/(.*)",
+      "destination": "/deep-dive/index.html"
+    },
+    {
       "source": "/en/tour",
       "destination": "/en/tour/index.html"
     },

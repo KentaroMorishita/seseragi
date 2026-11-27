@@ -477,15 +477,9 @@ const applyTourLocale = (nextLocale: UiLocale): void => {
   ) {
     runCheck.textContent = messages.tourRunCheckOk
   }
-  if (
-    output.textContent === otherMessages.outputPlaceholder ||
-    output.textContent === messages.outputPlaceholder
-  ) {
+  if (output.dataset.uiPlaceholder === "idle") {
     output.textContent = messages.outputPlaceholder
-  } else if (
-    output.textContent === otherMessages.noErrorsRunPrompt ||
-    output.textContent === messages.noErrorsRunPrompt
-  ) {
+  } else if (output.dataset.uiPlaceholder === "no-errors") {
     output.textContent = messages.noErrorsRunPrompt
   }
   const untranslatedContent = [
@@ -543,7 +537,10 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
       setStatus("error", problemCount(diagnostics.length))
     } else {
       if (output.dataset.liveDiagnostics === "true") {
-        showTextOutput(localeController.messages().noErrorsRunPrompt)
+        showTextOutput(
+          localeController.messages().noErrorsRunPrompt,
+          "no-errors"
+        )
       }
       setStatus("ready", "Analysis ready")
     }
@@ -894,7 +891,7 @@ function loadLesson(
   inputSection.hidden = currentLesson.stdin === ""
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))
-  showTextOutput(localeController.messages().outputPlaceholder)
+  showTextOutput(localeController.messages().outputPlaceholder, "idle")
   renderLesson()
   liveAnalysis.schedule(source)
   setStatus("ready", "Lesson ready")
@@ -1450,15 +1447,21 @@ function showExecutionOutput(stdout: string): void {
   clearHtmlPreview()
   output.className = "output-text"
   delete output.dataset.liveDiagnostics
+  delete output.dataset.uiPlaceholder
   output.textContent = stdout || "Program completed with no output."
   if (outputMode === "html") renderHtmlPreview(stdout)
   setOutputMode(outputMode)
 }
 
-function showTextOutput(message: string): void {
+function showTextOutput(
+  message: string,
+  placeholder?: "idle" | "no-errors"
+): void {
   runCheck.hidden = true
   output.className = "output-text"
   delete output.dataset.liveDiagnostics
+  if (placeholder === undefined) delete output.dataset.uiPlaceholder
+  else output.dataset.uiPlaceholder = placeholder
   output.textContent = message
   clearHtmlPreview()
   renderOutputMode("text")
@@ -1468,6 +1471,7 @@ function showDiagnostics(
   diagnostics: readonly Diagnostic[],
   analyzedSource = source
 ): void {
+  delete output.dataset.uiPlaceholder
   clearHtmlPreview()
   renderOutputMode("text")
   output.dataset.liveDiagnostics = "true"

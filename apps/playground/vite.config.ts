@@ -170,6 +170,9 @@ function rewriteEnglishPath(url: string | undefined): string | undefined {
   if (pathname === "/en/tour" || pathname === "/en/tour/") {
     return `/tour/index.html${search}`
   }
+  if (pathname === "/en/deep-dive" || pathname === "/en/deep-dive/") {
+    return `/deep-dive/index.html${search}`
+  }
   return undefined
 }
 

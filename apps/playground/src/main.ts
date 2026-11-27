@@ -476,18 +476,11 @@ const sampleBrowser = {
 
 const applyPlaygroundLocale = (nextLocale: UiLocale): void => {
   const messages = uiMessages(nextLocale)
-  const otherMessages = uiMessages(nextLocale === "en" ? "ja" : "en")
   autoRunNote.textContent = messages.autoRunNote
   stdinInput.placeholder = messages.stdinPlaceholder
-  if (
-    output.textContent === otherMessages.outputPlaceholder ||
-    output.textContent === messages.outputPlaceholder
-  ) {
+  if (output.dataset.uiPlaceholder === "idle") {
     output.textContent = messages.outputPlaceholder
-  } else if (
-    output.textContent === otherMessages.noErrorsRunPrompt ||
-    output.textContent === messages.noErrorsRunPrompt
-  ) {
+  } else if (output.dataset.uiPlaceholder === "no-errors") {
     output.textContent = messages.noErrorsRunPrompt
   }
   if (currentSample !== undefined) {
@@ -576,7 +569,10 @@ const liveAnalysis: LiveAnalysisController =
         setStatus("error", problemCount(analysis.diagnostics.length))
       } else {
         if (output.dataset.liveDiagnostics === "true") {
-          showTextOutput(localeController.messages().noErrorsRunPrompt)
+          showTextOutput(
+            localeController.messages().noErrorsRunPrompt,
+            "no-errors"
+          )
         }
         setStatus("ready", "Analysis ready")
       }
@@ -1084,7 +1080,7 @@ function loadSample(
   latestAnalysis = undefined
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
-  showTextOutput(localeController.messages().outputPlaceholder)
+  showTextOutput(localeController.messages().outputPlaceholder, "idle")
   showRunStatus({ kind: "idle" })
   setStatus("ready", status)
   persistCurrentWorkspace()
@@ -1622,14 +1618,20 @@ function showExecutionOutput(stdout: string): void {
   clearHtmlPreview()
   output.className = "output-text"
   delete output.dataset.liveDiagnostics
+  delete output.dataset.uiPlaceholder
   output.textContent = stdout || "Program completed with no output."
   setOutputMode(outputMode)
   if (outputMode === "html") renderHtmlPreview(stdout)
 }
 
-function showTextOutput(message: string): void {
+function showTextOutput(
+  message: string,
+  placeholder?: "idle" | "no-errors"
+): void {
   output.className = "output-text"
   delete output.dataset.liveDiagnostics
+  if (placeholder === undefined) delete output.dataset.uiPlaceholder
+  else output.dataset.uiPlaceholder = placeholder
   output.textContent = message
   clearHtmlPreview()
   setOutputMode("text")
@@ -1638,6 +1640,7 @@ function showTextOutput(message: string): void {
 function showWorkspaceDiagnostics(
   diagnostics: readonly WorkspaceDiagnostic[]
 ): void {
+  delete output.dataset.uiPlaceholder
   clearHtmlPreview()
   setOutputMode("text")
   output.dataset.liveDiagnostics = "true"
