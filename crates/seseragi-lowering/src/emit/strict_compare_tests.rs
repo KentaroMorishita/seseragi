@@ -89,3 +89,22 @@ fn body(typescript: &str) -> String {
         .collect::<Vec<_>>()
         .join("\n")
 }
+
+#[test]
+fn literal_operands_widen_so_strict_typescript_accepts_them() {
+    let typescript = emit(
+        r#"pub fn texts unit: Unit -> Bool = "a" == "b"
+pub fn numbers unit: Unit -> Bool = 40 != 41
+pub fn flags unit: Unit -> Bool = True == False
+pub fn mixed value: Int -> Bool = value == 40
+"#,
+    );
+    for expected in [
+        r#"(("a") as string) === "b""#,
+        "((40) as number) !== 41",
+        "((true) as boolean) === false",
+        "value === 40",
+    ] {
+        assert!(typescript.contains(expected), "{expected}\n{typescript}");
+    }
+}

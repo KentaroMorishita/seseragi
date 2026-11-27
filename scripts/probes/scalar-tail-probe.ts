@@ -121,9 +121,11 @@ for (const statement of ast.statements) {
       const operator = exported === "add" ? "+" : "-"
       wrapper = `const ${name} = (a: number, b: number): number => { $probeTrace.push(["${operator}",a,b]); return ${original}(a,b); };`
     }
-    if (specifier === "@seseragi/runtime/equality" && exported === "intEq") {
-      wrapper = `const ${name} = { ...${original}, eq: (a: number) => (b: number): boolean => { $probeTrace.push(["==",a,b]); return ${original}.eq(a)(b); } };`
-    }
+    assert.notEqual(
+      specifier,
+      "@seseragi/runtime/equality",
+      "Int equality should compile to ==="
+    )
     if (!wrapper) continue
     edits.push({
       start: binding.name.getStart(ast),
@@ -135,8 +137,8 @@ for (const statement of ast.statements) {
 }
 assert.equal(
   wrappers.length,
-  globalMode ? 4 : 3,
-  "expected the three canonical primitive imports"
+  globalMode ? 3 : 2,
+  "expected the canonical add and subtract imports"
 )
 edits.push({
   start: importEnd,

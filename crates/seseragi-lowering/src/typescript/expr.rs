@@ -37,7 +37,7 @@ use super::types::{
     lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_expr,
     type_ref_from_core_type, type_ref_from_core_type_with_erasure,
 };
-use super::{TypeScriptExpr, TypeScriptRecordValueItem, TypeScriptStatement};
+use super::{TypeScriptExpr, TypeScriptRecordValueItem, TypeScriptStatement, TypeScriptType};
 use crate::failure::{missing_evidence, missing_runtime, unexpected_shape, Lowered};
 
 mod comprehension;
@@ -2329,6 +2329,43 @@ fn list_cons_element_type(
     }
 }
 
+/// Strict TypeScript rejects `===` between literal types that cannot overlap,
+/// such as `"a" === "b"`. Widen the left operand when both sides may carry a
+/// literal type; other operands already have their declared type.
+fn widen_literal_equality_operand(
+    operator: &str,
+    left: TypeScriptExpr,
+    right: &TypeScriptExpr,
+) -> TypeScriptExpr {
+    if !matches!(operator, "===" | "!==") || literal_type(right).is_none() {
+        return left;
+    }
+    match literal_type(&left) {
+        Some(type_ref) => TypeScriptExpr::CheckedResult {
+            value: Box::new(left),
+            type_ref,
+        },
+        None => left,
+    }
+}
+
+/// The widened type of an expression whose TypeScript type may be a literal type.
+fn literal_type(expr: &TypeScriptExpr) -> Option<TypeScriptType> {
+    match expr {
+        TypeScriptExpr::Number { .. } => Some(TypeScriptType::Number),
+        TypeScriptExpr::Bigint { .. } => Some(TypeScriptType::Bigint),
+        TypeScriptExpr::String { .. } => Some(TypeScriptType::String),
+        TypeScriptExpr::Boolean { .. } => Some(TypeScriptType::Boolean),
+        TypeScriptExpr::Unary { operand, .. } => literal_type(operand),
+        TypeScriptExpr::Conditional {
+            then_branch,
+            else_branch,
+            ..
+        } => literal_type(then_branch).or_else(|| literal_type(else_branch)),
+        _ => None,
+    }
+}
+
 fn lower_binary(
     operator: String,
     left: CoreExpr,
@@ -2364,6 +2401,7 @@ fn lower_binary(
         }
     }
     if let Some(operator) = javascript_operator_with_evidence(&operator, &evidence) {
+        let left = widen_literal_equality_operand(operator, left, &right);
         return Ok(TypeScriptExpr::Binary {
             operator: operator.to_owned(),
             left: Box::new(left),
