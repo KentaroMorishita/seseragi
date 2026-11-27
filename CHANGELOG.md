@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.9] - 2026-11-27
+
+### Added
+
+- `std/time` has `durationBetween earlier later`, which returns the `Duration` from one `Instant` to a later one (#1431). When `later` is before `earlier`, it returns `NegativeDuration` with the signed nanosecond difference; a difference outside the `Duration` range, or a negative one that does not fit in `Int`, returns `DurationOutsideRange`. The TypeScript runtime, native and the Playground return the same results. The spec now states that the standard Clock providers read `now` from the host's monotonic clock, so two `now` readings in one program never measure a negative duration.
+
 ## [0.62.8] - 2026-11-27
 
 ### Fixed
