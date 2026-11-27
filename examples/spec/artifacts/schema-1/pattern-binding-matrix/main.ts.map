@@ -99,7 +99,6 @@
     "typedAge",
     "typedName",
     "typedAge",
-    "intOrd",
     "$ssrg$atSource",
     "Left",
     "$ssrg$atSource",
@@ -245,5 +244,5 @@
     "number",
     "number"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAQAA;;AAAQC;AAERC;;AACIC;;AARJC;;;;;AAoBAC;AAUAsC;AAKAG;AAOAqB;AAOAK;AAaA0B;AASAO;AA7DAqF;AAGAG;AAAKC;AAAWG;AAChBG;AAAMC;AAAGG;AACTG;AAAWC;AAAIG;AACfG;AAAWG;AACXE;AAAQC;AACRE;AAASE;AAmDTE"
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAQAA;;AAAQC;AAERC;;AACIC;;AARJC;;;;;AAoBAC;AAUAsC;AAKAG;AAOAqB;AAOAK;AAaAyB;AASAO;AA7DAqF;AAGAG;AAAKC;AAAWG;AAChBG;AAAMC;AAAGG;AACTG;AAAWC;AAAIG;AACfG;AAAWG;AACXE;AAAQC;AACRE;AAASE;AAmDTE"
 }

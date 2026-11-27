@@ -2,7 +2,6 @@ import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/ru
 import { atSource as $ssrg$atSource } from "@seseragi/runtime/effect"
 import { intOne as _ssrg_int_one, intMul as _ssrg_int_mul_dictionary } from "@seseragi/runtime/int"
 import { product as _ssrg_collection_product, any as _ssrg_collection_any, all as _ssrg_collection_all } from "@seseragi/runtime/collection"
-import { intOrd as _ssrg_int_ord_dictionary } from "@seseragi/runtime/equality"
 import { intShow as _ssrg_show_intShow } from "@seseragi/runtime/show"
 import { arrayReducible as _ssrg_array_reducible, arrayIterable as _ssrg_array_iterable } from "@seseragi/runtime/array"
 import { listReducible as _ssrg_list_reducible, fromArray as _ssrg_list_from_array, listIterable as _ssrg_list_iterable, type List as List } from "@seseragi/runtime/list"
@@ -55,8 +54,8 @@ const $ssrg$source1581 = { file: "main.ssrg", line: 71, column: 5, uri: "seserag
 $ssrg$assertUnicodeVersion("17.0.0")
 
 const productValues = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => $ssrg$atSource($ssrg$source65, () => _ssrg_collection_product(__ssrg$evidence$0, _ssrg_int_one, _ssrg_int_mul_dictionary, values), false)
-const anyPositive = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => $ssrg$atSource($ssrg$source144, () => _ssrg_collection_any(__ssrg$evidence$0, (value: number) => (_ssrg_int_ord_dictionary["compare"](value)(0))["tag"] === "Greater", values), false)
-const allPositive = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => $ssrg$atSource($ssrg$source246, () => _ssrg_collection_all(__ssrg$evidence$0, (value: number) => (_ssrg_int_ord_dictionary["compare"](value)(0))["tag"] === "Greater", values), false)
+const anyPositive = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => $ssrg$atSource($ssrg$source144, () => _ssrg_collection_any(__ssrg$evidence$0, (value: number) => value > 0, values), false)
+const allPositive = <C,>(values: C) => (__ssrg$evidence$0: Readonly<Record<string, (...args: any[]) => any>>) => $ssrg$atSource($ssrg$source246, () => _ssrg_collection_all(__ssrg$evidence$0, (value: number) => value > 0, values), false)
 const emptyValues = (unit: undefined) => [] as ReadonlyArray<number>
 const yesNo = (value: boolean) => value ? "true" : "false"
 const number = (value: number) => _ssrg_show_intShow["show"](value)

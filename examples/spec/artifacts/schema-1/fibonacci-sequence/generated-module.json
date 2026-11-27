@@ -9,7 +9,6 @@
     "unicodeVersion": "17.0.0",
     "requirements": [
       "core.int",
-      "core.int.eq-dictionary",
       "core.bool",
       "core.int.subtract",
       "core.int.add",

@@ -10,7 +10,6 @@
     "requirements": [
       "core.string",
       "core.int",
-      "core.int.ord-dictionary",
       "core.bool",
       "core.string.show",
       "core.int.show",

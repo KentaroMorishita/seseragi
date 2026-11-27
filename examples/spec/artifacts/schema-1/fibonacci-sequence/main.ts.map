@@ -12,8 +12,6 @@
     "fibonacci",
     "loop",
     "$ssrg$atSource",
-    "intEq",
-    "$ssrg$atSource",
     "loop",
     "subtract",
     "add",
@@ -28,5 +26,5 @@
     "$ssrg$atSource",
     "fibonacci"
   ],
-  "mappings": ";;;;;;;;;;;;;;;AAAAA;AAUAU"
+  "mappings": ";;;;;;;;;;;;;AAAAA;AAUAQ"
 }

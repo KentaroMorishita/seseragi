@@ -16,7 +16,6 @@
       "core.string",
       "core.int",
       "effect.core.applicative",
-      "core.int.eq-dictionary",
       "core.bool",
       "core.int.subtract",
       "core.int.show",

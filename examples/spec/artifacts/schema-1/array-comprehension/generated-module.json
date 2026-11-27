@@ -13,7 +13,6 @@
       "core.int.add",
       "core.array.comprehend.flat",
       "core.array.comprehend",
-      "core.int.eq-dictionary",
       "core.bool"
     ]
   },

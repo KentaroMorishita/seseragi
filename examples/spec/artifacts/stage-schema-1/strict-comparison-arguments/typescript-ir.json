@@ -193,7 +193,6 @@
     "core.list.from-array",
     "core.list.take",
     "core.float64.api.ieee-eq",
-    "core.int.eq-dictionary",
     "core.list.length",
     "effect.console.println",
     "core.bool.show",
@@ -235,10 +234,6 @@
     {
       "feature": "core.float64.api.ieee-eq",
       "local": "_ssrg_float_ieeeEq"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.list.length",
@@ -1908,130 +1903,112 @@
               }
             },
             {
-              "kind": "runtime-call",
-              "callee": "$ssrg$atSource",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "$ssrg$source973"
-                },
-                {
-                  "kind": "lambda",
-                  "parameter": "",
-                  "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_int_eq_dictionary"
+              "kind": "binary",
+              "operator": "===",
+              "left": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "runtime-call",
+                  "callee": "$ssrg$atSource",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source973"
                     },
-                    "method": "eq",
-                    "arguments": [
-                      {
+                    {
+                      "kind": "lambda",
+                      "parameter": "",
+                      "body": {
                         "kind": "runtime-call",
-                        "callee": "$ssrg$atSource",
+                        "callee": "_ssrg_list_length",
                         "arguments": [
                           {
-                            "kind": "identifier",
-                            "name": "$ssrg$source973"
-                          },
-                          {
-                            "kind": "lambda",
-                            "parameter": "",
-                            "body": {
-                              "kind": "runtime-call",
-                              "callee": "_ssrg_list_length",
-                              "arguments": [
-                                {
-                                  "kind": "runtime-call",
-                                  "callee": "$ssrg$atSource",
+                            "kind": "runtime-call",
+                            "callee": "$ssrg$atSource",
+                            "arguments": [
+                              {
+                                "kind": "identifier",
+                                "name": "$ssrg$source987"
+                              },
+                              {
+                                "kind": "lambda",
+                                "parameter": "",
+                                "body": {
+                                  "kind": "call",
+                                  "callee": "take",
                                   "arguments": [
                                     {
-                                      "kind": "identifier",
-                                      "name": "$ssrg$source987"
-                                    },
-                                    {
-                                      "kind": "lambda",
-                                      "parameter": "",
-                                      "body": {
-                                        "kind": "call",
-                                        "callee": "take",
-                                        "arguments": [
-                                          {
-                                            "kind": "runtime-call",
-                                            "callee": "$ssrg$atSource",
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source993"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "call",
+                                            "callee": "prefix",
                                             "arguments": [
                                               {
-                                                "kind": "identifier",
-                                                "name": "$ssrg$source993"
-                                              },
-                                              {
-                                                "kind": "lambda",
-                                                "parameter": "",
-                                                "body": {
-                                                  "kind": "call",
-                                                  "callee": "prefix",
-                                                  "arguments": [
-                                                    {
-                                                      "kind": "runtime-call",
-                                                      "callee": "_ssrg_list_from_array",
-                                                      "arguments": [
-                                                        {
-                                                          "kind": "array",
-                                                          "elements": [
-                                                            {
-                                                              "kind": "number",
-                                                              "value": "2"
-                                                            },
-                                                            {
-                                                              "kind": "number",
-                                                              "value": "3"
-                                                            }
-                                                          ],
-                                                          "elementType": {
-                                                            "kind": "number"
-                                                          }
-                                                        }
-                                                      ]
+                                                "kind": "runtime-call",
+                                                "callee": "_ssrg_list_from_array",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "array",
+                                                    "elements": [
+                                                      {
+                                                        "kind": "number",
+                                                        "value": "2"
+                                                      },
+                                                      {
+                                                        "kind": "number",
+                                                        "value": "3"
+                                                      }
+                                                    ],
+                                                    "elementType": {
+                                                      "kind": "number"
                                                     }
-                                                  ]
-                                                }
-                                              },
-                                              {
-                                                "kind": "boolean",
-                                                "value": false
+                                                  }
+                                                ]
                                               }
                                             ]
                                           }
-                                        ]
-                                      }
-                                    },
-                                    {
-                                      "kind": "boolean",
-                                      "value": false
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
-                              ]
-                            }
-                          },
-                          {
-                            "kind": "boolean",
-                            "value": false
+                              },
+                              {
+                                "kind": "boolean",
+                                "value": false
+                              }
+                            ]
                           }
                         ]
-                      },
-                      {
-                        "kind": "number",
-                        "value": "1"
                       }
-                    ]
-                  }
+                    },
+                    {
+                      "kind": "boolean",
+                      "value": false
+                    }
+                  ]
                 },
-                {
-                  "kind": "boolean",
-                  "value": false
+                "type": {
+                  "kind": "number"
                 }
-              ]
+              },
+              "right": {
+                "kind": "number",
+                "value": "1"
+              }
             }
           ],
           "elementType": {

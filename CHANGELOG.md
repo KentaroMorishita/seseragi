@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.11] - 2026-11-28
+
+### Changed
+
+- In generated TypeScript, `==` and `!=` on `Int`, `Bool`, `String`, `Char` and `Unit`, and `<`, `<=`, `>` and `>=` on `Int`, now compile to JavaScript operators instead of calls through the standard `Eq` and `Ord` dictionaries (#1428). Results, evaluation order and defect locations are unchanged. User-defined and derived instances, and the order of `String` and `Char`, still go through their dictionaries. The left operand of `===` and `!==` carries a type assertion, such as `((x) as boolean) === false`, so strict TypeScript accepts comparisons of literals and narrowed values.
+
 ## [0.62.10] - 2026-11-27
 
 ### Changed

@@ -102,7 +102,6 @@
   "runtimeRequirements": [
     "core.list",
     "core.int",
-    "core.int.eq-dictionary",
     "core.bool",
     "core.int.remainder",
     "core.maybe",
@@ -126,10 +125,6 @@
     "core.list.flat-map"
   ],
   "imports": [
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
-    },
     {
       "feature": "core.int.remainder",
       "local": "_ssrg_int_remainder"
@@ -218,54 +213,36 @@
         }
       ],
       "body": {
-        "kind": "runtime-call",
-        "callee": "$ssrg$atSource",
-        "arguments": [
-          {
-            "kind": "identifier",
-            "name": "$ssrg$source102"
-          },
-          {
-            "kind": "lambda",
-            "parameter": "",
-            "body": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_eq_dictionary"
+        "kind": "binary",
+        "operator": "===",
+        "left": {
+          "kind": "checked-result",
+          "value": {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int_remainder",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
               },
-              "method": "eq",
-              "arguments": [
-                {
-                  "kind": "runtime-call",
-                  "callee": "_ssrg_int_remainder",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "value"
-                    },
-                    {
-                      "kind": "number",
-                      "value": "2"
-                    },
-                    {
-                      "kind": "identifier",
-                      "name": "$ssrg$source102"
-                    }
-                  ]
-                },
-                {
-                  "kind": "number",
-                  "value": "0"
-                }
-              ]
-            }
+              {
+                "kind": "number",
+                "value": "2"
+              },
+              {
+                "kind": "identifier",
+                "name": "$ssrg$source102"
+              }
+            ]
           },
-          {
-            "kind": "boolean",
-            "value": false
+          "type": {
+            "kind": "number"
           }
-        ]
+        },
+        "right": {
+          "kind": "number",
+          "value": "0"
+        }
       },
       "origin": {
         "source": "main.ssrg",

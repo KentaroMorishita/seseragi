@@ -290,6 +290,10 @@ fn shared_frontend_identity_programs_match_raw_strict_ts_and_native() {
             include_str!("../../../examples/spec/fixtures/rust-backend/ref-array-shadow.ssrg"),
             "[1, 2]\n[3, 4]\nlocal=5\n",
         ),
+        (
+            include_str!("../../../examples/spec/fixtures/rust-backend/narrowed-equality.ssrg"),
+            "False\nFalse\nFalse\nFalse\nFalse\nFalse\nTrue\n",
+        ),
     ] {
         check_primitive_eq_literals(source, expected, true);
     }

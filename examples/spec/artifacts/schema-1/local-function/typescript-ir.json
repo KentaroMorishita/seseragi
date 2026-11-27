@@ -5,11 +5,6 @@
   "runtimeSources": [
     {
       "source": "main.ssrg",
-      "start": 156,
-      "end": 168
-    },
-    {
-      "source": "main.ssrg",
       "start": 180,
       "end": 202
     },
@@ -37,16 +32,11 @@
   "runtimeRequirements": [
     "core.unit",
     "core.int",
-    "core.int.eq-dictionary",
     "core.bool",
     "core.int.add",
     "core.int.subtract"
   ],
   "imports": [
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
-    },
     {
       "feature": "core.int.add",
       "local": "_ssrg_int_add"
@@ -123,40 +113,22 @@
             "body": {
               "kind": "conditional",
               "condition": {
-                "kind": "runtime-call",
-                "callee": "$ssrg$atSource",
-                "arguments": [
-                  {
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "checked-result",
+                  "value": {
                     "kind": "identifier",
-                    "name": "$ssrg$source156"
+                    "name": "current"
                   },
-                  {
-                    "kind": "lambda",
-                    "parameter": "",
-                    "body": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_int_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "identifier",
-                          "name": "current"
-                        },
-                        {
-                          "kind": "number",
-                          "value": "0"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
+                  "type": {
+                    "kind": "number"
                   }
-                ]
+                },
+                "right": {
+                  "kind": "number",
+                  "value": "0"
+                }
               },
               "thenBranch": {
                 "kind": "runtime-call",
@@ -256,64 +228,46 @@
           }
         ],
         "result": {
-          "kind": "runtime-call",
-          "callee": "$ssrg$atSource",
-          "arguments": [
-            {
-              "kind": "identifier",
-              "name": "$ssrg$source245"
-            },
-            {
-              "kind": "lambda",
-              "parameter": "",
-              "body": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_int_eq_dictionary"
+          "kind": "binary",
+          "operator": "===",
+          "left": {
+            "kind": "checked-result",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "$ssrg$atSource",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "$ssrg$source245"
                 },
-                "method": "eq",
-                "arguments": [
-                  {
-                    "kind": "runtime-call",
-                    "callee": "$ssrg$atSource",
+                {
+                  "kind": "lambda",
+                  "parameter": "",
+                  "body": {
+                    "kind": "call",
+                    "callee": "countdown",
                     "arguments": [
                       {
-                        "kind": "identifier",
-                        "name": "$ssrg$source245"
-                      },
-                      {
-                        "kind": "lambda",
-                        "parameter": "",
-                        "body": {
-                          "kind": "call",
-                          "callee": "countdown",
-                          "arguments": [
-                            {
-                              "kind": "number",
-                              "value": "3"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "kind": "boolean",
-                        "value": false
+                        "kind": "number",
+                        "value": "3"
                       }
                     ]
-                  },
-                  {
-                    "kind": "number",
-                    "value": "42"
                   }
-                ]
-              }
+                },
+                {
+                  "kind": "boolean",
+                  "value": false
+                }
+              ]
             },
-            {
-              "kind": "boolean",
-              "value": false
+            "type": {
+              "kind": "number"
             }
-          ]
+          },
+          "right": {
+            "kind": "number",
+            "value": "42"
+          }
         }
       },
       "origin": {

@@ -59,7 +59,6 @@
       "core.debug.bounded",
       "core.string.show",
       "core.string.debug",
-      "core.string.eq-dictionary",
       "core.unit",
       "effect.core.flatMap",
       "core.validation.invalid",

@@ -15,7 +15,6 @@
     "runtimeRequirements": [
       "core.unit",
       "core.int",
-      "core.int.eq-dictionary",
       "core.bool",
       "core.int.add",
       "core.int.subtract"

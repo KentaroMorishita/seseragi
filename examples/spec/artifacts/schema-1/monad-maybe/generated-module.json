@@ -14,7 +14,6 @@
       "core.maybe.just",
       "core.int",
       "core.int.add",
-      "core.int.ord-dictionary",
       "core.bool",
       "core.string",
       "core.unit",

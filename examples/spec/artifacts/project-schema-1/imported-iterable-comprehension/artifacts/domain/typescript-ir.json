@@ -43,7 +43,6 @@
     "core.range.reduce",
     "core.range",
     "core.range.inclusive",
-    "core.int.ord-dictionary",
     "core.bool",
     "core.maybe.just",
     "core.int.add",
@@ -61,10 +60,6 @@
     {
       "feature": "core.range.inclusive",
       "local": "_ssrg_range_inclusive"
-    },
-    {
-      "feature": "core.int.ord-dictionary",
-      "local": "_ssrg_int_ord_dictionary"
     },
     {
       "feature": "core.maybe.just",
@@ -451,32 +446,14 @@
         "kind": "conditional",
         "condition": {
           "kind": "binary",
-          "operator": "!==",
+          "operator": "<=",
           "left": {
-            "kind": "field-access",
-            "receiver": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_ord_dictionary"
-              },
-              "method": "compare",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "current"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "limit"
-                }
-              ]
-            },
-            "field": "tag"
+            "kind": "identifier",
+            "name": "current"
           },
           "right": {
-            "kind": "string",
-            "value": "Greater"
+            "kind": "identifier",
+            "name": "limit"
           }
         },
         "thenBranch": {

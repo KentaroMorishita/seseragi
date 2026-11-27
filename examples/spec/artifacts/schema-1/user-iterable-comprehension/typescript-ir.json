@@ -78,14 +78,12 @@
     "core.range.reduce",
     "core.range",
     "core.range.inclusive",
-    "core.int.ord-dictionary",
     "core.bool",
     "core.maybe.just",
     "core.int.add",
     "core.maybe.nothing",
     "core.int.multiply",
     "core.iterator.comprehend",
-    "core.int.eq-dictionary",
     "core.int.remainder",
     "core.array.reduce",
     "core.string",
@@ -106,10 +104,6 @@
       "local": "_ssrg_range_inclusive"
     },
     {
-      "feature": "core.int.ord-dictionary",
-      "local": "_ssrg_int_ord_dictionary"
-    },
-    {
       "feature": "core.maybe.just",
       "local": "_ssrg_maybe_Just"
     },
@@ -128,10 +122,6 @@
     {
       "feature": "core.iterator.comprehend",
       "local": "_ssrg_iterator_comprehend"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.int.remainder",
@@ -518,32 +508,14 @@
         "kind": "conditional",
         "condition": {
           "kind": "binary",
-          "operator": "!==",
+          "operator": "<=",
           "left": {
-            "kind": "field-access",
-            "receiver": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_ord_dictionary"
-              },
-              "method": "compare",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "current"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "limit"
-                }
-              ]
-            },
-            "field": "tag"
+            "kind": "identifier",
+            "name": "current"
           },
           "right": {
-            "kind": "string",
-            "value": "Greater"
+            "kind": "identifier",
+            "name": "limit"
           }
         },
         "thenBranch": {
@@ -642,42 +614,34 @@
             "parameter": "value",
             "body": {
               "kind": "binary",
-              "operator": "===",
+              "operator": "!==",
               "left": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_int_eq_dictionary"
+                "kind": "checked-result",
+                "value": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_remainder",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source633"
+                    }
+                  ]
                 },
-                "method": "eq",
-                "arguments": [
-                  {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_int_remainder",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "value"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "2"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "$ssrg$source633"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "number",
-                    "value": "0"
-                  }
-                ]
+                "type": {
+                  "kind": "number"
+                }
               },
               "right": {
-                "kind": "boolean",
-                "value": false
+                "kind": "number",
+                "value": "0"
               }
             }
           },

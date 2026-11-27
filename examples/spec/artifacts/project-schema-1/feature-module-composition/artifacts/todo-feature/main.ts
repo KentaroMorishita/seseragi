@@ -2,13 +2,11 @@ import { view as todoForm } from "./form.js"
 import { view as todoList } from "./list.js"
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { atSource as $ssrg$atSource } from "@seseragi/runtime/effect"
-import { stringEq as _ssrg_string_eq_dictionary } from "@seseragi/runtime/equality"
 import { append as _ssrg_array_append, arrayReducible as _ssrg_array_reducible } from "@seseragi/runtime/array"
 import { update as _ssrg_signal_update, make as _ssrg_signal_make, map as _ssrg_signal_map, type MutableSignal as MutableSignal, type Signal as Signal } from "@seseragi/runtime/signal"
 import { join as _ssrg_collection_join } from "@seseragi/runtime/collection"
 import { section as _ssrg_html_section, h2 as _ssrg_html_h2, type InputEvent as InputEvent, type Html as Html } from "@seseragi/runtime/html"
 import { flatMap as _ssrg_effect_flatMap, succeed as _ssrg_effect_succeed, type Effect as Effect } from "@seseragi/runtime/effect"
-const $ssrg$source549 = { file: "project/feature-module-composition/src/todo/feature.ssrg", line: 22, column: 10, uri: "seseragi://fixture/feature-module-composition::todo/feature", start: 549, end: 566 };
 const $ssrg$source641 = { file: "project/feature-module-composition/src/todo/feature.ssrg", line: 26, column: 16, uri: "seseragi://fixture/feature-module-composition::todo/feature", start: 641, end: 680 };
 const $ssrg$source844 = { file: "project/feature-module-composition/src/todo/feature.ssrg", line: 34, column: 3, uri: "seseragi://fixture/feature-module-composition::todo/feature", start: 844, end: 880 };
 const $ssrg$source860 = { file: "project/feature-module-composition/src/todo/feature.ssrg", line: 34, column: 19, uri: "seseragi://fixture/feature-module-composition::todo/feature", start: 860, end: 873 };
@@ -43,7 +41,7 @@ type TodoState = {
   readonly "items": ReadonlyArray<string>;
   readonly [__ssrg$brand$TodoState]: true;
 };
-const update = (action: TodoAction) => (state: TodoState) => (($ssrg_match: TodoAction): TodoState => $ssrg_match.tag === "DraftChanged" ? ((value: string): TodoState => (({ ...state, "draft": value } as const) as unknown as TodoState))($ssrg_match.value) : $ssrg_match.tag === "Submitted" ? $ssrg$atSource($ssrg$source549, () => _ssrg_string_eq_dictionary["eq"]((state)["draft"])(""), false) ? state : (({ "draft": "", "items": $ssrg$atSource($ssrg$source641, () => _ssrg_array_append<string>([(state)["draft"]], (state)["items"]), false) } as const) as unknown as TodoState) : (({ ...state, "items": [] as ReadonlyArray<string> } as const) as unknown as TodoState))(action)
+const update = (action: TodoAction) => (state: TodoState) => (($ssrg_match: TodoAction): TodoState => $ssrg_match.tag === "DraftChanged" ? ((value: string): TodoState => (({ ...state, "draft": value } as const) as unknown as TodoState))($ssrg_match.value) : $ssrg_match.tag === "Submitted" ? (((state)["draft"]) as string) === "" ? state : (({ "draft": "", "items": $ssrg$atSource($ssrg$source641, () => _ssrg_array_append<string>([(state)["draft"]], (state)["items"]), false) } as const) as unknown as TodoState) : (({ ...state, "items": [] as ReadonlyArray<string> } as const) as unknown as TodoState))(action)
 const dispatch = (state: MutableSignal<TodoState>) => (action: TodoAction) => $ssrg$atSource($ssrg$source844, () => _ssrg_signal_update($ssrg$atSource($ssrg$source860, () => update(action), false), state), true)
 const draftAction = (event: InputEvent) => $ssrg$atSource($ssrg$source938, () => DraftChanged((event)["value"]), false)
 const formView = (state: MutableSignal<TodoState>) => (current: TodoState) => $ssrg$atSource($ssrg$source1082, () => todoForm((current)["draft"])((event: InputEvent) => $ssrg$atSource($ssrg$source1145, () => dispatch(state)($ssrg$atSource($ssrg$source1161, () => draftAction(event), false)), true))($ssrg$atSource($ssrg$source1188, () => dispatch(state)(Submitted), true)), false)

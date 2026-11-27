@@ -463,8 +463,8 @@
     "core.bool.show",
     "core.string",
     "core.bool",
-    "core.int.eq-dictionary",
     "core.int.hash-dictionary",
+    "core.int.eq-dictionary",
     "core.int.ord-dictionary",
     "core.maybe",
     "core.either",
@@ -486,12 +486,12 @@
       "local": "_ssrg_show_boolShow"
     },
     {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
-    },
-    {
       "feature": "core.int.hash-dictionary",
       "local": "_ssrg_int_hash_dictionary"
+    },
+    {
+      "feature": "core.int.eq-dictionary",
+      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.int.ord-dictionary",
@@ -1643,115 +1643,97 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "$ssrg$source358"
-                                      },
-                                      {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "dictionary-call",
-                                          "dictionary": {
-                                            "kind": "runtime-reference",
-                                            "name": "_ssrg_int_eq_dictionary"
+                                    "kind": "binary",
+                                    "operator": "===",
+                                    "left": {
+                                      "kind": "checked-result",
+                                      "value": {
+                                        "kind": "runtime-call",
+                                        "callee": "$ssrg$atSource",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source358"
                                           },
-                                          "method": "eq",
-                                          "arguments": [
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
+                                          {
+                                            "kind": "lambda",
+                                            "parameter": "",
+                                            "body": {
+                                              "kind": "checked-result",
+                                              "value": {
+                                                "kind": "dictionary-call",
+                                                "dictionary": {
+                                                  "kind": "type-application-call",
+                                                  "callee": "__ssrg$instance$Hash$2_1",
+                                                  "typeArguments": [],
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "__ssrg$instance$Eq$0_1"
+                                                    }
+                                                  ]
+                                                },
+                                                "method": "hash",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "one"
+                                                  }
+                                                ]
+                                              },
+                                              "type": {
+                                                "kind": "number"
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "kind": "boolean",
+                                            "value": false
+                                          }
+                                        ]
+                                      },
+                                      "type": {
+                                        "kind": "number"
+                                      }
+                                    },
+                                    "right": {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source370"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "checked-result",
+                                            "value": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "runtime-reference",
+                                                "name": "_ssrg_int_hash_dictionary"
+                                              },
+                                              "method": "hash",
                                               "arguments": [
                                                 {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source358"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "type-application-call",
-                                                        "callee": "__ssrg$instance$Hash$2_1",
-                                                        "typeArguments": [],
-                                                        "arguments": [
-                                                          {
-                                                            "kind": "identifier",
-                                                            "name": "__ssrg$instance$Eq$0_1"
-                                                          }
-                                                        ]
-                                                      },
-                                                      "method": "hash",
-                                                      "arguments": [
-                                                        {
-                                                          "kind": "identifier",
-                                                          "name": "one"
-                                                        }
-                                                      ]
-                                                    },
-                                                    "type": {
-                                                      "kind": "number"
-                                                    }
-                                                  }
-                                                },
-                                                {
-                                                  "kind": "boolean",
-                                                  "value": false
+                                                  "kind": "number",
+                                                  "value": "1"
                                                 }
                                               ]
                                             },
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source370"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "runtime-reference",
-                                                        "name": "_ssrg_int_hash_dictionary"
-                                                      },
-                                                      "method": "hash",
-                                                      "arguments": [
-                                                        {
-                                                          "kind": "number",
-                                                          "value": "1"
-                                                        }
-                                                      ]
-                                                    },
-                                                    "type": {
-                                                      "kind": "number"
-                                                    }
-                                                  }
-                                                },
-                                                {
-                                                  "kind": "boolean",
-                                                  "value": false
-                                                }
-                                              ]
+                                            "type": {
+                                              "kind": "number"
                                             }
-                                          ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
                                         }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
-                                      }
-                                    ]
+                                      ]
+                                    }
                                   }
                                 ]
                               },
@@ -2162,186 +2144,168 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "$ssrg$source555"
-                                      },
-                                      {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "dictionary-call",
-                                          "dictionary": {
-                                            "kind": "runtime-reference",
-                                            "name": "_ssrg_int_eq_dictionary"
+                                    "kind": "binary",
+                                    "operator": "===",
+                                    "left": {
+                                      "kind": "checked-result",
+                                      "value": {
+                                        "kind": "runtime-call",
+                                        "callee": "$ssrg$atSource",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source555"
                                           },
-                                          "method": "eq",
-                                          "arguments": [
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source555"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "type-application-call",
-                                                        "callee": "__ssrg$instance$Hash$5",
-                                                        "typeArguments": [
-                                                          {
-                                                            "kind": "number"
-                                                          }
-                                                        ],
-                                                        "arguments": [
-                                                          {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$3",
-                                                            "typeArguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "runtime-reference",
-                                                                "name": "_ssrg_int_eq_dictionary"
-                                                              }
-                                                            ]
-                                                          },
-                                                          {
-                                                            "kind": "runtime-reference",
-                                                            "name": "_ssrg_int_hash_dictionary"
-                                                          }
-                                                        ]
-                                                      },
-                                                      "method": "hash",
+                                          {
+                                            "kind": "lambda",
+                                            "parameter": "",
+                                            "body": {
+                                              "kind": "checked-result",
+                                              "value": {
+                                                "kind": "dictionary-call",
+                                                "dictionary": {
+                                                  "kind": "type-application-call",
+                                                  "callee": "__ssrg$instance$Hash$5",
+                                                  "typeArguments": [
+                                                    {
+                                                      "kind": "number"
+                                                    }
+                                                  ],
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "type-application-call",
+                                                      "callee": "__ssrg$instance$Eq$3",
+                                                      "typeArguments": [
+                                                        {
+                                                          "kind": "number"
+                                                        }
+                                                      ],
                                                       "arguments": [
                                                         {
-                                                          "kind": "identifier",
-                                                          "name": "a"
+                                                          "kind": "runtime-reference",
+                                                          "name": "_ssrg_int_eq_dictionary"
                                                         }
                                                       ]
                                                     },
-                                                    "type": {
-                                                      "kind": "number"
+                                                    {
+                                                      "kind": "runtime-reference",
+                                                      "name": "_ssrg_int_hash_dictionary"
                                                     }
-                                                  }
+                                                  ]
                                                 },
+                                                "method": "hash",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "a"
+                                                  }
+                                                ]
+                                              },
+                                              "type": {
+                                                "kind": "number"
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "kind": "boolean",
+                                            "value": false
+                                          }
+                                        ]
+                                      },
+                                      "type": {
+                                        "kind": "number"
+                                      }
+                                    },
+                                    "right": {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source565"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "checked-result",
+                                            "value": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "type-application-call",
+                                                "callee": "__ssrg$instance$Hash$5",
+                                                "typeArguments": [
+                                                  {
+                                                    "kind": "number"
+                                                  }
+                                                ],
+                                                "arguments": [
+                                                  {
+                                                    "kind": "type-application-call",
+                                                    "callee": "__ssrg$instance$Eq$3",
+                                                    "typeArguments": [
+                                                      {
+                                                        "kind": "number"
+                                                      }
+                                                    ],
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "runtime-reference",
+                                                        "name": "_ssrg_int_eq_dictionary"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "kind": "runtime-reference",
+                                                    "name": "_ssrg_int_hash_dictionary"
+                                                  }
+                                                ]
+                                              },
+                                              "method": "hash",
+                                              "arguments": [
                                                 {
-                                                  "kind": "boolean",
-                                                  "value": false
+                                                  "kind": "record",
+                                                  "items": [
+                                                    {
+                                                      "kind": "field",
+                                                      "name": "id",
+                                                      "value": {
+                                                        "kind": "identifier",
+                                                        "name": "one"
+                                                      }
+                                                    },
+                                                    {
+                                                      "kind": "field",
+                                                      "name": "value",
+                                                      "value": {
+                                                        "kind": "number",
+                                                        "value": "3"
+                                                      }
+                                                    }
+                                                  ],
+                                                  "assertedType": {
+                                                    "kind": "reference",
+                                                    "name": "Profile",
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "number"
+                                                      }
+                                                    ]
+                                                  }
                                                 }
                                               ]
                                             },
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source565"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "type-application-call",
-                                                        "callee": "__ssrg$instance$Hash$5",
-                                                        "typeArguments": [
-                                                          {
-                                                            "kind": "number"
-                                                          }
-                                                        ],
-                                                        "arguments": [
-                                                          {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$3",
-                                                            "typeArguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "runtime-reference",
-                                                                "name": "_ssrg_int_eq_dictionary"
-                                                              }
-                                                            ]
-                                                          },
-                                                          {
-                                                            "kind": "runtime-reference",
-                                                            "name": "_ssrg_int_hash_dictionary"
-                                                          }
-                                                        ]
-                                                      },
-                                                      "method": "hash",
-                                                      "arguments": [
-                                                        {
-                                                          "kind": "record",
-                                                          "items": [
-                                                            {
-                                                              "kind": "field",
-                                                              "name": "id",
-                                                              "value": {
-                                                                "kind": "identifier",
-                                                                "name": "one"
-                                                              }
-                                                            },
-                                                            {
-                                                              "kind": "field",
-                                                              "name": "value",
-                                                              "value": {
-                                                                "kind": "number",
-                                                                "value": "3"
-                                                              }
-                                                            }
-                                                          ],
-                                                          "assertedType": {
-                                                            "kind": "reference",
-                                                            "name": "Profile",
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ]
-                                                          }
-                                                        }
-                                                      ]
-                                                    },
-                                                    "type": {
-                                                      "kind": "number"
-                                                    }
-                                                  }
-                                                },
-                                                {
-                                                  "kind": "boolean",
-                                                  "value": false
-                                                }
-                                              ]
+                                            "type": {
+                                              "kind": "number"
                                             }
-                                          ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
                                         }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
-                                      }
-                                    ]
+                                      ]
+                                    }
                                   }
                                 ]
                               },
@@ -2940,256 +2904,238 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "$ssrg$source768"
-                                      },
-                                      {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "dictionary-call",
-                                          "dictionary": {
-                                            "kind": "runtime-reference",
-                                            "name": "_ssrg_int_eq_dictionary"
+                                    "kind": "binary",
+                                    "operator": "===",
+                                    "left": {
+                                      "kind": "checked-result",
+                                      "value": {
+                                        "kind": "runtime-call",
+                                        "callee": "$ssrg$atSource",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source768"
                                           },
-                                          "method": "eq",
-                                          "arguments": [
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source768"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "type-application-call",
-                                                        "callee": "__ssrg$instance$Hash$8",
-                                                        "typeArguments": [
-                                                          {
-                                                            "kind": "number"
-                                                          }
-                                                        ],
-                                                        "arguments": [
-                                                          {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$6",
-                                                            "typeArguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "runtime-reference",
-                                                                "name": "_ssrg_int_eq_dictionary"
-                                                              }
-                                                            ]
-                                                          },
-                                                          {
-                                                            "kind": "runtime-reference",
-                                                            "name": "_ssrg_int_hash_dictionary"
-                                                          }
-                                                        ]
-                                                      },
-                                                      "method": "hash",
+                                          {
+                                            "kind": "lambda",
+                                            "parameter": "",
+                                            "body": {
+                                              "kind": "checked-result",
+                                              "value": {
+                                                "kind": "dictionary-call",
+                                                "dictionary": {
+                                                  "kind": "type-application-call",
+                                                  "callee": "__ssrg$instance$Hash$8",
+                                                  "typeArguments": [
+                                                    {
+                                                      "kind": "number"
+                                                    }
+                                                  ],
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "type-application-call",
+                                                      "callee": "__ssrg$instance$Eq$6",
+                                                      "typeArguments": [
+                                                        {
+                                                          "kind": "number"
+                                                        }
+                                                      ],
                                                       "arguments": [
                                                         {
-                                                          "kind": "identifier",
-                                                          "name": "tree"
+                                                          "kind": "runtime-reference",
+                                                          "name": "_ssrg_int_eq_dictionary"
                                                         }
                                                       ]
                                                     },
-                                                    "type": {
-                                                      "kind": "number"
+                                                    {
+                                                      "kind": "runtime-reference",
+                                                      "name": "_ssrg_int_hash_dictionary"
                                                     }
-                                                  }
+                                                  ]
                                                 },
-                                                {
-                                                  "kind": "boolean",
-                                                  "value": false
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
+                                                "method": "hash",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "tree"
+                                                  }
+                                                ]
+                                              },
+                                              "type": {
+                                                "kind": "number"
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "kind": "boolean",
+                                            "value": false
+                                          }
+                                        ]
+                                      },
+                                      "type": {
+                                        "kind": "number"
+                                      }
+                                    },
+                                    "right": {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source781"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "checked-result",
+                                            "value": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "type-application-call",
+                                                "callee": "__ssrg$instance$Hash$8",
+                                                "typeArguments": [
+                                                  {
+                                                    "kind": "number"
+                                                  }
+                                                ],
+                                                "arguments": [
+                                                  {
+                                                    "kind": "type-application-call",
+                                                    "callee": "__ssrg$instance$Eq$6",
+                                                    "typeArguments": [
+                                                      {
+                                                        "kind": "number"
+                                                      }
+                                                    ],
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "runtime-reference",
+                                                        "name": "_ssrg_int_eq_dictionary"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "kind": "runtime-reference",
+                                                    "name": "_ssrg_int_hash_dictionary"
+                                                  }
+                                                ]
+                                              },
+                                              "method": "hash",
                                               "arguments": [
                                                 {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source781"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "type-application-call",
-                                                        "callee": "__ssrg$instance$Hash$8",
-                                                        "typeArguments": [
-                                                          {
-                                                            "kind": "number"
-                                                          }
-                                                        ],
+                                                  "kind": "runtime-call",
+                                                  "callee": "$ssrg$atSource",
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "identifier",
+                                                      "name": "$ssrg$source787"
+                                                    },
+                                                    {
+                                                      "kind": "lambda",
+                                                      "parameter": "",
+                                                      "body": {
+                                                        "kind": "call",
+                                                        "callee": "Branch",
                                                         "arguments": [
                                                           {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$6",
-                                                            "typeArguments": [
+                                                            "kind": "tuple",
+                                                            "elements": [
                                                               {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "runtime-reference",
-                                                                "name": "_ssrg_int_eq_dictionary"
-                                                              }
-                                                            ]
-                                                          },
-                                                          {
-                                                            "kind": "runtime-reference",
-                                                            "name": "_ssrg_int_hash_dictionary"
-                                                          }
-                                                        ]
-                                                      },
-                                                      "method": "hash",
-                                                      "arguments": [
-                                                        {
-                                                          "kind": "runtime-call",
-                                                          "callee": "$ssrg$atSource",
-                                                          "arguments": [
-                                                            {
-                                                              "kind": "identifier",
-                                                              "name": "$ssrg$source787"
-                                                            },
-                                                            {
-                                                              "kind": "lambda",
-                                                              "parameter": "",
-                                                              "body": {
-                                                                "kind": "call",
-                                                                "callee": "Branch",
+                                                                "kind": "runtime-call",
+                                                                "callee": "$ssrg$atSource",
                                                                 "arguments": [
                                                                   {
-                                                                    "kind": "tuple",
-                                                                    "elements": [
-                                                                      {
-                                                                        "kind": "runtime-call",
-                                                                        "callee": "$ssrg$atSource",
-                                                                        "arguments": [
-                                                                          {
-                                                                            "kind": "identifier",
-                                                                            "name": "$ssrg$source795"
-                                                                          },
-                                                                          {
-                                                                            "kind": "lambda",
-                                                                            "parameter": "",
-                                                                            "body": {
-                                                                              "kind": "call",
-                                                                              "callee": "Leaf",
-                                                                              "arguments": [
-                                                                                {
-                                                                                  "kind": "number",
-                                                                                  "value": "1"
-                                                                                }
-                                                                              ],
-                                                                              "typeArguments": [
-                                                                                {
-                                                                                  "kind": "number"
-                                                                                }
-                                                                              ]
-                                                                            }
-                                                                          },
-                                                                          {
-                                                                            "kind": "boolean",
-                                                                            "value": false
-                                                                          }
-                                                                        ]
-                                                                      },
-                                                                      {
-                                                                        "kind": "runtime-call",
-                                                                        "callee": "$ssrg$atSource",
-                                                                        "arguments": [
-                                                                          {
-                                                                            "kind": "identifier",
-                                                                            "name": "$ssrg$source803"
-                                                                          },
-                                                                          {
-                                                                            "kind": "lambda",
-                                                                            "parameter": "",
-                                                                            "body": {
-                                                                              "kind": "call",
-                                                                              "callee": "Leaf",
-                                                                              "arguments": [
-                                                                                {
-                                                                                  "kind": "number",
-                                                                                  "value": "2"
-                                                                                }
-                                                                              ],
-                                                                              "typeArguments": [
-                                                                                {
-                                                                                  "kind": "number"
-                                                                                }
-                                                                              ]
-                                                                            }
-                                                                          },
-                                                                          {
-                                                                            "kind": "boolean",
-                                                                            "value": false
-                                                                          }
-                                                                        ]
-                                                                      }
-                                                                    ]
-                                                                  }
-                                                                ],
-                                                                "typeArguments": [
+                                                                    "kind": "identifier",
+                                                                    "name": "$ssrg$source795"
+                                                                  },
                                                                   {
-                                                                    "kind": "number"
+                                                                    "kind": "lambda",
+                                                                    "parameter": "",
+                                                                    "body": {
+                                                                      "kind": "call",
+                                                                      "callee": "Leaf",
+                                                                      "arguments": [
+                                                                        {
+                                                                          "kind": "number",
+                                                                          "value": "1"
+                                                                        }
+                                                                      ],
+                                                                      "typeArguments": [
+                                                                        {
+                                                                          "kind": "number"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "kind": "boolean",
+                                                                    "value": false
+                                                                  }
+                                                                ]
+                                                              },
+                                                              {
+                                                                "kind": "runtime-call",
+                                                                "callee": "$ssrg$atSource",
+                                                                "arguments": [
+                                                                  {
+                                                                    "kind": "identifier",
+                                                                    "name": "$ssrg$source803"
+                                                                  },
+                                                                  {
+                                                                    "kind": "lambda",
+                                                                    "parameter": "",
+                                                                    "body": {
+                                                                      "kind": "call",
+                                                                      "callee": "Leaf",
+                                                                      "arguments": [
+                                                                        {
+                                                                          "kind": "number",
+                                                                          "value": "2"
+                                                                        }
+                                                                      ],
+                                                                      "typeArguments": [
+                                                                        {
+                                                                          "kind": "number"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  },
+                                                                  {
+                                                                    "kind": "boolean",
+                                                                    "value": false
                                                                   }
                                                                 ]
                                                               }
-                                                            },
-                                                            {
-                                                              "kind": "boolean",
-                                                              "value": false
-                                                            }
-                                                          ]
-                                                        }
-                                                      ]
+                                                            ]
+                                                          }
+                                                        ],
+                                                        "typeArguments": [
+                                                          {
+                                                            "kind": "number"
+                                                          }
+                                                        ]
+                                                      }
                                                     },
-                                                    "type": {
-                                                      "kind": "number"
+                                                    {
+                                                      "kind": "boolean",
+                                                      "value": false
                                                     }
-                                                  }
-                                                },
-                                                {
-                                                  "kind": "boolean",
-                                                  "value": false
+                                                  ]
                                                 }
                                               ]
+                                            },
+                                            "type": {
+                                              "kind": "number"
                                             }
-                                          ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
                                         }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
-                                      }
-                                    ]
+                                      ]
+                                    }
                                   }
                                 ]
                               },
@@ -4160,142 +4106,124 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "$ssrg$source1227"
-                                      },
-                                      {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "dictionary-call",
-                                          "dictionary": {
-                                            "kind": "runtime-reference",
-                                            "name": "_ssrg_int_eq_dictionary"
+                                    "kind": "binary",
+                                    "operator": "===",
+                                    "left": {
+                                      "kind": "checked-result",
+                                      "value": {
+                                        "kind": "runtime-call",
+                                        "callee": "$ssrg$atSource",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source1227"
                                           },
-                                          "method": "eq",
-                                          "arguments": [
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
+                                          {
+                                            "kind": "lambda",
+                                            "parameter": "",
+                                            "body": {
+                                              "kind": "checked-result",
+                                              "value": {
+                                                "kind": "dictionary-call",
+                                                "dictionary": {
+                                                  "kind": "type-application-call",
+                                                  "callee": "__ssrg$instance$Hash$18",
+                                                  "typeArguments": [
+                                                    {
+                                                      "kind": "number"
+                                                    }
+                                                  ],
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "type-application-call",
+                                                      "callee": "__ssrg$instance$Eq$16",
+                                                      "typeArguments": [
+                                                        {
+                                                          "kind": "number"
+                                                        }
+                                                      ],
+                                                      "arguments": []
+                                                    }
+                                                  ]
+                                                },
+                                                "method": "hash",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "phantom"
+                                                  }
+                                                ]
+                                              },
+                                              "type": {
+                                                "kind": "number"
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "kind": "boolean",
+                                            "value": false
+                                          }
+                                        ]
+                                      },
+                                      "type": {
+                                        "kind": "number"
+                                      }
+                                    },
+                                    "right": {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source1243"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "checked-result",
+                                            "value": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "type-application-call",
+                                                "callee": "__ssrg$instance$Hash$18",
+                                                "typeArguments": [
+                                                  {
+                                                    "kind": "number"
+                                                  }
+                                                ],
+                                                "arguments": [
+                                                  {
+                                                    "kind": "type-application-call",
+                                                    "callee": "__ssrg$instance$Eq$16",
+                                                    "typeArguments": [
+                                                      {
+                                                        "kind": "number"
+                                                      }
+                                                    ],
+                                                    "arguments": []
+                                                  }
+                                                ]
+                                              },
+                                              "method": "hash",
                                               "arguments": [
                                                 {
                                                   "kind": "identifier",
-                                                  "name": "$ssrg$source1227"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "type-application-call",
-                                                        "callee": "__ssrg$instance$Hash$18",
-                                                        "typeArguments": [
-                                                          {
-                                                            "kind": "number"
-                                                          }
-                                                        ],
-                                                        "arguments": [
-                                                          {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$16",
-                                                            "typeArguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": []
-                                                          }
-                                                        ]
-                                                      },
-                                                      "method": "hash",
-                                                      "arguments": [
-                                                        {
-                                                          "kind": "identifier",
-                                                          "name": "phantom"
-                                                        }
-                                                      ]
-                                                    },
-                                                    "type": {
-                                                      "kind": "number"
-                                                    }
-                                                  }
-                                                },
-                                                {
-                                                  "kind": "boolean",
-                                                  "value": false
+                                                  "name": "phantom"
                                                 }
                                               ]
                                             },
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source1243"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "type-application-call",
-                                                        "callee": "__ssrg$instance$Hash$18",
-                                                        "typeArguments": [
-                                                          {
-                                                            "kind": "number"
-                                                          }
-                                                        ],
-                                                        "arguments": [
-                                                          {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$16",
-                                                            "typeArguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": []
-                                                          }
-                                                        ]
-                                                      },
-                                                      "method": "hash",
-                                                      "arguments": [
-                                                        {
-                                                          "kind": "identifier",
-                                                          "name": "phantom"
-                                                        }
-                                                      ]
-                                                    },
-                                                    "type": {
-                                                      "kind": "number"
-                                                    }
-                                                  }
-                                                },
-                                                {
-                                                  "kind": "boolean",
-                                                  "value": false
-                                                }
-                                              ]
+                                            "type": {
+                                              "kind": "number"
                                             }
-                                          ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
                                         }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
-                                      }
-                                    ]
+                                      ]
+                                    }
                                   }
                                 ]
                               },
@@ -4704,190 +4632,172 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
-                                    "arguments": [
-                                      {
-                                        "kind": "identifier",
-                                        "name": "$ssrg$source1501"
-                                      },
-                                      {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "dictionary-call",
-                                          "dictionary": {
-                                            "kind": "runtime-reference",
-                                            "name": "_ssrg_int_eq_dictionary"
+                                    "kind": "binary",
+                                    "operator": "===",
+                                    "left": {
+                                      "kind": "checked-result",
+                                      "value": {
+                                        "kind": "runtime-call",
+                                        "callee": "$ssrg$atSource",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source1501"
                                           },
-                                          "method": "eq",
-                                          "arguments": [
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source1501"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "type-application-call",
-                                                        "callee": "__ssrg$instance$Hash$2",
-                                                        "typeArguments": [
-                                                          {
-                                                            "kind": "number"
-                                                          }
-                                                        ],
-                                                        "arguments": [
-                                                          {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$0",
-                                                            "typeArguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "runtime-reference",
-                                                                "name": "_ssrg_int_eq_dictionary"
-                                                              }
-                                                            ]
-                                                          },
-                                                          {
-                                                            "kind": "runtime-reference",
-                                                            "name": "_ssrg_int_hash_dictionary"
-                                                          },
-                                                          {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$3",
-                                                            "typeArguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "runtime-reference",
-                                                                "name": "_ssrg_int_eq_dictionary"
-                                                              }
-                                                            ]
-                                                          }
-                                                        ]
-                                                      },
-                                                      "method": "hash",
+                                          {
+                                            "kind": "lambda",
+                                            "parameter": "",
+                                            "body": {
+                                              "kind": "checked-result",
+                                              "value": {
+                                                "kind": "dictionary-call",
+                                                "dictionary": {
+                                                  "kind": "type-application-call",
+                                                  "callee": "__ssrg$instance$Hash$2",
+                                                  "typeArguments": [
+                                                    {
+                                                      "kind": "number"
+                                                    }
+                                                  ],
+                                                  "arguments": [
+                                                    {
+                                                      "kind": "type-application-call",
+                                                      "callee": "__ssrg$instance$Eq$0",
+                                                      "typeArguments": [
+                                                        {
+                                                          "kind": "number"
+                                                        }
+                                                      ],
                                                       "arguments": [
                                                         {
-                                                          "kind": "identifier",
-                                                          "name": "local"
+                                                          "kind": "runtime-reference",
+                                                          "name": "_ssrg_int_eq_dictionary"
                                                         }
                                                       ]
                                                     },
-                                                    "type": {
-                                                      "kind": "number"
+                                                    {
+                                                      "kind": "runtime-reference",
+                                                      "name": "_ssrg_int_hash_dictionary"
+                                                    },
+                                                    {
+                                                      "kind": "type-application-call",
+                                                      "callee": "__ssrg$instance$Eq$3",
+                                                      "typeArguments": [
+                                                        {
+                                                          "kind": "number"
+                                                        }
+                                                      ],
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "runtime-reference",
+                                                          "name": "_ssrg_int_eq_dictionary"
+                                                        }
+                                                      ]
                                                     }
-                                                  }
+                                                  ]
                                                 },
+                                                "method": "hash",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "local"
+                                                  }
+                                                ]
+                                              },
+                                              "type": {
+                                                "kind": "number"
+                                              }
+                                            }
+                                          },
+                                          {
+                                            "kind": "boolean",
+                                            "value": false
+                                          }
+                                        ]
+                                      },
+                                      "type": {
+                                        "kind": "number"
+                                      }
+                                    },
+                                    "right": {
+                                      "kind": "runtime-call",
+                                      "callee": "$ssrg$atSource",
+                                      "arguments": [
+                                        {
+                                          "kind": "identifier",
+                                          "name": "$ssrg$source1515"
+                                        },
+                                        {
+                                          "kind": "lambda",
+                                          "parameter": "",
+                                          "body": {
+                                            "kind": "checked-result",
+                                            "value": {
+                                              "kind": "dictionary-call",
+                                              "dictionary": {
+                                                "kind": "type-application-call",
+                                                "callee": "__ssrg$instance$Hash$2",
+                                                "typeArguments": [
+                                                  {
+                                                    "kind": "number"
+                                                  }
+                                                ],
+                                                "arguments": [
+                                                  {
+                                                    "kind": "type-application-call",
+                                                    "callee": "__ssrg$instance$Eq$0",
+                                                    "typeArguments": [
+                                                      {
+                                                        "kind": "number"
+                                                      }
+                                                    ],
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "runtime-reference",
+                                                        "name": "_ssrg_int_eq_dictionary"
+                                                      }
+                                                    ]
+                                                  },
+                                                  {
+                                                    "kind": "runtime-reference",
+                                                    "name": "_ssrg_int_hash_dictionary"
+                                                  },
+                                                  {
+                                                    "kind": "type-application-call",
+                                                    "callee": "__ssrg$instance$Eq$3",
+                                                    "typeArguments": [
+                                                      {
+                                                        "kind": "number"
+                                                      }
+                                                    ],
+                                                    "arguments": [
+                                                      {
+                                                        "kind": "runtime-reference",
+                                                        "name": "_ssrg_int_eq_dictionary"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              "method": "hash",
+                                              "arguments": [
                                                 {
-                                                  "kind": "boolean",
-                                                  "value": false
+                                                  "kind": "identifier",
+                                                  "name": "localSame"
                                                 }
                                               ]
                                             },
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "$ssrg$atSource",
-                                              "arguments": [
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source1515"
-                                                },
-                                                {
-                                                  "kind": "lambda",
-                                                  "parameter": "",
-                                                  "body": {
-                                                    "kind": "checked-result",
-                                                    "value": {
-                                                      "kind": "dictionary-call",
-                                                      "dictionary": {
-                                                        "kind": "type-application-call",
-                                                        "callee": "__ssrg$instance$Hash$2",
-                                                        "typeArguments": [
-                                                          {
-                                                            "kind": "number"
-                                                          }
-                                                        ],
-                                                        "arguments": [
-                                                          {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$0",
-                                                            "typeArguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "runtime-reference",
-                                                                "name": "_ssrg_int_eq_dictionary"
-                                                              }
-                                                            ]
-                                                          },
-                                                          {
-                                                            "kind": "runtime-reference",
-                                                            "name": "_ssrg_int_hash_dictionary"
-                                                          },
-                                                          {
-                                                            "kind": "type-application-call",
-                                                            "callee": "__ssrg$instance$Eq$3",
-                                                            "typeArguments": [
-                                                              {
-                                                                "kind": "number"
-                                                              }
-                                                            ],
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "runtime-reference",
-                                                                "name": "_ssrg_int_eq_dictionary"
-                                                              }
-                                                            ]
-                                                          }
-                                                        ]
-                                                      },
-                                                      "method": "hash",
-                                                      "arguments": [
-                                                        {
-                                                          "kind": "identifier",
-                                                          "name": "localSame"
-                                                        }
-                                                      ]
-                                                    },
-                                                    "type": {
-                                                      "kind": "number"
-                                                    }
-                                                  }
-                                                },
-                                                {
-                                                  "kind": "boolean",
-                                                  "value": false
-                                                }
-                                              ]
+                                            "type": {
+                                              "kind": "number"
                                             }
-                                          ]
+                                          }
+                                        },
+                                        {
+                                          "kind": "boolean",
+                                          "value": false
                                         }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
-                                      }
-                                    ]
+                                      ]
+                                    }
                                   }
                                 ]
                               },

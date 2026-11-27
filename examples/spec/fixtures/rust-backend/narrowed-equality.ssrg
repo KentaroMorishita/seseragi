@@ -1,0 +1,16 @@
+fn flag x: Bool -> Bool = if x then x == False else x == True
+fn text s: String -> Bool = if s == "a" then s == "b" else s != "c"
+fn number n: Int -> Bool = if n == 1 then n == 2 else n != 3
+fn letter c: Char -> Bool = if c == 'a' then c == 'b' else c != 'c'
+fn same<A> value: A -> A = value
+
+pub effect fn main = do {
+  let known: Bool = True
+  println (show (flag True))
+  println (show (text "a"))
+  println (show (number 1))
+  println (show (letter 'a'))
+  println (show (known == False))
+  println (show (same True == False))
+  println (show (same "a" != "b"))
+}

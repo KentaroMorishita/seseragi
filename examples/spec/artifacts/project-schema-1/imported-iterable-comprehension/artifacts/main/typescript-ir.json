@@ -43,7 +43,6 @@
     "core.int",
     "core.int.multiply",
     "core.iterator.comprehend",
-    "core.int.eq-dictionary",
     "core.bool",
     "core.int.remainder",
     "core.int.add",
@@ -60,10 +59,6 @@
     {
       "feature": "core.iterator.comprehend",
       "local": "_ssrg_iterator_comprehend"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.int.remainder",
@@ -179,42 +174,34 @@
             "parameter": "value",
             "body": {
               "kind": "binary",
-              "operator": "===",
+              "operator": "!==",
               "left": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_int_eq_dictionary"
+                "kind": "checked-result",
+                "value": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_remainder",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source122"
+                    }
+                  ]
                 },
-                "method": "eq",
-                "arguments": [
-                  {
-                    "kind": "runtime-call",
-                    "callee": "_ssrg_int_remainder",
-                    "arguments": [
-                      {
-                        "kind": "identifier",
-                        "name": "value"
-                      },
-                      {
-                        "kind": "number",
-                        "value": "2"
-                      },
-                      {
-                        "kind": "identifier",
-                        "name": "$ssrg$source122"
-                      }
-                    ]
-                  },
-                  {
-                    "kind": "number",
-                    "value": "0"
-                  }
-                ]
+                "type": {
+                  "kind": "number"
+                }
               },
               "right": {
-                "kind": "boolean",
-                "value": false
+                "kind": "number",
+                "value": "0"
               }
             }
           },

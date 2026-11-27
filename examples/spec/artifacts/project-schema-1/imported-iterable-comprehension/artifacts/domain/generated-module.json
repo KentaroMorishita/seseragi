@@ -16,7 +16,6 @@
       "core.range.reduce",
       "core.range",
       "core.range.inclusive",
-      "core.int.ord-dictionary",
       "core.bool",
       "core.maybe.just",
       "core.int.add",

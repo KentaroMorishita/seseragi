@@ -5,11 +5,6 @@
   "runtimeSources": [
     {
       "source": "project/feature-module-composition/src/todo/feature.ssrg",
-      "start": 549,
-      "end": 566
-    },
-    {
-      "source": "project/feature-module-composition/src/todo/feature.ssrg",
       "start": 641,
       "end": 680
     },
@@ -112,7 +107,6 @@
     "signal.type",
     "core.adt",
     "core.string",
-    "core.string.eq-dictionary",
     "core.bool",
     "core.array.append",
     "signal.update",
@@ -127,10 +121,6 @@
     "signal.map"
   ],
   "imports": [
-    {
-      "feature": "core.string.eq-dictionary",
-      "local": "_ssrg_string_eq_dictionary"
-    },
     {
       "feature": "core.array.append",
       "local": "_ssrg_array_append"
@@ -411,44 +401,26 @@
             "value": {
               "kind": "conditional",
               "condition": {
-                "kind": "runtime-call",
-                "callee": "$ssrg$atSource",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "$ssrg$source549"
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "state"
+                    },
+                    "field": "draft"
                   },
-                  {
-                    "kind": "lambda",
-                    "parameter": "",
-                    "body": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_string_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "field-access",
-                          "receiver": {
-                            "kind": "identifier",
-                            "name": "state"
-                          },
-                          "field": "draft"
-                        },
-                        {
-                          "kind": "string",
-                          "value": ""
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
+                  "type": {
+                    "kind": "string"
                   }
-                ]
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ""
+                }
               },
               "thenBranch": {
                 "kind": "identifier",

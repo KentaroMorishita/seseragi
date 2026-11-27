@@ -35,7 +35,6 @@
     "core.range.comprehend",
     "core.range",
     "core.range.inclusive",
-    "core.int.eq-dictionary",
     "core.bool",
     "core.int.remainder",
     "core.unit",
@@ -56,10 +55,6 @@
     {
       "feature": "core.range.inclusive",
       "local": "_ssrg_range_inclusive"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
     },
     {
       "feature": "core.int.remainder",
@@ -130,54 +125,36 @@
             "kind": "lambda",
             "parameter": "value",
             "body": {
-              "kind": "runtime-call",
-              "callee": "$ssrg$atSource",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "$ssrg$source81"
-                },
-                {
-                  "kind": "lambda",
-                  "parameter": "",
-                  "body": {
-                    "kind": "dictionary-call",
-                    "dictionary": {
-                      "kind": "runtime-reference",
-                      "name": "_ssrg_int_eq_dictionary"
+              "kind": "binary",
+              "operator": "===",
+              "left": {
+                "kind": "checked-result",
+                "value": {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_remainder",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
                     },
-                    "method": "eq",
-                    "arguments": [
-                      {
-                        "kind": "runtime-call",
-                        "callee": "_ssrg_int_remainder",
-                        "arguments": [
-                          {
-                            "kind": "identifier",
-                            "name": "value"
-                          },
-                          {
-                            "kind": "number",
-                            "value": "2"
-                          },
-                          {
-                            "kind": "identifier",
-                            "name": "$ssrg$source81"
-                          }
-                        ]
-                      },
-                      {
-                        "kind": "number",
-                        "value": "0"
-                      }
-                    ]
-                  }
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "$ssrg$source81"
+                    }
+                  ]
                 },
-                {
-                  "kind": "boolean",
-                  "value": false
+                "type": {
+                  "kind": "number"
                 }
-              ]
+              },
+              "right": {
+                "kind": "number",
+                "value": "0"
+              }
             }
           },
           {

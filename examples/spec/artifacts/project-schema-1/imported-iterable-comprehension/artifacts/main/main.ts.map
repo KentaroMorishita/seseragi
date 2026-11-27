@@ -12,7 +12,6 @@
     "oddSquares",
     "collectMap",
     "__ssrg$instance$Iterable$0",
-    "intEq",
     "remainder",
     "multiply",
     "addInt",
@@ -40,5 +39,5 @@
     "$ssrg$atSource",
     "Countdown"
   ],
-  "mappings": ";;;;;;;;;;;;;;;;;AAEAA;AAGAM;AAGAE;AAKAG;AAMAS;AAMAC"
+  "mappings": ";;;;;;;;;;;;;;;;AAEAA;AAGAK;AAGAE;AAKAG;AAMAS;AAMAC"
 }

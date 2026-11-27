@@ -1,7 +1,6 @@
 import { assertUnicodeVersion as $ssrg$assertUnicodeVersion } from "@seseragi/runtime/unicode-version"
 import { atSource as $ssrg$atSource } from "@seseragi/runtime/effect"
 import { append as _ssrg_array_append, filter as _ssrg_array_filter, arrayReducible as _ssrg_array_reducible, arrayFunctor as _ssrg_array_functor } from "@seseragi/runtime/array"
-import { intEq as _ssrg_int_eq_dictionary } from "@seseragi/runtime/equality"
 import { intShow as _ssrg_show_intShow, stringShow as _ssrg_show_stringShow } from "@seseragi/runtime/show"
 import { join as _ssrg_collection_join } from "@seseragi/runtime/collection"
 const $ssrg$source307 = { file: "main.ssrg", line: 15, column: 3, uri: "seseragi://artifact/todo-workflow", start: 307, end: 334 };
@@ -26,7 +25,7 @@ type Todo = {
   readonly [__ssrg$brand$Todo]: true;
 };
 const addTodo = (todo: Todo) => (values: ReadonlyArray<Todo>) => $ssrg$atSource($ssrg$source307, () => _ssrg_array_append<Todo>([todo], values), false)
-const keepTodo = (removedId: number) => (todo: Todo) => _ssrg_int_eq_dictionary["eq"]((todo)["id"])(removedId) === false
+const keepTodo = (removedId: number) => (todo: Todo) => (((todo)["id"]) as number) !== removedId
 const removeTodo = (id: number) => (values: ReadonlyArray<Todo>) => $ssrg$atSource($ssrg$source475, () => _ssrg_array_filter($ssrg$atSource($ssrg$source490, () => keepTodo(id), false), values), false)
 const isUrgent = (todo: Todo) => (todo)["urgent"]
 const urgentTodos = (values: ReadonlyArray<Todo>) => $ssrg$atSource($ssrg$source613, () => _ssrg_array_filter(isUrgent, values), false)

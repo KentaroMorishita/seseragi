@@ -34,7 +34,6 @@
       "core.list.from-array",
       "core.list.take",
       "core.float64.api.ieee-eq",
-      "core.int.eq-dictionary",
       "core.list.length",
       "effect.console.println",
       "core.bool.show",

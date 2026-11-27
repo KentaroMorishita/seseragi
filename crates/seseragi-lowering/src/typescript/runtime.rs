@@ -279,7 +279,10 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             let int_operation = is_int_type(type_ref)
                 .then(|| runtime_int_operation_with_evidence(operator, evidence))
                 .flatten();
-            if int_operation.is_none() {
+            if int_operation.is_none()
+                && crate::equality_ops::javascript_operator_with_evidence(operator, evidence)
+                    .is_none()
+            {
                 collect_evidence_runtime_requirements(evidence, requirements);
             }
             collect_type_runtime_requirement(type_ref, requirements);
@@ -886,7 +889,10 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             let int_operation = is_int_type(type_ref)
                 .then(|| runtime_int_operation_with_evidence(operator, evidence))
                 .flatten();
-            if int_operation.is_none() {
+            if int_operation.is_none()
+                && crate::equality_ops::javascript_operator_with_evidence(operator, evidence)
+                    .is_none()
+            {
                 collect_evidence_runtime_imports(evidence, imports);
             }
             if operator == ":" {

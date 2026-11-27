@@ -5,16 +5,6 @@
   "runtimeSources": [
     {
       "source": "main.ssrg",
-      "start": 576,
-      "end": 599
-    },
-    {
-      "source": "main.ssrg",
-      "start": 607,
-      "end": 628
-    },
-    {
-      "source": "main.ssrg",
       "start": 735,
       "end": 744
     },
@@ -32,11 +22,6 @@
       "source": "main.ssrg",
       "start": 805,
       "end": 827
-    },
-    {
-      "source": "main.ssrg",
-      "start": 968,
-      "end": 978
     },
     {
       "source": "main.ssrg",
@@ -411,16 +396,13 @@
     "core.string.debug",
     "core.int.debug",
     "core.bool",
-    "core.string.eq-dictionary",
     "core.string",
-    "core.int.eq-dictionary",
     "core.int",
     "core.list.from-array",
     "core.list.functor",
     "core.non-empty-list.to-list",
     "core.validation.invalid",
     "core.validation.valid",
-    "core.int.ord-dictionary",
     "core.validation.applicative",
     "core.validation.eq",
     "core.validation.show",
@@ -472,14 +454,6 @@
       "local": "_ssrg_debug_intDebug"
     },
     {
-      "feature": "core.string.eq-dictionary",
-      "local": "_ssrg_string_eq_dictionary"
-    },
-    {
-      "feature": "core.int.eq-dictionary",
-      "local": "_ssrg_int_eq_dictionary"
-    },
-    {
       "feature": "core.list.from-array",
       "local": "_ssrg_list_from_array"
     },
@@ -498,10 +472,6 @@
     {
       "feature": "core.validation.valid",
       "local": "_ssrg_validation_valid"
-    },
-    {
-      "feature": "core.int.ord-dictionary",
-      "local": "_ssrg_int_ord_dictionary"
     },
     {
       "feature": "core.validation.applicative",
@@ -1028,92 +998,56 @@
             "body": {
               "kind": "conditional",
               "condition": {
-                "kind": "runtime-call",
-                "callee": "$ssrg$atSource",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "$ssrg$source576"
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "left"
+                    },
+                    "field": "name"
                   },
-                  {
-                    "kind": "lambda",
-                    "parameter": "",
-                    "body": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_string_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "field-access",
-                          "receiver": {
-                            "kind": "identifier",
-                            "name": "left"
-                          },
-                          "field": "name"
-                        },
-                        {
-                          "kind": "field-access",
-                          "receiver": {
-                            "kind": "identifier",
-                            "name": "right"
-                          },
-                          "field": "name"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
+                  "type": {
+                    "kind": "string"
                   }
-                ]
+                },
+                "right": {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "right"
+                  },
+                  "field": "name"
+                }
               },
               "thenBranch": {
-                "kind": "runtime-call",
-                "callee": "$ssrg$atSource",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "$ssrg$source607"
+                "kind": "binary",
+                "operator": "===",
+                "left": {
+                  "kind": "checked-result",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "identifier",
+                      "name": "left"
+                    },
+                    "field": "age"
                   },
-                  {
-                    "kind": "lambda",
-                    "parameter": "",
-                    "body": {
-                      "kind": "dictionary-call",
-                      "dictionary": {
-                        "kind": "runtime-reference",
-                        "name": "_ssrg_int_eq_dictionary"
-                      },
-                      "method": "eq",
-                      "arguments": [
-                        {
-                          "kind": "field-access",
-                          "receiver": {
-                            "kind": "identifier",
-                            "name": "left"
-                          },
-                          "field": "age"
-                        },
-                        {
-                          "kind": "field-access",
-                          "receiver": {
-                            "kind": "identifier",
-                            "name": "right"
-                          },
-                          "field": "age"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "kind": "boolean",
-                    "value": false
+                  "type": {
+                    "kind": "number"
                   }
-                ]
+                },
+                "right": {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "identifier",
+                    "name": "right"
+                  },
+                  "field": "age"
+                }
               },
               "elseBranch": {
                 "kind": "boolean",
@@ -1454,40 +1388,22 @@
       "body": {
         "kind": "conditional",
         "condition": {
-          "kind": "runtime-call",
-          "callee": "$ssrg$atSource",
-          "arguments": [
-            {
+          "kind": "binary",
+          "operator": "===",
+          "left": {
+            "kind": "checked-result",
+            "value": {
               "kind": "identifier",
-              "name": "$ssrg$source968"
+              "name": "name"
             },
-            {
-              "kind": "lambda",
-              "parameter": "",
-              "body": {
-                "kind": "dictionary-call",
-                "dictionary": {
-                  "kind": "runtime-reference",
-                  "name": "_ssrg_string_eq_dictionary"
-                },
-                "method": "eq",
-                "arguments": [
-                  {
-                    "kind": "identifier",
-                    "name": "name"
-                  },
-                  {
-                    "kind": "string",
-                    "value": ""
-                  }
-                ]
-              }
-            },
-            {
-              "kind": "boolean",
-              "value": false
+            "type": {
+              "kind": "string"
             }
-          ]
+          },
+          "right": {
+            "kind": "string",
+            "value": ""
+          }
         },
         "thenBranch": {
           "kind": "runtime-call",
@@ -1567,32 +1483,14 @@
         "kind": "conditional",
         "condition": {
           "kind": "binary",
-          "operator": "===",
+          "operator": ">",
           "left": {
-            "kind": "field-access",
-            "receiver": {
-              "kind": "dictionary-call",
-              "dictionary": {
-                "kind": "runtime-reference",
-                "name": "_ssrg_int_ord_dictionary"
-              },
-              "method": "compare",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "age"
-                },
-                {
-                  "kind": "number",
-                  "value": "0"
-                }
-              ]
-            },
-            "field": "tag"
+            "kind": "identifier",
+            "name": "age"
           },
           "right": {
-            "kind": "string",
-            "value": "Greater"
+            "kind": "number",
+            "value": "0"
           }
         },
         "thenBranch": {

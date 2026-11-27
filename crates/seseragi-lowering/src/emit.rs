@@ -21,6 +21,8 @@ mod precedence_tests;
 mod scalar_tail;
 mod source_map;
 #[cfg(test)]
+mod strict_compare_tests;
+#[cfg(test)]
 mod string_tests;
 
 use imports::render_import_lines;

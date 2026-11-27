@@ -1,7 +1,9 @@
 use crate::bytes_ops::runtime_bytes_operation;
 use crate::collection_ops::{runtime_collection_operation, runtime_prelude_collection_operation};
 use crate::effect_ops::runtime_effect_operation;
-use crate::equality_ops::strict_equality_operator_with_evidence;
+use crate::equality_ops::{
+    javascript_operator_with_evidence, strict_equality_operator_with_evidence,
+};
 use crate::int_ops::{runtime_int_operation, runtime_int_operation_with_evidence};
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::json_ops::{json_decoder_factory_arity, runtime_json_operation};
@@ -35,7 +37,7 @@ use super::types::{
     lower_core_parameter_to_typescript, render_typescript_type, type_ref_from_core_expr,
     type_ref_from_core_type, type_ref_from_core_type_with_erasure,
 };
-use super::{TypeScriptExpr, TypeScriptRecordValueItem, TypeScriptStatement};
+use super::{TypeScriptExpr, TypeScriptRecordValueItem, TypeScriptStatement, TypeScriptType};
 use crate::failure::{missing_evidence, missing_runtime, unexpected_shape, Lowered};
 
 mod comprehension;
@@ -2327,6 +2329,36 @@ fn list_cons_element_type(
     }
 }
 
+/// Strict TypeScript rejects `===` between types that cannot overlap. Literals,
+/// control-flow narrowing (`x ? x === false : ...`) and generic inference can
+/// all give an operand a literal type, so the left operand is asserted to the
+/// comparison's own type. The assertion has no runtime effect.
+fn widen_equality_operand(
+    operator: &str,
+    left: TypeScriptExpr,
+    evidence: &[crate::CoreCallEvidence],
+) -> TypeScriptExpr {
+    if !matches!(operator, "===" | "!==") || matches!(left, TypeScriptExpr::CheckedResult { .. }) {
+        return left;
+    }
+    let [selected] = evidence else {
+        return left;
+    };
+    let type_ref = match selected.constraint.arguments.as_slice() {
+        [CoreType::Named { name, arguments }] if arguments.is_empty() => match name.as_str() {
+            "Int" => TypeScriptType::Number,
+            "Bool" => TypeScriptType::Boolean,
+            "String" | "Char" => TypeScriptType::String,
+            _ => return left,
+        },
+        _ => return left,
+    };
+    TypeScriptExpr::CheckedResult {
+        value: Box::new(left),
+        type_ref,
+    }
+}
+
 fn lower_binary(
     operator: String,
     left: CoreExpr,
@@ -2360,6 +2392,14 @@ fn lower_binary(
                 arguments: vec![left, right],
             });
         }
+    }
+    if let Some(operator) = javascript_operator_with_evidence(&operator, &evidence) {
+        let left = widen_equality_operand(operator, left, &evidence);
+        return Ok(TypeScriptExpr::Binary {
+            operator: operator.to_owned(),
+            left: Box::new(left),
+            right: Box::new(right),
+        });
     }
     if standard_operator(&operator)
         .is_some_and(|operator| operator.kind == StandardOperatorKind::Comparison)
@@ -2396,13 +2436,6 @@ fn lower_binary(
                     left: Box::new(equals),
                     right: Box::new(TypeScriptExpr::Boolean { value: false }),
                 }
-            });
-        }
-        if let Some(operator) = strict_equality_operator_with_evidence(&operator, &evidence) {
-            return Ok(TypeScriptExpr::Binary {
-                operator: operator.to_owned(),
-                left: Box::new(left),
-                right: Box::new(right),
             });
         }
     }
