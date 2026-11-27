@@ -1,0 +1,57 @@
+// 外部画像に頼らず、Seseragi のブランドマークとワードマークをインライン SVG で描きます。
+import * as html from "std/web/html"
+import * as svg from "std/web/svg"
+
+fn emblem -> html.Html<Task<Unit>> = svg.svg {
+  viewBox: "0 0 36 36",
+  role: "img",
+  ariaLabel: "Seseragi ロゴマーク",
+  style: html.style { display: "block", height: "32px", width: "32px" },
+  children: [
+    svg.rect {
+      x: 2.0,
+      y: 2.0,
+      width: 32.0,
+      height: 32.0,
+      rx: 10.0,
+      fill: "#0b2e26",
+      stroke: "#34d399",
+      strokeWidth: "1.5",
+    },
+    svg.path {
+      d: "M 8 13 C 12 9, 18 9, 22 13 C 25 16, 28 16, 30 14",
+      fill: "none",
+      stroke: "#79d7ab",
+      strokeWidth: "2.4",
+      strokeLinecap: "round",
+    },
+    svg.path {
+      d: "M 6 19 C 11 15, 17 15, 22 19 C 25 22, 28 22, 30 20",
+      fill: "none",
+      stroke: "#2dd4bf",
+      strokeWidth: "2.4",
+      strokeLinecap: "round",
+    },
+    svg.path {
+      d: "M 8 25 C 12 21, 18 21, 23 25 C 26 27, 28 27, 30 26",
+      fill: "none",
+      stroke: "#a7f3d0",
+      strokeWidth: "2.0",
+      strokeLinecap: "round",
+    },
+  ],
+}
+  |> svg.toHtml
+
+pub fn brandMark -> html.Html<Task<Unit>> = html.span {
+  style: html.style {
+    alignItems: "center",
+    color: "#f1fff8",
+    display: "inline-flex",
+    fontSize: "20px",
+    fontWeight: "700",
+    gap: "10px",
+    letterSpacing: "-0.02em",
+  },
+  children: [emblem (), html.span { children: "Seseragi" }],
+}

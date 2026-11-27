@@ -90,17 +90,18 @@ import sample17Output from "../../../../examples/samples/records/stdout.txt?raw"
 import sample18Manifest from "../../../../examples/samples/seseragi-landing-page/seseragi.toml?raw"
 import sample18Source from "../../../../examples/samples/seseragi-landing-page/src/main.ssrg?raw"
 import sample18Source2 from "../../../../examples/samples/seseragi-landing-page/src/app.ssrg?raw"
-import sample18Source3 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg?raw"
-import sample18Source4 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg?raw"
-import sample18Source5 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg?raw"
-import sample18Source6 from "../../../../examples/samples/seseragi-landing-page/src/components/closing.ssrg?raw"
-import sample18Source7 from "../../../../examples/samples/seseragi-landing-page/src/components/footer.ssrg?raw"
-import sample18Source8 from "../../../../examples/samples/seseragi-landing-page/src/components/header.ssrg?raw"
-import sample18Source9 from "../../../../examples/samples/seseragi-landing-page/src/components/hero.ssrg?raw"
-import sample18Source10 from "../../../../examples/samples/seseragi-landing-page/src/components/image-statement.ssrg?raw"
-import sample18Source11 from "../../../../examples/samples/seseragi-landing-page/src/components/principles.ssrg?raw"
-import sample18Source12 from "../../../../examples/samples/seseragi-landing-page/src/ui/styles.ssrg?raw"
-import sample18Source13 from "../../../../examples/samples/seseragi-landing-page/src/url.ssrg?raw"
+import sample18Source3 from "../../../../examples/samples/seseragi-landing-page/src/components/brand.ssrg?raw"
+import sample18Source4 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/code-panel.ssrg?raw"
+import sample18Source5 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/model.ssrg?raw"
+import sample18Source6 from "../../../../examples/samples/seseragi-landing-page/src/components/chapter/view.ssrg?raw"
+import sample18Source7 from "../../../../examples/samples/seseragi-landing-page/src/components/closing.ssrg?raw"
+import sample18Source8 from "../../../../examples/samples/seseragi-landing-page/src/components/footer.ssrg?raw"
+import sample18Source9 from "../../../../examples/samples/seseragi-landing-page/src/components/header.ssrg?raw"
+import sample18Source10 from "../../../../examples/samples/seseragi-landing-page/src/components/hero.ssrg?raw"
+import sample18Source11 from "../../../../examples/samples/seseragi-landing-page/src/components/image-statement.ssrg?raw"
+import sample18Source12 from "../../../../examples/samples/seseragi-landing-page/src/components/principles.ssrg?raw"
+import sample18Source13 from "../../../../examples/samples/seseragi-landing-page/src/ui/styles.ssrg?raw"
+import sample18Source14 from "../../../../examples/samples/seseragi-landing-page/src/url.ssrg?raw"
 import sample18Guide from "../../../../examples/samples/seseragi-landing-page/guide.md?raw"
 
 import sample19Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
@@ -1341,7 +1342,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "manifestHash": "sha256:fc0ae07afa43259aceef4b81e4385cc8b2340973075035d8d47bf35a9a2c1950",
       "guidePath": "examples/samples/seseragi-landing-page/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:0a94af1d2d58a1e0139e955f9faf492f63bddd581f6d7bed0300ef98f5381dcf",
+      "workspaceHash": "sha256:31f23075f98e4dc4435d76aa315cdaf7e120fd14ec8ec93b99afaf9758cca7bc",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1366,7 +1367,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/app.ssrg",
-            "sourceHash": "sha256:4adbb5f7ba980868db2d49725bf8a0fb60d23ce4605297e52a78a059c65f5e72"
+            "sourceHash": "sha256:e7ecdd73a3244623e5d657c92fd67dd4c31f7cd06ceaeb3fe0d0acb55d3f886e"
+          },
+          {
+            "path": "components/brand.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/src/components/brand.ssrg",
+            "sourceHash": "sha256:dc6a0fbe68f88049d1369144c7852c1a97cf43481fcb6ea1723ed4ba1d9b987c"
           },
           {
             "path": "components/chapter/code-panel.ssrg",
@@ -1391,22 +1397,22 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "components/footer.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/footer.ssrg",
-            "sourceHash": "sha256:8948f5bdddadcaa522bf3f366f5208775c80dcce111bfac747b5d5aa9e908727"
+            "sourceHash": "sha256:6bc0714340ef9f0e064f339013ba48774e68c2b71bf1f502f8fa18bac600bbe3"
           },
           {
             "path": "components/header.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/header.ssrg",
-            "sourceHash": "sha256:492e5056cf850a6b9b58347ad2e95ddb18e8a7e27c33cd49f1c2fb3de3fde5be"
+            "sourceHash": "sha256:98ff3f70c7162ee4a84411a94f953f47fe0cd9fcaf85409265a889de1e193b0a"
           },
           {
             "path": "components/hero.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/hero.ssrg",
-            "sourceHash": "sha256:e18b0219de4c3da654c400fc69cc93d5f7c7adb1759bc8c4337545610b8c5666"
+            "sourceHash": "sha256:bf0cbe556fcfc56ff5d5cc4155736bbf3b49fa7eb54776dddf56d77896923aa5"
           },
           {
             "path": "components/image-statement.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/src/components/image-statement.ssrg",
-            "sourceHash": "sha256:336e410038dfa1281e7a7832253dec7acb94b556cd9bd0a5ac682f5bfa831394"
+            "sourceHash": "sha256:c5543ada0f3b741d1b8d87040b72ab31daa82b0c4e19171d60daf35901dafa3f"
           },
           {
             "path": "components/principles.ssrg",
@@ -1431,17 +1437,18 @@ export const generatedSamples: readonly GeneratedSample[] = [
     projectFiles: [
       { path: "main.ssrg", source: sample18Source },
       { path: "app.ssrg", source: sample18Source2 },
-      { path: "components/chapter/code-panel.ssrg", source: sample18Source3 },
-      { path: "components/chapter/model.ssrg", source: sample18Source4 },
-      { path: "components/chapter/view.ssrg", source: sample18Source5 },
-      { path: "components/closing.ssrg", source: sample18Source6 },
-      { path: "components/footer.ssrg", source: sample18Source7 },
-      { path: "components/header.ssrg", source: sample18Source8 },
-      { path: "components/hero.ssrg", source: sample18Source9 },
-      { path: "components/image-statement.ssrg", source: sample18Source10 },
-      { path: "components/principles.ssrg", source: sample18Source11 },
-      { path: "ui/styles.ssrg", source: sample18Source12 },
-      { path: "url.ssrg", source: sample18Source13 },
+      { path: "components/brand.ssrg", source: sample18Source3 },
+      { path: "components/chapter/code-panel.ssrg", source: sample18Source4 },
+      { path: "components/chapter/model.ssrg", source: sample18Source5 },
+      { path: "components/chapter/view.ssrg", source: sample18Source6 },
+      { path: "components/closing.ssrg", source: sample18Source7 },
+      { path: "components/footer.ssrg", source: sample18Source8 },
+      { path: "components/header.ssrg", source: sample18Source9 },
+      { path: "components/hero.ssrg", source: sample18Source10 },
+      { path: "components/image-statement.ssrg", source: sample18Source11 },
+      { path: "components/principles.ssrg", source: sample18Source12 },
+      { path: "ui/styles.ssrg", source: sample18Source13 },
+      { path: "url.ssrg", source: sample18Source14 },
     ],
     guide: sample18Guide,
     stdin: "",

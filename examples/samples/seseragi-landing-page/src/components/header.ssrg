@@ -1,5 +1,6 @@
 // ページ上部のブランドロゴと主要ナビゲーションです。
 import * as html from "std/web/html"
+import { brandMark } from "./brand"
 import * as styles from "../ui/styles"
 
 fn navLink label: String -> href: html.WebUrl -> html.Html<Task<Unit>> = html.a {
@@ -10,23 +11,13 @@ fn navLink label: String -> href: html.WebUrl -> html.Html<Task<Unit>> = html.a 
   children: label,
 }
 
-fn logoImage logoUrl: html.WebUrl -> html.Html<Task<Unit>> = html.img {
-  src: logoUrl,
-  alt: "Seseragi",
-  width: 200,
-  height: 60,
-  loading: "eager",
-  style: html.style { height: "auto", width: "clamp(132px, 26vw, 178px)", },
+fn logo playgroundUrl: html.WebUrl -> html.Html<Task<Unit>> = html.a {
+  href: playgroundUrl,
+  target: "_blank",
+  rel: "noopener noreferrer",
+  style: html.style { alignItems: "center", display: "flex", textDecoration: "none" },
+  children: brandMark (),
 }
-
-fn logo logoUrl: html.WebUrl -> playgroundUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.a {
-    href: playgroundUrl,
-    target: "_blank",
-    rel: "noopener noreferrer",
-    style: html.style { alignItems: "center", display: "flex", textDecoration: "none", },
-    children: logoImage logoUrl,
-  }
 
 fn navigation playgroundUrl: html.WebUrl
   -> tourUrl: html.WebUrl
@@ -47,8 +38,7 @@ fn navigation playgroundUrl: html.WebUrl
     ],
   }
 
-pub fn header logoUrl: html.WebUrl
-  -> playgroundUrl: html.WebUrl
+pub fn header playgroundUrl: html.WebUrl
   -> tourUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> html.Html<Task<Unit>> =
@@ -74,9 +64,6 @@ pub fn header logoUrl: html.WebUrl
         paddingTop: "20px",
         width: "calc(100% - 32px)",
       },
-      children: [
-        logo logoUrl playgroundUrl,
-        navigation playgroundUrl tourUrl repositoryUrl,
-      ],
+      children: [logo playgroundUrl, navigation playgroundUrl tourUrl repositoryUrl,],
     },
   }

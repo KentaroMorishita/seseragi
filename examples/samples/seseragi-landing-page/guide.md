@@ -14,6 +14,7 @@
 main.ssrg                    実行の入口（dom.run）
 app.ssrg                     URL 準備とページ全体の合成
 url.ssrg                     文字列から WebUrl への変換
+components/brand.ssrg        インライン SVG のブランドロゴ
 components/header.ssrg       ロゴと主要リンク
 components/hero.ssrg         ファーストビューとコードカード
 components/principles.ssrg   3 つの設計方針

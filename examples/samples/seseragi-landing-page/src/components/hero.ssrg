@@ -1,24 +1,47 @@
 // ファーストビュー: 言語を一文で伝え、Playground と同じ配色の本物のコードと行動リンクを並べます。
 import * as html from "std/web/html"
+import * as svg from "std/web/svg"
 import { header } from "./header"
 import { heroCodeCard } from "./chapter/code-panel"
 import * as styles from "../ui/styles"
 
-fn heroImage heroImageUrl: html.WebUrl -> html.Html<Task<Unit>> = html.img {
-  src: heroImageUrl,
-  alt: "流れる緑の光",
-  width: 1800,
-  height: 2400,
-  loading: "eager",
+fn heroArtwork -> html.Html<Task<Unit>> = svg.svg {
+  viewBox: "0 0 1200 800",
+  role: "img",
+  ariaLabel: "流れる緑の光",
   style: html.style {
+    display: "block",
     height: "100%",
     left: "0",
-    objectFit: "cover",
     position: "absolute",
     top: "0",
     width: "100%",
   },
+  children: [
+    svg.rect { x: 0.0, y: 0.0, width: 1200.0, height: 800.0, fill: "#04120e" },
+    svg.circle { cx: 240.0, cy: 180.0, r: 280.0, fill: "#0d3b2e", opacity: 0.55 },
+    svg.circle { cx: 980.0, cy: 260.0, r: 320.0, fill: "#0f4c45", opacity: 0.45 },
+    svg.path {
+      d: "M 0 460 C 260 360, 520 540, 840 420 C 1000 360, 1110 400, 1200 370 L 1200 800 L 0 800 Z",
+      fill: "#06211a",
+    },
+    svg.path {
+      d: "M 0 560 C 300 470, 560 630, 880 510 C 1030 455, 1130 490, 1200 470",
+      fill: "none",
+      stroke: "#2dd4bf",
+      strokeWidth: "2.5",
+      opacity: 0.4,
+    },
+    svg.path {
+      d: "M 0 620 C 280 540, 560 680, 900 575 C 1040 532, 1130 560, 1200 545",
+      fill: "none",
+      stroke: "#8ee6bc",
+      strokeWidth: "2.0",
+      opacity: 0.3,
+    },
+  ],
 }
+  |> svg.toHtml
 
 fn heroOverlay -> html.Html<Task<Unit>> = html.div {
   style: html.style {
@@ -117,18 +140,16 @@ fn heroLead playgroundUrl: html.WebUrl
     }
   }
 
-pub fn hero logoUrl: html.WebUrl
-  -> heroImageUrl: html.WebUrl
-  -> playgroundUrl: html.WebUrl
+pub fn hero playgroundUrl: html.WebUrl
   -> tourUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> html.Html<Task<Unit>> =
   html.section {
     style: html.style { minHeight: "100vh", overflow: "hidden", position: "relative", },
     children: [
-      heroImage heroImageUrl,
+      heroArtwork (),
       heroOverlay (),
-      header logoUrl playgroundUrl tourUrl repositoryUrl,
+      header playgroundUrl tourUrl repositoryUrl,
       html.div {
         style: html.style {
           alignItems: "center",
