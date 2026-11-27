@@ -10,7 +10,7 @@
 struct NativeHttpStream {
     events: std::sync::mpsc::Receiver<Result<NativeHttpEvent, NativeHttpReply>>,
     cancelled: std::sync::Arc<std::sync::atomic::AtomicBool>,
-    connection: std::sync::Arc<std::sync::Mutex<Option<std::net::TcpStream>>>,
+    connection: std::sync::Arc<std::sync::Mutex<Option<std::sync::Arc<dyn NativeHttpShutdown>>>>,
     // Set once the request body must stop: by the worker at the final
     // response head, at a failure or at the end of the response, and by the
     // body Fiber when the body fails. Whichever sets it first decides the
@@ -32,9 +32,7 @@ impl Drop for NativeHttpStream {
     fn drop(&mut self) {
         self.cancelled
             .store(true, std::sync::atomic::Ordering::Release);
-        if let Some(stream) = self.connection.lock().unwrap().as_ref() {
-            let _ = stream.shutdown(std::net::Shutdown::Both);
-        }
+        native_http_shutdown_both(&self.connection);
     }
 }
 
@@ -151,7 +149,7 @@ fn native_http_stream_open(request: &V, length: i64) -> Result<i64, NativeExit> 
                 },
             );
             stop_body();
-            let _ = reader.get_mut().shutdown(std::net::Shutdown::Both);
+            native_http_shutdown_both(&worker_connection);
             if worker_cancelled.load(std::sync::atomic::Ordering::Acquire) {
                 // A closed exchange or a failed body: the end of the events
                 // wakes a waiting pull, which reports the body failure.
@@ -232,9 +230,7 @@ impl NativeHttpStream {
         self.parts = None;
         self.cancelled
             .store(true, std::sync::atomic::Ordering::Release);
-        if let Some(connection) = self.connection.lock().unwrap().as_ref() {
-            let _ = connection.shutdown(std::net::Shutdown::Both);
-        }
+        native_http_shutdown_both(&self.connection);
     }
 }
 
