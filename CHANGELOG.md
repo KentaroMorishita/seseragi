@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.62.8] - 2026-11-27
+
+### Fixed
+
+- HTML and SVG rendering on both the TS and native targets now rejects custom attributes whose names collide case-insensitively with typed props or internal renderer attributes on the same element, matching the `13-web-ui` specification (#1402).
+- `html.parseWebUrl` and URL-valued `html.attribute` checks on the native target now validate internationalized domain names with the shared WHATWG/IDNA host rules and IDNA round-trip verification for Punycode labels, preserving the original URL spelling to match the TS target (#1402).
+
 ## [0.62.7] - 2026-11-27
 
 ### Added

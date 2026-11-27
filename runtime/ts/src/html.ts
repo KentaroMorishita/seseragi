@@ -1018,33 +1018,52 @@ function renderAttributes(
   keyMarker?: string
 ): string {
   const attributes: string[] = []
+  const usedNames = new Set<string>()
   if (elementRefMarker !== undefined) {
+    usedNames.add("data-ssrg-ref")
     attributes.push(`data-ssrg-ref="${escapeAttribute(elementRefMarker)}"`)
   }
   if (keyMarker !== undefined) {
+    usedNames.add("data-ssrg-key")
     attributes.push(`data-ssrg-key="${escapeAttribute(keyMarker)}"`)
   }
-  stringAttribute(attributes, "id", props.id)
-  stringAttribute(attributes, "class", props.class)
-  stringAttribute(attributes, "title", props.title)
-  booleanAttribute(attributes, "hidden", props.hidden)
-  styleAttribute(attributes, props.style)
-  stringAttribute(attributes, "role", props.role)
-  integerAttribute(attributes, "tabindex", props.tabIndex)
-  stringAttribute(attributes, "lang", props.lang)
-  stringAttribute(attributes, "dir", props.dir)
-  enumeratedBooleanAttribute(attributes, "draggable", props.draggable)
+  stringAttribute(attributes, usedNames, "id", props.id)
+  stringAttribute(attributes, usedNames, "class", props.class)
+  stringAttribute(attributes, usedNames, "title", props.title)
+  booleanAttribute(attributes, usedNames, "hidden", props.hidden)
+  styleAttribute(attributes, usedNames, props.style)
+  stringAttribute(attributes, usedNames, "role", props.role)
+  integerAttribute(attributes, usedNames, "tabindex", props.tabIndex)
+  stringAttribute(attributes, usedNames, "lang", props.lang)
+  stringAttribute(attributes, usedNames, "dir", props.dir)
+  enumeratedBooleanAttribute(attributes, usedNames, "draggable", props.draggable)
   enumeratedBooleanAttribute(
     attributes,
+    usedNames,
     "contenteditable",
     props.contentEditable
   )
-  booleanAttribute(attributes, "inert", props.inert)
-  stringAttribute(attributes, "aria-label", props.ariaLabel)
-  enumeratedBooleanAttribute(attributes, "aria-busy", props.ariaBusy)
-  enumeratedBooleanAttribute(attributes, "aria-expanded", props.ariaExpanded)
-  enumeratedBooleanAttribute(attributes, "aria-hidden", props.ariaHidden)
-  enumeratedBooleanAttribute(attributes, "aria-selected", props.ariaSelected)
+  booleanAttribute(attributes, usedNames, "inert", props.inert)
+  stringAttribute(attributes, usedNames, "aria-label", props.ariaLabel)
+  enumeratedBooleanAttribute(attributes, usedNames, "aria-busy", props.ariaBusy)
+  enumeratedBooleanAttribute(
+    attributes,
+    usedNames,
+    "aria-expanded",
+    props.ariaExpanded
+  )
+  enumeratedBooleanAttribute(
+    attributes,
+    usedNames,
+    "aria-hidden",
+    props.ariaHidden
+  )
+  enumeratedBooleanAttribute(
+    attributes,
+    usedNames,
+    "aria-selected",
+    props.ariaSelected
+  )
   for (const kind of [
     "click",
     "focus",
@@ -1068,6 +1087,7 @@ function renderAttributes(
   ] as const) {
     const id = eventMarkers[kind]
     if (id !== undefined) {
+      usedNames.add(`data-ssrg-event-${kind}`)
       attributes.push(`data-ssrg-event-${kind}="${id}"`)
     }
   }
@@ -1088,7 +1108,7 @@ function renderAttributes(
       ["dominantBaseline", "dominant-baseline"],
       ["pointerEvents", "pointer-events"],
     ] as const) {
-      stringAttribute(attributes, attribute, props[property])
+      stringAttribute(attributes, usedNames, attribute, props[property])
     }
     for (const property of [
       "x",
@@ -1106,108 +1126,113 @@ function renderAttributes(
       "height",
       "opacity",
     ] as const) {
-      numberAttribute(attributes, property, props[property])
+      numberAttribute(attributes, usedNames, property, props[property])
     }
   }
 
   if (tagName === "button") {
-    booleanAttribute(attributes, "disabled", props.disabled)
-    stringAttribute(attributes, "type", props.buttonType ?? "button")
-    stringAttribute(attributes, "name", props.name)
-    stringAttribute(attributes, "value", props.value)
-    booleanAttribute(attributes, "autofocus", props.autoFocus)
+    booleanAttribute(attributes, usedNames, "disabled", props.disabled)
+    stringAttribute(
+      attributes,
+      usedNames,
+      "type",
+      props.buttonType ?? "button"
+    )
+    stringAttribute(attributes, usedNames, "name", props.name)
+    stringAttribute(attributes, usedNames, "value", props.value)
+    booleanAttribute(attributes, usedNames, "autofocus", props.autoFocus)
   }
   if (tagName === "form") {
-    stringAttribute(attributes, "name", props.name)
-    stringAttribute(attributes, "autocomplete", props.autoComplete)
+    stringAttribute(attributes, usedNames, "name", props.name)
+    stringAttribute(attributes, usedNames, "autocomplete", props.autoComplete)
   }
   if (tagName === "input") {
-    stringAttribute(attributes, "value", props.value)
-    booleanAttribute(attributes, "checked", props.checked)
-    stringAttribute(attributes, "name", props.name)
-    booleanAttribute(attributes, "disabled", props.disabled)
-    booleanAttribute(attributes, "required", props.required)
-    booleanAttribute(attributes, "readonly", props.readOnly)
-    booleanAttribute(attributes, "multiple", props.multiple)
-    stringAttribute(attributes, "placeholder", props.placeholder)
-    stringAttribute(attributes, "autocomplete", props.autoComplete)
-    booleanAttribute(attributes, "autofocus", props.autoFocus)
-    stringAttribute(attributes, "min", props.min)
-    stringAttribute(attributes, "max", props.max)
-    stringAttribute(attributes, "step", props.step)
-    stringAttribute(attributes, "pattern", props.pattern)
-    stringAttribute(attributes, "type", props.inputType ?? "text")
+    stringAttribute(attributes, usedNames, "value", props.value)
+    booleanAttribute(attributes, usedNames, "checked", props.checked)
+    stringAttribute(attributes, usedNames, "name", props.name)
+    booleanAttribute(attributes, usedNames, "disabled", props.disabled)
+    booleanAttribute(attributes, usedNames, "required", props.required)
+    booleanAttribute(attributes, usedNames, "readonly", props.readOnly)
+    booleanAttribute(attributes, usedNames, "multiple", props.multiple)
+    stringAttribute(attributes, usedNames, "placeholder", props.placeholder)
+    stringAttribute(attributes, usedNames, "autocomplete", props.autoComplete)
+    booleanAttribute(attributes, usedNames, "autofocus", props.autoFocus)
+    stringAttribute(attributes, usedNames, "min", props.min)
+    stringAttribute(attributes, usedNames, "max", props.max)
+    stringAttribute(attributes, usedNames, "step", props.step)
+    stringAttribute(attributes, usedNames, "pattern", props.pattern)
+    stringAttribute(attributes, usedNames, "type", props.inputType ?? "text")
   }
   if (tagName === "textarea") {
-    stringAttribute(attributes, "name", props.name)
-    booleanAttribute(attributes, "disabled", props.disabled)
-    booleanAttribute(attributes, "required", props.required)
-    booleanAttribute(attributes, "readonly", props.readOnly)
-    stringAttribute(attributes, "placeholder", props.placeholder)
-    stringAttribute(attributes, "autocomplete", props.autoComplete)
-    booleanAttribute(attributes, "autofocus", props.autoFocus)
-    integerAttribute(attributes, "rows", props.rows)
-    integerAttribute(attributes, "cols", props.cols)
+    stringAttribute(attributes, usedNames, "name", props.name)
+    booleanAttribute(attributes, usedNames, "disabled", props.disabled)
+    booleanAttribute(attributes, usedNames, "required", props.required)
+    booleanAttribute(attributes, usedNames, "readonly", props.readOnly)
+    stringAttribute(attributes, usedNames, "placeholder", props.placeholder)
+    stringAttribute(attributes, usedNames, "autocomplete", props.autoComplete)
+    booleanAttribute(attributes, usedNames, "autofocus", props.autoFocus)
+    integerAttribute(attributes, usedNames, "rows", props.rows)
+    integerAttribute(attributes, usedNames, "cols", props.cols)
   }
   if (tagName === "label") {
-    stringAttribute(attributes, "for", props.htmlFor)
+    stringAttribute(attributes, usedNames, "for", props.htmlFor)
   }
   if (tagName === "a") {
-    webUrlAttribute(attributes, "href", props.href)
-    stringAttribute(attributes, "target", props.target)
-    stringAttribute(attributes, "rel", props.rel)
-    booleanAttribute(attributes, "download", props.download)
+    webUrlAttribute(attributes, usedNames, "href", props.href)
+    stringAttribute(attributes, usedNames, "target", props.target)
+    stringAttribute(attributes, usedNames, "rel", props.rel)
+    booleanAttribute(attributes, usedNames, "download", props.download)
   }
   if (tagName === "img") {
-    webUrlAttribute(attributes, "src", props.src)
-    stringAttribute(attributes, "alt", props.alt)
-    integerAttribute(attributes, "width", props.width)
-    integerAttribute(attributes, "height", props.height)
-    stringAttribute(attributes, "loading", props.loading)
+    webUrlAttribute(attributes, usedNames, "src", props.src)
+    stringAttribute(attributes, usedNames, "alt", props.alt)
+    integerAttribute(attributes, usedNames, "width", props.width)
+    integerAttribute(attributes, usedNames, "height", props.height)
+    stringAttribute(attributes, usedNames, "loading", props.loading)
   }
   if (tagName === "source") {
-    webUrlAttribute(attributes, "src", props.src)
-    stringAttribute(attributes, "media", props.media)
-    stringAttribute(attributes, "type", props.mimeType)
+    webUrlAttribute(attributes, usedNames, "src", props.src)
+    stringAttribute(attributes, usedNames, "media", props.media)
+    stringAttribute(attributes, usedNames, "type", props.mimeType)
   }
   if (tagName === "video" || tagName === "audio") {
-    webUrlAttribute(attributes, "src", props.src)
+    webUrlAttribute(attributes, usedNames, "src", props.src)
   }
   if (tagName === "video") {
-    integerAttribute(attributes, "width", props.width)
-    integerAttribute(attributes, "height", props.height)
+    integerAttribute(attributes, usedNames, "width", props.width)
+    integerAttribute(attributes, usedNames, "height", props.height)
   }
   if (tagName === "meta") {
-    stringAttribute(attributes, "charset", props.charSet)
-    stringAttribute(attributes, "name", props.name)
-    stringAttribute(attributes, "content", props.content)
-    stringAttribute(attributes, "http-equiv", props.httpEquiv)
+    stringAttribute(attributes, usedNames, "charset", props.charSet)
+    stringAttribute(attributes, usedNames, "name", props.name)
+    stringAttribute(attributes, usedNames, "content", props.content)
+    stringAttribute(attributes, usedNames, "http-equiv", props.httpEquiv)
   }
   if (tagName === "link") {
-    stringAttribute(attributes, "rel", props.rel)
-    webUrlAttribute(attributes, "href", props.href)
+    stringAttribute(attributes, usedNames, "rel", props.rel)
+    webUrlAttribute(attributes, usedNames, "href", props.href)
   }
   if (tagName === "select") {
-    stringAttribute(attributes, "name", props.name)
-    stringAttribute(attributes, "value", props.value)
-    booleanAttribute(attributes, "disabled", props.disabled)
-    booleanAttribute(attributes, "required", props.required)
-    booleanAttribute(attributes, "multiple", props.multiple)
-    booleanAttribute(attributes, "autofocus", props.autoFocus)
+    stringAttribute(attributes, usedNames, "name", props.name)
+    stringAttribute(attributes, usedNames, "value", props.value)
+    booleanAttribute(attributes, usedNames, "disabled", props.disabled)
+    booleanAttribute(attributes, usedNames, "required", props.required)
+    booleanAttribute(attributes, usedNames, "multiple", props.multiple)
+    booleanAttribute(attributes, usedNames, "autofocus", props.autoFocus)
   }
   if (tagName === "option") {
-    stringAttribute(attributes, "value", props.value)
-    booleanAttribute(attributes, "selected", props.selected)
-    booleanAttribute(attributes, "disabled", props.disabled)
+    stringAttribute(attributes, usedNames, "value", props.value)
+    booleanAttribute(attributes, usedNames, "selected", props.selected)
+    booleanAttribute(attributes, usedNames, "disabled", props.disabled)
   }
   if (tagName === "th" || tagName === "td") {
-    integerAttribute(attributes, "colspan", props.colSpan)
-    integerAttribute(attributes, "rowspan", props.rowSpan)
+    integerAttribute(attributes, usedNames, "colspan", props.colSpan)
+    integerAttribute(attributes, usedNames, "rowspan", props.rowSpan)
   }
   if (tagName === "details" || tagName === "dialog") {
-    booleanAttribute(attributes, "open", props.open)
+    booleanAttribute(attributes, usedNames, "open", props.open)
   }
-  customAttributes(attributes, props.attributes)
+  customAttributes(attributes, usedNames, props.attributes)
   return attributes.length === 0 ? "" : ` ${attributes.join(" ")}`
 }
 
@@ -1457,24 +1482,41 @@ export function domEventStopsPropagation(
   return handler.kind === "click" && handler.stopPropagation
 }
 
-function styleAttribute(output: string[], value: unknown): void {
+function styleAttribute(
+  output: string[],
+  usedNames: Set<string>,
+  value: unknown
+): void {
   if (value === undefined) return
+  usedNames.add("style")
   if (!isStyle(value)) {
     throw new TypeError("HTML style must be created with html.style")
   }
   output.push(`style="${escapeAttribute(value.cssText)}"`)
 }
 
-function stringAttribute(output: string[], name: string, value: unknown): void {
+function stringAttribute(
+  output: string[],
+  usedNames: Set<string>,
+  name: string,
+  value: unknown
+): void {
   if (value === undefined) return
+  usedNames.add(name.toLowerCase())
   if (typeof value !== "string") {
     throw new TypeError(`HTML attribute ${name} must be a string`)
   }
   output.push(`${name}="${escapeAttribute(value)}"`)
 }
 
-function webUrlAttribute(output: string[], name: string, value: unknown): void {
+function webUrlAttribute(
+  output: string[],
+  usedNames: Set<string>,
+  name: string,
+  value: unknown
+): void {
   if (value === undefined) return
+  usedNames.add(name.toLowerCase())
   if (!isWebUrl(value)) {
     throw new TypeError(
       `HTML URL attribute ${name} must be created with html.parseWebUrl`
@@ -1485,18 +1527,23 @@ function webUrlAttribute(output: string[], name: string, value: unknown): void {
 
 function booleanAttribute(
   output: string[],
+  usedNames: Set<string>,
   name: string,
   value: unknown
 ): void {
+  if (value === undefined) return
+  usedNames.add(name.toLowerCase())
   if (value === true) output.push(name)
 }
 
 function enumeratedBooleanAttribute(
   output: string[],
+  usedNames: Set<string>,
   name: string,
   value: unknown
 ): void {
   if (value === undefined) return
+  usedNames.add(name.toLowerCase())
   if (typeof value !== "boolean") {
     throw new TypeError(`HTML attribute ${name} must be a boolean`)
   }
@@ -1505,30 +1552,41 @@ function enumeratedBooleanAttribute(
 
 function integerAttribute(
   output: string[],
+  usedNames: Set<string>,
   name: string,
   value: unknown
 ): void {
   if (value === undefined) return
+  usedNames.add(name.toLowerCase())
   if (typeof value !== "number" || !Number.isSafeInteger(value)) {
     throw new TypeError(`HTML attribute ${name} must be an Int`)
   }
   output.push(`${name}="${value}"`)
 }
 
-function numberAttribute(output: string[], name: string, value: unknown): void {
+function numberAttribute(
+  output: string[],
+  usedNames: Set<string>,
+  name: string,
+  value: unknown
+): void {
   if (value === undefined) return
+  usedNames.add(name.toLowerCase())
   if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new TypeError(`SVG attribute ${name} must be a finite number`)
   }
   output.push(`${name}="${String(value)}"`)
 }
 
-function customAttributes(output: string[], value: unknown): void {
+function customAttributes(
+  output: string[],
+  usedNames: Set<string>,
+  value: unknown
+): void {
   if (value === undefined) return
   if (!Array.isArray(value)) {
     throw new TypeError("HTML custom attributes must be an Array")
   }
-  const names = new Set<string>()
   for (const item of value) {
     if (!isAttribute(item)) {
       throw new TypeError(
@@ -1536,10 +1594,10 @@ function customAttributes(output: string[], value: unknown): void {
       )
     }
     const normalized = item.name.toLowerCase()
-    if (names.has(normalized)) {
+    if (usedNames.has(normalized)) {
       throw new TypeError(`duplicate HTML custom attribute ${item.name}`)
     }
-    names.add(normalized)
+    usedNames.add(normalized)
     output.push(`${item.name}="${escapeAttribute(item.value)}"`)
   }
 }
