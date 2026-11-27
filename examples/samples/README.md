@@ -66,8 +66,8 @@ examples/samples/<sample-id>/
 }
 ```
 
-現在の複数ファイルのサンプルは `project-flow-app`、`project-greeting`、
-`seseragi-landing-page`、`web-starter` の4つです。
+現在の複数ファイルのサンプルは `feature-composition`、`form-todo`、
+`project-flow-app`、`project-greeting`、`seseragi-landing-page`、`web-starter` の6つです。
 
 ### sample.json と Discover への表示
 
@@ -105,17 +105,17 @@ HTML サンプルではこの3つが必須で、生成スクリプトは各役�
 | サンプル | experience | architecture | focus | 見どころ |
 | --- | --- | --- | --- | --- |
 | `html-components` | minimal | static | component | 状態なしで props・子要素・サーバー側描画を確認する |
-| `interactive-app` | minimal | dom-app | state | 純粋な更新関数を簡易 API に渡す |
-| `web-starter` | minimal | multi-module | project | Signal・`dom.run`・ローカルパッケージの最小構成を確認する |
-| `feature-composition` | guided | signal-run | composition | 複数の Signal と、実行範囲の指定を組み合わせる |
-| `form-todo` | showcase | signal-run | form | フォーム・入力チェック・複数のイベントをまとめる |
-| `project-flow-app` | showcase | multi-module | project | 機能ごとのモジュール分割を Explorer で追う |
+| `interactive-app` | minimal | signal-run | state | 散歩コースの状態を `Signal` と `dom.run` で切り替える |
+| `web-starter` | minimal | multi-module | project | `Signal`・`dom.run`・ローカルパッケージの最小構成を確認する |
+| `feature-composition` | guided | signal-run | composition | 機能ごとの非公開 `Signal` と `switchMap` の合成を複数モジュールで追う |
+| `form-todo` | showcase | signal-run | form | 座席マップ・連番選択・入力検証・発券を複数モジュールでまとめる |
+| `project-flow-app` | showcase | multi-module | project | 地図ルート・日程・割り勘・共有を機能ごとのモジュール分割で追う |
 | `seseragi-landing-page` | showcase | multi-module | composition | 完成したページのセクション・状態・スタイルをモジュール単位で追う |
 
 `signal-state` は DOM を使わない Signal の基礎なので、この分類には入れません。
 上の7つはそれぞれ役割が分かれているため、用途ごとに使い分けます。
 各サンプルの `guide.md` の冒頭には「このサンプルを選ぶ理由」を書き、
-入門 → 解説付き → 1ファイルの完成例 → 複数モジュール、の順に次に見るサンプルを示します。
+入門 → 解説付き → 複数モジュールの完成例、の順に次に見るサンプルを示します。
 
 ## ショーケースの品質基準
 
