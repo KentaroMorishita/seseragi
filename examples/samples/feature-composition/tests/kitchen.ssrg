@@ -5,6 +5,7 @@ import * as test from "std/test"
 import {
   AddMinute,
   Countdown,
+  Elapsed,
   Finished,
   Idle,
   Pause,
@@ -13,10 +14,11 @@ import {
   Start,
   TimerState,
   TimerRequest,
+  advance,
   clockText,
   elapsedPermille,
   secondsLeft,
-  tick,
+  splitElapsed,
   update,
 } from "self/kitchen/countdown"
 import {
@@ -56,11 +58,17 @@ let startsFull = {
 }
 
 let lastTickFinishes =
-  test.test "残り 0.25 秒で刻むと終わる" (test.equal (Finished "にんにくを炒める") (tick lastQuarter))
+  test.test "残り 0.25 秒で 0.25 秒たつと終わる" (test.equal (Finished "にんにくを炒める") (advance 250 lastQuarter))
+
+let throttledMinute =
+  test.test "刻みが 1 分あいても、1 分ぶん減る" (test.equal "7:00" (clockText (shownSeconds (advance 60000 started))))
+
+let carriedFraction =
+  test.test "ミリ秒に満たない端数は次の刻みへ持ち越す" (test.equal (Elapsed { milliseconds: 251, carry: 0 }) (splitElapsed 600000 250400000))
 
 let pausedStays = {
   let paused = update Pause started
-  test.test "一時停止中は刻んでも進まない" (test.equal paused (tick paused))
+  test.test "一時停止中は時間がたっても進まない" (test.equal paused (advance 60000 paused))
 }
 
 fn shownSeconds timer: TimerState -> Int = match timer {
@@ -74,8 +82,10 @@ let extraMinute =
 let roundedUp =
   test.test "残り 0.25 秒は 0:01 と見せる" (test.equal "0:01" (clockText (shownSeconds lastQuarter)))
 
-let elapsedRange =
-  test.test "経過は始めに 0、終わりに 1000" (test.equal (0, 1000) (elapsedPermille started, elapsedPermille (tick lastQuarter)))
+let elapsedRange = test.test "経過は始めに 0、終わりに 1000" (
+  test.equal (0, 1000)
+    (elapsedPermille started, elapsedPermille (advance 250 lastQuarter))
+)
 
 let toggledBack =
   test.test "手順は押すたびに済みと未済みを行き来する" (test.equal noneDone (noneDone |> toggleDone 2 |> toggleDone 2))
@@ -87,6 +97,8 @@ pub let tests: test.Test = test.suite "kitchen" [
   servingsClamped,
   startsFull,
   lastTickFinishes,
+  throttledMinute,
+  carriedFraction,
   pausedStays,
   extraMinute,
   roundedUp,

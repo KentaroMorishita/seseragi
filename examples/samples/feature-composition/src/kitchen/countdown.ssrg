@@ -1,6 +1,6 @@
 // キッチンタイマーの状態と、時間の経過や操作による変化を純粋関数で表します。
 
-// 刻みを 1 秒より細かくして、開始から最初の 1 秒が短くならないようにします。
+// 画面を書き換える間隔です。残り時間は間隔の回数ではなく、実際にたった時間で減らします。
 pub let tickMilliseconds: Int = 250
 
 // 残り時間と全体の時間はミリ秒で持ちます。
@@ -43,12 +43,27 @@ fn longer countdown: Countdown -> Countdown = Countdown {
   remaining: countdown.remaining + minute,
 }
 
-pub fn tick timer: TimerState -> TimerState = match timer {
+// 前の刻みからたった時間を、ミリ秒と、ミリ秒に満たない端数のナノ秒に分けます。
+// 端数は次の刻みへ持ち越すので、刻みを重ねても時間がずれません。
+pub struct Elapsed deriving Eq, Show, Debug { milliseconds: Int, carry: Int }
+
+let nanosecondsPerMillisecond = 1000000
+
+pub fn splitElapsed carry: Int -> nanoseconds: Int -> Elapsed = {
+  let total = carry + nanoseconds
+  Elapsed {
+    milliseconds: total / nanosecondsPerMillisecond,
+    carry: total % nanosecondsPerMillisecond,
+  }
+}
+
+// 動いているタイマーだけを進めます。一時停止中にたった時間は数えません。
+pub fn advance milliseconds: Int -> timer: TimerState -> TimerState = match timer {
   Running countdown ->
-    if countdown.remaining <= tickMilliseconds then
+    if countdown.remaining <= milliseconds then
       Finished countdown.label
     else
-      Running (Countdown { ...countdown, remaining: countdown.remaining - tickMilliseconds })
+      Running (Countdown { ...countdown, remaining: countdown.remaining - milliseconds })
   other -> other
 }
 

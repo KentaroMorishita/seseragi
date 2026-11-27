@@ -5,6 +5,8 @@ import * as clock from "std/clock"
 import * as effects from "std/effect"
 import * as floats from "std/float"
 import * as math from "std/math"
+import * as refs from "std/ref"
+import { Ref } from "std/ref"
 import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
@@ -23,10 +25,11 @@ import {
   TimerState,
   TimerAction,
   TimerRequest,
+  advance,
   clockText,
   elapsedPermille,
   secondsLeft,
-  tick,
+  splitElapsed,
   tickMilliseconds,
   update,
 } from "self/kitchen/countdown"
@@ -182,6 +185,29 @@ fn every interval: time.Duration
   -> effects.ScheduleDecision =
   effects.ScheduleContinue interval
 
+// 前に時計を読んだ時刻と、まだ残り時間へ反映していないナノ秒の端数です。
+struct Ticker { last: time.Instant, carry: Int }
+
+fn nanosecondsBetween earlier: time.Instant -> later: time.Instant -> Int =
+  match time.durationBetween earlier later {
+    Right elapsed -> time.toNanoseconds elapsed
+    Left _ -> 0
+  }
+
+// 刻みの回数ではなく、前に時計を読んでからたった時間でタイマーを進めます。
+// ブラウザーが裏のタブで刻みを間引いても、残り時間は実際の時間どおりに減ります。
+effect fn step state: MutableSignal<TimerState>
+  -> ticker: Ref<Ticker>
+  -> Unit
+with clock: clock.Clock =
+  do {
+    current <- clock.now ()
+    previous <- refs.get ticker
+    let elapsed = splitElapsed previous.carry (nanosecondsBetween previous.last current)
+    refs.set (Ticker { last: current, carry: elapsed.carry }) ticker
+    signals.update (advance elapsed.milliseconds) state
+  }
+
 pub effect fn create -> KitchenTimer with clock: clock.Clock fails String = do {
   interval <- time.milliseconds tickMilliseconds
     |> effects.fromEither
@@ -190,8 +216,10 @@ pub effect fn create -> KitchenTimer with clock: clock.Clock fails String = do {
   let initial: TimerState = Idle
   state <- signals.make initial
   let rendered = signals.map (view state) state
+  started <- clock.now ()
+  ticker <- refs.make (Ticker { last: started, carry: 0 })
   // dom.run は操作を一つずつ処理するので、時間の経過は操作ではなく別の Fiber で進めます。
-  _ticking <- effects.fork (effects.repeat (effects.schedule (every interval)) (signals.update tick state))
+  _ticking <- effects.fork (effects.repeat (effects.schedule (every interval)) (step state ticker))
   succeed (
     KitchenTimer {
       view: rendered,
