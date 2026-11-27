@@ -110,6 +110,8 @@ export type UiMessages = Readonly<{
   tourDiagnosticOpened: string
   tourOutputCloseLabel: string
   tourOutputOpenLabel: string
+  tourChapterExamplesTitle: string
+  tourOpenInPlaygroundTitle: string
 }>
 
 const jaMessages: UiMessages = {
@@ -153,6 +155,8 @@ const jaMessages: UiMessages = {
     "間違いの例を開きました。Run を押して診断を確かめてください。",
   tourOutputCloseLabel: "Outputを閉じる",
   tourOutputOpenLabel: "Outputを開く",
+  tourChapterExamplesTitle: "この章の考え方を使った例",
+  tourOpenInPlaygroundTitle: "今のコードを Playground の自由編集で開く",
 }
 
 const enMessages: UiMessages = {
@@ -195,6 +199,8 @@ const enMessages: UiMessages = {
     "Opened the broken example. Press Run to inspect the diagnostic.",
   tourOutputCloseLabel: "Hide output",
   tourOutputOpenLabel: "Show output",
+  tourChapterExamplesTitle: "Examples using this chapter's ideas",
+  tourOpenInPlaygroundTitle: "Open current code in Playground",
 }
 
 export function uiMessages(locale: UiLocale): UiMessages {

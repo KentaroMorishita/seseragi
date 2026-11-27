@@ -86,18 +86,25 @@ import {
 } from "./progress"
 import "./tour.css"
 import curriculumJson from "../../../../examples/tour/curriculum.json"
-import { createReferenceCard } from "../ui/reference-card"
-import { exampleEntries, lessonEntries } from "../ui/search-index"
+import type { PlaygroundSample } from "../samples"
 import {
   connectLocaleController,
+  JAPANESE_ONLY_LABEL,
   playgroundHref as localizedPlaygroundHref,
   type UiLocale,
   UNTRANSLATED_LESSON_NOTICE,
   uiMessages,
 } from "../ui/i18n"
+import { createReferenceCard } from "../ui/reference-card"
+import { exampleEntries, lessonEntries } from "../ui/search-index"
 import { connectSearchPalette } from "../ui/search-palette"
 import { createThemeController } from "../ui/theme"
 import { browserStorage, connectThemeButton } from "../ui/theme-button"
+import {
+  chapterExamplesForLesson,
+  isChapterEnd,
+  tourOpenInPlaygroundUrl,
+} from "./chapter-examples"
 
 const chapterHost = requiredElement("#tour-chapters", HTMLElement)
 const menuButton = requiredElement("#tour-menu-button", HTMLButtonElement)
@@ -420,6 +427,20 @@ searchButton.addEventListener("click", () =>
   search.open({ opener: searchButton })
 )
 
+const openPlaygroundButton = document.querySelector<HTMLButtonElement>(
+  "#tour-open-playground-button"
+)
+const chapterExamplesSection = document.querySelector<HTMLElement>(
+  "#tour-chapter-examples"
+)
+const chapterExamplesTitle = document.querySelector<HTMLElement>(
+  "#tour-chapter-examples-title"
+)
+const chapterExamplesList = document.querySelector<HTMLElement>(
+  "#tour-chapter-examples-list"
+)
+let cachedChapterSamples: readonly PlaygroundSample[] | undefined
+
 const tourUntranslatedNotice = document.querySelector<HTMLElement>(
   "#tour-untranslated-notice"
 )
@@ -471,6 +492,12 @@ const applyTourLocale = (nextLocale: UiLocale): void => {
   if (tourDeepDiveTitle) {
     tourDeepDiveTitle.textContent = messages.tourDeepDiveTitle
   }
+  if (chapterExamplesTitle) {
+    chapterExamplesTitle.textContent = messages.tourChapterExamplesTitle
+  }
+  if (openPlaygroundButton) {
+    openPlaygroundButton.title = messages.tourOpenInPlaygroundTitle
+  }
   if (
     runCheck.textContent === otherMessages.tourRunCheckOk ||
     runCheck.textContent === messages.tourRunCheckOk
@@ -506,6 +533,7 @@ const applyTourLocale = (nextLocale: UiLocale): void => {
   }
   networkNotice.refreshLocale?.()
   search.refresh()
+  renderChapterExamples()
 }
 applyTourLocale(localeController.current())
 localeController.subscribe(applyTourLocale)
@@ -580,6 +608,15 @@ mobileNavigationQuery.addEventListener("change", syncNavigationViewport)
 previousButton.addEventListener("click", () => moveLesson(-1))
 nextButton.addEventListener("click", () => moveLesson(1))
 runButton.addEventListener("click", () => void run())
+openPlaygroundButton?.addEventListener("click", () => {
+  window.location.assign(
+    tourOpenInPlaygroundUrl(
+      window.location.origin,
+      localeController.current(),
+      source
+    )
+  )
+})
 resetButton.addEventListener("click", () => resetLesson())
 tryResetButton.addEventListener("click", () => resetLesson())
 exerciseButton.addEventListener("click", () => {
@@ -951,8 +988,59 @@ function renderLesson(): void {
   progressLabel.textContent = `${navigationModel.progress.completed} completed`
   renderNeighborButton(previousButton, "previous", neighbors.previous)
   renderNeighborButton(nextButton, "next", neighbors.next)
+  renderChapterExamples()
   renderDeepDiveLinks()
   renderNavigation()
+}
+
+function renderChapterExamples(): void {
+  if (chapterExamplesSection === null || chapterExamplesList === null) return
+  if (!isChapterEnd(tourLessons, currentLesson.id)) {
+    chapterExamplesSection.hidden = true
+    chapterExamplesList.replaceChildren()
+    return
+  }
+  const lessonId = currentLesson.id
+  const draw = (allSamples: readonly PlaygroundSample[]): void => {
+    if (currentLesson.id !== lessonId) return
+    const related = chapterExamplesForLesson(tourLessons, lessonId, allSamples)
+    chapterExamplesSection.hidden = related.length === 0
+    const locale = localeController.current()
+    const baseHref = localizedPlaygroundHref(locale)
+    chapterExamplesList.replaceChildren(
+      ...related.map((sample) => {
+        const link = document.createElement("a")
+        link.className = "tour-chapter-example-card"
+        link.dataset.chapterExample = sample.id
+        link.href = `${baseHref}?example=${encodeURIComponent(sample.id)}`
+        const head = document.createElement("span")
+        head.className = "tour-chapter-example-head"
+        const title = document.createElement("strong")
+        title.textContent = sample.title
+        if (locale === "en") title.setAttribute("lang", "ja")
+        head.append(title)
+        if (locale === "en") {
+          const badge = document.createElement("span")
+          badge.className = "ui-tag"
+          badge.textContent = JAPANESE_ONLY_LABEL
+          head.append(badge)
+        }
+        const summary = document.createElement("small")
+        summary.textContent = sample.summary
+        if (locale === "en") summary.setAttribute("lang", "ja")
+        link.append(head, summary)
+        return link
+      })
+    )
+  }
+  if (cachedChapterSamples !== undefined) {
+    draw(cachedChapterSamples)
+    return
+  }
+  void import("../samples").then(({ samples }) => {
+    cachedChapterSamples = samples
+    draw(samples)
+  })
 }
 
 function renderDeepDiveLinks(): void {

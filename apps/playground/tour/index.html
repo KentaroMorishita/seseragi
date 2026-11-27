@@ -233,6 +233,16 @@
               type="button"
             ></button>
           </nav>
+
+          <section
+            id="tour-chapter-examples"
+            class="tour-chapter-examples"
+            aria-labelledby="tour-chapter-examples-title"
+            hidden
+          >
+            <h2 id="tour-chapter-examples-title">この章の考え方を使った例</h2>
+            <div id="tour-chapter-examples-list" class="tour-chapter-examples-list"></div>
+          </section>
         </article>
 
         <div
@@ -254,6 +264,12 @@
               <div class="ui-card-head tour-code-head">
                 <span class="tour-file-name">main.ssrg</span>
                 <span class="ui-spacer"></span>
+                <button
+                  id="tour-open-playground-button"
+                  class="ui-button ui-button--ghost"
+                  type="button"
+                  title="今のコードを Playground の自由編集で開く"
+                ><svg class="ui-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.5 3H13v3.5M13 3l-5.5 5.5M6.5 4H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V9.5" /></svg><span class="pg-label">Open in Playground</span></button>
                 <button
                   id="tour-format-button"
                   class="ui-button ui-button--ghost"

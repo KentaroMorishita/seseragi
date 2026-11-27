@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.7] - 2026-11-27
+
+### Added
+
+- Tour: added an `Open in Playground` button in the code panel header that opens the current lesson or edited source in the Playground's free-writing mode via `?source=`, and added chapter-end links to 1–2 related Playground examples on the final lesson of each chapter (#1350).
+
 ## [0.62.6] - 2026-11-27
 
 ### Fixed
