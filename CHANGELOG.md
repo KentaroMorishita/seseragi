@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.18] - 2026-11-28
+
+### Changed
+
+- Updated `apps/playground/INFORMATION_ARCHITECTURE.md` to match the Playground and Tour v2 information architecture, including the three entry points (`Playground`, `Tour`, and `Search (⌘K)`), initial Playground states (`weather-advice`, `?example=<id>`, restored workspaces, `?source=`, and `New file`), the five-layer action model, pane ownership, shared settings, and responsive mobile layout (#1358, #1359).
+
 ## [0.62.17] - 2026-11-28
 
 ### Changed
