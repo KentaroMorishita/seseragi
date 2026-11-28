@@ -136,25 +136,25 @@ pub fn summarySidebar dispatch: (BookingAction -> Task<Unit>)
 
 fn errorSummary errors: Array<CheckoutError> -> html.Html<Task<Unit>> =
   if arrays.isEmpty errors then plainSpan "" else {
-  let lead: html.Html<Task<Unit>> = html.p {
-    style: html.style { fontWeight: "700", margin: "0 0 6px 0" },
-    children: `入力内容に ${arrays.length errors} 件の未入力・誤りがあります:`,
+    let lead: html.Html<Task<Unit>> = html.p {
+      style: html.style { fontWeight: "700", margin: "0 0 6px 0" },
+      children: `入力内容に ${arrays.length errors} 件の未入力・誤りがあります:`,
+    }
+    let items: Array<html.Html<Task<Unit>>> = map (\err: CheckoutError -> html.li {
+      children: errorText err
+    }) errors
+    html.div {
+      role: "alert",
+      style: styles.alertBoxStyle (),
+      children: [
+        lead,
+        html.ul {
+          style: html.style { margin: "0", paddingLeft: "18px" },
+          children: items
+        },
+      ],
+    }
   }
-  let items: Array<html.Html<Task<Unit>>> = map (\err: CheckoutError -> html.li {
-    children: errorText err
-  }) errors
-  html.div {
-    role: "alert",
-    style: styles.alertBoxStyle (),
-    children: [
-      lead,
-      html.ul {
-        style: html.style { margin: "0", paddingLeft: "18px" },
-        children: items
-      },
-    ],
-  }
-}
 
 fn textField fieldId: String
   -> caption: String

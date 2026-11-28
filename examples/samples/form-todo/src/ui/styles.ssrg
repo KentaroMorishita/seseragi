@@ -257,38 +257,38 @@ pub fn seatButtonStyle tier: SeatTier
     }
   else
     {
-  let accentBorder = match tier {
-    TierS -> "1px solid rgba(216, 179, 106, 0.72)"
-    TierA -> "1px solid rgba(104, 159, 204, 0.72)"
-    TierB -> "1px solid rgba(114, 171, 130, 0.72)"
-    TierAccessible -> "1px solid rgba(169, 143, 214, 0.8)"
-  }
-  let tint = match tier {
-    TierS -> "rgba(216, 179, 106, 0.12)"
-    TierA -> "rgba(104, 159, 204, 0.12)"
-    TierB -> "rgba(114, 171, 130, 0.12)"
-    TierAccessible -> "rgba(169, 143, 214, 0.16)"
-  }
-  html.style {
-    backgroundColor: tint,
-    border: accentBorder,
-    borderRadius: "8px 8px 4px 4px",
-    color: "#f2efe8",
-    cursor: "pointer",
-    fontSize: "12px",
-    fontWeight: "600",
-    height: "34px",
-    minWidth: "24px",
-    flex: "1 1 24px",
-    maxWidth: "44px",
-    padding: "0",
-    opacity:
-      if dimmed then
-        "0.28"
-      else
-        "1"
-  }
-}
+      let accentBorder = match tier {
+        TierS -> "1px solid rgba(216, 179, 106, 0.72)"
+        TierA -> "1px solid rgba(104, 159, 204, 0.72)"
+        TierB -> "1px solid rgba(114, 171, 130, 0.72)"
+        TierAccessible -> "1px solid rgba(169, 143, 214, 0.8)"
+      }
+      let tint = match tier {
+        TierS -> "rgba(216, 179, 106, 0.12)"
+        TierA -> "rgba(104, 159, 204, 0.12)"
+        TierB -> "rgba(114, 171, 130, 0.12)"
+        TierAccessible -> "rgba(169, 143, 214, 0.16)"
+      }
+      html.style {
+        backgroundColor: tint,
+        border: accentBorder,
+        borderRadius: "8px 8px 4px 4px",
+        color: "#f2efe8",
+        cursor: "pointer",
+        fontSize: "12px",
+        fontWeight: "600",
+        height: "34px",
+        minWidth: "24px",
+        flex: "1 1 24px",
+        maxWidth: "44px",
+        padding: "0",
+        opacity:
+          if dimmed then
+            "0.28"
+          else
+            "1"
+      }
+    }
 
 pub fn sightlineBoxStyle -> html.Style = html.style {
   backgroundColor: "rgba(255, 255, 255, 0.03)",

@@ -84,23 +84,25 @@ fn formatIssue issue: LineIssue -> String =
 
 fn summarizeEntries entries: Array<ScoreEntry> -> Array<String> =
   if arrays.isEmpty entries then ["有効な点数の行はありませんでした。"] else {
-  let count = arrays.length entries
-  let total = entries |> map (\entry: ScoreEntry -> entry.score) |> sum
-  let passingCount = arrays.length [
-    entry | entry <- entries,
-    entry.score >= passingScore
-  ]
-  let topLine =
-    match entries |> arrays.sortBy (\entry: ScoreEntry -> entry.score) |> arrays.last {
-    Just best -> `  最高点: ${best.student} (${best.score} 点)`
-    Nothing -> ""
+    let count = arrays.length entries
+    let total = entries |> map (\entry: ScoreEntry -> entry.score) |> sum
+    let passingCount = arrays.length [
+      entry | entry <- entries,
+      entry.score >= passingScore
+    ]
+    let topLine =
+      match entries
+        |> arrays.sortBy (\entry: ScoreEntry -> entry.score)
+        |> arrays.last {
+        Just best -> `  最高点: ${best.student} (${best.score} 点)`
+        Nothing -> ""
+      }
+    arrays.concat [
+      [`成績一覧 (${count} 名 / 合格 ${passingCount} 名 / 平均 ${total / count} 点):`],
+      map formatEntry entries,
+      [topLine],
+    ]
   }
-  arrays.concat [
-    [`成績一覧 (${count} 名 / 合格 ${passingCount} 名 / 平均 ${total / count} 点):`],
-    map formatEntry entries,
-    [topLine],
-  ]
-}
 
 // 純粋な計算だけでレポート文字列を組み立て、I/O と分離します。
 fn buildReport lines: Array<String> -> String = {

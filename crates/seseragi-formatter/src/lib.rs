@@ -555,6 +555,88 @@ let result=(account','\u{03BB}','\'','\\')
     }
 
     #[test]
+    fn indents_nested_match_arms_past_a_wrapped_match_header() {
+        let source = concat!(
+            "fn scan cell: Cell -> stone: Int -> Int = match cell {\n",
+            "  Empty -> 0\n",
+            "  Placed s -> match same s stone && same stone 1 && same s 2 {\n",
+            "    True -> 1\n",
+            "    False -> 2\n",
+            "  }\n",
+            "}\n",
+        );
+        let expected = concat!(
+            "fn scan cell: Cell -> stone: Int -> Int =\n",
+            "  match cell {\n",
+            "    Empty -> 0\n",
+            "    Placed s ->\n",
+            "      match same s stone\n",
+            "        && same stone 1\n",
+            "        && same s 2 {\n",
+            "        True -> 1\n",
+            "        False -> 2\n",
+            "      }\n",
+            "  }\n",
+        );
+
+        let formatted = format_with_width(source, 48);
+        assert_eq!(formatted.text, expected);
+        assert!(!format_with_width(expected, 48).changed);
+    }
+
+    #[test]
+    fn indents_match_arms_past_a_match_that_follows_a_comment() {
+        let source = concat!(
+            "fn describe number: Int -> String =\n",
+            "  if number == 0 then \"zero\" else\n",
+            "  // Split by sign and parity.\n",
+            "  match (number > 0, number % 2) {\n",
+            "  (True, 0) -> \"positive even\"\n",
+            "  _ -> \"other\"\n",
+            "}\n",
+        );
+        let expected = concat!(
+            "fn describe number: Int -> String = if number == 0 then \"zero\" else\n",
+            "  // Split by sign and parity.\n",
+            "  match (number > 0, number % 2) {\n",
+            "    (True, 0) -> \"positive even\"\n",
+            "    _ -> \"other\"\n",
+            "  }\n",
+        );
+
+        let formatted = format(source);
+        assert_eq!(formatted.text, expected);
+        assert!(!format(expected).changed);
+    }
+
+    #[test]
+    fn indents_a_wrapped_lambda_body_past_its_match() {
+        let source = concat!(
+            "fn segments spots: Array<Int> -> Array<Int> = {\n",
+            "  let build = \\index: Int -> match arrays.get index spots {\n",
+            "    Just spot -> [spot]\n",
+            "    Nothing -> []\n",
+            "  }\n",
+            "  build 0\n",
+            "}\n",
+        );
+        let expected = concat!(
+            "fn segments spots: Array<Int> -> Array<Int> = {\n",
+            "  let build = \\index: Int ->\n",
+            "    match arrays.get index spots {\n",
+            "      Just spot -> [spot]\n",
+            "      Nothing -> []\n",
+            "    }\n",
+            "  build 0\n",
+            "}\n",
+        );
+
+        let formatted = format_with_width(source, 48);
+        assert_eq!(formatted.text, expected);
+        assert!(!format_with_width(expected, 48).changed);
+    }
+
+    #[test]
     fn keeps_a_logical_chain_that_fits_its_line_after_the_break() {
         let source = concat!(
             "fn inBounds r: Int -> c: Int -> Bool = r >= 0 && r < 8 && c >= 0 && c < 8\n",

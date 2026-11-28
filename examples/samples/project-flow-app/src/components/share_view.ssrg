@@ -36,12 +36,12 @@ fn daySummaryList title: String -> spots: Array<Spot> -> html.Html<Task<Unit>> =
       [html.li { style: styles.metaStyle (), children: "予定なし", }]
     else
       {
-    let renderRow = \s: Spot -> html.li {
-      style: html.style { color: "#2c4154", fontSize: "13px", lineHeight: "1.7", },
-      children: `${s.name}（${s.area}・${s.stayMinutes}分・${formatYen s.costYen}）`,
-    }
-    map renderRow spots
-  }
+        let renderRow = \s: Spot -> html.li {
+          style: html.style { color: "#2c4154", fontSize: "13px", lineHeight: "1.7", },
+          children: `${s.name}（${s.area}・${s.stayMinutes}分・${formatYen s.costYen}）`,
+        }
+        map renderRow spots
+      }
   html.div {
     children: [
       heading,

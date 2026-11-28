@@ -19,8 +19,8 @@ pub effect fn main -> Unit with Console fails ConsoleError =
   // Map は、キーを最初に加えた順に要素を取り出します。
   // 実行ごとにハッシュの種が変わっても、この出力の順と値は変わりません。
   for (word, count) <- maps.entries (wordCounts sample) {
-  println $ `${word}: ${count}`
-}
+    println $ `${word}: ${count}`
+  }
 
 // Expected stdout:
 // red: 3

@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use seseragi_syntax::{CstArtifact, CstNode, Token, TokenKind, TokenStream};
 
@@ -10,8 +10,9 @@ pub(super) fn format_valid_module(
     let source_lines = source_lines(&tokens.tokens);
     let token_lines = token_line_map(&source_lines, tokens.tokens.len());
     let angles = angle_tokens(&tokens.tokens);
-    let mut match_body_braces = HashSet::new();
-    collect_match_body_braces(&cst.root, &tokens.tokens, &mut match_body_braces);
+    let mut match_keywords = HashMap::new();
+    collect_match_body_braces(&cst.root, &tokens.tokens, &mut match_keywords);
+    let match_body_braces = match_keywords.keys().copied().collect();
     let delimiters = Delimiters::new(&tokens.tokens, &angles, &match_body_braces);
     let member_bodies = member_body_map(&tokens.tokens);
     let declaration_starts = cst
@@ -79,6 +80,9 @@ pub(super) fn format_valid_module(
     let mut output = Vec::new();
     let mut delimiter_depth = 0usize;
     let mut implementation_member_seen = false;
+    // Delimiters left open by earlier logical lines, innermost last, with the
+    // indent of the physical line where each construct starts.
+    let mut open_constructs: Vec<OpenConstruct> = Vec::new();
 
     for line in lines {
         let LogicalLine::Content(indices) = line else {
@@ -99,25 +103,20 @@ pub(super) fn format_valid_module(
         let leading_closers = leading_closers(&indices, &tokens.tokens, &angles);
         let structural_depth = delimiter_depth.saturating_sub(leading_closers);
         let continuation = declaration_continuation(cst, first, &tokens.tokens);
-        let structural_rhs_continuation = structural_rhs_body_continuation(
-            cst,
-            first,
-            &tokens.tokens,
-            &angles,
-            &delimiters,
-            line_width,
-        );
         let do_item_continuation = do_item_continuation(cst, &token_lines, first, &tokens.tokens);
         let branch_continuation = delimiters.branch_depth(first);
+        open_constructs.retain(|construct| construct.close >= first);
         let indent = structural_depth
             + continuation
-            + structural_rhs_continuation
             + do_item_continuation
             + if leading_closers > 1 {
                 0
             } else {
                 branch_continuation
             };
+        let shift = shift_inside(&mut open_constructs, indent, &indices, leading_closers);
+        let indent = indent + shift;
+        let mut token_indents = HashMap::new();
         output.extend(format_logical_line(
             &indices,
             &tokens.tokens,
@@ -126,7 +125,18 @@ pub(super) fn format_valid_module(
             &member_bodies,
             indent,
             line_width,
+            &mut token_indents,
         ));
+        record_open_constructs(
+            &indices,
+            &tokens.tokens,
+            &angles,
+            &delimiters,
+            &match_keywords,
+            &token_indents,
+            shift,
+            &mut open_constructs,
+        );
         for (position, index) in indices.iter().copied().enumerate() {
             if tokens.tokens[index].kind == TokenKind::PunctuationBraceLeft
                 && member_body_for_open(index, &tokens.tokens) == Some(MemberBody::Implementation)
@@ -170,11 +180,13 @@ fn collect_statement_blocks(node: &CstNode, tokens: &[Token], blocks: &mut HashS
     }
 }
 
-fn collect_match_body_braces(node: &CstNode, tokens: &[Token], braces: &mut HashSet<usize>) {
-    if node.kind == "complete-expression"
-        && (node.start_token..node.end_token)
-            .find(|index| !is_trivia(tokens[*index].kind))
-            .is_some_and(|index| tokens[index].kind == TokenKind::KeywordMatch)
+/// Maps each match body's opening brace to its `match` keyword.
+fn collect_match_body_braces(node: &CstNode, tokens: &[Token], braces: &mut HashMap<usize, usize>) {
+    if let Some(keyword) = (node.start_token..node.end_token)
+        .find(|index| !is_trivia(tokens[*index].kind))
+        .filter(|index| {
+            node.kind == "complete-expression" && tokens[*index].kind == TokenKind::KeywordMatch
+        })
     {
         if let Some(first_arm) = node
             .children
@@ -185,7 +197,7 @@ fn collect_match_body_braces(node: &CstNode, tokens: &[Token], braces: &mut Hash
                 .rev()
                 .find(|index| tokens[*index].kind == TokenKind::PunctuationBraceLeft)
             {
-                braces.insert(open);
+                braces.insert(open, keyword);
             }
         }
     }
@@ -446,6 +458,7 @@ fn member_body_for_open(open: usize, tokens: &[Token]) -> Option<MemberBody> {
     None
 }
 
+#[allow(clippy::too_many_arguments)]
 fn format_logical_line(
     indices: &[usize],
     tokens: &[Token],
@@ -454,6 +467,7 @@ fn format_logical_line(
     member_bodies: &[Option<MemberBody>],
     base_indent: usize,
     line_width: usize,
+    token_indents: &mut HashMap<usize, usize>,
 ) -> Vec<String> {
     let leading = leading_closers(indices, tokens, angles);
     if leading > 1 && leading == indices.len() {
@@ -464,6 +478,7 @@ fn format_logical_line(
                 // The base already excludes every leading closer. Re-add
                 // only the delimiters that remain open after this token.
                 let indent = base_indent + leading - position - 1;
+                token_indents.insert(*index, indent);
                 format!("{}{}", "  ".repeat(indent), tokens[*index].raw.trim_end())
             })
             .collect();
@@ -480,6 +495,7 @@ fn format_logical_line(
                 member_bodies,
                 base_indent,
                 line_width,
+                token_indents,
             );
             lines.extend(format_logical_line(
                 &indices[operator + 1..],
@@ -489,6 +505,7 @@ fn format_logical_line(
                 member_bodies,
                 base_indent + 1,
                 line_width,
+                token_indents,
             ));
             return lines;
         }
@@ -516,6 +533,7 @@ fn format_logical_line(
                 && member_bodies.get(index).copied().flatten().is_some()
     });
     if expanded.is_empty() && !needs_breaking && !has_member_boundary {
+        token_indents.extend(indices.iter().map(|index| (*index, base_indent)));
         return vec![format!("{}{}", "  ".repeat(base_indent), flat)];
     }
 
@@ -525,7 +543,7 @@ fn format_logical_line(
             && display_width(&render_flat(&indices[..=position], tokens, angles)) + base_indent * 2
                 > line_width
     });
-    let mut writer = LineWriter::new(base_indent, tokens, angles);
+    let mut writer = LineWriter::new(base_indent, tokens, angles, token_indents);
     let mut stack: Vec<(usize, usize)> = Vec::new();
     let mut before_equals = equals.is_some();
     let mut application_indent = None;
@@ -735,6 +753,91 @@ fn format_logical_line(
         }
     }
     writer.finish()
+}
+
+/// A delimiter that stays open past the end of its logical line.
+struct OpenConstruct {
+    close: usize,
+    /// The indent of the physical line holding the construct's head: the
+    /// `match` keyword of a match body, otherwise the opening delimiter.
+    head_indent: usize,
+    /// The indent added to the logical line that opened the construct.
+    opener_shift: usize,
+    /// The indent added to every line inside the construct.
+    shift: Option<usize>,
+}
+
+/// The indent added to a logical line inside the open constructs.
+///
+/// Lines inside a construct keep the shift of the line that opened it, and
+/// move further so they sit at least one level past the construct's head and
+/// its closer at least at the head's level. This keeps a match whose header
+/// wrapped onto a continuation line from printing its arms at the level of
+/// `match` itself. The constructs one logical line leaves open share the
+/// shift decided by the line after it.
+fn shift_inside(
+    open_constructs: &mut [OpenConstruct],
+    indent: usize,
+    indices: &[usize],
+    leading_closers: usize,
+) -> usize {
+    let Some(innermost) = open_constructs.last() else {
+        return 0;
+    };
+    let shift = innermost.shift.unwrap_or_else(|| {
+        let minimum = if leading_closers == 0 {
+            innermost.head_indent + 1
+        } else if leading_closers > 1 && leading_closers == indices.len() {
+            // A line made only of closers prints the first one a level per
+            // remaining closer past the base.
+            innermost.head_indent.saturating_sub(leading_closers - 1)
+        } else {
+            innermost.head_indent
+        };
+        innermost.opener_shift.max(minimum.saturating_sub(indent))
+    });
+    for construct in open_constructs.iter_mut() {
+        construct.shift.get_or_insert(shift);
+    }
+    shift
+}
+
+#[allow(clippy::too_many_arguments)]
+fn record_open_constructs(
+    indices: &[usize],
+    tokens: &[Token],
+    angles: &HashSet<usize>,
+    delimiters: &Delimiters,
+    match_keywords: &HashMap<usize, usize>,
+    token_indents: &HashMap<usize, usize>,
+    shift: usize,
+    open_constructs: &mut Vec<OpenConstruct>,
+) {
+    let Some(last) = indices.last().copied() else {
+        return;
+    };
+    open_constructs.retain(|construct| construct.close > last);
+    for index in indices.iter().copied() {
+        if !is_open_delimiter(tokens[index].kind) || angles.contains(&index) {
+            continue;
+        }
+        let Some(close) = delimiters.matching(index).filter(|close| *close > last) else {
+            continue;
+        };
+        let head = match_keywords
+            .get(&index)
+            .copied()
+            .filter(|keyword| token_indents.contains_key(keyword))
+            .unwrap_or(index);
+        if let Some(head_indent) = token_indents.get(&head).copied() {
+            open_constructs.push(OpenConstruct {
+                close,
+                head_indent,
+                opener_shift: shift,
+                shift: None,
+            });
+        }
+    }
 }
 
 /// A top-level token after which operators form a new chain: the binding `=`,
@@ -1194,10 +1297,17 @@ struct LineWriter<'a> {
     previous: Option<usize>,
     tokens: &'a [Token],
     angles: &'a HashSet<usize>,
+    /// The indent of the physical line each written token landed on.
+    token_indents: &'a mut HashMap<usize, usize>,
 }
 
 impl<'a> LineWriter<'a> {
-    fn new(indent: usize, tokens: &'a [Token], angles: &'a HashSet<usize>) -> Self {
+    fn new(
+        indent: usize,
+        tokens: &'a [Token],
+        angles: &'a HashSet<usize>,
+        token_indents: &'a mut HashMap<usize, usize>,
+    ) -> Self {
         Self {
             lines: Vec::new(),
             current: "  ".repeat(indent),
@@ -1205,6 +1315,7 @@ impl<'a> LineWriter<'a> {
             previous: None,
             tokens,
             angles,
+            token_indents,
         }
     }
 
@@ -1219,6 +1330,7 @@ impl<'a> LineWriter<'a> {
             }
         }
         self.current.push_str(self.tokens[index].raw.trim_end());
+        self.token_indents.insert(index, self.current_indent);
         self.previous = Some(index);
     }
 
@@ -1930,76 +2042,6 @@ fn declaration_continuation(cst: &CstArtifact, first: usize, tokens: &[Token]) -
         }
     }
     usize::from(follows_equals && depth == 0)
-}
-
-fn structural_rhs_body_continuation(
-    cst: &CstArtifact,
-    first: usize,
-    tokens: &[Token],
-    angles: &HashSet<usize>,
-    delimiters: &Delimiters,
-    line_width: usize,
-) -> usize {
-    let Some(declaration) = cst
-        .root
-        .children
-        .iter()
-        .find(|node| node.start_token <= first && first < node.end_token)
-    else {
-        return 0;
-    };
-    let significant = significant_indices(tokens, declaration.start_token, declaration.end_token);
-    let mut depth = 0usize;
-    let mut equals = None;
-    for (position, index) in significant.iter().copied().enumerate() {
-        if angles.contains(&index) {
-            continue;
-        }
-        let kind = tokens[index].kind;
-        if depth == 0 && kind == TokenKind::OperatorEquals {
-            equals = Some(position);
-            break;
-        }
-        if is_open_delimiter(kind) {
-            depth += 1;
-        } else if is_close_delimiter(kind) {
-            depth = depth.saturating_sub(1);
-        }
-    }
-    let Some(equals) = equals else {
-        return 0;
-    };
-    let Some(rhs_position) = (equals + 1..significant.len())
-        .find(|position| tokens[significant[*position]].kind != TokenKind::TriviaComment)
-    else {
-        return 0;
-    };
-    let rhs = significant[rhs_position];
-    if !matches!(
-        tokens[rhs].kind,
-        TokenKind::KeywordDo | TokenKind::KeywordMatch | TokenKind::PunctuationBraceLeft
-    ) {
-        return 0;
-    }
-    let Some(open_position) = significant[rhs_position..]
-        .iter()
-        .position(|index| tokens[*index].kind == TokenKind::PunctuationBraceLeft)
-        .map(|position| position + rhs_position)
-    else {
-        return 0;
-    };
-    let open = significant[open_position];
-    let Some(close) = delimiters.matching(open) else {
-        return 0;
-    };
-    if first <= open || first > close {
-        return 0;
-    }
-    let header = render_flat(&significant[..=open_position], tokens, angles);
-    let separated_by_comment = significant[equals + 1..rhs_position]
-        .iter()
-        .any(|index| tokens[*index].kind == TokenKind::TriviaComment);
-    usize::from(separated_by_comment || display_width(&header) > line_width)
 }
 
 fn leading_closers(indices: &[usize], tokens: &[Token], angles: &HashSet<usize>) -> usize {

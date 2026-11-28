@@ -42,13 +42,13 @@ fn totalMinutesList legs: List<Leg> -> Int = {
 fn formatTimeline legs: List<Leg> -> Array<String> = {
   fn loop elapsed: Int -> acc: Array<String> -> rest: List<Leg> -> Array<String> =
     match rest {
-    `[] -> acc
-    `[head, ...tail] -> {
-      let nextElapsed = elapsed + head.minutes
-      let line = `${head.station}（累計 ${nextElapsed} 分）`
-      loop nextElapsed (arrays.append [line] acc) tail
+      `[] -> acc
+      `[head, ...tail] -> {
+        let nextElapsed = elapsed + head.minutes
+        let line = `${head.station}（累計 ${nextElapsed} 分）`
+        loop nextElapsed (arrays.append [line] acc) tail
+      }
     }
-  }
 
   loop 0 [] legs
 }
