@@ -531,10 +531,19 @@ fn format_logical_line(
     let mut application_indent = None;
     let mut conditional_indents = Vec::new();
     let mut else_indent = base_indent;
+    // Whether the operator chain of the current top-level segment fits on its
+    // line. Decided once at the segment's first breakable operator, so a chain
+    // either stays on one line or breaks before every operator.
+    let mut segment_fits: Option<bool> = None;
+    let mut segment_start = 0;
 
     for (position, index) in indices.iter().copied().enumerate() {
         let token = &tokens[index];
         let next = indices.get(position + 1).copied();
+        if stack.is_empty() && starts_operator_segment(position, token, equals, before_equals) {
+            segment_fits = None;
+            segment_start = position + 1;
+        }
         let is_expanded_close = is_close_delimiter(token.kind)
             && local
                 .matching_position(position)
@@ -630,6 +639,18 @@ fn format_logical_line(
                     .previous
                     .is_some_and(|previous| continues_operator_spelling(previous, index, tokens))
                 && token.kind != TokenKind::OperatorApply
+                && !*segment_fits.get_or_insert_with(|| {
+                    operator_segment_fits(
+                        segment_start,
+                        position,
+                        indices,
+                        tokens,
+                        angles,
+                        &expanded,
+                        writer.current_width(),
+                        line_width,
+                    )
+                })
             {
                 Some(base_indent + 1)
             } else {
@@ -714,6 +735,81 @@ fn format_logical_line(
         }
     }
     writer.finish()
+}
+
+/// A top-level token after which operators form a new chain: the binding `=`,
+/// the parts of a conditional, and the arrow of a lambda or match arm.
+fn starts_operator_segment(
+    position: usize,
+    token: &Token,
+    equals: Option<usize>,
+    before_equals: bool,
+) -> bool {
+    Some(position) == equals
+        || matches!(
+            token.kind,
+            TokenKind::KeywordIf | TokenKind::KeywordThen | TokenKind::KeywordElse
+        )
+        || token.kind == TokenKind::OperatorArrow && !before_equals
+}
+
+/// Whether the rest of the operator chain from `position` fits on the current
+/// line. The chain ends before the next top-level `else`, or after the next
+/// top-level `then`, which stays on the condition's line. A segment that already
+/// holds an expanded group spans several lines, so its operators keep breaking.
+#[allow(clippy::too_many_arguments)]
+fn operator_segment_fits(
+    segment_start: usize,
+    position: usize,
+    indices: &[usize],
+    tokens: &[Token],
+    angles: &HashSet<usize>,
+    expanded: &HashSet<usize>,
+    current_width: usize,
+    line_width: usize,
+) -> bool {
+    let mut depth = 0usize;
+    let mut end = indices.len();
+    for (at, index) in indices.iter().copied().enumerate().skip(segment_start) {
+        let kind = tokens[index].kind;
+        if !angles.contains(&index) {
+            if is_open_delimiter(kind) {
+                depth += 1;
+            } else if is_close_delimiter(kind) {
+                depth = depth.saturating_sub(1);
+            }
+        }
+        // Only a chain of `&&` and `||` stays on one line. A pipeline or a
+        // custom operator chain keeps one step per line once it breaks, and the
+        // variants of a type declaration keep one variant per line.
+        if depth == 0
+            && !angles.contains(&index)
+            && (is_breakable_operator(&tokens[index])
+                || starts_composite_operator(at, indices, tokens))
+            && kind != TokenKind::OperatorLogical
+        {
+            return false;
+        }
+        if at < position {
+            continue;
+        }
+        if depth == 0 && kind == TokenKind::KeywordThen {
+            end = at + 1;
+            break;
+        }
+        if depth == 0 && kind == TokenKind::KeywordElse {
+            end = at;
+            break;
+        }
+    }
+    if expanded
+        .iter()
+        .any(|open| (segment_start..end).contains(open))
+    {
+        return false;
+    }
+    current_width + 1 + display_width(&render_flat(&indices[position..end], tokens, angles))
+        <= line_width
 }
 
 fn mark_expanded_groups(

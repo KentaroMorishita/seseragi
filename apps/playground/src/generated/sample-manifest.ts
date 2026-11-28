@@ -329,8 +329,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/either-and-monad/main.ssrg",
       "guidePath": "examples/samples/either-and-monad/guide.md",
       "expectedOutputPath": "examples/samples/either-and-monad/stdout.txt",
-      "sourceHash": "sha256:885d45b3664775ece94bb6b8f0f8aebd95089be91026831f5259ccc38ef0b100",
-      "workspaceHash": "sha256:3065c68dda31aa478ac8fa1df3721559309d491424863a06879bdcc88b1cc827"
+      "sourceHash": "sha256:22f2d6588358f32be525219f0e509171fe9ab9923cdd1ad353b886b459ed1e7f",
+      "workspaceHash": "sha256:909798e6e3a616efaf4ae69167ae27e8132cdbe63095347bd4bbe6e9015a73b4"
     },
     source: sample2Source,
     manifest: "",
@@ -1285,7 +1285,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "guidePath": "examples/samples/project-greeting/guide.md",
       "expectedOutputPath": "examples/samples/project-greeting/stdout.txt",
       "sourceHash": "sha256:1a7dca28095f2f9df7aff0ec04b7f9e3c3f22e8888a213c0c65af916b137ad17",
-      "workspaceHash": "sha256:47acacd8a7ebabe5433ddb81780aed16613e4d02297d66feb9c886c8ea322d59",
+      "workspaceHash": "sha256:1d01dfdf2e3702102494b92b39b2c2cd139910955577bd995e5e326e8f021a47",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "main.ssrg",
@@ -1311,7 +1311,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "pricing/shipping.ssrg",
             "sourcePath": "examples/samples/project-greeting/src/pricing/shipping.ssrg",
-            "sourceHash": "sha256:207a2ebdfe52b5dc1d96d333c1155e07b20e3a41043d3b44ff1e07236426b2e5"
+            "sourceHash": "sha256:aaafd6131794b7274ebb20cdd55741f1dcc3030d3842c59cd93f40d808aebfe2"
           }
         ]
       }
@@ -1647,8 +1647,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "guidePath": "examples/samples/stdin-greeting/guide.md",
       "stdinPath": "examples/samples/stdin-greeting/stdin.txt",
       "expectedOutputPath": "examples/samples/stdin-greeting/stdout.txt",
-      "sourceHash": "sha256:b3f8554a56be363925bed17c1829f4d08a5918d6474263a7ce140687909e592f",
-      "workspaceHash": "sha256:beecd7f7db3d9b3e550ea6dbb3b87f0f3b4660f98e220f70bf4dfafcfb58830a"
+      "sourceHash": "sha256:e0ad6abb8f6b234ec7ecf39aed5a005127d609e677855d20510975b0a20ffe3f",
+      "workspaceHash": "sha256:a9101c696ee519db56574d6ac0ed1760e53da48e5612003130d30c8c14da26cc"
     },
     source: sample20Source,
     manifest: "",

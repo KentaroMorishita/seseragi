@@ -24,14 +24,12 @@ pub fn containsFolded haystack: String -> needle: String -> Bool = {
 fn availabilityFor hours: BusinessHours -> weekend: Bool -> hour: Int -> Availability =
   if weekend then
     Closed
-  else if hour >= hours.startHour
-    && hour < hours.endHour then
+  else if hour >= hours.startHour && hour < hours.endHour then
     Open
   else if hour >= hours.startHour - fringeWidth
     && hour < hours.endHour + fringeWidth then
     Fringe
-  else if hour < hours.startHour - fringeWidth
-    && hour > 0 then
+  else if hour < hours.startHour - fringeWidth && hour > 0 then
     Night
   else
     Closed

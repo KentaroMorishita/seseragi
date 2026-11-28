@@ -555,6 +555,72 @@ let result=(account','\u{03BB}','\'','\\')
     }
 
     #[test]
+    fn keeps_a_logical_chain_that_fits_its_line_after_the_break() {
+        let source = concat!(
+            "fn inBounds r: Int -> c: Int -> Bool = r >= 0 && r < 8 && c >= 0 && c < 8\n",
+            "\n",
+            "fn isEdge r: Int -> c: Int -> Bool = r == 0 || r == 7 || c == 0 || c == 7\n",
+            "\n",
+            "pub effect fn main = do {\n",
+            "  if inBounds 1 2 && isEdge 3 4 then println \"edge\" else println \"inner\"\n",
+            "}\n",
+        );
+        let expected = concat!(
+            "fn inBounds r: Int -> c: Int -> Bool =\n",
+            "  r >= 0 && r < 8 && c >= 0 && c < 8\n",
+            "\n",
+            "fn isEdge r: Int -> c: Int -> Bool =\n",
+            "  r == 0 || r == 7 || c == 0 || c == 7\n",
+            "\n",
+            "pub effect fn main = do {\n",
+            "  if inBounds 1 2 && isEdge 3 4 then\n",
+            "    println \"edge\"\n",
+            "  else\n",
+            "    println \"inner\"\n",
+            "}\n",
+        );
+
+        let formatted = format_with_width(source, 48);
+        assert_eq!(formatted.text, expected);
+        assert!(!format_with_width(expected, 48).changed);
+    }
+
+    #[test]
+    fn breaks_before_every_logical_operator_when_the_chain_does_not_fit() {
+        let source = concat!(
+            "fn inside row: Int -> col: Int -> Bool = ",
+            "row >= 0 && row < size && col >= 0 && col < size\n",
+        );
+        let expected = concat!(
+            "fn inside row: Int -> col: Int -> Bool =\n",
+            "  row >= 0\n",
+            "  && row < size\n",
+            "  && col >= 0\n",
+            "  && col < size\n",
+        );
+
+        let formatted = format_with_width(source, 44);
+        assert_eq!(formatted.text, expected);
+        assert!(!format_with_width(expected, 44).changed);
+    }
+
+    #[test]
+    fn keeps_one_pipeline_step_per_line_after_the_break() {
+        let source = "let total = values |> map price |> filter positive |> sum\n";
+        let expected = concat!(
+            "let total =\n",
+            "  values\n",
+            "  |> map price\n",
+            "  |> filter positive\n",
+            "  |> sum\n",
+        );
+
+        let formatted = format_with_width(source, 50);
+        assert_eq!(formatted.text, expected);
+        assert!(!format_with_width(expected, 50).changed);
+    }
+
+    #[test]
     fn wraps_a_long_pipeline_at_operator_boundaries() {
         let source = concat!(
             "pub effect fn main = do {\n",
