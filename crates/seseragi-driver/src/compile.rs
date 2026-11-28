@@ -309,7 +309,7 @@ mod tests {
             .contains("const loop = (current: number) =>"));
         assert!(
             compiled.generated.typescript.contains(&format!(
-                "({{ [$ssrg$tail]: [_ssrg_int_subtract(current, 1, $ssrg$source{})] }} as never)",
+                "(($ssrg$tailSlot0 = _ssrg_int_subtract(current, 1, $ssrg$source{}), $ssrg$tail) as never)",
                 source.find("current - 1").unwrap()
             )),
             "{}",

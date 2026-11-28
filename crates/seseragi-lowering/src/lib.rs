@@ -933,7 +933,7 @@ pub fn sum current: Int -> total: Int -> Int =
             lower_core_module_to_typescript_ir(core).expect("valid test lowering input");
         let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
-        assert!(!bundle.typescript.contains("const $ssrg$tail = Symbol();"));
+        assert!(!bundle.typescript.contains("const $ssrg$tail = {};"));
         assert!(bundle.typescript.contains("while (true)"));
         assert!(bundle.typescript.contains(
             "const $ssrg$scalarNext0 = _ssrg_int_subtract(current, 1);const $ssrg$scalarNext1 = _ssrg_int_add(total, current);"
@@ -964,9 +964,8 @@ pub fn sum current: Int -> total: Int -> Int =
         typescript.functions[0] = serde_json::from_value(serialized).unwrap();
         let generated =
             emit_typescript_module(typescript, source).expect("valid test lowering input");
-        assert!(generated
-            .typescript
-            .contains("const $ssrg$tail = Symbol();"));
+        assert!(generated.typescript.contains("const $ssrg$tail = {};"));
+        assert!(generated.typescript.contains("let $ssrg$tailSlot0:"));
         assert!(!generated.typescript.contains("$ssrg$scalarSlot"));
     }
 
@@ -1056,18 +1055,73 @@ pub fn listLength values: List<Int> -> Int = {
         let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
 
         assert_eq!(
-            bundle
-                .typescript
-                .matches("const $ssrg$tail = Symbol();")
-                .count(),
+            bundle.typescript.matches("const $ssrg$tail = {};").count(),
             1
         );
         assert!(bundle
             .typescript
             .contains("fibonacci(_ssrg_int_subtract(current, 1))"));
-        assert!(bundle
-            .typescript
-            .contains("({ [$ssrg$tail]: [rest, _ssrg_int_add(total, 1)] } as never)"));
+        assert!(bundle.typescript.contains(
+            "(($ssrg$tailSlot0 = rest, $ssrg$tailSlot1 = _ssrg_int_add(total, 1), $ssrg$tail) as never)"
+        ));
+    }
+
+    #[test]
+    fn omits_at_source_wrappers_for_self_tail_steps_list_cons_and_array_index() {
+        let source = "\
+pub fn build remaining: Int -> values: List<Int> -> List<Int> =
+  if remaining <= 0 then values else build (remaining - 1) (remaining : values)
+
+pub fn sum remaining: Int -> values: Array<Int> -> total: Int -> Int =
+  if remaining == 0 then total else match values[1] {
+    Just value -> sum (remaining - 1) values (total + value)
+    Nothing -> total
+  }
+";
+        let typed = type_module("artifact/tail-infallible-sources/main.ssrg", source);
+        let core = lower_typed_module(typed).expect("valid test lowering input");
+        let typescript = lower_core_module_to_typescript_ir_with_options(
+            core,
+            &TypeScriptOutputPlan::default(),
+            &TypeScriptLoweringOptions {
+                runtime_sources: true,
+                ..TypeScriptLoweringOptions::default()
+            },
+        )
+        .expect("valid test lowering input");
+        let bundle = emit_typescript_module(typescript, source).expect("valid test lowering input");
+
+        assert!(
+            !bundle.typescript.contains("$ssrg$atSource("),
+            "{}",
+            bundle.typescript
+        );
+        assert!(
+            bundle
+                .typescript
+                .contains("_ssrg_list_cons<number>(remaining, values)"),
+            "{}",
+            bundle.typescript
+        );
+        assert!(
+            bundle.typescript.contains("_ssrg_array_index(values, 1)"),
+            "{}",
+            bundle.typescript
+        );
+        assert!(
+            bundle
+                .typescript
+                .contains("$ssrg$tailSlot0 = _ssrg_int_subtract(remaining, 1, $ssrg$source"),
+            "{}",
+            bundle.typescript
+        );
+        assert!(
+            bundle
+                .typescript
+                .contains("if (($ssrg$result as unknown) === $ssrg$tail)"),
+            "{}",
+            bundle.typescript
+        );
     }
 
     #[test]

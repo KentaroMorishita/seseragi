@@ -5,11 +5,6 @@
   "runtimeSources": [
     {
       "source": "main.ssrg",
-      "start": 61,
-      "end": 75
-    },
-    {
-      "source": "main.ssrg",
       "start": 176,
       "end": 187
     },
@@ -25,22 +20,12 @@
     },
     {
       "source": "main.ssrg",
-      "start": 231,
-      "end": 240
-    },
-    {
-      "source": "main.ssrg",
       "start": 243,
       "end": 267
     },
     {
       "source": "main.ssrg",
       "start": 253,
-      "end": 267
-    },
-    {
-      "source": "main.ssrg",
-      "start": 258,
       "end": 267
     },
     {
@@ -55,22 +40,12 @@
     },
     {
       "source": "main.ssrg",
-      "start": 285,
-      "end": 294
-    },
-    {
-      "source": "main.ssrg",
       "start": 297,
       "end": 322
     },
     {
       "source": "main.ssrg",
       "start": 307,
-      "end": 322
-    },
-    {
-      "source": "main.ssrg",
-      "start": 312,
       "end": 322
     },
     {
@@ -90,11 +65,6 @@
     },
     {
       "source": "main.ssrg",
-      "start": 340,
-      "end": 349
-    },
-    {
-      "source": "main.ssrg",
       "start": 352,
       "end": 377
     },
@@ -105,22 +75,12 @@
     },
     {
       "source": "main.ssrg",
-      "start": 367,
-      "end": 377
-    },
-    {
-      "source": "main.ssrg",
       "start": 380,
       "end": 403
     },
     {
       "source": "main.ssrg",
       "start": 390,
-      "end": 403
-    },
-    {
-      "source": "main.ssrg",
-      "start": 395,
       "end": 403
     },
     {
@@ -166,7 +126,7 @@
     {
       "source": "main.ssrg",
       "start": 481,
-      "end": 490
+      "end": 513
     },
     {
       "source": "main.ssrg",
@@ -391,33 +351,15 @@
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "$ssrg$atSource",
+        "callee": "_ssrg_array_index",
         "arguments": [
           {
             "kind": "identifier",
-            "name": "$ssrg$source61"
+            "name": "values"
           },
           {
-            "kind": "lambda",
-            "parameter": "",
-            "body": {
-              "kind": "runtime-call",
-              "callee": "_ssrg_array_index",
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "values"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "offset"
-                }
-              ]
-            }
-          },
-          {
-            "kind": "boolean",
-            "value": false
+            "kind": "identifier",
+            "name": "offset"
           }
         ]
       },
@@ -482,33 +424,15 @@
                                 "arguments": [
                                   {
                                     "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
+                                    "callee": "_ssrg_array_index",
                                     "arguments": [
                                       {
                                         "kind": "identifier",
-                                        "name": "$ssrg$source231"
+                                        "name": "values"
                                       },
                                       {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "runtime-call",
-                                          "callee": "_ssrg_array_index",
-                                          "arguments": [
-                                            {
-                                              "kind": "identifier",
-                                              "name": "values"
-                                            },
-                                            {
-                                              "kind": "number",
-                                              "value": "0"
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
+                                        "kind": "number",
+                                        "value": "0"
                                       }
                                     ]
                                   }
@@ -576,33 +500,15 @@
                                 "arguments": [
                                   {
                                     "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
+                                    "callee": "_ssrg_array_index",
                                     "arguments": [
                                       {
                                         "kind": "identifier",
-                                        "name": "$ssrg$source258"
+                                        "name": "values"
                                       },
                                       {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "runtime-call",
-                                          "callee": "_ssrg_array_index",
-                                          "arguments": [
-                                            {
-                                              "kind": "identifier",
-                                              "name": "values"
-                                            },
-                                            {
-                                              "kind": "number",
-                                              "value": "1"
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
+                                        "kind": "number",
+                                        "value": "1"
                                       }
                                     ]
                                   }
@@ -670,33 +576,15 @@
                                 "arguments": [
                                   {
                                     "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
+                                    "callee": "_ssrg_array_index",
                                     "arguments": [
                                       {
                                         "kind": "identifier",
-                                        "name": "$ssrg$source285"
+                                        "name": "values"
                                       },
                                       {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "runtime-call",
-                                          "callee": "_ssrg_array_index",
-                                          "arguments": [
-                                            {
-                                              "kind": "identifier",
-                                              "name": "values"
-                                            },
-                                            {
-                                              "kind": "number",
-                                              "value": "2"
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
+                                        "kind": "number",
+                                        "value": "2"
                                       }
                                     ]
                                   }
@@ -764,47 +652,29 @@
                                 "arguments": [
                                   {
                                     "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
+                                    "callee": "_ssrg_array_index",
                                     "arguments": [
                                       {
                                         "kind": "identifier",
-                                        "name": "$ssrg$source312"
+                                        "name": "values"
                                       },
                                       {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "runtime-call",
-                                          "callee": "_ssrg_array_index",
-                                          "arguments": [
-                                            {
-                                              "kind": "identifier",
-                                              "name": "values"
-                                            },
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "_ssrg_int_subtract",
-                                              "arguments": [
-                                                {
-                                                  "kind": "number",
-                                                  "value": "0"
-                                                },
-                                                {
-                                                  "kind": "number",
-                                                  "value": "1"
-                                                },
-                                                {
-                                                  "kind": "identifier",
-                                                  "name": "$ssrg$source319"
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_int_subtract",
+                                        "arguments": [
+                                          {
+                                            "kind": "number",
+                                            "value": "0"
+                                          },
+                                          {
+                                            "kind": "number",
+                                            "value": "1"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "$ssrg$source319"
+                                          }
+                                        ]
                                       }
                                     ]
                                   }
@@ -872,33 +742,15 @@
                                 "arguments": [
                                   {
                                     "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
+                                    "callee": "_ssrg_array_index",
                                     "arguments": [
                                       {
                                         "kind": "identifier",
-                                        "name": "$ssrg$source340"
+                                        "name": "values"
                                       },
                                       {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "runtime-call",
-                                          "callee": "_ssrg_array_index",
-                                          "arguments": [
-                                            {
-                                              "kind": "identifier",
-                                              "name": "values"
-                                            },
-                                            {
-                                              "kind": "number",
-                                              "value": "3"
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
+                                        "kind": "number",
+                                        "value": "3"
                                       }
                                     ]
                                   }
@@ -966,33 +818,15 @@
                                 "arguments": [
                                   {
                                     "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
+                                    "callee": "_ssrg_array_index",
                                     "arguments": [
                                       {
                                         "kind": "identifier",
-                                        "name": "$ssrg$source367"
+                                        "name": "values"
                                       },
                                       {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "runtime-call",
-                                          "callee": "_ssrg_array_index",
-                                          "arguments": [
-                                            {
-                                              "kind": "identifier",
-                                              "name": "values"
-                                            },
-                                            {
-                                              "kind": "number",
-                                              "value": "99"
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
+                                        "kind": "number",
+                                        "value": "99"
                                       }
                                     ]
                                   }
@@ -1060,33 +894,15 @@
                                 "arguments": [
                                   {
                                     "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
+                                    "callee": "_ssrg_array_index",
                                     "arguments": [
                                       {
                                         "kind": "identifier",
-                                        "name": "$ssrg$source395"
+                                        "name": "empty"
                                       },
                                       {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "runtime-call",
-                                          "callee": "_ssrg_array_index",
-                                          "arguments": [
-                                            {
-                                              "kind": "identifier",
-                                              "name": "empty"
-                                            },
-                                            {
-                                              "kind": "number",
-                                              "value": "0"
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
+                                        "kind": "number",
+                                        "value": "0"
                                       }
                                     ]
                                   }
@@ -1383,33 +1199,15 @@
                                       "arguments": [
                                         {
                                           "kind": "runtime-call",
-                                          "callee": "$ssrg$atSource",
+                                          "callee": "_ssrg_array_index",
                                           "arguments": [
                                             {
                                               "kind": "identifier",
-                                              "name": "$ssrg$source481"
+                                              "name": "values"
                                             },
                                             {
-                                              "kind": "lambda",
-                                              "parameter": "",
-                                              "body": {
-                                                "kind": "runtime-call",
-                                                "callee": "_ssrg_array_index",
-                                                "arguments": [
-                                                  {
-                                                    "kind": "identifier",
-                                                    "name": "values"
-                                                  },
-                                                  {
-                                                    "kind": "number",
-                                                    "value": "1"
-                                                  }
-                                                ]
-                                              }
-                                            },
-                                            {
-                                              "kind": "boolean",
-                                              "value": false
+                                              "kind": "number",
+                                              "value": "1"
                                             }
                                           ]
                                         },

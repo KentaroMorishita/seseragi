@@ -1153,32 +1153,34 @@ fn render_tail_recursive_body(
     parameters: &[crate::TypeScriptParameter],
 ) -> String {
     let rendered_body = render_tail_position_expr(body, self_name, parameters.len());
-    let argument_types = parameters
-        .iter()
-        .map(|parameter| parameter.type_name.as_str())
-        .collect::<Vec<_>>()
-        .join(", ");
-    let initial_arguments = parameters
-        .iter()
-        .map(|parameter| parameter.name.as_str())
-        .collect::<Vec<_>>()
-        .join(", ");
     // Curried arguments belong to the reusable outer closures, and closures
     // created by the body must retain the values of their own iteration.
-    // Keep mutable loop state separate from both sets of lexical bindings.
+    // Keep mutable loop state in dedicated slots separate from both sets of
+    // lexical bindings so each tail step avoids allocating a tuple or marker.
+    let initial_slots = parameters
+        .iter()
+        .enumerate()
+        .map(|(index, parameter)| {
+            format!(
+                "let $ssrg$tailSlot{index}: {} = {};",
+                parameter.type_name, parameter.name
+            )
+        })
+        .collect::<Vec<_>>()
+        .join(" ");
     let iteration_bindings = parameters
         .iter()
         .enumerate()
         .map(|(index, parameter)| {
             format!(
-                "const {}: {} = $ssrg$loopArguments[{index}];",
+                "const {}: {} = $ssrg$tailSlot{index};",
                 parameter.name, parameter.type_name
             )
         })
         .collect::<Vec<_>>()
         .join(" ");
     format!(
-        "{{ const $ssrg$tail = Symbol(); let $ssrg$loopArguments: readonly [{argument_types}] = [{initial_arguments}]; while (true) {{ {iteration_bindings} const $ssrg$result = {rendered_body}; const $ssrg$tailResult: unknown = $ssrg$result; if (typeof $ssrg$tailResult === \"object\" && $ssrg$tailResult !== null && $ssrg$tail in $ssrg$tailResult) {{ const $ssrg$arguments = ($ssrg$tailResult as {{ readonly [$ssrg$tail]: readonly [{argument_types}] }})[$ssrg$tail]; $ssrg$loopArguments = $ssrg$arguments; continue; }} return $ssrg$result; }} }}"
+        "{{ const $ssrg$tail = {{}}; {initial_slots} while (true) {{ {iteration_bindings} const $ssrg$result = {rendered_body}; if (($ssrg$result as unknown) === $ssrg$tail) {{ continue; }} return $ssrg$result; }} }}"
     )
 }
 
@@ -1187,14 +1189,21 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
         let TypeScriptExpr::Call { arguments, .. } = call else {
             unreachable!("tail call");
         };
-        format!(
-            "({{ [$ssrg$tail]: [{}] }} as never)",
-            arguments
-                .iter()
-                .map(render_typescript_expr)
-                .collect::<Vec<_>>()
-                .join(", ")
-        )
+        if arguments.is_empty() {
+            return "($ssrg$tail as never)".to_owned();
+        }
+        let assignments = arguments
+            .iter()
+            .enumerate()
+            .map(|(index, argument)| {
+                format!(
+                    "$ssrg$tailSlot{index} = {}",
+                    render_typescript_expr(argument)
+                )
+            })
+            .collect::<Vec<_>>()
+            .join(", ");
+        format!("(({assignments}, $ssrg$tail) as never)")
     })
 }
 
@@ -1255,6 +1264,18 @@ fn render_tail_positions(
     let inner =
         |value: &TypeScriptExpr| render_tail_positions(value, self_name, arity, effect, tail_call);
     if let Some((callee, source, value, frame)) = source_action(expr) {
+        if !effect
+            && matches!(
+                value,
+                TypeScriptExpr::Call {
+                    callee: call_callee,
+                    arguments,
+                    ..
+                } if call_callee == self_name && arguments.len() == arity
+            )
+        {
+            return tail_call(value);
+        }
         return format!(
             "{callee}({}, () => {}, {})",
             render_typescript_expr(source),

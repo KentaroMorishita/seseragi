@@ -202,6 +202,9 @@ fn lower_core_expr_with_source(
     ) {
         return Ok(value);
     }
+    if is_infallible_runtime_call(&value) {
+        return Ok(value);
+    }
     let source = TypeScriptExpr::Identifier {
         name: imported_types.runtime_source(origin),
     };
@@ -224,6 +227,18 @@ fn lower_core_expr_with_source(
             TypeScriptExpr::Boolean { value: effect },
         ],
     })
+}
+
+fn is_infallible_runtime_call(expr: &TypeScriptExpr) -> bool {
+    match expr {
+        TypeScriptExpr::TypeApplicationCall { callee, .. } => {
+            callee == crate::list_ops::runtime_list_cons_operation().local_name
+        }
+        TypeScriptExpr::RuntimeCall { callee, .. } => {
+            callee == crate::collection_ops::runtime_array_index_local_name()
+        }
+        _ => false,
+    }
 }
 
 fn lower_core_expr_unlocated(

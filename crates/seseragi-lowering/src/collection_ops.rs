@@ -175,13 +175,19 @@ const LIST_COMPREHEND_FLAT: RuntimeCollectionOperation = RuntimeCollectionOperat
     source_arity: 3,
 };
 
+const ARRAY_INDEX_LOCAL_NAME: &str = "_ssrg_array_index";
+
+pub(crate) fn runtime_array_index_local_name() -> &'static str {
+    ARRAY_INDEX_LOCAL_NAME
+}
+
 const STANDARD_COLLECTION_OPERATIONS: &[(&str, RuntimeCollectionOperation)] = &[
     (
         "builtin::array-index",
         RuntimeCollectionOperation {
             result_erased: false,
             runtime_feature: "core.array.index",
-            local_name: "_ssrg_array_index",
+            local_name: ARRAY_INDEX_LOCAL_NAME,
             module: "@seseragi/runtime/array",
             export_name: "index",
             source_arity: 2,
