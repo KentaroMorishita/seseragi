@@ -45,8 +45,7 @@ fn validateScore lineNumber: Int
   match ints.parse (text.trim rawScore) {
     Left _ -> Left (LineIssue { lineNumber, raw, reason: "点数が整数ではありません" })
     Right score ->
-      if score < 0
-        || score > 100 then
+      if score < 0 || score > 100 then
         Left (LineIssue { lineNumber, raw, reason: "点数は 0〜100 の範囲にしてください" })
       else
         Right (ScoreEntry { student, score, grade: classifyGrade score })

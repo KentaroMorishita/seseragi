@@ -26,8 +26,7 @@ fn checkName name: String -> Either<SignupError, String> =
   if name |> text.trim |> text.isEmpty then Left BlankName else Right (text.trim name)
 
 fn checkEmail email: String -> Either<SignupError, String> =
-  if text.contains "@" email
-    && text.contains "." email then
+  if text.contains "@" email && text.contains "." email then
     Right email
   else
     Left (InvalidEmail email)

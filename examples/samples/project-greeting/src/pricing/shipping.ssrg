@@ -19,8 +19,7 @@ fn weightSurcharge grams: Int -> Int = if grams > 2000 then 350 else 0
 
 pub fn quoteShipping parcel: Parcel -> ShippingQuote = {
   let qualifiesFree =
-    parcel.zone == Domestic
-    && parcel.subtotalYen >= freeShippingThreshold
+    parcel.zone == Domestic && parcel.subtotalYen >= freeShippingThreshold
   let shippingYen =
     if qualifiesFree then
       0
