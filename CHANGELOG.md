@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.17] - 2026-11-28
+
+### Changed
+
+- `seseragi format` now packs long callable signatures onto lines up to `line_width` instead of breaking before every top-level `->` once the signature overflows, and applies the same wrapping rule to bodyless `fn` declarations in `trait` and `foreign` blocks (#1448).
+
 ## [0.62.16] - 2026-11-28
 
 ### Fixed
