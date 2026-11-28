@@ -98,13 +98,7 @@
       "photoGroup": "seseragi-landing-page",
       "layoutMarkers": ["svg.svg {", "minHeight: \"100vh\""],
       "states": ["initial", "composable", "alive"],
-      "artifacts": [
-        "docs/reviews/issue-244/visual/desktop-initial.png",
-        "docs/reviews/issue-244/visual/desktop-composable.png",
-        "docs/reviews/issue-244/visual/iphone-390-initial.png",
-        "docs/reviews/issue-244/visual/android-360-alive.png",
-        "docs/reviews/issue-244/visual/minimum-320-code.png"
-      ]
+      "artifacts": []
     }
   ]
 }
