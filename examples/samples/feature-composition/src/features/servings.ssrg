@@ -42,11 +42,8 @@ fn ingredientRow servings: Int -> ingredient: Ingredient -> html.Html<Task<Unit>
   }
 }
 
-fn stepperButton label: String
-  -> caption: String
-  -> disabled: Bool
-  -> action: Task<Unit>
-  -> html.Html<Task<Unit>> =
+fn stepperButton label: String -> caption: String -> disabled: Bool
+  -> action: Task<Unit> -> html.Html<Task<Unit>> =
   html.button {
     disabled,
     onClick: action,

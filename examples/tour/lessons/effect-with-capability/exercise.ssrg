@@ -1,9 +1,7 @@
 pub effect fn announce message: String -> Unit with Console fails ConsoleError =
   println `explicit: ${message}`
 
-effect fn reportPair first: String
-  -> second: String
-  -> Unit
+effect fn reportPair first: String -> second: String -> Unit
 with Console
 fails ConsoleError =
   do {

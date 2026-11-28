@@ -45,10 +45,8 @@ fn intro -> html.Html<Task<Unit>> = html.div {
   ],
 }
 
-fn kitchen servingsView: html.Html<Task<Unit>>
-  -> stepsView: html.Html<Task<Unit>>
-  -> timerView: html.Html<Task<Unit>>
-  -> html.Html<Task<Unit>> =
+fn kitchen servingsView: html.Html<Task<Unit>> -> stepsView: html.Html<Task<Unit>>
+  -> timerView: html.Html<Task<Unit>> -> html.Html<Task<Unit>> =
   html.main {
     style: styles.pageStyle (),
     children: html.div {
@@ -63,8 +61,7 @@ fn kitchen servingsView: html.Html<Task<Unit>>
     },
   }
 
-pub effect fn create
-  -> Signal<html.Html<Task<Unit>>>
+pub effect fn create -> Signal<html.Html<Task<Unit>>>
 with clock: clock.Clock
 fails String =
   do {

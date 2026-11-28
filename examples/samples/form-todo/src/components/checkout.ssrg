@@ -37,10 +37,8 @@ fn fieldLabel htmlFor: String -> caption: String -> html.Html<Task<Unit>> = html
   children: caption
 }
 
-fn selectedSeatRow dispatch: (BookingAction -> Task<Unit>)
-  -> removable: Bool
-  -> seat: Seat
-  -> html.Html<Task<Unit>> = {
+fn selectedSeatRow dispatch: (BookingAction -> Task<Unit>) -> removable: Bool
+  -> seat: Seat -> html.Html<Task<Unit>> = {
     let priceNode = plainSpan (formatYen (seatPrice seat.tier))
     let controls: Array<html.Html<Task<Unit>>> =
       if removable then
@@ -65,8 +63,7 @@ fn selectedSeatRow dispatch: (BookingAction -> Task<Unit>)
     }
   }
 
-pub fn summarySidebar dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
+pub fn summarySidebar dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
   -> html.Html<Task<Unit>> = {
     let chosen = selectedSeats state
     let totals = calculateTotals state
@@ -156,12 +153,8 @@ fn errorSummary errors: Array<CheckoutError> -> html.Html<Task<Unit>> =
     }
   }
 
-fn textField fieldId: String
-  -> caption: String
-  -> inputKind: String
-  -> hint: String
-  -> currentValue: String
-  -> onChangeText: (String -> Task<Unit>)
+fn textField fieldId: String -> caption: String -> inputKind: String -> hint: String
+  -> currentValue: String -> onChangeText: (String -> Task<Unit>)
   -> html.Html<Task<Unit>> =
   html.div {
     style: styles.fieldGroupStyle (),
@@ -178,8 +171,7 @@ fn textField fieldId: String
     ],
   }
 
-fn deliveryField dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
+fn deliveryField dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
   -> html.Html<Task<Unit>> = {
     let caption: html.Html<Task<Unit>> = html.span {
       style: styles.labelStyle (),
@@ -214,8 +206,7 @@ fn deliveryField dispatch: (BookingAction -> Task<Unit>)
     }
   }
 
-fn termsCheckbox dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
+fn termsCheckbox dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
   -> html.Html<Task<Unit>> =
   html.label {
     htmlFor: "buyer-terms",
@@ -239,8 +230,7 @@ fn termsCheckbox dispatch: (BookingAction -> Task<Unit>)
     ],
   }
 
-pub fn checkoutView dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
+pub fn checkoutView dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
   -> html.Html<Task<Unit>> = {
     let chosen = selectedSeats state
     let totals: OrderTotals = calculateTotals state

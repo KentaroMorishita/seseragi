@@ -25,12 +25,8 @@ import {
 } from "self/trip/model"
 import * as styles from "self/ui/styles"
 
-fn spotItem dispatch: (TripAction -> Task<Unit>)
-  -> focusedId: String
-  -> daySpots: Array<Spot>
-  -> idx: Int
-  -> spot: Spot
-  -> html.Html<Task<Unit>> = {
+fn spotItem dispatch: (TripAction -> Task<Unit>) -> focusedId: String
+  -> daySpots: Array<Spot> -> idx: Int -> spot: Spot -> html.Html<Task<Unit>> = {
     let isFirst = idx == 0
     let isLast = idx + 1 == arrays.length daySpots
     let isFocused = spot.id == focusedId
@@ -109,8 +105,7 @@ fn spotItem dispatch: (TripAction -> Task<Unit>)
     html.div { children: arrays.concat [[card], connector], }
   }
 
-fn presetAddBar dispatch: (TripAction -> Task<Unit>)
-  -> allSpots: Array<Spot>
+fn presetAddBar dispatch: (TripAction -> Task<Unit>) -> allSpots: Array<Spot>
   -> html.Html<Task<Unit>> = {
     let alreadyAdded = \id: String ->
       match arrays.find (\s: Spot -> s.id == id) allSpots {
@@ -150,8 +145,7 @@ fn presetAddBar dispatch: (TripAction -> Task<Unit>)
       }
   }
 
-pub fn view dispatch: (TripAction -> Task<Unit>)
-  -> state: TripState
+pub fn view dispatch: (TripAction -> Task<Unit>) -> state: TripState
   -> html.Html<Task<Unit>> = {
     let daySpots = spotsForDay state.activeDay state.spots
     let count = arrays.length daySpots

@@ -849,6 +849,92 @@ let result=(account','\u{03BB}','\'','\\')
     }
 
     #[test]
+    fn packs_callable_signatures_to_line_width_consistently() {
+        let source = concat!(
+            "fn inBounds r: Int -> c: Int -> Bool = r >= 0 && r < 8 && c >= 0 && c < 8\n",
+            "\n",
+            "fn toIndex r: Int -> c: Int -> Int = r * 8 + c\n",
+            "\n",
+            "fn initialCell r: Int -> c: Int -> Cell = Empty\n",
+            "\n",
+            "fn range start: Int -> limit: Int -> Array<Int> = if start >= limit then [] else [start]\n",
+            "\n",
+            "fn containsInt values: Array<Int> -> target: Int -> Bool = arrays.any (\\x -> x == target) values\n",
+            "\n",
+            "fn cellAt board: Array<Cell> -> r: Int -> c: Int -> Cell = board[toIndex r c]\n",
+        );
+        let expected_narrow = concat!(
+            "fn inBounds r: Int -> c: Int -> Bool =\n",
+            "  r >= 0 && r < 8 && c >= 0 && c < 8\n",
+            "\n",
+            "fn toIndex r: Int -> c: Int -> Int = r * 8 + c\n",
+            "\n",
+            "fn initialCell r: Int -> c: Int -> Cell = Empty\n",
+            "\n",
+            "fn range start: Int -> limit: Int\n",
+            "  -> Array<Int> =\n",
+            "  if start >= limit then [] else [start]\n",
+            "\n",
+            "fn containsInt values: Array<Int> -> target: Int\n",
+            "  -> Bool =\n",
+            "  arrays.any (\\x -> x == target) values\n",
+            "\n",
+            "fn cellAt board: Array<Cell> -> r: Int -> c: Int\n",
+            "  -> Cell =\n",
+            "  board[toIndex r c]\n",
+        );
+
+        let narrow = format_with_width(source, 48);
+        assert_eq!(narrow.text, expected_narrow);
+        assert!(!format_with_width(&narrow.text, 48).changed);
+
+        let wide = format(source);
+        assert!(wide.text.contains(
+            "fn range start: Int -> limit: Int -> Array<Int> = if start >= limit then [] else [start]\n"
+        ));
+        assert!(wide
+            .text
+            .contains("fn containsInt values: Array<Int> -> target: Int -> Bool =\n"));
+        assert!(wide.text.contains(
+            "fn cellAt board: Array<Cell> -> r: Int -> c: Int -> Cell = board[toIndex r c]\n"
+        ));
+        assert!(!format(&wide.text).changed);
+    }
+
+    #[test]
+    fn packs_bodyless_trait_and_foreign_signatures_to_line_width() {
+        let source = concat!(
+            "trait Render<A> {\n",
+            "  fn render value: A -> String\n",
+            "  fn renderDetailed value: A -> prefix: String -> suffix: String -> String\n",
+            "}\n",
+            "\n",
+            "foreign \"typescript\" from \"host\" {\n",
+            "  pure fn formatCell board: Array<Cell> -> row: Int -> col: Int -> String\n",
+            "  task fn loadBoard endpoint: String -> timeout: Int -> retries: Int -> String\n",
+            "}\n",
+        );
+        let expected_narrow = concat!(
+            "trait Render<A> {\n",
+            "  fn render value: A -> String\n",
+            "  fn renderDetailed value: A -> prefix: String\n",
+            "    -> suffix: String -> String\n",
+            "}\n",
+            "\n",
+            "foreign \"typescript\" from \"host\" {\n",
+            "  pure fn formatCell board: Array<Cell>\n",
+            "    -> row: Int -> col: Int -> String\n",
+            "  task fn loadBoard endpoint: String\n",
+            "    -> timeout: Int -> retries: Int -> String\n",
+            "}\n",
+        );
+
+        let narrow = format_with_width(source, 48);
+        assert_eq!(narrow.text, expected_narrow);
+        assert!(!format_with_width(&narrow.text, 48).changed);
+    }
+
+    #[test]
     fn canonicalizes_alias_layout_without_changing_its_type_structure() {
         let source = concat!(
             "pub alias Pair<A> = { left: A, right: A }  \r\n",

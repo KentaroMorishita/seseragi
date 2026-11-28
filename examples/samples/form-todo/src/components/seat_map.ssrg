@@ -57,11 +57,8 @@ fn stageCanopy -> html.Html<Task<Unit>> = svg.svg {
 }
   |> svg.toHtml
 
-fn tierFilterButton dispatch: (BookingAction -> Task<Unit>)
-  -> current: Maybe<SeatTier>
-  -> target: Maybe<SeatTier>
-  -> label: String
-  -> html.Html<Task<Unit>> =
+fn tierFilterButton dispatch: (BookingAction -> Task<Unit>) -> current: Maybe<SeatTier>
+  -> target: Maybe<SeatTier> -> label: String -> html.Html<Task<Unit>> =
   html.button {
     buttonType: "button",
     ariaSelected: current == target,
@@ -70,9 +67,7 @@ fn tierFilterButton dispatch: (BookingAction -> Task<Unit>)
     children: label,
   }
 
-fn partySizeButton dispatch: (BookingAction -> Task<Unit>)
-  -> current: Int
-  -> size: Int
+fn partySizeButton dispatch: (BookingAction -> Task<Unit>) -> current: Int -> size: Int
   -> html.Html<Task<Unit>> =
   html.button {
     buttonType: "button",
@@ -82,10 +77,8 @@ fn partySizeButton dispatch: (BookingAction -> Task<Unit>)
     children: `${size}名`,
   }
 
-fn seatButton dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
-  -> seat: Seat
-  -> html.Html<Task<Unit>> =
+fn seatButton dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
+  -> seat: Seat -> html.Html<Task<Unit>> =
   {
     let selected = isSelected state.selectedIds seat.id
     let dimmed = match state.filterTier {
@@ -120,10 +113,8 @@ fn aisleGapTag label: String -> html.Html<Task<Unit>> = html.span {
   children: label
 }
 
-fn seatRowView dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
-  -> rowName: String
-  -> html.Html<Task<Unit>> = {
+fn seatRowView dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
+  -> rowName: String -> html.Html<Task<Unit>> = {
     let leftSeats = [seat | seat <- state.seats, seat.row == rowName, seat.number <= 4]
     let rightSeats = [seat | seat <- state.seats, seat.row == rowName, seat.number >= 5]
     html.div {
@@ -153,8 +144,7 @@ fn sightlinePanel state: BookingState -> html.Html<Task<Unit>> = {
   html.div { style: styles.sightlineBoxStyle (), children: body }
 }
 
-fn mapToolbar dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
+fn mapToolbar dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
   -> html.Html<Task<Unit>> = {
     let heading: html.Html<Task<Unit>> = html.h2 {
       style: styles.sectionHeadingStyle (),
@@ -178,8 +168,7 @@ fn mapToolbar dispatch: (BookingAction -> Task<Unit>)
     }
   }
 
-fn autoPickBar dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
+fn autoPickBar dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
   -> html.Html<Task<Unit>> = {
     let label: html.Html<Task<Unit>> = html.span {
       style: styles.metaStyle (),
@@ -205,8 +194,7 @@ fn autoPickBar dispatch: (BookingAction -> Task<Unit>)
     html.div { style: styles.autoPickBarStyle (), children: [sizeRow, pickButton], }
   }
 
-pub fn view dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
+pub fn view dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
   -> html.Html<Task<Unit>> = {
     let stageBox: html.Html<Task<Unit>> = html.div {
       style: styles.hallStageWrapStyle (),

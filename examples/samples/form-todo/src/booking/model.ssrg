@@ -115,12 +115,8 @@ pub fn errorText error: CheckoutError -> String = match error {
   TermsNotAccepted -> "キャンセル規定への同意にチェックを入れてください。"
 }
 
-fn makeSeat row: String
-  -> number: Int
-  -> tier: SeatTier
-  -> availability: SeatAvailability
-  -> sightline: String
-  -> Seat =
+fn makeSeat row: String -> number: Int -> tier: SeatTier
+  -> availability: SeatAvailability -> sightline: String -> Seat =
   Seat {
     id: `${row}-${number}`,
     row,
@@ -130,11 +126,8 @@ fn makeSeat row: String
     sightline,
   }
 
-fn rowSeats row: String
-  -> tier: SeatTier
-  -> soldNumbers: Array<Int>
-  -> sightline: String
-  -> Array<Seat> =
+fn rowSeats row: String -> tier: SeatTier -> soldNumbers: Array<Int>
+  -> sightline: String -> Array<Seat> =
   [makeSeat row number
       (if row == "E" && (number == 1 || number == 8) then
         TierAccessible
@@ -208,11 +201,8 @@ pub fn calculateTotals state: BookingState -> OrderTotals = {
 }
 
 // 中央通路（4番と5番の間）をまたがずに、希望人数の空席連番を探します。
-fn blockMatch seats: Array<Seat>
-  -> row: String
-  -> numbers: Array<Int>
-  -> tierFilter: Maybe<SeatTier>
-  -> Maybe<Array<String>> = {
+fn blockMatch seats: Array<Seat> -> row: String -> numbers: Array<Int>
+  -> tierFilter: Maybe<SeatTier> -> Maybe<Array<String>> = {
     let candidates =
       [seat | n <- numbers, seat <- seats, seat.row == row, seat.number == n, seat.availability == Available, match tierFilter
           {
@@ -260,9 +250,7 @@ fn candidateBlocks count: Int -> Array<Array<Int>> =
       [5, 6, 7, 8]
     ]
 
-pub fn findAdjacentSeats seats: Array<Seat>
-  -> tierFilter: Maybe<SeatTier>
-  -> count: Int
+pub fn findAdjacentSeats seats: Array<Seat> -> tierFilter: Maybe<SeatTier> -> count: Int
   -> Maybe<Array<String>> = {
     let rows = ["B", "A", "C", "D", "E"]
     let blocks = candidateBlocks count
@@ -328,12 +316,8 @@ fn checkPhone phone: String -> Validation<CheckoutError, String> =
 fn checkTerms accepted: Bool -> Validation<CheckoutError, Bool> =
   if accepted then validation.valid True else validation.invalid TermsNotAccepted
 
-fn makeConfirmedBuyer _seats: Array<String>
-  -> delivery: DeliveryOption
-  -> fullName: String
-  -> email: String
-  -> phone: String
-  -> acceptedTerms: Bool
+fn makeConfirmedBuyer _seats: Array<String> -> delivery: DeliveryOption
+  -> fullName: String -> email: String -> phone: String -> acceptedTerms: Bool
   -> BuyerDraft =
   BuyerDraft {
     fullName,

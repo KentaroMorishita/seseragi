@@ -207,11 +207,8 @@ fn statsView current: TrailInfo -> html.Html<Task<Unit>> = html.div {
   ]
 }
 
-fn choice pressed: Pressed
-  -> state: MutableSignal<Trail>
-  -> current: Trail
-  -> trail: Trail
-  -> html.Html<Task<Unit>> =
+fn choice pressed: Pressed -> state: MutableSignal<Trail> -> current: Trail
+  -> trail: Trail -> html.Html<Task<Unit>> =
   {
     let selected = trail == current
     html.button {
@@ -226,9 +223,7 @@ fn choice pressed: Pressed
     }
   }
 
-fn page pressed: Pressed
-  -> state: MutableSignal<Trail>
-  -> current: Trail
+fn page pressed: Pressed -> state: MutableSignal<Trail> -> current: Trail
   -> html.Html<Task<Unit>> = {
     let shown = info current
     let sections: Array<html.Html<Task<Unit>>> = [

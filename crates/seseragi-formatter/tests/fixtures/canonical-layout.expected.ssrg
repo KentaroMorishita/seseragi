@@ -7,10 +7,7 @@ type Mode =
   | Compact
   | Detailed
 
-fn view title: String
-  -> subtitle: String
-  -> tags: Array<String>
-  -> selected: Bool
+fn view title: String -> subtitle: String -> tags: Array<String> -> selected: Bool
   -> html.Html<Task<Unit>> =
   html.section {
     style: html.style { backgroundColor: "#071a14", color: "#f4fff9", padding: "32px" },

@@ -538,14 +538,17 @@ fn format_logical_line(
     }
 
     let equals = top_level_equals(indices, tokens, angles);
-    let signature_needs_breaking = equals.is_some_and(|position| {
-        is_callable_header(&indices[..position], tokens)
-            && display_width(&render_flat(&indices[..=position], tokens, angles)) + base_indent * 2
+    let signature_end = equals.or_else(|| {
+        (!indices.is_empty() && is_callable_header(indices, tokens)).then_some(indices.len() - 1)
+    });
+    let signature_needs_breaking = signature_end.is_some_and(|end| {
+        is_callable_header(&indices[..=end], tokens)
+            && display_width(&render_flat(&indices[..=end], tokens, angles)) + base_indent * 2
                 > line_width
     });
     let mut writer = LineWriter::new(base_indent, tokens, angles, token_indents);
     let mut stack: Vec<(usize, usize)> = Vec::new();
-    let mut before_equals = equals.is_some();
+    let mut in_signature = signature_end.is_some();
     let mut application_indent = None;
     let mut conditional_indents = Vec::new();
     let mut else_indent = base_indent;
@@ -558,7 +561,7 @@ fn format_logical_line(
     for (position, index) in indices.iter().copied().enumerate() {
         let token = &tokens[index];
         let next = indices.get(position + 1).copied();
-        if stack.is_empty() && starts_operator_segment(position, token, equals, before_equals) {
+        if stack.is_empty() && starts_operator_segment(position, token, equals, in_signature) {
             segment_fits = None;
             segment_start = position + 1;
         }
@@ -634,13 +637,25 @@ fn format_logical_line(
                         ) + base_indent * 2
                             > line_width);
             let break_indent = if signature_needs_breaking
+                && in_signature
                 && (matches!(token.kind, TokenKind::KeywordWith | TokenKind::KeywordFails)
                     || token.raw == "where")
             {
                 Some(base_indent)
             } else if signature_needs_breaking
                 && token.kind == TokenKind::OperatorArrow
-                && before_equals
+                && in_signature
+                && writer.projected_width_by(
+                    signature_arrow_segment_width(
+                        position,
+                        signature_end.expect("callable signature end"),
+                        indices,
+                        tokens,
+                        angles,
+                        &expanded,
+                    ),
+                    index,
+                ) > line_width
             {
                 Some(base_indent + 1)
             } else if token.kind == TokenKind::KeywordElse {
@@ -650,7 +665,7 @@ fn format_logical_line(
             {
                 Some(base_indent + 1)
             } else if position > 0
-                && !before_equals
+                && !in_signature
                 && (!angles.contains(&index) && is_breakable_operator(token)
                     || starts_composite_operator(position, indices, tokens))
                 && !writer
@@ -706,7 +721,7 @@ fn format_logical_line(
         }
         writer.push(index);
         if Some(position) == equals {
-            before_equals = false;
+            in_signature = false;
         }
 
         if token.kind == TokenKind::OperatorApply && needs_breaking && stack.is_empty() {
@@ -1234,6 +1249,46 @@ fn is_callable_header(indices: &[usize], tokens: &[Token]) -> bool {
         || indices
             .first()
             .is_some_and(|index| tokens[*index].raw == "operator")
+}
+
+/// Width of the signature segment starting at a top-level `->` up to the next
+/// top-level signature break point (`->`, `with`, `fails`, `where`) or the end
+/// of the signature (including `=` when present). Stops at an expanded group's
+/// opening delimiter so a multi-line parameter type only measures its head.
+fn signature_arrow_segment_width(
+    position: usize,
+    signature_end: usize,
+    indices: &[usize],
+    tokens: &[Token],
+    angles: &HashSet<usize>,
+    expanded: &HashSet<usize>,
+) -> usize {
+    let mut depth = 0usize;
+    let mut end = signature_end + 1;
+    for at in position + 1..=signature_end {
+        let index = indices[at];
+        if angles.contains(&index) {
+            continue;
+        }
+        let kind = tokens[index].kind;
+        if is_open_delimiter(kind) {
+            if depth == 0 && expanded.contains(&at) {
+                end = at + 1;
+                break;
+            }
+            depth += 1;
+        } else if is_close_delimiter(kind) {
+            depth = depth.saturating_sub(1);
+        } else if depth == 0
+            && (kind == TokenKind::OperatorArrow
+                || matches!(kind, TokenKind::KeywordWith | TokenKind::KeywordFails)
+                || tokens[index].raw == "where")
+        {
+            end = at;
+            break;
+        }
+    }
+    display_width(&render_flat(&indices[position..end], tokens, angles))
 }
 
 fn rhs_segment_width(

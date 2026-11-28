@@ -62,8 +62,7 @@ fn headerView state: BookingState -> html.Html<Task<Unit>> = {
   }
 }
 
-fn contentView send: (BookingAction -> Task<Unit>)
-  -> state: BookingState
+fn contentView send: (BookingAction -> Task<Unit>) -> state: BookingState
   -> html.Html<Task<Unit>> =
   match state.step {
     SelectingSeats -> html.div {
@@ -83,8 +82,7 @@ fn contentView send: (BookingAction -> Task<Unit>)
     TicketIssued code -> ticket.view send state code
   }
 
-fn pageView state: MutableSignal<BookingState>
-  -> current: BookingState
+fn pageView state: MutableSignal<BookingState> -> current: BookingState
   -> html.Html<Task<Unit>> =
   html.main {
     style: styles.pageStyle (),

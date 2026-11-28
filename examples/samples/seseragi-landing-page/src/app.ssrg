@@ -11,11 +11,8 @@ import { closing } from "./components/closing"
 import { footer } from "./components/footer"
 import * as styles from "./ui/styles"
 
-fn page playgroundUrl: html.WebUrl
-  -> tourUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> chapter: html.Html<Task<Unit>>
-  -> html.Html<Task<Unit>> =
+fn page playgroundUrl: html.WebUrl -> tourUrl: html.WebUrl -> repositoryUrl: html.WebUrl
+  -> chapter: html.Html<Task<Unit>> -> html.Html<Task<Unit>> =
   html.main {
     style: styles.pageStyle (),
     children: [

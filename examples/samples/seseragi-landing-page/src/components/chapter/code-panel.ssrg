@@ -339,12 +339,8 @@ fn panelLabel accent: String -> label: String -> html.Html<Task<Unit>> = html.sp
   children: label,
 }
 
-fn codeWindow accent: String
-  -> label: String
-  -> fileHint: String
-  -> surfaceTag: String
-  -> lines: Array<CodeLine>
-  -> html.Html<Task<Unit>> = {
+fn codeWindow accent: String -> label: String -> fileHint: String -> surfaceTag: String
+  -> lines: Array<CodeLine> -> html.Html<Task<Unit>> = {
     let headerNode: html.Html<Task<Unit>> = html.div {
       style: styles.codePanelHeaderStyle (),
       children: [trafficLights (), panelLabel accent label],

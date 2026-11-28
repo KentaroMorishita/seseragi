@@ -71,10 +71,7 @@ pub effect fn shortDo = do {
   println $ show value
 }
 
-pub effect fn longDo input: String
-  -> prefix: String
-  -> suffix: String
-  -> Unit
+pub effect fn longDo input: String -> prefix: String -> suffix: String -> Unit
 with Console
 fails ConsoleError =
   do {
@@ -126,16 +123,8 @@ fn panel mode: Mode -> html.Html<Action> = html.section {
       html.p { children: "detailed" }
 }
 
-fn applyMany renderer: String
-  -> String
-  -> String
-  -> String
-  -> String
-  -> String
-  -> String
-  -> String
-  -> String
-  -> String =
+fn applyMany renderer: String -> String -> String -> String -> String -> String
+  -> String -> String -> String -> String =
   renderer firstArgument secondArgument thirdArgument fourthArgument fifthArgument sixthArgument seventhArgument eighthArgument
 
 let unitResult = identity ()

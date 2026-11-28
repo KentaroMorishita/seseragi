@@ -19,10 +19,8 @@ fn logo playgroundUrl: html.WebUrl -> html.Html<Task<Unit>> = html.a {
   children: brandMark (),
 }
 
-fn navigation playgroundUrl: html.WebUrl
-  -> tourUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
+fn navigation playgroundUrl: html.WebUrl -> tourUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.nav {
     ariaLabel: "主要リンク",
     style: html.style {
@@ -38,10 +36,8 @@ fn navigation playgroundUrl: html.WebUrl
     ],
   }
 
-pub fn header playgroundUrl: html.WebUrl
-  -> tourUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
+pub fn header playgroundUrl: html.WebUrl -> tourUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.header {
     style: html.style {
       left: "0",

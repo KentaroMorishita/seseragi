@@ -39,11 +39,8 @@ fn dispatch state: MutableSignal<TripState> -> action: TripAction -> Task<Unit> 
     _ -> signals.update (update action) state
   }
 
-fn navTab send: (TripAction -> Task<Unit>)
-  -> current: ActiveTab
-  -> target: ActiveTab
-  -> label: String
-  -> html.Html<Task<Unit>> =
+fn navTab send: (TripAction -> Task<Unit>) -> current: ActiveTab -> target: ActiveTab
+  -> label: String -> html.Html<Task<Unit>> =
   html.button {
     buttonType: "button",
     ariaSelected: current == target,
@@ -52,8 +49,7 @@ fn navTab send: (TripAction -> Task<Unit>)
     children: label,
   }
 
-fn headerView send: (TripAction -> Task<Unit>)
-  -> state: TripState
+fn headerView send: (TripAction -> Task<Unit>) -> state: TripState
   -> html.Html<Task<Unit>> = {
     let total = totalTripCost state.spots
     let titleBlock: html.Html<Task<Unit>> = html.div {
@@ -84,10 +80,8 @@ effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
 effect fn parseUrl value: String -> html.WebUrl fails String =
   mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
 
-fn bodyView mapAssets: routeMap.MapAssets
-  -> send: (TripAction -> Task<Unit>)
-  -> state: TripState
-  -> html.Html<Task<Unit>> =
+fn bodyView mapAssets: routeMap.MapAssets -> send: (TripAction -> Task<Unit>)
+  -> state: TripState -> html.Html<Task<Unit>> =
   match state.activeTab {
     PlanTab -> html.div {
       style: styles.twoColGridStyle (),
@@ -97,10 +91,8 @@ fn bodyView mapAssets: routeMap.MapAssets
     ShareTab -> shareView.view send state
   }
 
-fn pageView mapAssets: routeMap.MapAssets
-  -> state: MutableSignal<TripState>
-  -> current: TripState
-  -> html.Html<Task<Unit>> =
+fn pageView mapAssets: routeMap.MapAssets -> state: MutableSignal<TripState>
+  -> current: TripState -> html.Html<Task<Unit>> =
   {
     let send = dispatch state
     html.main {
