@@ -765,6 +765,9 @@ struct OpenConstruct {
     opener_shift: usize,
     /// The indent added to every line inside the construct.
     shift: Option<usize>,
+    /// The most a construct left open together with an inner one may shift:
+    /// the shift that inner construct took.
+    shift_limit: Option<usize>,
 }
 
 /// The indent added to a logical line inside the open constructs.
@@ -773,8 +776,9 @@ struct OpenConstruct {
 /// move further so they sit at least one level past the construct's head and
 /// its closer at least at the head's level. This keeps a match whose header
 /// wrapped onto a continuation line from printing its arms at the level of
-/// `match` itself. The constructs one logical line leaves open share the
-/// shift decided by the line after it.
+/// `match` itself. A construct left open together with an inner one shifts no
+/// more than that inner construct did, so the inner construct's wrapping does
+/// not carry over to the lines after it closes.
 fn shift_inside(
     open_constructs: &mut [OpenConstruct],
     indent: usize,
@@ -794,10 +798,20 @@ fn shift_inside(
         } else {
             innermost.head_indent
         };
-        innermost.opener_shift.max(minimum.saturating_sub(indent))
+        let needed = minimum.saturating_sub(indent);
+        let needed = innermost
+            .shift_limit
+            .map_or(needed, |limit| needed.min(limit));
+        innermost.opener_shift.max(needed)
     });
-    for construct in open_constructs.iter_mut() {
-        construct.shift.get_or_insert(shift);
+    if let Some((innermost, enclosing)) = open_constructs.split_last_mut() {
+        innermost.shift = Some(shift);
+        for construct in enclosing
+            .iter_mut()
+            .filter(|construct| construct.shift.is_none())
+        {
+            construct.shift_limit.get_or_insert(shift);
+        }
     }
     shift
 }
@@ -835,6 +849,7 @@ fn record_open_constructs(
                 head_indent,
                 opener_shift: shift,
                 shift: None,
+                shift_limit: None,
             });
         }
     }

@@ -610,6 +610,36 @@ let result=(account','\u{03BB}','\'','\\')
     }
 
     #[test]
+    fn keeps_an_enclosing_closer_at_its_level_after_a_wrapped_member_body() {
+        let source = concat!(
+            "instance Renamed<Local> {\n",
+            "  fn paint<A> prefix: String -> owner: Local -> value: A -> (String -> String) ",
+            "where Show<A>, Debug<A> = {\n",
+            "    let text = show value\n",
+            "    \\suffix: String -> prefix + text + suffix\n",
+            "  }\n",
+            "}\n",
+            "\n",
+            "let after = 1\n",
+        );
+        let expected = concat!(
+            "instance Renamed<Local> {\n",
+            "  fn paint<A> prefix: String -> owner: Local -> value: A -> (String -> String) where\n",
+            "    Show<A>, Debug<A> = {\n",
+            "      let text = show value\n",
+            "      \\suffix: String -> prefix + text + suffix\n",
+            "    }\n",
+            "}\n",
+            "\n",
+            "let after = 1\n",
+        );
+
+        let formatted = format(source);
+        assert_eq!(formatted.text, expected);
+        assert!(!format(expected).changed);
+    }
+
+    #[test]
     fn indents_a_wrapped_lambda_body_past_its_match() {
         let source = concat!(
             "fn segments spots: Array<Int> -> Array<Int> = {\n",
