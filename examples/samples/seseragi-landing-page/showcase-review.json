@@ -8,18 +8,13 @@
     "checked": true
   },
   "designIntent": {
-    "firstView": "immersiveなforest image、公式logo、大きなCode that keeps flowing.、二つのlinkに優先順位を付け、言語の世界観と次の行動を最初に伝える。",
-    "layoutRhythm": "heroからsparseなprinciples、denseなinteractive code chapter、全幅river statement、余白の大きいclosingへ密度を切り替え、page全体を一作品として繋ぐ。",
-    "visualIdentity": "deep green、waterとforestのimage、mintのaccent、公式Seseragi logoをpage全体で一貫させ、既存Showcaseのpurple hero / white cardを複製しない。",
-    "interaction": "Readable、Composable、Aliveのtab切替でcopy、accent、codeが一緒に変わり、selectedと非selectedのhierarchyをkeyboardとpointerの双方で保つ。",
-    "codeStructure": "mainの実行境界、appのcomposition、URL変換、visual section、chapter state / Action / view、shared named styleを分け、Explorerのtreeがpage構造を説明する。"
+    "firstView": "深い緑のインライン SVG 背景に公式ロゴと大きな「Code that keeps flowing.」、Playground・Tour・GitHub への主要リンク、Playground と同じ配色のコードカードを並べ、言語の雰囲気と最初の一歩を伝える。",
+    "layoutRhythm": "ファーストビューから余白の広い 3 つの設計方針、タブで切り替える高密度なコード解説、全幅の川と森の宣言、視線をまとめる締めくくりへ疎密を切り替え、1 ページを一つの流れとして繋ぐ。",
+    "visualIdentity": "深い森と静かな川を描くインライン SVG、ミントとティールの強調色、インライン SVG の公式ロゴで全体を統一し、外部画像に頼らず既定状態のまま意図どおりに描画する。",
+    "interaction": "Readable・Composable・Alive のタブをキーボードやクリックで切り替えると、強調色・見出し・説明文・トークン色分け済みのコードパネルが Signal 経由で同期して切り替わり、主要リンクは新しいタブで開く。",
+    "codeStructure": "入口（main）、合成（app）、URL 変換（url）、各セクション部品、タブ状態とトークン描画（chapter）、共通スタイル（ui/styles）の 14 モジュールへ責務を分け、Explorer の構成からページ全体を読み取れるようにする。"
   },
   "approval": {
-    "status": "approved",
-    "reviewedAt": "2026-08-11",
-    "evidence": ["docs/reviews/issue-244/README.md"],
-    "viewports": ["desktop", "iphone-390", "android-360"],
-    "states": ["initial", "composable", "alive"],
-    "surfaces": ["preview", "code"]
+    "status": "pending"
   }
 }
