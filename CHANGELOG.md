@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.14] - 2026-11-28
+
+### Changed
+
+- `seseragi format` keeps a chain of `&&` and `||` on one line when it fits there, instead of breaking before every operand once the enclosing line is too long (#1449). This applies to the right side of a binding after it moves to its own line, and to the condition of an `if`. A chain that does not fit still breaks before every operator. Pipelines, custom operators such as `>>=` and `<$>`, and the variants of a type keep one step per line once they break.
+
 ## [0.62.13] - 2026-11-28
 
 ### Fixed
