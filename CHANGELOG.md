@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.19] - 2026-11-28
+
+### Changed
+
+- Generated TypeScript self-tail-recursive loops now reuse dedicated slot variables and a unique sentinel object (`===`) instead of allocating a computed-property marker object and argument tuple on every iteration, and omit the redundant outer `$ssrg$atSource` wrapper on direct non-effect self-tail steps while keeping inner operand source locations intact (#1455, #1353). Pure infallible runtime calls for `List` cons (`:`) and `Array` indexing (`values[i]`) also omit `$ssrg$atSource` wrappers.
+
 ## [0.62.18] - 2026-11-28
 
 ### Changed
