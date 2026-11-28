@@ -269,8 +269,7 @@ fn cartographicLabels viewport: MapViewport -> Array<svg.Svg<Task<Unit>>> =
     ]
   }
 
-fn routeLayer viewport: MapViewport
-  -> spots: Array<Spot>
+fn routeLayer viewport: MapViewport -> spots: Array<Spot>
   -> Array<svg.Svg<Task<Unit>>> = {
     let pathData = curvedRoutePath viewport spots
     if pathData == "" then
@@ -298,9 +297,7 @@ fn routeLayer viewport: MapViewport
       ]
   }
 
-fn pinElements viewport: MapViewport
-  -> spots: Array<Spot>
-  -> focusedId: String
+fn pinElements viewport: MapViewport -> spots: Array<Spot> -> focusedId: String
   -> Array<svg.Svg<Task<Unit>>> = {
     let count = arrays.length spots
     let indices = indexRange count
@@ -389,9 +386,7 @@ fn calloutPosition viewport: MapViewport -> spot: Spot -> ProjectedPoint = {
   ProjectedPoint { x: clampedX, y: clampedY }
 }
 
-fn focusedCalloutLayer viewport: MapViewport
-  -> spots: Array<Spot>
-  -> focusedId: String
+fn focusedCalloutLayer viewport: MapViewport -> spots: Array<Spot> -> focusedId: String
   -> Array<svg.Svg<Task<Unit>>> =
   match arrays.find (\s: Spot -> s.id == focusedId) spots {
     Nothing -> []
@@ -423,9 +418,7 @@ fn focusedCalloutLayer viewport: MapViewport
     }
   }
 
-fn mapCanvas mapAssets: MapAssets
-  -> spots: Array<Spot>
-  -> focusedId: String
+fn mapCanvas mapAssets: MapAssets -> spots: Array<Spot> -> focusedId: String
   -> html.Html<Task<Unit>> = {
     let viewport = selectViewport spots
     let baseMapUrl = match viewport {
@@ -479,11 +472,8 @@ fn mapCanvas mapAssets: MapAssets
     }
   }
 
-fn spotJumpChip dispatch: (TripAction -> Task<Unit>)
-  -> focusedId: String
-  -> idx: Int
-  -> spot: Spot
-  -> html.Html<Task<Unit>> =
+fn spotJumpChip dispatch: (TripAction -> Task<Unit>) -> focusedId: String -> idx: Int
+  -> spot: Spot -> html.Html<Task<Unit>> =
   {
     let isFocused = spot.id == focusedId
     html.button {
@@ -538,10 +528,8 @@ fn spotDetailCard spots: Array<Spot> -> focusedId: String -> html.Html<Task<Unit
     }
   }
 
-pub fn view mapAssets: MapAssets
-  -> dispatch: (TripAction -> Task<Unit>)
-  -> state: TripState
-  -> html.Html<Task<Unit>> = {
+pub fn view mapAssets: MapAssets -> dispatch: (TripAction -> Task<Unit>)
+  -> state: TripState -> html.Html<Task<Unit>> = {
     let daySpots = spotsForDay state.activeDay state.spots
     let count = arrays.length daySpots
     let indices = indexRange count

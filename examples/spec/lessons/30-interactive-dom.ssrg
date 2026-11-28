@@ -29,8 +29,7 @@ fn view count: Int -> html.Html<Msg> = html.div {
 }
 
 // イベントは Msg として、来た順に渡されます。Increment は Signal を更新し、Stop は mount を終わらせます。
-fn dispatch count: MutableSignal<Int>
-  -> message: Msg
+fn dispatch count: MutableSignal<Int> -> message: Msg
   -> Effect<{}, DispatchError, Unit> =
   match message {
     Increment -> signals.update (\value -> value + 1) count

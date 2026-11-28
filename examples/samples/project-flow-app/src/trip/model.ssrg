@@ -294,10 +294,7 @@ fn swapAdjacent spots: Array<Spot> -> leftIdx: Int -> Array<Spot> = {
   [spot | Just spot <- map build indices]
 }
 
-fn reorderWithinDay day: DayFilter
-  -> id: String
-  -> moveUp: Bool
-  -> spots: Array<Spot>
+fn reorderWithinDay day: DayFilter -> id: String -> moveUp: Bool -> spots: Array<Spot>
   -> Array<Spot> = {
     let targetDay = dayNumber day
     let daySpots = spotsForDay day spots

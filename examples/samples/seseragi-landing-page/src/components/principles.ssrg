@@ -2,10 +2,7 @@
 import * as html from "std/web/html"
 import * as styles from "../ui/styles"
 
-fn principle index: Int
-  -> number: String
-  -> title: String
-  -> body: String
+fn principle index: Int -> number: String -> title: String -> body: String
   -> html.Html<Task<Unit>> =
   html.div {
     style: html.style {

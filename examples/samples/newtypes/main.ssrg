@@ -56,8 +56,7 @@ fn orderSubtotal lines: Array<OrderLine> -> Yen =
 
 // divideExact はゼロ除算などに備えて Either を返しますが、100 で割るこの計算では失敗しません。
 // 日本の請求・消費税の端数処理に合わせて 1 円未満は切り捨て（Floor）にしています。
-fn percentOfYen percent: Int
-  -> base: Yen
+fn percentOfYen percent: Int -> base: Yen
   -> Either<decimal.DecimalArithmeticError, Yen> =
   do {
     exact <- decimal.divideExact (decimal.fromInt 100) (rawYen base * decimal.fromInt percent)
@@ -84,8 +83,7 @@ fn buildInvoice order: Order -> Either<decimal.DecimalArithmeticError, Invoice> 
 }
 
 fn renderInvoice label: String
-  -> result: Either<decimal.DecimalArithmeticError, Invoice>
-  -> String =
+  -> result: Either<decimal.DecimalArithmeticError, Invoice> -> String =
   match result {
     Left error -> `${label}: 計算できません (${error})`
     Right invoice -> `${label} [${invoice.customer}]: 小計 ${rawYen invoice.subtotal}円 - 割引(${invoice.discountPercent}%) ${rawYen invoice.discount}円 + 税 ${rawYen invoice.tax}円 = ${rawYen invoice.total}円`

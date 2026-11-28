@@ -37,10 +37,7 @@ fn gradeLabel grade: Grade -> String = match grade {
   GradeC -> "再試"
 }
 
-fn validateScore lineNumber: Int
-  -> raw: String
-  -> student: String
-  -> rawScore: String
+fn validateScore lineNumber: Int -> raw: String -> student: String -> rawScore: String
   -> Either<LineIssue, ScoreEntry> =
   match ints.parse (text.trim rawScore) {
     Left _ -> Left (LineIssue { lineNumber, raw, reason: "点数が整数ではありません" })
@@ -51,8 +48,7 @@ fn validateScore lineNumber: Int
         Right (ScoreEntry { student, score, grade: classifyGrade score })
   }
 
-fn parseScoreLine lineNumber: Int
-  -> raw: String
+fn parseScoreLine lineNumber: Int -> raw: String
   -> Maybe<Either<LineIssue, ScoreEntry>> =
   {
     let trimmed = text.trim raw

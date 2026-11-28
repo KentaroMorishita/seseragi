@@ -53,8 +53,7 @@ fn daySummaryList title: String -> spots: Array<Spot> -> html.Html<Task<Unit>> =
   }
 }
 
-fn saveStatusView dispatch: (TripAction -> Task<Unit>)
-  -> state: TripState
+fn saveStatusView dispatch: (TripAction -> Task<Unit>) -> state: TripState
   -> html.Html<Task<Unit>> =
   match state.saveState {
     SaveIdle -> html.p {
@@ -102,8 +101,7 @@ fn saveStatusView dispatch: (TripAction -> Task<Unit>)
     }
   }
 
-pub fn view dispatch: (TripAction -> Task<Unit>)
-  -> state: TripState
+pub fn view dispatch: (TripAction -> Task<Unit>) -> state: TripState
   -> html.Html<Task<Unit>> = {
     let totalYen = totalTripCost state.spots
     let split: SplitSummary = calculateSplit totalYen state.travelers

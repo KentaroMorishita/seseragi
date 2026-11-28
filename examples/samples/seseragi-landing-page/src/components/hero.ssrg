@@ -86,10 +86,8 @@ fn heroCopy -> html.Html<Task<Unit>> = html.p {
   children: "Seseragi は、型・失敗・副作用・Web UI をひとつの読みやすい流れとして書けるプログラミング言語です。",
 }
 
-fn heroActions playgroundUrl: html.WebUrl
-  -> tourUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
+fn heroActions playgroundUrl: html.WebUrl -> tourUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.div {
     style: html.style {
       display: "flex",
@@ -122,10 +120,8 @@ fn heroActions playgroundUrl: html.WebUrl
     ],
   }
 
-fn heroLead playgroundUrl: html.WebUrl
-  -> tourUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> = {
+fn heroLead playgroundUrl: html.WebUrl -> tourUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> = {
     let eyebrow: html.Html<Task<Unit>> = html.p {
       style: styles.eyebrowStyle (),
       children: "A programming language in motion",
@@ -140,10 +136,8 @@ fn heroLead playgroundUrl: html.WebUrl
     }
   }
 
-pub fn hero playgroundUrl: html.WebUrl
-  -> tourUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
+pub fn hero playgroundUrl: html.WebUrl -> tourUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.section {
     style: html.style { minHeight: "100vh", overflow: "hidden", position: "relative", },
     children: [

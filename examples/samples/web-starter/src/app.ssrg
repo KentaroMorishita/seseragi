@@ -79,8 +79,7 @@ fn hintStyle -> html.Style = html.style {
   margin: "20px 0 0"
 }
 
-fn view state: MutableSignal<StarterState>
-  -> current: StarterState
+fn view state: MutableSignal<StarterState> -> current: StarterState
   -> html.Html<Task<Unit>> = {
     let parts: Array<html.Html<Task<Unit>>> = [
       html.p { style: eyebrowStyle (), children: "SESERAGI WEB STARTER" },

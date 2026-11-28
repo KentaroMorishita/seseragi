@@ -11,8 +11,7 @@ type AppError deriving Show =
   | TextFailure fs.FileTextError
   | ConsoleFailure ConsoleError
 
-effect fn useTemporary directory: paths.Path
-  -> Unit
+effect fn useTemporary directory: paths.Path -> Unit
 with Console, FileSystem
 fails AppError =
   do {
@@ -28,8 +27,7 @@ fails AppError =
     println content |> effects.mapError ConsoleFailure
   }
 
-pub effect fn main
-  -> Unit
+pub effect fn main -> Unit
 with Console, FileSystem
 fails Either<fs.FileSystemError, AppError> =
   // コールバックが成功しても、失敗しても、取り消されても、後でフォルダー全体が消えます。

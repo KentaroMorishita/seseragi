@@ -25,9 +25,7 @@ fn categoryColor category: SpotCategory -> String = match category {
   Transit -> "#647687"
 }
 
-fn categoryRow totalYen: Int
-  -> spotsCost: Int
-  -> category: SpotCategory
+fn categoryRow totalYen: Int -> spotsCost: Int -> category: SpotCategory
   -> html.Html<Task<Unit>> = {
     let pct = if totalYen <= 0 then 0 else (spotsCost * 100) / totalYen
     let barFill: html.Html<Task<Unit>> = html.div {
@@ -75,8 +73,7 @@ fn categoryRow totalYen: Int
     }
   }
 
-pub fn view dispatch: (TripAction -> Task<Unit>)
-  -> state: TripState
+pub fn view dispatch: (TripAction -> Task<Unit>) -> state: TripState
   -> html.Html<Task<Unit>> = {
     let totalYen = totalTripCost state.spots
     let split: SplitSummary = calculateSplit totalYen state.travelers

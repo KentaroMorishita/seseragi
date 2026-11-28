@@ -83,10 +83,8 @@ fn seatBadge seat: Seat -> html.Html<Task<Unit>> = html.span {
   children: `${seat.row}列 ${seat.number}番 (${tierLabel seat.tier})`,
 }
 
-pub fn view dispatch: (BookingAction -> Task<Unit>)
-  -> state: BookingState
-  -> code: String
-  -> html.Html<Task<Unit>> = {
+pub fn view dispatch: (BookingAction -> Task<Unit>) -> state: BookingState
+  -> code: String -> html.Html<Task<Unit>> = {
     let chosen = selectedSeats state
     let totals: OrderTotals = calculateTotals state
     let buyer: BuyerDraft = state.buyer

@@ -65,9 +65,7 @@ fn perform action: TimerAction -> current: time.Instant -> clocked: Clocked -> C
     Clocked { ...caught, timer: update action caught.timer }
   }
 
-effect fn performNow state: MutableSignal<Clocked>
-  -> action: TimerAction
-  -> Unit
+effect fn performNow state: MutableSignal<Clocked> -> action: TimerAction -> Unit
 with clock: clock.Clock =
   do {
     current <- clock.now ()
@@ -75,9 +73,7 @@ with clock: clock.Clock =
   }
 
 // 操作も時計を読みます。create で受け取った Clock を渡して、画面が扱える Task にします。
-fn dispatch service: clock.Clock
-  -> state: MutableSignal<Clocked>
-  -> action: TimerAction
+fn dispatch service: clock.Clock -> state: MutableSignal<Clocked> -> action: TimerAction
   -> Task<Unit> =
   effects.provideSome (\_environment: {} -> { clock: service }) (performNow state action)
 
@@ -163,10 +159,7 @@ fn dial timer: TimerState -> html.Html<Task<Unit>> = {
   html.div { style: styles.dialStyle (), children: [face, digits] }
 }
 
-fn control label: String
-  -> primary: Bool
-  -> enabled: Bool
-  -> action: Task<Unit>
+fn control label: String -> primary: Bool -> enabled: Bool -> action: Task<Unit>
   -> html.Html<Task<Unit>> =
   html.button {
     disabled: ! enabled,
@@ -175,8 +168,7 @@ fn control label: String
     children: label,
   }
 
-fn controls send: (TimerAction -> Task<Unit>)
-  -> timer: TimerState
+fn controls send: (TimerAction -> Task<Unit>) -> timer: TimerState
   -> html.Html<Task<Unit>> =
   {
     let toggle = match timer {
@@ -205,8 +197,7 @@ fn doneBanner timer: TimerState -> Array<html.Html<Task<Unit>>> = match timer {
   _ -> []
 }
 
-fn view send: (TimerAction -> Task<Unit>)
-  -> timer: TimerState
+fn view send: (TimerAction -> Task<Unit>) -> timer: TimerState
   -> html.Html<Task<Unit>> =
   html.section {
     style: styles.timerPanelStyle (),
@@ -218,9 +209,7 @@ fn view send: (TimerAction -> Task<Unit>)
     ],
   }
 
-fn every interval: time.Duration
-  -> _runs: Int
-  -> _value: Unit
+fn every interval: time.Duration -> _runs: Int -> _value: Unit
   -> effects.ScheduleDecision =
   effects.ScheduleContinue interval
 

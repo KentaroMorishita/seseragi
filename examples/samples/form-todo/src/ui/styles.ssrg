@@ -214,11 +214,8 @@ pub fn aisleGapStyle -> html.Style = html.style {
   flexShrink: "0"
 }
 
-pub fn seatButtonStyle tier: SeatTier
-  -> availability: SeatAvailability
-  -> selected: Bool
-  -> dimmed: Bool
-  -> html.Style =
+pub fn seatButtonStyle tier: SeatTier -> availability: SeatAvailability
+  -> selected: Bool -> dimmed: Bool -> html.Style =
   if availability == Sold then
     html.style {
       backgroundColor: "#222531",

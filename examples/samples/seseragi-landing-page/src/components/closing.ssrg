@@ -2,10 +2,8 @@
 import * as html from "std/web/html"
 import * as styles from "../ui/styles"
 
-pub fn closing playgroundUrl: html.WebUrl
-  -> tourUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
+pub fn closing playgroundUrl: html.WebUrl -> tourUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.section {
     style: html.style {
       background: "radial-gradient(circle at 50% 100%, rgba(70, 216, 147, 0.2), rgba(70, 216, 147, 0) 48%)",

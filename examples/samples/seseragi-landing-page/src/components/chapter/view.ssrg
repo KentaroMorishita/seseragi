@@ -26,11 +26,8 @@ fn chapterBody chapter: Chapter -> String = match chapter {
   Alive -> "Playground で書いて、実行して、Web UI まで触れる。仕様の中だけではなく、手元まで届く言語です。"
 }
 
-fn chapterTab dispatch: (Chapter -> Task<Unit>)
-  -> current: Chapter
-  -> target: Chapter
-  -> label: String
-  -> html.Html<Task<Unit>> =
+fn chapterTab dispatch: (Chapter -> Task<Unit>) -> current: Chapter -> target: Chapter
+  -> label: String -> html.Html<Task<Unit>> =
   {
     let isSelected = current == target
     html.button {
@@ -75,8 +72,7 @@ fn chapterHeading title: String -> html.Html<Task<Unit>> = html.h2 {
   children: title,
 }
 
-fn chapterText dispatch: (Chapter -> Task<Unit>)
-  -> current: Chapter
+fn chapterText dispatch: (Chapter -> Task<Unit>) -> current: Chapter
   -> html.Html<Task<Unit>> = {
     let key = chapterKey current
     let eyebrow: html.Html<Task<Unit>> = html.p {
@@ -98,8 +94,7 @@ fn chapterText dispatch: (Chapter -> Task<Unit>)
     }
   }
 
-pub fn view dispatch: (Chapter -> Task<Unit>)
-  -> current: Chapter
+pub fn view dispatch: (Chapter -> Task<Unit>) -> current: Chapter
   -> html.Html<Task<Unit>> =
   html.section {
     style: html.style {
