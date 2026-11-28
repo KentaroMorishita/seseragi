@@ -5,26 +5,6 @@
   "runtimeSources": [
     {
       "source": "main.ssrg",
-      "start": 52,
-      "end": 63
-    },
-    {
-      "source": "main.ssrg",
-      "start": 179,
-      "end": 194
-    },
-    {
-      "source": "main.ssrg",
-      "start": 183,
-      "end": 194
-    },
-    {
-      "source": "main.ssrg",
-      "start": 187,
-      "end": 194
-    },
-    {
-      "source": "main.ssrg",
       "start": 210,
       "end": 215
     },
@@ -37,11 +17,6 @@
       "source": "main.ssrg",
       "start": 254,
       "end": 280
-    },
-    {
-      "source": "main.ssrg",
-      "start": 260,
-      "end": 279
     },
     {
       "source": "main.ssrg",
@@ -244,114 +219,60 @@
         }
       },
       "initializer": {
-        "kind": "runtime-call",
-        "callee": "$ssrg$atSource",
+        "kind": "type-application-call",
+        "callee": "_ssrg_list_cons",
+        "typeArguments": [
+          {
+            "kind": "number"
+          }
+        ],
         "arguments": [
           {
-            "kind": "identifier",
-            "name": "$ssrg$source179"
+            "kind": "number",
+            "value": "1"
           },
           {
-            "kind": "lambda",
-            "parameter": "",
-            "body": {
-              "kind": "type-application-call",
-              "callee": "_ssrg_list_cons",
-              "typeArguments": [
-                {
-                  "kind": "number"
-                }
-              ],
-              "arguments": [
-                {
-                  "kind": "number",
-                  "value": "1"
-                },
-                {
-                  "kind": "runtime-call",
-                  "callee": "$ssrg$atSource",
-                  "arguments": [
-                    {
-                      "kind": "identifier",
-                      "name": "$ssrg$source183"
-                    },
-                    {
-                      "kind": "lambda",
-                      "parameter": "",
-                      "body": {
-                        "kind": "type-application-call",
-                        "callee": "_ssrg_list_cons",
-                        "typeArguments": [
-                          {
-                            "kind": "number"
-                          }
-                        ],
-                        "arguments": [
-                          {
-                            "kind": "number",
-                            "value": "2"
-                          },
-                          {
-                            "kind": "runtime-call",
-                            "callee": "$ssrg$atSource",
-                            "arguments": [
-                              {
-                                "kind": "identifier",
-                                "name": "$ssrg$source187"
-                              },
-                              {
-                                "kind": "lambda",
-                                "parameter": "",
-                                "body": {
-                                  "kind": "type-application-call",
-                                  "callee": "_ssrg_list_cons",
-                                  "typeArguments": [
-                                    {
-                                      "kind": "number"
-                                    }
-                                  ],
-                                  "arguments": [
-                                    {
-                                      "kind": "number",
-                                      "value": "3"
-                                    },
-                                    {
-                                      "kind": "runtime-call",
-                                      "callee": "_ssrg_list_from_array",
-                                      "arguments": [
-                                        {
-                                          "kind": "array",
-                                          "elements": [],
-                                          "elementType": {
-                                            "kind": "number"
-                                          }
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                }
-                              },
-                              {
-                                "kind": "boolean",
-                                "value": false
-                              }
-                            ]
-                          }
-                        ]
+            "kind": "type-application-call",
+            "callee": "_ssrg_list_cons",
+            "typeArguments": [
+              {
+                "kind": "number"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "2"
+              },
+              {
+                "kind": "type-application-call",
+                "callee": "_ssrg_list_cons",
+                "typeArguments": [
+                  {
+                    "kind": "number"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "3"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_list_from_array",
+                    "arguments": [
+                      {
+                        "kind": "array",
+                        "elements": [],
+                        "elementType": {
+                          "kind": "number"
+                        }
                       }
-                    },
-                    {
-                      "kind": "boolean",
-                      "value": false
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "kind": "boolean",
-            "value": false
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -470,41 +391,23 @@
         }
       ],
       "body": {
-        "kind": "runtime-call",
-        "callee": "$ssrg$atSource",
+        "kind": "type-application-call",
+        "callee": "_ssrg_list_cons",
+        "typeArguments": [
+          {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        ],
         "arguments": [
           {
             "kind": "identifier",
-            "name": "$ssrg$source52"
+            "name": "head"
           },
           {
-            "kind": "lambda",
-            "parameter": "",
-            "body": {
-              "kind": "type-application-call",
-              "callee": "_ssrg_list_cons",
-              "typeArguments": [
-                {
-                  "kind": "reference",
-                  "name": "A",
-                  "arguments": []
-                }
-              ],
-              "arguments": [
-                {
-                  "kind": "identifier",
-                  "name": "head"
-                },
-                {
-                  "kind": "identifier",
-                  "name": "tail"
-                }
-              ]
-            }
-          },
-          {
-            "kind": "boolean",
-            "value": false
+            "kind": "identifier",
+            "name": "tail"
           }
         ]
       },
@@ -653,83 +556,65 @@
                                 "method": "show",
                                 "arguments": [
                                   {
-                                    "kind": "runtime-call",
-                                    "callee": "$ssrg$atSource",
+                                    "kind": "type-application-call",
+                                    "callee": "_ssrg_list_cons",
+                                    "typeArguments": [
+                                      {
+                                        "kind": "maybe",
+                                        "element": {
+                                          "kind": "number"
+                                        }
+                                      }
+                                    ],
                                     "arguments": [
                                       {
-                                        "kind": "identifier",
-                                        "name": "$ssrg$source260"
+                                        "kind": "runtime-reference",
+                                        "name": "_ssrg_maybe_Nothing"
                                       },
                                       {
-                                        "kind": "lambda",
-                                        "parameter": "",
-                                        "body": {
-                                          "kind": "type-application-call",
-                                          "callee": "_ssrg_list_cons",
-                                          "typeArguments": [
-                                            {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_list_from_array",
+                                        "arguments": [
+                                          {
+                                            "kind": "array",
+                                            "elements": [
+                                              {
+                                                "kind": "runtime-call",
+                                                "callee": "$ssrg$atSource",
+                                                "arguments": [
+                                                  {
+                                                    "kind": "identifier",
+                                                    "name": "$ssrg$source272"
+                                                  },
+                                                  {
+                                                    "kind": "lambda",
+                                                    "parameter": "",
+                                                    "body": {
+                                                      "kind": "runtime-call",
+                                                      "callee": "_ssrg_maybe_Just",
+                                                      "arguments": [
+                                                        {
+                                                          "kind": "number",
+                                                          "value": "1"
+                                                        }
+                                                      ]
+                                                    }
+                                                  },
+                                                  {
+                                                    "kind": "boolean",
+                                                    "value": false
+                                                  }
+                                                ]
+                                              }
+                                            ],
+                                            "elementType": {
                                               "kind": "maybe",
                                               "element": {
                                                 "kind": "number"
                                               }
                                             }
-                                          ],
-                                          "arguments": [
-                                            {
-                                              "kind": "runtime-reference",
-                                              "name": "_ssrg_maybe_Nothing"
-                                            },
-                                            {
-                                              "kind": "runtime-call",
-                                              "callee": "_ssrg_list_from_array",
-                                              "arguments": [
-                                                {
-                                                  "kind": "array",
-                                                  "elements": [
-                                                    {
-                                                      "kind": "runtime-call",
-                                                      "callee": "$ssrg$atSource",
-                                                      "arguments": [
-                                                        {
-                                                          "kind": "identifier",
-                                                          "name": "$ssrg$source272"
-                                                        },
-                                                        {
-                                                          "kind": "lambda",
-                                                          "parameter": "",
-                                                          "body": {
-                                                            "kind": "runtime-call",
-                                                            "callee": "_ssrg_maybe_Just",
-                                                            "arguments": [
-                                                              {
-                                                                "kind": "number",
-                                                                "value": "1"
-                                                              }
-                                                            ]
-                                                          }
-                                                        },
-                                                        {
-                                                          "kind": "boolean",
-                                                          "value": false
-                                                        }
-                                                      ]
-                                                    }
-                                                  ],
-                                                  "elementType": {
-                                                    "kind": "maybe",
-                                                    "element": {
-                                                      "kind": "number"
-                                                    }
-                                                  }
-                                                }
-                                              ]
-                                            }
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        "kind": "boolean",
-                                        "value": false
+                                          }
+                                        ]
                                       }
                                     ]
                                   }

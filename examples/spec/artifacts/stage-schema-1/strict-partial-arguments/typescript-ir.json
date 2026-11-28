@@ -55,11 +55,6 @@
     },
     {
       "source": "main.ssrg",
-      "start": 939,
-      "end": 946
-    },
-    {
-      "source": "main.ssrg",
       "start": 1014,
       "end": 1024
     },
@@ -1297,41 +1292,23 @@
                               "arguments": [
                                 {
                                   "kind": "runtime-call",
-                                  "callee": "$ssrg$atSource",
+                                  "callee": "_ssrg_array_index",
                                   "arguments": [
                                     {
-                                      "kind": "identifier",
-                                      "name": "$ssrg$source939"
-                                    },
-                                    {
-                                      "kind": "lambda",
-                                      "parameter": "",
-                                      "body": {
-                                        "kind": "runtime-call",
-                                        "callee": "_ssrg_array_index",
-                                        "arguments": [
-                                          {
-                                            "kind": "array",
-                                            "elements": [
-                                              {
-                                                "kind": "number",
-                                                "value": "41"
-                                              }
-                                            ],
-                                            "elementType": {
-                                              "kind": "number"
-                                            }
-                                          },
-                                          {
-                                            "kind": "number",
-                                            "value": "0"
-                                          }
-                                        ]
+                                      "kind": "array",
+                                      "elements": [
+                                        {
+                                          "kind": "number",
+                                          "value": "41"
+                                        }
+                                      ],
+                                      "elementType": {
+                                        "kind": "number"
                                       }
                                     },
                                     {
-                                      "kind": "boolean",
-                                      "value": false
+                                      "kind": "number",
+                                      "value": "0"
                                     }
                                   ]
                                 }
