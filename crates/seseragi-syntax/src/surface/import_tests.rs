@@ -125,17 +125,40 @@ fn rejects_reserved_word_or_uppercase_as_namespace_import_alias() {
 
 #[test]
 fn rejects_keyword_as_named_import_alias() {
-    let source = "import { succeed as effect } from \"std/effect\"\n";
-    let artifact = crate::parse_diagnostics("main.ssrg", source);
-    assert!(
-        artifact.diagnostics.iter().any(|diagnostic| {
-            diagnostic.message_key == "parser.invalid-declaration-name"
-                && diagnostic.primary.start == 20
-                && diagnostic.primary.end == 26
-        }),
-        "expected invalid-declaration-name at named import alias, got: {:#?}",
-        artifact.diagnostics
+    for (source, expected_start, expected_end) in [
+        ("import { succeed as effect } from \"std/effect\"\n", 20, 26),
+        ("import { succeed as from } from \"std/effect\"\n", 20, 24),
+        ("import * as from from \"std/effect\"\n", 12, 16),
+        (
+            "import { succeed as bad-name } from \"std/effect\"\n",
+            20,
+            28,
+        ),
+        ("import * as bad-name from \"std/effect\"\n", 12, 20),
+    ] {
+        let artifact = crate::parse_diagnostics("main.ssrg", source);
+        assert!(
+            artifact.diagnostics.iter().any(|diagnostic| {
+                diagnostic.message_key == "parser.invalid-declaration-name"
+                    && diagnostic.primary.start == expected_start
+                    && diagnostic.primary.end == expected_end
+            }),
+            "expected invalid-declaration-name for `{source}`, got: {:#?}",
+            artifact.diagnostics
+        );
+    }
+}
+
+#[test]
+fn does_not_split_malformed_alias_into_extra_import_items() {
+    let module = parse_surface_ast(
+        "main.ssrg",
+        "import { succeed as bad-name } from \"std/effect\"\n",
     );
+    assert_eq!(module.imports.len(), 1);
+    assert_eq!(module.imports[0].items.len(), 1);
+    assert_eq!(module.imports[0].items[0].name, "succeed");
+    assert_eq!(module.imports[0].items[0].alias, None);
 }
 
 #[test]

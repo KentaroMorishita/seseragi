@@ -428,7 +428,7 @@ impl SurfaceParser<'_> {
         if self.raw_at(import_index) != Some("import") {
             return;
         }
-        let Some(from_index) = self.find_raw(import_index + 1, end, "from") else {
+        let Some((from_index, _)) = self.find_import_from(import_index + 1, end) else {
             return;
         };
         let Some(clause_start) = self.next_significant_token(import_index + 1, from_index) else {
@@ -441,29 +441,28 @@ impl SurfaceParser<'_> {
             if self.raw_at(as_index) != Some("as") {
                 return;
             }
-            match self.next_significant_token(as_index + 1, from_index) {
-                Some(alias_index) => {
-                    let token = &self.tokens[alias_index];
-                    if token.kind != TokenKind::IdentifierLower || is_reserved(&token.raw) {
-                        diagnostics.push(error(
-                            "parser.invalid-declaration-name",
-                            ByteSpan {
-                                start: token.start,
-                                end: token.end,
-                            },
-                        ));
-                    }
-                }
-                None => {
-                    let token = &self.tokens[as_index];
-                    diagnostics.push(error(
-                        "parser.invalid-declaration-name",
-                        ByteSpan {
-                            start: token.start,
-                            end: token.end,
-                        },
-                    ));
-                }
+            let mut alias_tokens = Vec::new();
+            let mut cursor = as_index + 1;
+            while let Some(index) = self.next_significant_token(cursor, from_index) {
+                alias_tokens.push(index);
+                cursor = index + 1;
+            }
+            let valid = alias_tokens.len() == 1 && {
+                let token = &self.tokens[alias_tokens[0]];
+                token.kind == TokenKind::IdentifierLower && !is_reserved(&token.raw)
+            };
+            if !valid {
+                let span = match (alias_tokens.first(), alias_tokens.last()) {
+                    (Some(&first), Some(&last)) => ByteSpan {
+                        start: self.tokens[first].start,
+                        end: self.tokens[last].end,
+                    },
+                    _ => ByteSpan {
+                        start: self.tokens[as_index].start,
+                        end: self.tokens[as_index].end,
+                    },
+                };
+                diagnostics.push(error("parser.invalid-declaration-name", span));
             }
             return;
         }
@@ -474,37 +473,37 @@ impl SurfaceParser<'_> {
             let mut cursor = clause_start + 1;
             while let Some(index) = self.next_significant_token(cursor, close) {
                 if self.raw_at(index) == Some("as") {
-                    match self.next_significant_token(index + 1, close) {
-                        Some(alias_index) => {
-                            let token = &self.tokens[alias_index];
-                            if !matches!(
-                                token.kind,
-                                TokenKind::IdentifierLower | TokenKind::IdentifierUpper
-                            ) || is_reserved(&token.raw)
-                            {
-                                diagnostics.push(error(
-                                    "parser.invalid-declaration-name",
-                                    ByteSpan {
-                                        start: token.start,
-                                        end: token.end,
-                                    },
-                                ));
-                            }
-                            cursor = alias_index + 1;
-                            continue;
-                        }
-                        None => {
-                            let token = &self.tokens[index];
-                            diagnostics.push(error(
-                                "parser.invalid-declaration-name",
-                                ByteSpan {
-                                    start: token.start,
-                                    end: token.end,
-                                },
-                            ));
+                    let mut alias_tokens = Vec::new();
+                    let mut scan = index + 1;
+                    while let Some(next) = self.next_significant_token(scan, close) {
+                        if self.kind_at(next) == Some(TokenKind::PunctuationComma) {
                             break;
                         }
+                        alias_tokens.push(next);
+                        scan = next + 1;
                     }
+                    let valid = alias_tokens.len() == 1 && {
+                        let token = &self.tokens[alias_tokens[0]];
+                        matches!(
+                            token.kind,
+                            TokenKind::IdentifierLower | TokenKind::IdentifierUpper
+                        ) && !is_reserved(&token.raw)
+                    };
+                    if !valid {
+                        let span = match (alias_tokens.first(), alias_tokens.last()) {
+                            (Some(&first), Some(&last)) => ByteSpan {
+                                start: self.tokens[first].start,
+                                end: self.tokens[last].end,
+                            },
+                            _ => ByteSpan {
+                                start: self.tokens[index].start,
+                                end: self.tokens[index].end,
+                            },
+                        };
+                        diagnostics.push(error("parser.invalid-declaration-name", span));
+                    }
+                    cursor = alias_tokens.last().map_or(index + 1, |last| last + 1);
+                    continue;
                 }
                 cursor = index + 1;
             }

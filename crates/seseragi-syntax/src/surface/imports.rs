@@ -30,11 +30,7 @@ impl SurfaceParser<'_> {
         if self.raw_at(import_index) != Some("import") {
             return None;
         }
-        let from_index = self.find_raw(import_index + 1, end, "from")?;
-        let specifier_index = self.next_significant_token(from_index + 1, end)?;
-        if self.kind_at(specifier_index) != Some(TokenKind::LiteralString) {
-            return None;
-        }
+        let (from_index, specifier_index) = self.find_import_from(import_index + 1, end)?;
         let items = self.parse_import_items(import_index + 1, from_index);
         Some(SurfaceImport {
             visibility,
@@ -47,12 +43,35 @@ impl SurfaceParser<'_> {
         })
     }
 
+    pub(super) fn find_import_from(&self, start: usize, end: usize) -> Option<(usize, usize)> {
+        let mut brace_depth = 0usize;
+        let mut cursor = start;
+        while let Some(index) = self.next_significant_token(cursor, end) {
+            match self.kind_at(index) {
+                Some(TokenKind::PunctuationBraceLeft) => brace_depth += 1,
+                Some(TokenKind::PunctuationBraceRight) => {
+                    brace_depth = brace_depth.saturating_sub(1);
+                }
+                _ if brace_depth == 0 && self.raw_at(index) == Some("from") => {
+                    if let Some(specifier_index) = self.next_significant_token(index + 1, end) {
+                        if self.kind_at(specifier_index) == Some(TokenKind::LiteralString) {
+                            return Some((index, specifier_index));
+                        }
+                    }
+                }
+                _ => {}
+            }
+            cursor = index + 1;
+        }
+        None
+    }
+
     fn parse_import_items(&self, start: usize, end: usize) -> Vec<SurfaceImportItem> {
         let mut items = Vec::new();
         let mut cursor = start;
         while let Some(index) = self.next_significant_token(cursor, end) {
             if self.raw_at(index) == Some("*") {
-                let (alias, after_alias) = self.parse_optional_import_alias(index + 1, end);
+                let (alias, after_alias) = self.parse_optional_import_alias(index + 1, end, true);
                 if let Some((alias, alias_span)) = alias {
                     let Some(name_span) = self.byte_span(index) else {
                         cursor = after_alias;
@@ -68,6 +87,8 @@ impl SurfaceParser<'_> {
                     cursor = after_alias;
                     continue;
                 }
+                cursor = after_alias;
+                continue;
             }
             if self.raw_at(index) == Some("operator") {
                 let Some(operator_start) = self.next_significant_token(index + 1, end) else {
@@ -101,7 +122,8 @@ impl SurfaceParser<'_> {
                 Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
             ) {
                 if let Some(token) = self.tokens.get(index) {
-                    let (alias, after_alias) = self.parse_optional_import_alias(index + 1, end);
+                    let (alias, after_alias) =
+                        self.parse_optional_import_alias(index + 1, end, false);
                     let (alias, alias_span) = alias.unzip();
                     items.push(SurfaceImportItem {
                         namespace: "value".to_owned(),
@@ -126,6 +148,7 @@ impl SurfaceParser<'_> {
         &self,
         start: usize,
         end: usize,
+        namespace: bool,
     ) -> (Option<(String, ByteSpan)>, usize) {
         let Some(as_index) = self.next_significant_token(start, end) else {
             return (None, start);
@@ -133,18 +156,49 @@ impl SurfaceParser<'_> {
         if self.raw_at(as_index) != Some("as") {
             return (None, start);
         }
-        let Some(alias_index) = self.next_significant_token(as_index + 1, end) else {
-            return (None, start);
+        let mut alias_tokens = Vec::new();
+        let mut cursor = as_index + 1;
+        while let Some(index) = self.next_significant_token(cursor, end) {
+            if !namespace
+                && matches!(
+                    self.kind_at(index),
+                    Some(TokenKind::PunctuationComma | TokenKind::PunctuationBraceRight)
+                )
+            {
+                break;
+            }
+            alias_tokens.push(index);
+            cursor = index + 1;
+        }
+        let next_cursor = if namespace {
+            end
+        } else {
+            alias_tokens.last().map_or(as_index + 1, |last| last + 1)
         };
+        if alias_tokens.len() != 1 {
+            return (None, next_cursor);
+        }
+        let alias_index = alias_tokens[0];
+        let valid_kind = if namespace {
+            self.kind_at(alias_index) == Some(TokenKind::IdentifierLower)
+        } else {
+            matches!(
+                self.kind_at(alias_index),
+                Some(TokenKind::IdentifierLower | TokenKind::IdentifierUpper)
+            )
+        };
+        if !valid_kind {
+            return (None, next_cursor);
+        }
         let Some(alias) = self
             .identifier_name_at(alias_index)
             .filter(|name| !super::validation::is_reserved(name))
         else {
-            return (None, start);
+            return (None, next_cursor);
         };
         (
             self.byte_span(alias_index).map(|span| (alias, span)),
-            alias_index + 1,
+            next_cursor,
         )
     }
 }
