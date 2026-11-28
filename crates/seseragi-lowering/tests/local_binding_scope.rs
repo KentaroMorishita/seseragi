@@ -169,6 +169,6 @@ fn parameters_locals_and_patterns_do_not_become_self_tail_calls() {
             .find(|line| line.starts_with(&format!("const {name}: {signature} =")))
             .expect("recursive function with a shadowed base branch");
         assert!(line.contains("while (true)"), "{line}");
-        assert_eq!(line.matches("({ [$ssrg$tail]:").count(), 1, "{line}");
+        assert_eq!(line.matches(", $ssrg$tail) as never)").count(), 1, "{line}");
     }
 }
