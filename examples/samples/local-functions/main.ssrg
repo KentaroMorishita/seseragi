@@ -10,11 +10,11 @@ fn simulateLottery trials: Int -> threshold: Int -> String = {
   // 末尾位置の自己再帰はループへ変換されるため、10 万回でもスタックを消費しません。
   fn step remaining: Int -> seed: Int -> hits: Int -> Int =
     if remaining == 0 then hits else {
-    let nextSeed = (seed * multiplier) % modulus
-    let roll = (nextSeed % 100) + 1
-    let nextHits = if roll <= threshold then hits + 1 else hits
-    step (remaining - 1) nextSeed nextHits
-  }
+      let nextSeed = (seed * multiplier) % modulus
+      let roll = (nextSeed % 100) + 1
+      let nextHits = if roll <= threshold then hits + 1 else hits
+      step (remaining - 1) nextSeed nextHits
+    }
 
   let (label, hitCount) = tagResult "当たり回数" (step trials 12345 0)
   let rateTenths = hitCount * 1000 / trials

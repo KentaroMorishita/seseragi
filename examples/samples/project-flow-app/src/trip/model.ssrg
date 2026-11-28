@@ -329,9 +329,9 @@ fn addPresetById id: String -> day: DayFilter -> spots: Array<Spot> -> Array<Spo
     spots
   else
     match arrays.find (\s: Spot -> s.id == id) (presetSpots ()) {
-  Nothing -> spots
-  Just preset -> arrays.append [Spot { ...preset, day: dayNumber day }] spots
-}
+      Nothing -> spots
+      Just preset -> arrays.append [Spot { ...preset, day: dayNumber day }] spots
+    }
 
 pub fn update action: TripAction -> state: TripState -> TripState = match action {
   SelectTab tab -> TripState { ...state, activeTab: tab }

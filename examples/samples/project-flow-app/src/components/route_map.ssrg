@@ -75,10 +75,10 @@ fn curvedRoutePath viewport: MapViewport -> spots: Array<Spot> -> String =
       let segIndices = if count <= 1 then [] else indexRange (count - 1)
       let buildSeg = \idx: Int ->
         match (arrays.get idx spots, arrays.get (idx + 1) spots) {
-        (Just a, Just b) -> [curvedSegment (projectSpot viewport a)
-            (projectSpot viewport b) idx]
-        _ -> []
-      }
+          (Just a, Just b) -> [curvedSegment (projectSpot viewport a)
+              (projectSpot viewport b) idx]
+          _ -> []
+        }
       let segments = arrays.concat (map buildSeg segIndices)
       join " " (arrays.concat [[`M ${start.x} ${start.y}`], segments])
     }

@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.16] - 2026-11-28
+
+### Fixed
+
+- `seseragi format` now indents the arms of a `match` one level past the `match` keyword when the match starts on a wrapped line, such as after an arm's `->`, a lambda's `->`, an `else`, or a binding's `=` that broke for width (#1447). Before, the arms printed at the level of `match` itself, so a nested match looked like part of the outer one. The same applies to blocks, records and lists opened on a wrapped line: their contents sit one level past the line where they start, and the closer sits at that line's level. The affected samples and Tour lessons are reformatted.
+
 ## [0.62.15] - 2026-11-28
 
 ### Fixed

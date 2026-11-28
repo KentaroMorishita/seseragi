@@ -114,40 +114,40 @@ fn presetAddBar dispatch: (TripAction -> Task<Unit>)
   -> html.Html<Task<Unit>> = {
     let alreadyAdded = \id: String ->
       match arrays.find (\s: Spot -> s.id == id) allSpots {
-      Just _ -> True
-      Nothing -> False
-    }
+        Just _ -> True
+        Nothing -> False
+      }
     let available = arrays.filter (\p: Spot -> !alreadyAdded p.id) (presetSpots ())
     if arrays.isEmpty available then
       html.p { style: styles.metaStyle (), children: "おすすめスポットはすべてプランに追加済みです。", }
     else
       {
-      let labelNode: html.Html<Task<Unit>> = html.p {
-        style: html.style {
-          color: "#1c3d5a",
-          fontSize: "12px",
-          fontWeight: "700",
-          margin: "14px 0 8px 0",
-        },
-        children: "この日に立ち寄り先を追加",
-      }
-      let renderPreset = \p: Spot -> html.button {
-        buttonType: "button",
-        onClick: dispatch (AddPresetSpot p.id),
-        style: styles.secondaryButtonStyle (),
-        children: `+ ${p.name} (${formatYen p.costYen})`,
-      }
-      let buttons: Array<html.Html<Task<Unit>>> = map renderPreset available
-      html.div {
-        children: [
-          labelNode,
-          html.div {
-            style: html.style { display: "flex", flexWrap: "wrap", gap: "8px", },
-            children: buttons,
+        let labelNode: html.Html<Task<Unit>> = html.p {
+          style: html.style {
+            color: "#1c3d5a",
+            fontSize: "12px",
+            fontWeight: "700",
+            margin: "14px 0 8px 0",
           },
-        ],
+          children: "この日に立ち寄り先を追加",
+        }
+        let renderPreset = \p: Spot -> html.button {
+          buttonType: "button",
+          onClick: dispatch (AddPresetSpot p.id),
+          style: styles.secondaryButtonStyle (),
+          children: `+ ${p.name} (${formatYen p.costYen})`,
+        }
+        let buttons: Array<html.Html<Task<Unit>>> = map renderPreset available
+        html.div {
+          children: [
+            labelNode,
+            html.div {
+              style: html.style { display: "flex", flexWrap: "wrap", gap: "8px", },
+              children: buttons,
+            },
+          ],
+        }
       }
-    }
   }
 
 pub fn view dispatch: (TripAction -> Task<Unit>)

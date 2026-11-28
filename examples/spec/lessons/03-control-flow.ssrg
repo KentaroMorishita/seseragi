@@ -6,11 +6,11 @@ fn describe number: Int -> String =
   if number == 0 then "zero" else
   // match は上から順にパターンを試します。タプルを使うと、いくつかの条件を一度に分けられます。
   match (number > 0, number % 2) {
-  (True, 0) -> "positive even"
-  (True, _) -> "positive odd"
-  (False, 0) -> "negative even"
-  (False, _) -> "negative odd"
-}
+    (True, 0) -> "positive even"
+    (True, _) -> "positive odd"
+    (False, 0) -> "negative even"
+    (False, _) -> "negative odd"
+  }
 
 pub effect fn main -> Unit with Console fails ConsoleError = println $ describe (-3)
 

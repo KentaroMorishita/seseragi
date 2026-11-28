@@ -360,30 +360,30 @@ fn toggleSeatSelection seat: Seat -> state: BookingState -> BookingState =
     }
   else if isSelected state.selectedIds seat.id then
     {
-  let nextIds = arrays.filter (\id: String -> id != seat.id) state.selectedIds
-  BookingState {
-    ...state,
-    selectedIds: nextIds,
-    focusedSeatId: Just seat.id,
-    statusMessage: `${seat.row}列 ${seat.number}番の選択を解除しました（選択中 ${arrays.length nextIds} 席）。`,
-  }
-}
-else if arrays.length state.selectedIds >= 4 then
-  BookingState {
-    ...state,
-    focusedSeatId: Just seat.id,
-    statusMessage: "一度に予約できるのは最大 4 席までです。",
-  }
-else
-  {
-  let nextIds = arrays.append [seat.id] state.selectedIds
-  BookingState {
-    ...state,
-    selectedIds: nextIds,
-    focusedSeatId: Just seat.id,
-    statusMessage: `${seat.row}列 ${seat.number}番（${tierLabel seat.tier}・${formatYen (seatPrice seat.tier)}）を追加しました。`,
-  }
-}
+      let nextIds = arrays.filter (\id: String -> id != seat.id) state.selectedIds
+      BookingState {
+        ...state,
+        selectedIds: nextIds,
+        focusedSeatId: Just seat.id,
+        statusMessage: `${seat.row}列 ${seat.number}番の選択を解除しました（選択中 ${arrays.length nextIds} 席）。`,
+      }
+    }
+    else if arrays.length state.selectedIds >= 4 then
+      BookingState {
+        ...state,
+        focusedSeatId: Just seat.id,
+        statusMessage: "一度に予約できるのは最大 4 席までです。",
+      }
+    else
+      {
+        let nextIds = arrays.append [seat.id] state.selectedIds
+        BookingState {
+          ...state,
+          selectedIds: nextIds,
+          focusedSeatId: Just seat.id,
+          statusMessage: `${seat.row}列 ${seat.number}番（${tierLabel seat.tier}・${formatYen (seatPrice seat.tier)}）を追加しました。`,
+        }
+      }
 
 fn makeReservationCode selectedIds: Array<String> -> String = {
   let lead = match arrays.head selectedIds {
@@ -398,12 +398,12 @@ fn refreshErrors nextState: BookingState -> BookingState =
     nextState
   else
     match validateBooking nextState {
-  Valid _ -> BookingState { ...nextState, errors: [] }
-  Invalid problems -> BookingState {
-    ...nextState,
-    errors: arrays.fromIterable problems
-  }
-}
+      Valid _ -> BookingState { ...nextState, errors: [] }
+      Invalid problems -> BookingState {
+        ...nextState,
+        errors: arrays.fromIterable problems
+      }
+    }
 
 pub fn update action: BookingAction -> state: BookingState -> BookingState =
   match action {
@@ -424,17 +424,17 @@ pub fn update action: BookingAction -> state: BookingState -> BookingState =
     SetPartySize size -> BookingState { ...state, partySize: size }
     AutoPickAdjacent ->
       match findAdjacentSeats state.seats state.filterTier state.partySize {
-      Nothing -> BookingState {
-        ...state,
-        statusMessage: `条件に合う ${state.partySize} 連番の空席が見つかりませんでした。`,
+        Nothing -> BookingState {
+          ...state,
+          statusMessage: `条件に合う ${state.partySize} 連番の空席が見つかりませんでした。`,
+        }
+        Just picked -> BookingState {
+          ...state,
+          selectedIds: picked,
+          focusedSeatId: arrays.head picked,
+          statusMessage: `通路をまたがないおすすめ ${arrays.length picked} 連番（${join "・" picked}）を選びました。`,
+        }
       }
-      Just picked -> BookingState {
-        ...state,
-        selectedIds: picked,
-        focusedSeatId: arrays.head picked,
-        statusMessage: `通路をまたがないおすすめ ${arrays.length picked} 連番（${join "・" picked}）を選びました。`,
-      }
-    }
     ClearSelection -> BookingState {
       ...state,
       selectedIds: [],
