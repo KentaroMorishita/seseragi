@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.62.15] - 2026-11-28
+
+### Fixed
+
+- The parser now reports `SES-P0001` (`parser.invalid-declaration-name`) at the alias position when a reserved keyword (such as `effect`, `type`, or `from`) or an invalid identifier is used as a namespace or named `import` alias, instead of silently dropping the alias and failing later in expressions (#1446).
+
 ## [0.62.14] - 2026-11-28
 
 ### Changed

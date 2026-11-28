@@ -175,6 +175,7 @@ impl SurfaceParser<'_> {
             .iter()
             .find(|import| import.span.start == self.tokens[start].start)
         {
+            self.validate_import(start, end, diagnostics);
             let tail = self
                 .tokens
                 .partition_point(|token| token.end <= import.span.end);
@@ -412,6 +413,103 @@ impl SurfaceParser<'_> {
 
     /// `rec { fn ...; effect fn ... }` takes no modifiers and holds only
     /// function declarations, each checked as a module function.
+    fn validate_import(&self, start: usize, end: usize, diagnostics: &mut Vec<Diagnostic>) {
+        let Some(first) = self.next_significant_token(start, end) else {
+            return;
+        };
+        let import_index = if self.raw_at(first) == Some("pub") {
+            let Some(next) = self.next_significant_token(first + 1, end) else {
+                return;
+            };
+            next
+        } else {
+            first
+        };
+        if self.raw_at(import_index) != Some("import") {
+            return;
+        }
+        let Some((from_index, _)) = self.find_import_from(import_index + 1, end) else {
+            return;
+        };
+        let Some(clause_start) = self.next_significant_token(import_index + 1, from_index) else {
+            return;
+        };
+        if self.raw_at(clause_start) == Some("*") {
+            let Some(as_index) = self.next_significant_token(clause_start + 1, from_index) else {
+                return;
+            };
+            if self.raw_at(as_index) != Some("as") {
+                return;
+            }
+            let mut alias_tokens = Vec::new();
+            let mut cursor = as_index + 1;
+            while let Some(index) = self.next_significant_token(cursor, from_index) {
+                alias_tokens.push(index);
+                cursor = index + 1;
+            }
+            let valid = alias_tokens.len() == 1 && {
+                let token = &self.tokens[alias_tokens[0]];
+                token.kind == TokenKind::IdentifierLower && !is_reserved(&token.raw)
+            };
+            if !valid {
+                let span = match (alias_tokens.first(), alias_tokens.last()) {
+                    (Some(&first), Some(&last)) => ByteSpan {
+                        start: self.tokens[first].start,
+                        end: self.tokens[last].end,
+                    },
+                    _ => ByteSpan {
+                        start: self.tokens[as_index].start,
+                        end: self.tokens[as_index].end,
+                    },
+                };
+                diagnostics.push(error("parser.invalid-declaration-name", span));
+            }
+            return;
+        }
+        if self.kind_at(clause_start) == Some(TokenKind::PunctuationBraceLeft) {
+            let close = self
+                .find_matching_brace(clause_start, from_index)
+                .unwrap_or(from_index);
+            let mut cursor = clause_start + 1;
+            while let Some(index) = self.next_significant_token(cursor, close) {
+                if self.raw_at(index) == Some("as") {
+                    let mut alias_tokens = Vec::new();
+                    let mut scan = index + 1;
+                    while let Some(next) = self.next_significant_token(scan, close) {
+                        if self.kind_at(next) == Some(TokenKind::PunctuationComma) {
+                            break;
+                        }
+                        alias_tokens.push(next);
+                        scan = next + 1;
+                    }
+                    let valid = alias_tokens.len() == 1 && {
+                        let token = &self.tokens[alias_tokens[0]];
+                        matches!(
+                            token.kind,
+                            TokenKind::IdentifierLower | TokenKind::IdentifierUpper
+                        ) && !is_reserved(&token.raw)
+                    };
+                    if !valid {
+                        let span = match (alias_tokens.first(), alias_tokens.last()) {
+                            (Some(&first), Some(&last)) => ByteSpan {
+                                start: self.tokens[first].start,
+                                end: self.tokens[last].end,
+                            },
+                            _ => ByteSpan {
+                                start: self.tokens[index].start,
+                                end: self.tokens[index].end,
+                            },
+                        };
+                        diagnostics.push(error("parser.invalid-declaration-name", span));
+                    }
+                    cursor = alias_tokens.last().map_or(index + 1, |last| last + 1);
+                    continue;
+                }
+                cursor = index + 1;
+            }
+        }
+    }
+
     fn validate_rec_group(
         &self,
         start: usize,
@@ -487,7 +585,7 @@ fn validate_pattern(pattern: &SurfacePattern, diagnostics: &mut Vec<Diagnostic>)
     }
 }
 
-fn is_reserved(name: &str) -> bool {
+pub(super) fn is_reserved(name: &str) -> bool {
     matches!(
         name,
         "as" | "alias"
